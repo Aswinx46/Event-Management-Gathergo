@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2016",                                
+    "module": "commonjs",                               
+    // "rootDir": "./",                                  /* Specify the root folder within your source files. */
+    // "outDir": "./",                                   /* Specify an output folder for all emitted files. */
+    "esModuleInterop": true,                             
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
