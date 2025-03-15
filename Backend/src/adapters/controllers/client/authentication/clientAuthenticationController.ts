@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IclientUsecase } from "../../../../domain/interface/useCaseInterfaces/client/clientUseCaseInterface";
+import { IclientUsecase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/clientUseCaseInterface";
 import { IsendOtpClientInterface } from "../../../../domain/interface/useCaseInterfaces/client/authentication/sendOtpClientInterface";
 
 export class ClientAuthenticationController {

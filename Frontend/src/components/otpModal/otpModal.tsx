@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useMutation, UseMutationResult } from "@tanstack/react-query"
+import { UseMutationResult } from "@tanstack/react-query"
 import { AxiosResponse } from "axios"
 interface OTPModalProps {
     isOpen: boolean
@@ -17,10 +17,10 @@ interface OTPModalProps {
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     mutation: UseMutationResult<any, unknown, { formdata: Record<string, any>; otpString: string }, unknown>;
     resendOtp: UseMutationResult<AxiosResponse<any>, unknown, string, unknown>;
-    email:string
+    email: string
 }
 
-export default function OTPModal({ isOpen, data, setIsOpen, mutation, resendOtp,email }: OTPModalProps) {
+export default function OTPModal({ isOpen, data, setIsOpen, mutation, resendOtp, email }: OTPModalProps) {
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
     const [timeLeft, setTimeLeft] = useState<number>(300)

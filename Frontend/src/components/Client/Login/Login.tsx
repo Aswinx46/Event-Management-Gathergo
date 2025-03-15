@@ -3,11 +3,50 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link } from "react-router-dom"
-
+import { Link, useNavigate } from "react-router-dom"
+import { useMutation } from "@tanstack/react-query"
+import axios from '../../../axios/clientAxios'
+import { isAxiosError } from "axios"
+import { toast } from "react-toastify"
 export default function LoginComponent() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
+
+    const navigate = useNavigate()
+
+    const loginMutation = useMutation({
+        mutationFn: async ({ email, password }: { email: string, password: string }) => {
+            return await axios.post('/login', { email, password })
+        },
+        onSuccess: () => {
+            console.log('user logged')
+            toast.success('user logged')
+        },
+        onError: (error) => {
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data?.error || "An error occurred");
+            } else {
+                toast.error("An unexpected error occurred");
+            }
+        }
+
+    })
+
+    const handleLogin = async () => {
+        try {
+            const response = await loginMutation.mutateAsync({ email, password })
+            console.log(response.data)
+        } catch (error) {
+            // if (isAxiosError(error)) {
+            //     console.error("Login failed:", error.response?.data?.error || "An unknown error occurred");
+            //     toast.error(error.response?.data?.error || "An error occurred");
+            // } else {
+            //     console.error("Unexpected error:", error);
+            //     toast.error("An unexpected error occurred");
+            // }
+        }
+
+    }
 
     return (
         <div className="flex min-h-screen flex-col-reverse md:flex-row w-full">
@@ -100,8 +139,8 @@ export default function LoginComponent() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            <Button className="w-full py-6 bg-[#0f172a] hover:bg-[#1e293b] text-white" size="lg">
-                                Sign In
+                            <Button onClick={handleLogin} className="w-full py-6 bg-[#0f172a] hover:bg-[#1e293b] text-white" size="lg">
+                                {loginMutation.isPending ? "Logging in..." : "Sign In"}
                             </Button>
                         </motion.div>
 
@@ -135,8 +174,8 @@ export default function LoginComponent() {
                     className="object-cover md:h-full"
                 />
 
-             
-                
+
+
             </motion.div>
         </div>
     )

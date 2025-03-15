@@ -1,8 +1,8 @@
-import { hashPassword } from "../../framerwork/hashPassword/hashpassword";
-import { clientEntity } from "../../domain/entities/clientEntity";
-import { IclientUsecase } from "../../domain/interface/useCaseInterfaces/client/clientUseCaseInterface";
-import { IClientDatabaseRepository } from "../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
-import { genarateRandomUuid } from "../../framerwork/services/randomUuid";
+import { hashPassword } from "../../../framerwork/hashPassword/hashpassword";
+import { clientEntity } from "../../../domain/entities/clientEntity";
+import { genarateRandomUuid } from '../../../framerwork/services/randomUuid'
+import { IClientDatabaseRepository } from "../../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
+import { IclientUsecase } from "../../../domain/interface/useCaseInterfaces/client/authentication/clientUseCaseInterface";
 export class CreateClientUseCase implements IclientUsecase {
     private clientRepository: IClientDatabaseRepository
     private hashpassword: hashPassword
@@ -16,7 +16,7 @@ export class CreateClientUseCase implements IclientUsecase {
             throw new Error("user already exist")
         }
         const { password, email, phone, name } = client as clientEntity
-        
+
         let hashedPassword = null
         if (password) {
             hashedPassword = await this.hashpassword.hashPassword(password)

@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
-import { ClientAuthenticationController } from "../../../adapters/controllers/client/authentication/clientAuthenticationController";
-import { clientAuthenticationController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedClientLoginController } from "../../Di/clientInject";
 
 export class clientRoute {
     public clientRoute:Router
@@ -17,6 +16,9 @@ export class clientRoute {
         })
         this.clientRoute.post('/resendOtp',(req:Request,res:Response)=>{
             clientAuthenticationController.resendOtp(req,res)
+        })
+        this.clientRoute.post('/login',(req:Request,res:Response)=>{
+            injectedClientLoginController.handleLogin(req,res)
         })
     }
 }
