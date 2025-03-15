@@ -5,15 +5,14 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios from '../../../axios/clientAxios'
 import OTPModal from "@/components/otpModal/otpModal"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
+import { toast } from "react-toastify"
+import { isAxiosError } from "axios"
 export default function SignupComponent() {
-
-  const [isOpen,setIsOpen]=useState<boolean>(false)
-  const [data,setData]=useState({})
 
   const initialValues = {
     name: "",
@@ -23,8 +22,21 @@ export default function SignupComponent() {
     confirmPassword: "",
   }
 
+  interface FormValues {
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+    confirmPassword: string;
+  }
+
+
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [data, setData] = useState<FormValues>(initialValues)
+  const [resendOtp, setResendOtp] = useState<boolean>()
+
   const mutation = useMutation({
-    mutationFn: async (values:typeof initialValues) => {
+    mutationFn: async (values: typeof initialValues) => {
       return await axios.post('/Signup', values)
     },
     onSuccess: () => {
@@ -64,13 +76,49 @@ export default function SignupComponent() {
     console.log("Form submitted", values);
     setData(values)
     try {
-   
+
       mutation.mutate(values)
 
     } catch (error) {
       console.log('error while creating user', error)
     }
   }
+
+  const navigate = useNavigate()
+
+  const mutationCreateACcount = useMutation({
+    mutationFn: async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
+      return await axios.post('/createAccount', { formdata, otpString })
+    },
+    onSuccess: () => {
+      setIsOpen(false)
+      navigate('/')
+    },
+    onError: (error: unknown) => {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "An error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
+  })
+
+  const resendOtpMutation = useMutation({
+    mutationFn: async (email: string) => {
+      return await axios.post('/resendOtp', {email})
+    },
+    onSuccess: () => {
+      toast.success('Otp Resended')
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "An error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
+  })
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col md:flex-row justify-center">
@@ -155,7 +203,7 @@ export default function SignupComponent() {
           )}
         </Formik>
       </motion.div>
-      <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} />
+      <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={mutationCreateACcount} resendOtp={resendOtpMutation} email={data.email} />
     </div>
   )
 }

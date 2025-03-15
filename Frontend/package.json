@@ -27,6 +27,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
     "react-social-icons": "^6.22.0",
+    "react-toastify": "^11.0.5",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.12",
     "tailwindcss-animate": "^1.0.7",

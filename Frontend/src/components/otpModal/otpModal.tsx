@@ -7,25 +7,27 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useMutation } from "@tanstack/react-query"
-import axios from '../../axios/clientAxios'
-import { useNavigate } from "react-router-dom"
+import { useMutation, UseMutationResult } from "@tanstack/react-query"
+import { AxiosResponse } from "axios"
 interface OTPModalProps {
     isOpen: boolean
     onClose?: () => void
     onVerify?: (otp: string) => void
     data: Record<string, any>
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    mutation: UseMutationResult<any, unknown, { formdata: Record<string, any>; otpString: string }, unknown>;
+    resendOtp: UseMutationResult<AxiosResponse<any>, unknown, string, unknown>;
+    email:string
 }
 
-export default function OTPModal({ isOpen, data, setIsOpen }: OTPModalProps) {
+export default function OTPModal({ isOpen, data, setIsOpen, mutation, resendOtp,email }: OTPModalProps) {
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
     const [timeLeft, setTimeLeft] = useState<number>(300)
 
     useEffect(() => {
         if (!isOpen) return;
-        if(timeLeft <=0) setTimeLeft(300)
+        if (timeLeft <= 0) setTimeLeft(300)
         const timer = setInterval(() => {
             setTimeLeft((prevTimeLeft) => prevTimeLeft - 1)
         }, 1000)
@@ -38,20 +40,6 @@ export default function OTPModal({ isOpen, data, setIsOpen }: OTPModalProps) {
         return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
     }
 
-    const navigate = useNavigate()
-
-    const mutation = useMutation({
-        mutationFn: async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
-            return await axios.post('/createAccount', { formdata, otpString })
-        },
-        onSuccess: () => {
-            setIsOpen(false)
-            navigate('/')
-        },
-        onError: (error) => {
-            console.log(error)
-        }
-    })
 
 
 
@@ -84,13 +72,13 @@ export default function OTPModal({ isOpen, data, setIsOpen }: OTPModalProps) {
     const handleVerify = () => {
         const otpString = otp.join("")
         if (otpString.length === 6) {
-            mutation.mutate({formdata:data, otpString})
+            mutation.mutate({ formdata: data, otpString })
         }
     }
-    // const handleResendOtp = () => {
-    //     mutation.mutate(data)
-    //     setTimeLeft(300)
-    // }
+    const handleResendOtp = () => {
+        resendOtp.mutate(email)
+        setTimeLeft(300)
+    }
     return (
         <AnimatePresence>
             {isOpen && (
@@ -170,15 +158,15 @@ export default function OTPModal({ isOpen, data, setIsOpen }: OTPModalProps) {
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.6 }}
                         >
-                            {/* {timeLeft < 240 && <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {timeLeft < 240 && <p className="text-sm text-gray-500 dark:text-gray-400">
                                 Didn't receive the code? <button onClick={handleResendOtp} className="text-primary hover:underline">Resend</button>
-                            </p>} */}
+                            </p>}
 
                             <p className="text-red-600">  Time Left: {formatTime(timeLeft)}</p>
                         </motion.div>
 
                         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.7 }}>
-                            <Button className="w-full" onClick={handleVerify} disabled={otp.join("").length !== 6 || timeLeft <=0}>
+                            <Button className="w-full" onClick={handleVerify} disabled={otp.join("").length !== 6 || timeLeft <= 0}>
                                 Verify
                             </Button>
                         </motion.div>

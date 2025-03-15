@@ -32,13 +32,28 @@ export class ClientAuthenticationController {
             }else{
                 res.status(400).json({ message: "invalid otp"})
               
-            }
-
-            
-            
+            }     
         } catch (error) {
             console.log('error while creating client', error)
-            res.status(500).json({ message: "error while creating client", error })
+            res.status(500).json({ 
+                message: "Error while creating client", 
+                error: error instanceof Error ? error.message : "Unknown error",
+                stack: error instanceof Error ? error.stack : undefined
+            });
+        }
+    }
+    async resendOtp(req:Request,res:Response):Promise<void>{
+        try {
+            const {email}=req.body
+            console.log('this is the email for the resening otop',email)
+            await this.clientSendOtpUseCase.resendOtp(email)
+            res.status(200).json({message:"Resend otp sended"})
+        } catch (error) {
+            console.log('error while resending otp',error);
+            res.status(500).json({
+                message:'error while reseding otp',
+                error:error instanceof Error ? error.message : "unknown error",
+            })
         }
     }
 }

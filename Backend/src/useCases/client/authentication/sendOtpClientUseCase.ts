@@ -18,4 +18,9 @@ export class sendOtpClientUseCase implements IsendOtpClientInterface {
         const verify=await this.otpService.verifyOtp(email,enteredOtp)
         return verify
     }
+    async resendOtp(email: string): Promise<void> {
+        const otp=this.otpService.genarateOtp()
+        const saveOtp=await this.otpService.storeOtp(email,otp)
+        const sendEmail=await this.emailService.sendEmailOtp(email,otp)
+    }
 }

@@ -15,5 +15,8 @@ export class clientRoute {
         this.clientRoute.post('/createAccount',(req:Request,res:Response)=>{
             clientAuthenticationController.register(req,res)
         })
+        this.clientRoute.post('/resendOtp',(req:Request,res:Response)=>{
+            clientAuthenticationController.resendOtp(req,res)
+        })
     }
 }
