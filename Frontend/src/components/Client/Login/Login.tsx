@@ -3,16 +3,21 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link, useNavigate } from "react-router-dom"
+import { data, Link, useNavigate } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
 import axios from '../../../axios/clientAxios'
 import { isAxiosError } from "axios"
 import { toast } from "react-toastify"
+import { useDispatch } from "react-redux"
+import { addToken } from "@/store/slices/userTokenSlice"
+import ImageCarousel from "@/components/other components/ImageCarousal"
 export default function LoginComponent() {
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
 
     const navigate = useNavigate()
+    
+    const dispatch=useDispatch()
 
     const loginMutation = useMutation({
         mutationFn: async ({ email, password }: { email: string, password: string }) => {
@@ -21,6 +26,7 @@ export default function LoginComponent() {
         onSuccess: () => {
             console.log('user logged')
             toast.success('user logged')
+            navigate('/')
         },
         onError: (error) => {
             if (isAxiosError(error)) {
@@ -28,6 +34,10 @@ export default function LoginComponent() {
             } else {
                 toast.error("An unexpected error occurred");
             }
+        },
+        onSettled:(data)=>{
+            console.log(data?.data.accessToken)
+            dispatch(addToken(data?.data.accessToken))
         }
 
     })
@@ -37,6 +47,7 @@ export default function LoginComponent() {
             const response = await loginMutation.mutateAsync({ email, password })
             console.log(response.data)
         } catch (error) {
+            console.log(error)
             // if (isAxiosError(error)) {
             //     console.error("Login failed:", error.response?.data?.error || "An unknown error occurred");
             //     toast.error(error.response?.data?.error || "An error occurred");
@@ -162,7 +173,7 @@ export default function LoginComponent() {
             </motion.div>
 
             {/* Image Section (Right Side) */}
-            <motion.div
+            {/* <motion.div
                 className="md:w-1/2 relative overflow-hidden"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -176,7 +187,8 @@ export default function LoginComponent() {
 
 
 
-            </motion.div>
+            </motion.div> */}
+            <ImageCarousel/>
         </div>
     )
 }

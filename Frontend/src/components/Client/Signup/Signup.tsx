@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
+import ImageCarousel from "@/components/other components/ImageCarousal"
 export default function SignupComponent() {
 
   const initialValues = {
@@ -129,14 +130,15 @@ export default function SignupComponent() {
         transition={{ duration: 0.5 }}
       >
         {/* Image Section */}
-        <motion.div
+        {/* <motion.div
           className="w-full md:w-1/2 relative h-[300px] md:h-auto overflow-hidden bg-primary/10"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <img src="/concertt.jpg" alt="GatherGo illustration" className="w-full h-full md:object-cover" />
-        </motion.div>
+        </motion.div> */}
+        <ImageCarousel/>
 
         {/* Form Section */}
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>

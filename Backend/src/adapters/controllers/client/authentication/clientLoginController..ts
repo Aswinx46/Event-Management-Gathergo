@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { clientEntity } from "../../../../domain/entities/clientEntity";
 import { IloginClientControllerInterface } from "../../../../domain/interface/controllerInterfaces/client/IloginClientControllerInterface";
 import { IClientLoginuseCase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/clientLoginUseCase";
 import { IjwtInterface } from "../../../../domain/interface/serviceInterface/IjwtService";
@@ -24,11 +23,8 @@ export class ClientLoginController implements IloginClientControllerInterface {
             const REFRESHTOKEN_SECRET_KEY=process.env.REFRESHTOKEN_SECRET_KEY as string
             const accessToken=this.jwtService.createAccessToken(ACCESSTOKEN_SECRET_KEY, client._id?.toString() || "",client.role)
             const refreshToken=this.jwtService.createRefreshToken(REFRESHTOKEN_SECRET_KEY,client._id?.toString() || "")
-            
-            setCookie(res,refreshToken)
-            console.log('this is accessToken',accessToken)
 
-            console.log('this is refreshToken',refreshToken)
+            setCookie(res,refreshToken)
 
             res.status(200).json({ message: "user logged", client,accessToken })
 
