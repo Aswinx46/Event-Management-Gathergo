@@ -7,6 +7,7 @@ import { sendOtpClientUseCase } from "../../useCases/client/authentication/sendO
 import { LoginClientUseCase } from "../../useCases/client/authentication/loginClientUseCase";
 import { ClientLoginController } from "../../adapters/controllers/client/authentication/clientLoginController.";
 import { JwtService } from "../services/jwtService";
+import {RedisService} from '../services/redisService'
 // -----------------------register client ----------------------------//
 const otpService=new OtpService()
 const EmailService=new emailService()
@@ -18,5 +19,6 @@ export const clientAuthenticationController=new ClientAuthenticationController(c
 
 //----------------------------- Login client ------------------------------//
 const jwtService=new JwtService()
+const redisService=new RedisService()
 const loginClientUseCase=new LoginClientUseCase(ClientRepository)
-export const injectedClientLoginController=new ClientLoginController(loginClientUseCase,jwtService)
+export const injectedClientLoginController=new ClientLoginController(loginClientUseCase,jwtService,redisService)

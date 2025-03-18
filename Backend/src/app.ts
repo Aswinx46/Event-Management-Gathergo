@@ -1,11 +1,13 @@
-import express,{application, urlencoded} from 'express'
+import express,{Express, urlencoded} from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { connectMongo } from './framerwork/database/databaseConnection/dbConnection'
 import { clientRoute } from './framerwork/routes/client/clientRoute'
 import cookie_parser from 'cookie-parser'
+import morgan from 'morgan'
+import redisService from './framerwork/services/redisService'
 export class App{
-    private app=application
+    private app:Express
     private database:connectMongo
     constructor(){
         dotenv.config()
@@ -14,6 +16,7 @@ export class App{
         this.database.connectDb()
         this.setMiddlewares()
         this.setClientRoute()
+        this.connectRedis()
     }
     private setMiddlewares(){
         this.app.use(cors({
@@ -23,6 +26,10 @@ export class App{
         this.app.use(cookie_parser())
         this.app.use(express.json())
         this.app.use(urlencoded({extended:true}))
+        this.app.use(morgan('dev'))
+    }
+    private async connectRedis(){
+        await redisService.connect()
     }
     private setClientRoute(){
         this.app.use('/',new clientRoute().clientRoute)

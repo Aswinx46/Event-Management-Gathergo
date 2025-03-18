@@ -13,6 +13,7 @@ export class LoginClientUseCase implements IClientLoginuseCase{
     async loginClient(email: string, password: string): Promise<clientEntity | null> {
         const client=await this.clientDatabase.findByEmail(email)
         if(!client) throw new Error('No client exists with this email')
+        if(client.status == "block") throw new Error('client is blocked by admin')
         const isPasswordValid =await this.hashpassword.comparePassword(password,client.password)
         if(!isPasswordValid ) throw new Error ("invalid password")
         return client
