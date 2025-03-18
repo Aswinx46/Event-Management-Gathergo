@@ -13,7 +13,10 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
 import ImageCarousel from "@/components/other components/ImageCarousal"
+import Gooeynov from '../../../../addon/GooeyNav/GooeyNav'
 export default function SignupComponent() {
+
+  const items = [{ text: "Home", link: '#' }, { text: 'Profile', link: '#' }]
 
   const initialValues = {
     name: "",
@@ -122,7 +125,7 @@ export default function SignupComponent() {
 
 
   return (
-    <div className="min-h-screen bg-white flex flex-col md:flex-row justify-center">
+    <div className="min-h-screen bg-black flex flex-col md:flex-row justify-center">
       <motion.div
         className="w-full hover:shadow-[0_0_150px_rgba(255,255,255,0.5)] transition-shadow duration-500 flex flex-col md:flex-row overflow-hidden shadow-xl"
         initial={{ opacity: 0, y: 20 }}
@@ -205,6 +208,7 @@ export default function SignupComponent() {
           )}
         </Formik>
       </motion.div>
+        
       <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={mutationCreateACcount} resendOtp={resendOtpMutation} email={data.email} />
     </div>
   )

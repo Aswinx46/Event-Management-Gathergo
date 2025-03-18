@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 function ImageCarousel() {
     return (
-        <div className=" flex  md:flex-row w-full md:h-screen overflow-hidden">
+        <div className=" flex md:w-1/2 md:flex-row w-full md:h-screen overflow-hidden">
             <Swiper
                 pagination={{ clickable: true }}
                 modules={[Pagination, Autoplay]}

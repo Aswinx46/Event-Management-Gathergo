@@ -6,6 +6,7 @@ import { clientRoute } from './framerwork/routes/client/clientRoute'
 import cookie_parser from 'cookie-parser'
 import morgan from 'morgan'
 import redisService from './framerwork/services/redisService'
+import { VendorRoute } from './framerwork/routes/vendor/vendorRoute'
 export class App{
     private app:Express
     private database:connectMongo
@@ -16,6 +17,7 @@ export class App{
         this.database.connectDb()
         this.setMiddlewares()
         this.setClientRoute()
+        this.setVendorRoute()
         this.connectRedis()
     }
     private setMiddlewares(){
@@ -37,6 +39,9 @@ export class App{
     public listen(){
         const port=process.env.PORT || 3000
         this.app.listen(port,()=>console.log(`server running on ${port}`))
+    }
+    private setVendorRoute(){
+        this.app.use('/vendor',new VendorRoute().vendorRoute)
     }
 
 }

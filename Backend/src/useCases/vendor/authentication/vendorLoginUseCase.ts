@@ -1,13 +1,30 @@
 import { VendorEntity } from "../../../domain/entities/vendorEntity";
-import { VendorLoginUseCase } from "../../../domain/interface/useCaseInterfaces/vendor/authentication/registerVendorUseCase";
+import { IvendorAuthenticationUseCase } from "../../../domain/interface/useCaseInterfaces/vendor/authentication/registerVendorUseCase";
 import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
-export class VendorLoginUsecase implements VendorLoginUseCase {
+import { hashPassword } from "../../../framerwork/hashPassword/hashpassword";
+import { genarateRandomUuid } from "../../../framerwork/services/randomUuid";
+export class VendorLoginUsecase implements IvendorAuthenticationUseCase {
     private vendorDatabse: IvendorDatabaseRepositoryInterface
+    private hashPassword:hashPassword
     constructor(vendorDatabase: IvendorDatabaseRepositoryInterface) {
         this.vendorDatabse = vendorDatabase
+        this.hashPassword=new hashPassword()
     }
-    async loginVendor(vendor: VendorEntity): Promise<VendorEntity> {
-        const exisingVendor=await this.vendorDatabse.findByEmail(vendor.email)
-        if(exisingVendor) throw new Error('this email is already exits')
+    async signupVendor(vendor: VendorEntity): Promise<VendorEntity | null> {
+        const oldVendor=await this.vendorDatabse.findByEmail(vendor.email)
+        if(oldVendor) throw new Error('Already vendor exist in this email')
+        const hashedPassword=await this.hashPassword.hashPassword(vendor.password)
+        const vendorId=genarateRandomUuid()
+        const newClient= await this.vendorDatabse.createVendor({
+            name:vendor.name,
+            email:vendor.email,
+            password:hashedPassword,
+            role:'vendor',
+            vendorId,
+            idProof:vendor.idProof,
+            phone:vendor.phone,
+            vendorStatus:'pending'
+        })
+        return newClient
     }
 }

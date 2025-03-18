@@ -1,5 +1,5 @@
 import { Route,Routes } from "react-router-dom";
-import Signup from "@/components/Client/Signup/Signup";
+import Signup from "../components/Client/Signup/Signup";
 import LoginComponent from "@/components/Client/Login/Login";
 import Home from "@/components/Client/home/Home";
 const UserRoute=()=>{

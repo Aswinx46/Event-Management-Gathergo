@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { SocialIcon } from 'react-social-icons'
 import Hamburger from 'hamburger-react'
+
 function Header() {
 
     type Item = {
@@ -10,8 +11,11 @@ function Header() {
 
     const [isOpen, setOpen] = useState(false)
     const items: Item[] = [{ text: "Home", link: '/home' }, { text: 'Profile', link: '/profile' }]
+
+
     return (
         <div className='bg-white'>
+          
             <div className='py-4 flex justify-between items-center border-b-2 border-black px-5 md:px-10'>
                 <div className='items-center hidden md:flex gap-4 sm:gap-7 '>
                     <SocialIcon bgColor='black' url="https://instagram.com" />

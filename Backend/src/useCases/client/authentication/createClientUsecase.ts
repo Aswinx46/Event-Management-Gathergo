@@ -30,7 +30,8 @@ export class CreateClientUseCase implements IclientUsecase {
             email,
             password: hashedPassword ?? "",
             clientId,
-            role: "client"
+            role: "client",
+            
         })
         return newClient
     }

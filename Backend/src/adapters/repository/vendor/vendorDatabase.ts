@@ -1,7 +1,7 @@
 import { VendorEntity } from "../../../domain/entities/vendorEntity";
-import { vendorDatabaseRepository } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
+import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
 import { VendorModel } from "../../../framerwork/database/models/vendorModel";
-export class VendorDatabase implements vendorDatabaseRepository {
+export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
     async createVendor(vendor: VendorEntity): Promise<VendorEntity> {
         return await VendorModel.create(vendor)
     }

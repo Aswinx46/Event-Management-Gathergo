@@ -54,6 +54,11 @@ export const VendorSchema =new Schema <VendorEntity>({
         enum:['online','offline'],
         default:'offline'
     },
+    vendorStatus:{
+        type:String,
+        enum:['pending','rejected','approved'],
+        default:'pending'
+    }
 },{
     timestamps:true
 })

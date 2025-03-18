@@ -1,20 +1,27 @@
-import { motion } from "framer-motion"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Upload, User } from "lucide-react"
+import { User } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
+import cloudAxios from 'axios'
 import ImageCarousel from "@/components/other components/ImageCarousal"
+import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import axios from '../../../axios/vendorAxios'
+import { error } from "console"
+import { toast } from "react-toastify"
 export default function SignupPage() {
+    const [imageUrl, setImageUrl] = useState<string>('')
     const initialValues = {
         name: "",
         email: "",
         phone: "",
         password: "",
         confirmPassword: "",
-        document:null
+        document: null
     }
     interface FormValues {
         name: string;
@@ -24,6 +31,48 @@ export default function SignupPage() {
         confirmPassword: string;
         document: File | null;
     }
+
+    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dyrx8qjpt/image/upload";
+
+    const mutation = useMutation({
+        mutationFn: async (value: FormValues) => {
+            if (!value.document) throw new Error("No file selected");
+            const formdata = new FormData()
+            formdata.append('file', value.document)
+            formdata.append('upload_preset', 'vendor_id')
+            try {
+                const response = await cloudAxios.post(CLOUDINARY_URL, formdata);
+                const documentUrl = response.data.secure_url
+                const vendor: FormValues = {
+                    name: value.name,
+                    email: value.email,
+                    document: documentUrl,
+                    password: value.password,
+                    phone: value.phone,
+                    confirmPassword: value.confirmPassword
+                }
+                const uploadToBackend = await axios.post('/signup',vendor)
+                return uploadToBackend.data
+            } catch (error) {
+                if (error instanceof Error) {
+                    throw new Error("Upload failed: " + error.message);
+                } else {
+                    throw new Error("Upload failed: An unknown error occurred.");
+                }
+            }
+        },
+        onError: (error) => {
+            console.log(error)
+            toast.error(error.message)
+        },
+        onSuccess: (data, variables, context) => {
+            toast.success(data.message)
+            console.log(data)
+        },
+    })
+
+
+
     const validationSchema = yup.object().shape({
         name: yup.string().required("Full name is required").min(3, 'name should be more that 3 characters').max(8, 'name should be less that 8 characters'),
         email: yup.string().email("Invalid email format").required("Email is required"),
@@ -44,9 +93,9 @@ export default function SignupPage() {
             .string()
             .oneOf([yup.ref("password")], "Passwords must match")
             .required("Confirm password is required"),
-        document:yup.mixed()
+        document: yup.mixed()
             .required("Id proof is required")
-            .test('fileSize',"File size must be under 5MB",(value)=>{
+            .test('fileSize', "File size must be under 5MB", (value) => {
                 return value instanceof File && value.size <= 5 * 1024 * 1024
             })
             .test("fileType", "Only images and PDFs are allowed", (value) => {
@@ -54,12 +103,13 @@ export default function SignupPage() {
             }),
     });
 
-    const handleSubmit = (values:FormValues) => {
+    const handleSubmit = (values: FormValues) => {
         console.log(values)
+        const response = mutation.mutate(values)
     }
     return (
-        <div className=" min-h-screen flex flex-col md:flex-row justify-center">  
-                <ImageCarousel/>
+        <div className=" min-h-screen flex flex-col md:flex-row justify-center">
+            <ImageCarousel />
             {/* Right side - Signup Form */}
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (
@@ -108,15 +158,29 @@ export default function SignupPage() {
                                             <User className="h-8 w-8 text-gray-400" />
                                         </div>
                                         <div className="flex-1">
-                                            <Button variant="outline" className="w-full">
+                                            {/* <Button variant="outline" className="w-full">
                                                 <Upload className="mr-2 h-4 w-4" />
                                                 Upload Document
-                                            </Button>
+                                            </Button> */}
+                                            {/* <Field name='document' as={Input} type='file' placeholder='upload your id proof'></Field> */}
+                                            <Field name="document">
+                                                {({ field, form }: any) => (
+                                                    <input
+                                                        type="file"
+                                                        accept="image/jpeg, image/png, application/pdf"
+                                                        onChange={(event) => {
+                                                            const file = event.currentTarget.files ? event.currentTarget.files[0] : null;
+                                                            form.setFieldValue("document", file);
+                                                        }}
+                                                    />
+                                                )}
+                                            </Field>
+                                            <ErrorMessage name="document" component="div" className="text-red-500 text-sm" />
                                         </div>
                                     </div>
                                 </div>
 
-                                <Button disabled={isSubmitting} className="w-full bg-gray-900 text-white hover:bg-gray-800">Sign Up</Button>
+                                <Button className="w-full bg-gray-900 text-white hover:bg-gray-800">Sign Up</Button>
                             </div>
 
                             <div className="text-center text-sm">
