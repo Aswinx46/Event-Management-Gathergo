@@ -104,7 +104,7 @@ export default function SignupComponent() {
       } else {
         toast.error("An unexpected error occurred");
       }
-    }
+    },
   })
 
   const resendOtpMutation = useMutation({

@@ -3,26 +3,41 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { User } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
-import cloudAxios from 'axios'
+import cloudAxios, { isAxiosError } from 'axios'
 import ImageCarousel from "@/components/other components/ImageCarousal"
 import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import axios from '../../../axios/vendorAxios'
-import { error } from "console"
 import { toast } from "react-toastify"
+import OTPModal from "@/components/otpModal/otpModal"
+import ImageCropper from "@/components/other components/ImageCropper"
 export default function SignupPage() {
-    const [imageUrl, setImageUrl] = useState<string>('')
     const initialValues = {
         name: "",
         email: "",
         phone: "",
         password: "",
         confirmPassword: "",
-        document: null
+        document: null as File | null
     }
+    const initialValuesOfVendor = {
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: "",
+        idProof: ""
+    }
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [otp, setOtp] = useState<string>('')
+    const navigate = useNavigate()
+    const [data, setData] = useState<VendorData>(initialValuesOfVendor)
+    const [selectedImage, setSelectedImage] = useState<string>('');
+    const [showCropper, setShowCropper] = useState<boolean>(false);
+    const [croppedImage, setCroppedImage] = useState<File | null>(null);
     interface FormValues {
         name: string;
         email: string;
@@ -31,44 +46,86 @@ export default function SignupPage() {
         confirmPassword: string;
         document: File | null;
     }
-
+    interface VendorData {
+        name: string;
+        email: string;
+        phone: string;
+        password: string;
+        confirmPassword: string;
+        idProof: string;
+    }
     const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dyrx8qjpt/image/upload";
 
     const mutation = useMutation({
         mutationFn: async (value: FormValues) => {
+            const fileToUpload = croppedImage || value.document;
+            if (!fileToUpload) throw new Error("No file selected");
             if (!value.document) throw new Error("No file selected");
             const formdata = new FormData()
-            formdata.append('file', value.document)
+            formdata.append('file', fileToUpload)
             formdata.append('upload_preset', 'vendor_id')
             try {
                 const response = await cloudAxios.post(CLOUDINARY_URL, formdata);
                 const documentUrl = response.data.secure_url
-                const vendor: FormValues = {
+                console.log('this is the documenturl', documentUrl)
+                const vendor: VendorData = {
                     name: value.name,
                     email: value.email,
-                    document: documentUrl,
+                    idProof: documentUrl,
                     password: value.password,
                     phone: value.phone,
                     confirmPassword: value.confirmPassword
                 }
-                const uploadToBackend = await axios.post('/signup',vendor)
+                setData(vendor)
+                console.log(vendor)
+                const uploadToBackend = await axios.post('/signup', vendor)
                 return uploadToBackend.data
             } catch (error) {
-                if (error instanceof Error) {
-                    throw new Error("Upload failed: " + error.message);
-                } else {
-                    throw new Error("Upload failed: An unknown error occurred.");
+                if (isAxiosError(error)) {
+                    console.log(error)
+                    toast.error(error?.response?.data.error)
                 }
             }
         },
         onError: (error) => {
-            console.log(error)
-            toast.error(error.message)
+            if (isAxiosError(error)) {
+                console.log(error)
+            }
+            // toast.error(error.message)
         },
         onSuccess: (data, variables, context) => {
             toast.success(data.message)
             console.log(data)
+            setIsOpen(true)
         },
+    })
+
+    const verifyOtpMutation = useMutation({
+        mutationFn: async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
+            try {
+                return await axios.post('/verify', { formdata, enteredOtp: otpString })
+            } catch (error) {
+                console.log('error while posting data to the backend for creating account', error)
+                if (error instanceof Error) {
+                    throw new Error('data uploading to backend for creating vendor failed' + error.message)
+                } else {
+                    throw new Error("vendor creation failed")
+                }
+            }
+        },
+        onSuccess: () => {
+            setIsOpen(false)
+        },
+        onError: (error: unknown) => {
+            console.log(error)
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data?.error)
+            } else {
+                toast.error('error while registering vendor')
+            }
+            // toast.error(error.response.data.error)
+        },
+
     })
 
 
@@ -93,19 +150,27 @@ export default function SignupPage() {
             .string()
             .oneOf([yup.ref("password")], "Passwords must match")
             .required("Confirm password is required"),
-        document: yup.mixed()
-            .required("Id proof is required")
-            .test('fileSize', "File size must be under 5MB", (value) => {
-                return value instanceof File && value.size <= 5 * 1024 * 1024
-            })
-            .test("fileType", "Only images and PDFs are allowed", (value) => {
-                return value instanceof File && ["image/jpeg", "image/png", "application/pdf"].includes(value.type);
-            }),
     });
 
+    const resendOtpMutation = useMutation({
+        mutationFn: async (email: string) => {
+            try {
+                return await axios.post('/resendOtp', email)
+            } catch (error) {
+                console.log('error while resending otp', error)
+                if (error instanceof Error) {
+                    throw new Error('error while sending otp' + error.message)
+                } else {
+                    throw new Error('errow while sending otp')
+                }
+            }
+        }
+    })
+
     const handleSubmit = (values: FormValues) => {
-        console.log(values)
-        const response = mutation.mutate(values)
+        values.document = croppedImage
+        console.log(values, 'asdfhj')
+        mutation.mutate(values)
     }
     return (
         <div className=" min-h-screen flex flex-col md:flex-row justify-center">
@@ -164,23 +229,28 @@ export default function SignupPage() {
                                             </Button> */}
                                             {/* <Field name='document' as={Input} type='file' placeholder='upload your id proof'></Field> */}
                                             <Field name="document">
-                                                {({ field, form }: any) => (
+                                                {() => (
                                                     <input
                                                         type="file"
                                                         accept="image/jpeg, image/png, application/pdf"
                                                         onChange={(event) => {
                                                             const file = event.currentTarget.files ? event.currentTarget.files[0] : null;
-                                                            form.setFieldValue("document", file);
+                                                            // form.setFieldValue("document", file);
+                                                            if (file) setSelectedImage(URL.createObjectURL(file))
+                                                            setShowCropper(true)
                                                         }}
                                                     />
                                                 )}
                                             </Field>
                                             <ErrorMessage name="document" component="div" className="text-red-500 text-sm" />
+                                            <div className="h-30 w-50 ">
+                                                {croppedImage && <img className="rounded-2xl" src={URL.createObjectURL(croppedImage)}></img>}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <Button className="w-full bg-gray-900 text-white hover:bg-gray-800">Sign Up</Button>
+                                <Button className="w-full mt-4 bg-gray-900 text-white hover:bg-gray-800">Sign Up</Button>
                             </div>
 
                             <div className="text-center text-sm">
@@ -193,6 +263,9 @@ export default function SignupPage() {
                     </Form>
                 )}
             </Formik>
+
+            {showCropper && <ImageCropper image={selectedImage} onCropComplete={setCroppedImage} showCropper={setShowCropper} />}
+            <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={verifyOtpMutation} resendOtp={resendOtpMutation} email={data.email}></OTPModal>
         </div>
     )
 }
