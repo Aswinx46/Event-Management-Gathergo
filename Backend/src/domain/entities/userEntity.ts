@@ -11,6 +11,6 @@ export interface User{
     profileImage?:string
     createdAt?:Date,
     lastLogin?:Date,
-    onlineStatus?:'online'|'offline'
-    
+    onlineStatus?:'online'|'offline',
+    isAdmin?:boolean
 }

@@ -47,6 +47,11 @@ export const clientSchema = new Schema<clientEntity>({
         type:String,
         enum:['online','offline'],
         default:'offline'   
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false,
+        required:false
     }
 },{
     timestamps:true

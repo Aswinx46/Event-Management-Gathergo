@@ -2,9 +2,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore } from 'redux-persist'
 import { combineReducers } from '@reduxjs/toolkit'
-import { tokenSlice } from './slices/userTokenSlice'
-import tokenReducer from '../store/slices/userTokenSlice'
-
+import tokenReducer from './slices/user/userTokenSlice'
+import vendorTokenSlice from './slices/vendor/vendorTokenSlice'
+import vendorSlice from './slices/vendor/vendorSlice'
 const persistConfig = {
     key: "root",
     storage,
@@ -12,7 +12,9 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
-    token:tokenReducer
+    token:tokenReducer,
+    vendorToken:vendorTokenSlice,
+    vendorSlice:vendorSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -28,3 +30,4 @@ export const store = configureStore({
 })
 
 export const persistor=persistStore(store)
+export type RootState = ReturnType<typeof store.getState>;

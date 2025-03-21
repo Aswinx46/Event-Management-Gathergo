@@ -8,4 +8,5 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
     async findByEmail(email: string): Promise<VendorEntity | null> {
         return await VendorModel.findOne({email:email})
     }
+    
 }

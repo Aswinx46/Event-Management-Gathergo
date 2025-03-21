@@ -1,5 +1,5 @@
 import { Request,Response,Router } from "express";
-import { injectedVendorAuthenticationController } from "../../Di/vendorInject";
+import { injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
 
 export class VendorRoute {
     public vendorRoute:Router
@@ -13,6 +13,9 @@ export class VendorRoute {
         })
         this.vendorRoute.post('/verify',(req:Request,res:Response)=>{
             injectedVendorAuthenticationController.registerVendor(req,res)
+        })
+        this.vendorRoute.post('/login',(req:Request,res:Response)=>{
+            injectedVendorLoginController.handleLoginVendor(req,res)
         })
     }
 }

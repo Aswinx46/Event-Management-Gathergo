@@ -18,6 +18,7 @@ export class ClientLoginController implements IloginClientControllerInterface {
     async handleLogin(req: Request, res: Response): Promise<void> {
         try {
             const { email, password } = req.body
+            console.log('this is the email and the password',email,password)
             const client = await this.clientLoginUseCase.loginClient(email, password)
             if (!client) {
                 res.status(400).json({ message: "invalid credentials" })

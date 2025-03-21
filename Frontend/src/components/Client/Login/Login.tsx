@@ -9,15 +9,43 @@ import axios from '../../../axios/clientAxios'
 import { isAxiosError } from "axios"
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
-import { addToken } from "@/store/slices/userTokenSlice"
+import { addToken } from "@/store/slices/user/userTokenSlice"
 import ImageCarousel from "@/components/other components/ImageCarousal"
+import { ErrorMessage, Field, Form, Formik } from "formik"
+import * as yup from 'yup'
 export default function LoginComponent() {
+
+    const initialValues = {
+        email: '',
+        password: ''
+    }
+    type login={
+        email:string;
+        password:string
+    }
+
+    const validationSchema = yup.object().shape(({
+        email: yup.string().email("Invalid email format").required("Email is required"),
+        password: yup
+            .string()
+            .test(
+                "no-star-only",
+                "Password cannot be just '*'",
+                (value) => value !== "*"
+            )
+            .matches(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character"
+            )
+            .required("Password is required"),
+    }))
+
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
 
     const navigate = useNavigate()
-    
-    const dispatch=useDispatch()
+
+    const dispatch = useDispatch()
 
     const loginMutation = useMutation({
         mutationFn: async ({ email, password }: { email: string, password: string }) => {
@@ -35,26 +63,20 @@ export default function LoginComponent() {
                 toast.error("An unexpected error occurred");
             }
         },
-        onSettled:(data)=>{
+        onSettled: (data) => {
             console.log(data?.data.accessToken)
             dispatch(addToken(data?.data.accessToken))
         }
 
     })
 
-    const handleLogin = async () => {
+    const handleLogin = async (values:login) => {
         try {
+            const {email,password}=values
             const response = await loginMutation.mutateAsync({ email, password })
             console.log(response.data)
         } catch (error) {
             console.log(error)
-            // if (isAxiosError(error)) {
-            //     console.error("Login failed:", error.response?.data?.error || "An unknown error occurred");
-            //     toast.error(error.response?.data?.error || "An error occurred");
-            // } else {
-            //     console.error("Unexpected error:", error);
-            //     toast.error("An unexpected error occurred");
-            // }
         }
 
     }
@@ -77,98 +99,102 @@ export default function LoginComponent() {
                         <h1 className="text-3xl font-bold text-gray-900">GatherGo</h1>
                         <p className="mt-2 text-sm text-gray-600">Sign in to your account to continue</p>
                     </motion.div>
+                    <Formik initialValues={initialValues} onSubmit={handleLogin} validationSchema={validationSchema}>
+                        {({ isSubmitting }) => (
+                            <Form>
 
-                    <div className="space-y-6">
-                        <motion.div
-                            className="space-y-2"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
-                        >
-                            <Label htmlFor="email" className="text-sm font-medium">
-                                Email
-                            </Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            />
-                            <p className="text-xs text-red-500 hidden">Email is required</p>
-                        </motion.div>
+                                <div className="space-y-6">
+                                    <motion.div
+                                        className="space-y-2"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                    >
+                                        <Label htmlFor="email" className="text-sm font-medium">
+                                            Email
+                                        </Label>
+                                        <Field as={Input}
+                                            name="email"
+                                            type="email"
+                                            placeholder="Enter your email"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        />
+                                         <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+                                        <p className="text-xs text-red-500 hidden">Email is required</p>
+                                    </motion.div>
 
-                        <motion.div
-                            className="space-y-2"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5, duration: 0.5 }}
-                        >
-                            <Label htmlFor="password" className="text-sm font-medium">
-                                Password
-                            </Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            />
-                            <p className="text-xs text-red-500 hidden">Password is required</p>
-                        </motion.div>
+                                    <motion.div
+                                        className="space-y-2"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.5, duration: 0.5 }}
+                                    >
+                                        <Label htmlFor="password" className="text-sm font-medium">
+                                            Password
+                                        </Label>
+                                        <Field as={Input}
+                                            name="password"
+                                            type="password"
+                                            placeholder="Enter your password"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        />
+                                         <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                                        <p className="text-xs text-red-500 hidden">Password is required</p>
+                                    </motion.div>
 
-                        <motion.div
-                            className="flex items-center justify-between"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.6, duration: 0.5 }}
-                        >
-                            <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 text-primary border-gray-300 rounded"
-                                />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600">
-                                    Remember me
-                                </label>
-                            </div>
-                            <div className="text-sm">
-                                <Link to="#" className="font-medium text-primary hover:text-primary/80">
-                                    Forgot password?
-                                </Link>
-                            </div>
-                        </motion.div>
+                                    <motion.div
+                                        className="flex items-center justify-between"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.6, duration: 0.5 }}
+                                    >
+                                        <div className="flex items-center">
+                                            <input
+                                                id="remember-me"
+                                                name="remember-me"
+                                                type="checkbox"
+                                                className="h-4 w-4 text-primary border-gray-300 rounded"
+                                            />
+                                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600">
+                                                Remember me
+                                            </label>
+                                        </div>
+                                        <div className="text-sm">
+                                            <Link to="#" className="font-medium text-primary hover:text-primary/80">
+                                                Forgot password?
+                                            </Link>
+                                        </div>
+                                    </motion.div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.7, duration: 0.5 }}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                        >
-                            <Button onClick={handleLogin} className="w-full py-6 bg-[#0f172a] hover:bg-[#1e293b] text-white" size="lg">
-                                {loginMutation.isPending ? "Logging in..." : "Sign In"}
-                            </Button>
-                        </motion.div>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.7, duration: 0.5 }}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <Button className="w-full py-6 bg-[#0f172a] hover:bg-[#1e293b] text-white" size="lg">
+                                            {loginMutation.isPending ? "Logging in..." : "Sign In"}
+                                        </Button>
+                                    </motion.div>
 
-                        <motion.div
-                            className="mt-6 text-center"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.8, duration: 0.5 }}
-                        >
-                            <p className="text-sm text-gray-600">
-                                Don't have an account?{" "}
-                                <Link to="/signup" className="font-medium text-primary hover:underline">
-                                    Sign up
-                                </Link>
-                            </p>
-                        </motion.div>
-                    </div>
+                                    <motion.div
+                                        className="mt-6 text-center"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.8, duration: 0.5 }}
+                                    >
+                                        <p className="text-sm text-gray-600">
+                                            Don't have an account?{" "}
+                                            <Link to="/signup" className="font-medium text-primary hover:underline">
+                                                Sign up
+                                            </Link>
+                                        </p>
+                                    </motion.div>
+                                </div>
+                            </Form>
+                        )}
+                    </Formik>
                 </div>
             </motion.div>
 
@@ -188,7 +214,7 @@ export default function LoginComponent() {
 
 
             </motion.div> */}
-            <ImageCarousel/>
+            <ImageCarousel />
         </div>
     )
 }
