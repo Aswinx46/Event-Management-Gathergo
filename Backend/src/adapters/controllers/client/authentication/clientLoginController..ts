@@ -4,7 +4,6 @@ import { IClientLoginuseCase } from "../../../../domain/interface/useCaseInterfa
 import { IjwtInterface } from "../../../../domain/interface/serviceInterface/IjwtService";
 import { setCookie } from "../../../../framerwork/services/tokenCookieSettingFunc";
 import { IredisService } from "../../../../domain/interface/serviceInterface/IredisService";
-import { stringify } from "querystring";
 export class ClientLoginController implements IloginClientControllerInterface {
     private jwtService: IjwtInterface
     private clientLoginUseCase: IClientLoginuseCase
@@ -31,7 +30,7 @@ export class ClientLoginController implements IloginClientControllerInterface {
             await this.redisService.set(`user:${client.role}:${client._id}`, 15 * 60, JSON.stringify(client.status))
             setCookie(res, refreshToken)
             const valueFromRedis = await this.redisService.get(`user:${client.role}:${client._id}`)
-            console.log('value from redis', valueFromRedis)
+           
             res.status(200).json({ message: "user logged", client, accessToken })
 
         } catch (error) {

@@ -5,6 +5,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import tokenReducer from './slices/user/userTokenSlice'
 import vendorTokenSlice from './slices/vendor/vendorTokenSlice'
 import vendorSlice from './slices/vendor/vendorSlice'
+import adminTokenSlice from './slices/admin/adminToken'
 const persistConfig = {
     key: "root",
     storage,
@@ -12,9 +13,10 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
-    token:tokenReducer,
-    vendorToken:vendorTokenSlice,
-    vendorSlice:vendorSlice
+    token: tokenReducer,
+    vendorToken: vendorTokenSlice,
+    vendorSlice: vendorSlice,
+    adminToken: adminTokenSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -29,5 +31,5 @@ export const store = configureStore({
         }),
 })
 
-export const persistor=persistStore(store)
+export const persistor = persistStore(store)
 export type RootState = ReturnType<typeof store.getState>;

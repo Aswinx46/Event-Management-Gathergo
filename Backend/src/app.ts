@@ -7,6 +7,7 @@ import cookie_parser from 'cookie-parser'
 import morgan from 'morgan'
 import redisService from './framerwork/services/redisService'
 import { VendorRoute } from './framerwork/routes/vendor/vendorRoute'
+import { AdminRoute } from './framerwork/routes/admin/adminRoute'
 export class App{
     private app:Express
     private database:connectMongo
@@ -18,6 +19,7 @@ export class App{
         this.setMiddlewares()
         this.setClientRoute()
         this.setVendorRoute()
+        this.setAdminRoute()
         this.connectRedis()
     }
     private setMiddlewares(){
@@ -43,7 +45,9 @@ export class App{
     private setVendorRoute(){
         this.app.use('/vendor',new VendorRoute().vendorRoute)
     }
-
+    private setAdminRoute(){
+        this.app.use('/admin',new AdminRoute().adminRoute)
+    }
 }
  
 const app=new App()

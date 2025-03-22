@@ -18,12 +18,6 @@ export default function VendorDashboard() {
   }, [])
 
 
-
-
-
-
-
-
   return (
     <div className="flex h-screen bg-gray-50 ">
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
