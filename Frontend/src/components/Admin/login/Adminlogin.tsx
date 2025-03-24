@@ -43,7 +43,7 @@ function Adminlogin() {
         onSuccess: (data) => {
             dispatch(addAdminToken(data.data.accessToken))
             toast.success('admin logged')
-            navigate('/admin/dashboard',{replace:true})
+            navigate('/admin/dashboard', { replace: true })
         },
         onError: (err) => {
             if (isAxiosError(err)) {

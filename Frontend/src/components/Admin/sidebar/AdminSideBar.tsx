@@ -1,25 +1,23 @@
-// src/components/Sidebar.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import { 
-  FaTachometerAlt, 
-  FaUsers, 
-  FaCalendarCheck, 
-  FaList, 
-  FaWallet, 
-  FaUserFriends, 
-  FaCalendarAlt 
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaCalendarCheck,
+  FaList,
+  FaWallet,
+  FaUserFriends,
+  FaCalendarAlt
 } from 'react-icons/fa';
 
 const Sidebar: React.FC = () => {
-  // Animation variants for the sidebar
   const sidebarVariants = {
     hidden: { x: -250, opacity: 0 },
-    visible: { 
-      x: 0, 
+    visible: {
+      x: 0,
       opacity: 1,
-      transition: { 
+      transition: {
         duration: 0.5,
         ease: "easeOut"
       }
@@ -70,10 +68,9 @@ const Sidebar: React.FC = () => {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center space-x-3 p-3 rounded-lg transition-colors duration-200 ${
-                    isActive
-                      ? 'bg-gray-700 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  `flex items-center space-x-3 p-3 rounded-lg transition-colors duration-200 ${isActive
+                    ? 'bg-gray-700 text-white'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                   }`
                 }
               >

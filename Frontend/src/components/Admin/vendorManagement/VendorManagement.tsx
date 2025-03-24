@@ -2,73 +2,63 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaSearch, FaUserCheck, FaUserTimes } from 'react-icons/fa';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from '../../../axios/adminAxios'
 import { useNavigate } from 'react-router-dom';
+import Pagination from '@/components/other components/Pagination';
 interface Vendor {
-    _id: string;
-    vendorId: string;
-    name: string;
-    email: string;
-    phone: number;
-    idProof: string;
-    role: 'vendor';
-    status: 'active' | 'inactive' | 'blocked';
-    vendorStatus: 'pending' | 'approved' | 'rejected';
-    onlineStatus: 'online' | 'offline';
-    lastLogin: string; // ISO date string
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    __v: number;
-    profileImage?:string
+  _id: string;
+  vendorId: string;
+  name: string;
+  email: string;
+  phone: number;
+  idProof: string;
+  role: 'vendor';
+  status: 'active' | 'inactive' | 'blocked';
+  vendorStatus: 'pending' | 'approved' | 'rejected';
+  onlineStatus: 'online' | 'offline';
+  lastLogin: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  profileImage?: string
 }
 
 const EventProviders: React.FC = () => {
-    const [vendors,setVendors]=useState<Vendor[]>([])
-    const [isOpen,setIsOpen]=useState<boolean>(false)
-    const pageNo = 1
-    const {data: vendor, isLoading, isError, error,refetch,isFetched}=useQuery({
-        queryKey:['vendors'],
-        queryFn:async()=>{
-            const response=await axios.get('/vendors',{params:{pageNo}})
-            return response.data
-        },
-        staleTime: 1000 * 60 * 5,
-    })
- 
-    console.log(vendor?.vendors?.vendors)
-    useEffect(()=>{
-        
-        setVendors(vendor?.vendors?.vendors)
-    },[])
-    
+  const [vendors, setVendors] = useState<Vendor[] | []>([])
+  const [currentPage,setCurrentPage]=useState<number>(1)
+  const [totalPage,setTotalPage]=useState<number>(0)
+  const queryClient = useQueryClient();
+  const { data,refetch} = useQuery({
+    queryKey: ['vendors'],
+    queryFn: async () => {
+      const response = await axios.get('/vendors', { params: { pageNo:currentPage} })
+      console.log(response?.data?.vendors)
+      setVendors(response?.data?.vendors)
+      setTotalPage(response?.data?.totalPages)
+      return response.data
+    },
+    staleTime: 1000 * 60 * 5,
+    initialData: () => {
+      return queryClient.getQueryData<Vendor[]>(['vendors']) || []; // Use cache first
+    }
+  })
+ useEffect(()=>{
+  refetch()
+ },[currentPage])
+  
 
-//   const [vendors, setVendors] = useState<Vendor[]>([
-//     { id: '00001', name: 'Christina', email: 'christina1@gmail.com', phone: '+12345 67890', profileImage: 'https://via.placeholder.com/50', status: 'active' },
-//     { id: '00002', name: 'Christina', email: 'christina2@gmail.com', phone: '+12345 67890', profileImage: 'https://via.placeholder.com/50', status: 'blocked' },
-//     { id: '00003', name: 'Christina', email: 'christina3@gmail.com', phone: '+12345 67890', profileImage: 'https://via.placeholder.com/50', status: 'active' },
-//     { id: '00004', name: 'Christina', email: 'christina4@gmail.com', phone: '+12345 67890', profileImage: 'https://via.placeholder.com/50', status: 'blocked' },
-//     { id: '00005', name: 'Christina', email: 'christina5@gmail.com', phone: '+12345 67890', profileImage: 'https://via.placeholder.com/50', status: 'active' },
-//     { id: '00006', name: 'Christina', email: 'christina6@gmail.com', phone: '+12345 67890', profileImage: 'https://via.placeholder.com/50', status: 'active' },
-//   ]);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const vendorsPerPage = 5;
 
   // Filter vendors based on search term
-//   const filteredVendors = vendors.filter(vendor =>
-//     vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//     vendor.email.toLowerCase().includes(searchTerm.toLowerCase())
-//   );
+  //   const filteredVendors = vendors.filter(vendor =>
+  //     vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     vendor.email.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
 
-  // Pagination logic
-  const indexOfLastVendor = currentPage * vendorsPerPage;
-  const indexOfFirstVendor = indexOfLastVendor - vendorsPerPage;
-  const currentVendors = vendors.slice(indexOfFirstVendor, indexOfLastVendor);
-  const totalPages = Math.ceil(vendors.length / vendorsPerPage);
 
-  // Animation variants for the table
+
   const tableVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -78,7 +68,6 @@ const EventProviders: React.FC = () => {
     }
   };
 
-  // Animation variants for table rows
   const rowVariants = {
     hidden: { opacity: 0, x: -20 },
     visible: (i: number) => ({
@@ -88,16 +77,15 @@ const EventProviders: React.FC = () => {
     })
   };
 
-  // Animation variants for buttons
   const buttonVariants = {
     hover: { scale: 1.05, transition: { duration: 0.2 } },
     tap: { scale: 0.95 }
   };
 
 
-  const navigate=useNavigate()
+  const navigate = useNavigate()
 
-  const handleNavigateToPendingVendor=()=>{
+  const handleNavigateToPendingVendor = () => {
     navigate('/admin/pendingVendors')
   }
 
@@ -150,7 +138,7 @@ const EventProviders: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {currentVendors.map((vendor, index) => (
+            {vendors?.map((vendor, index) => (
               <motion.tr
                 key={vendor._id}
                 custom={index}
@@ -176,11 +164,10 @@ const EventProviders: React.FC = () => {
                     whileHover="hover"
                     whileTap="tap"
                     // onClick={() => toggleStatus(vendor._id)}
-                    className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
-                      vendor.status === 'active'
-                        ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                        : 'bg-green-100 text-green-600 hover:bg-green-200'
-                    }`}
+                    className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${vendor.status === 'active'
+                      ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                      : 'bg-green-100 text-green-600 hover:bg-green-200'
+                      }`}
                   >
                     {vendor.status === 'active' ? (
                       <>
@@ -213,35 +200,7 @@ const EventProviders: React.FC = () => {
           Show Pending Requests
         </motion.button>
 
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
-          >
-            &lt;
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded-lg ${
-                currentPage === page
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
-          >
-            &gt;
-          </button>
-        </div>
+            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPage}/>
       </div>
     </div>
   );

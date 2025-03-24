@@ -8,7 +8,7 @@ export default function VendorDashboard() {
   const [activeSection, setActiveSection] = useState("profile")
 
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
-  const [isPending, setIsPending] = useState<boolean>(true)
+  const [isPending, setIsPending] = useState<boolean>(false)
   useEffect(() => {
     if (vendor) {
       if (vendor?.vendorStatus == 'pending') {

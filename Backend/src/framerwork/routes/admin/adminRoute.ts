@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedAdminLoginController, injectedFindAllVendorController } from "../../Di/adminInject";
+import { injectedAdminLoginController, injectedApproveVendorStatus, injectedFindAllPendingVendorController, injectedFindAllVendorController } from "../../Di/adminInject";
 
 export class AdminRoute {
     public adminRoute: Router
@@ -15,7 +15,10 @@ export class AdminRoute {
             injectedFindAllVendorController.findAllVendor(req,res)
         })
         this.adminRoute.get('/pendingVendors',(req:Request,res:Response)=>{
-
+            injectedFindAllPendingVendorController.findPendingVendor(req,res)
+        })
+        this.adminRoute.patch('/updateVendorStatus',(req:Request,res:Response)=>{
+            injectedApproveVendorStatus.handleApproveVendorUseCase(req,res)
         })
     }
 }

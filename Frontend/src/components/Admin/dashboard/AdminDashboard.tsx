@@ -2,7 +2,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaStore, FaCalendarCheck, FaDollarSign } from 'react-icons/fa';
-import Sidebar from '../sidebar/AdminSideBar';
 interface DashboardStats {
     totalVendors: number;
     totalClients: number;

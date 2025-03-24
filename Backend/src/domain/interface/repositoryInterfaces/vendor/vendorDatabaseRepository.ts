@@ -5,4 +5,6 @@ export interface IvendorDatabaseRepositoryInterface{
     findByEmail(email:string):Promise<VendorEntity | null>
     findAllVendors(pageNo:number):Promise<{Vendors:VendorEntity[] | [];totalPages:number}>
     findAllPendingVendors(pageNo: number): Promise<{ pendingVendors: VendorEntity[]; totalPages: number }>
+    changeVendorStatus(vendorId:string,newStatus:string):Promise<VendorEntity>
+    findById(vendorId:string):Promise<VendorEntity | null>
 }

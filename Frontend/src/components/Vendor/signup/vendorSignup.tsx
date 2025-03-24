@@ -14,6 +14,7 @@ import axios from '../../../axios/vendorAxios'
 import { toast } from "react-toastify"
 import OTPModal from "@/components/otpModal/otpModal"
 import ImageCropper from "@/components/other components/ImageCropper"
+import ModalVendorPending from "@/components/other components/ModalVendorPending"
 export default function SignupPage() {
     const initialValues = {
         name: "",
@@ -38,6 +39,7 @@ export default function SignupPage() {
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showCropper, setShowCropper] = useState<boolean>(false);
     const [croppedImage, setCroppedImage] = useState<File | null>(null);
+    const [isSuccess,setIsSuccess]=useState<boolean>(true)
     interface FormValues {
         name: string;
         email: string;
@@ -115,6 +117,8 @@ export default function SignupPage() {
         },
         onSuccess: () => {
             setIsOpen(false)
+            toast.success('account created')
+            setIsSuccess(true)
         },
         onError: (error: unknown) => {
             console.log(error)
@@ -176,6 +180,7 @@ export default function SignupPage() {
         <div className=" min-h-screen flex flex-col md:flex-row justify-center">
             <ImageCarousel />
             {/* Right side - Signup Form */}
+            {/* {isSuccess && <ModalVendorPending/>} */}
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (
                     <Form className="flex w-full items-center justify-center bg-white p-8 lg:w-1/2">

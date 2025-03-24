@@ -1,6 +1,11 @@
 import { VendorEntity } from "../../../domain/entities/vendorEntity";
 import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
 import { VendorModel } from "../../../framerwork/database/models/vendorModel";
+
+enum VendorStatus {
+    Approved = 'approved',
+    Rejected = 'rejected'
+}
 export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
     async createVendor(vendor: VendorEntity): Promise<VendorEntity> {
         return await VendorModel.create(vendor)
@@ -20,8 +25,16 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         const limit = 5
         const page = Math.max(1, pageNo);
         const skip = (page - 1) * limit;
-        const pendingVendors=await VendorModel.find({vendorStatus:'pending'}).select('-password').skip(skip).limit(limit)
-        const totalPages=Math.ceil(await VendorModel.countDocuments({vendorStatus:'approved'}) / limit)
-        return {pendingVendors , totalPages}
+        const pendingVendors = await VendorModel.find({ vendorStatus: 'pending' }).select('-password').skip(skip).limit(limit)
+        const totalPages = Math.ceil(await VendorModel.countDocuments({ vendorStatus: 'approved' }) / limit)
+        return { pendingVendors, totalPages }
+    }
+    async changeVendorStatus(vendorId: string, newStatus: VendorStatus): Promise<VendorEntity> {
+        const vendor = await VendorModel.findByIdAndUpdate(vendorId, { vendorStatus: newStatus }, { new: true })
+        if (!vendor) throw new Error('There is no vendor in this email')
+        return vendor
+    }
+    async findById(vendorId: string): Promise<VendorEntity | null> {
+        return await VendorModel.findById(vendorId)
     }
 }
