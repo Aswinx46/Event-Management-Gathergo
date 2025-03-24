@@ -15,11 +15,11 @@ export const clientSchema = new Schema<clientEntity>({
     },
     phone:{
         type:Number,
-        required:true
+        required:false
     },
     password:{
         type:String,
-        required:true
+        required:false
     },
     profileImage:{
         type:String,
@@ -49,6 +49,11 @@ export const clientSchema = new Schema<clientEntity>({
         default:'offline'   
     },
     isAdmin:{
+        type:Boolean,
+        default:false,
+        required:false
+    },
+    googleVerified:{
         type:Boolean,
         default:false,
         required:false

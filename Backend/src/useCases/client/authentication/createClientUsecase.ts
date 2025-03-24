@@ -15,7 +15,7 @@ export class CreateClientUseCase implements IclientUsecase {
         if (oldClient) {
             throw new Error("user already exist")
         }
-        const { password, email, phone, name } = client as clientEntity
+        const { password, email, phone, name,googleVerified } = client as clientEntity
 
         let hashedPassword = null
         if (password) {
@@ -31,7 +31,9 @@ export class CreateClientUseCase implements IclientUsecase {
             password: hashedPassword ?? "",
             clientId,
             role: "client",
-            isAdmin:false
+            isAdmin:false,
+            googleVerified
+            
         })
         return newClient
     }

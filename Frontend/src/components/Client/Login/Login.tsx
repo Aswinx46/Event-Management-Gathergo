@@ -13,15 +13,31 @@ import { addToken } from "@/store/slices/user/userTokenSlice"
 import ImageCarousel from "@/components/other components/ImageCarousal"
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import * as yup from 'yup'
+import { GoogleLogin } from '@react-oauth/google'
+import { jwtDecode } from "jwt-decode";
+import { CredentialResponse } from "@react-oauth/google";
 export default function LoginComponent() {
 
     const initialValues = {
         email: '',
         password: ''
     }
-    type login={
-        email:string;
-        password:string
+    type login = {
+        email: string;
+        password: string
+    }
+
+    type GoogleAuth = {
+        email: string;
+        googleVerified: boolean;
+        name: string;
+        picture: string;
+    }
+    type Client = {
+        email: string;
+        googleVerified: boolean;
+        name: string;
+        profileImage: string
     }
 
     const validationSchema = yup.object().shape(({
@@ -54,7 +70,7 @@ export default function LoginComponent() {
         onSuccess: () => {
             console.log('user logged')
             toast.success('user logged')
-            navigate('/')
+            navigate('/',{replace:true})
         },
         onError: (error) => {
             if (isAxiosError(error)) {
@@ -70,13 +86,48 @@ export default function LoginComponent() {
 
     })
 
-    const handleLogin = async (values:login) => {
+    const handleLogin = async (values: login) => {
         try {
-            const {email,password}=values
+            const { email, password } = values
             const response = await loginMutation.mutateAsync({ email, password })
             console.log(response.data)
         } catch (error) {
             console.log(error)
+        }
+
+    }
+
+
+    const googleLoginMutation = useMutation({
+        mutationFn: async (client: Client) => {
+            const response = await axios.post('/googleLogin', { client })
+            console.log(response)
+        },
+        onSuccess:()=>{
+            toast.success('Login SuccessFull')
+            navigate('/',{replace:true})
+        }
+    })
+
+
+
+    const googleAuthenticate = (credentialResponse: CredentialResponse) => {
+        try {
+            console.log('cliecled')
+            if (credentialResponse.credential) {
+                const credential: GoogleAuth = jwtDecode(credentialResponse.credential)
+                console.log(credential)
+                const client: Client = {
+                    email: credential.email,
+                    name: credential.name,
+                    googleVerified: true,
+                    profileImage: credential.picture
+                }
+                googleLoginMutation.mutate(client)
+            }
+        } catch (error) {
+            console.log('error while google login', error)
+
         }
 
     }
@@ -119,7 +170,7 @@ export default function LoginComponent() {
                                             placeholder="Enter your email"
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                         />
-                                         <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+                                        <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
                                         <p className="text-xs text-red-500 hidden">Email is required</p>
                                     </motion.div>
 
@@ -138,7 +189,7 @@ export default function LoginComponent() {
                                             placeholder="Enter your password"
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                         />
-                                         <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                                        <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                                         <p className="text-xs text-red-500 hidden">Password is required</p>
                                     </motion.div>
 
@@ -177,7 +228,10 @@ export default function LoginComponent() {
                                             {loginMutation.isPending ? "Logging in..." : "Sign In"}
                                         </Button>
                                     </motion.div>
+                                    <div onClick={googleAuthenticate}>
+                                        <GoogleLogin onSuccess={googleAuthenticate} onError={() => console.log('login failed')}></GoogleLogin>
 
+                                    </div>
                                     <motion.div
                                         className="mt-6 text-center"
                                         initial={{ opacity: 0 }}
