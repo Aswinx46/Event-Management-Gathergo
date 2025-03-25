@@ -39,7 +39,7 @@ export default function SignupPage() {
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showCropper, setShowCropper] = useState<boolean>(false);
     const [croppedImage, setCroppedImage] = useState<File | null>(null);
-    const [isSuccess,setIsSuccess]=useState<boolean>(true)
+    const [isSuccess, setIsSuccess] = useState<boolean>(true)
     interface FormValues {
         name: string;
         email: string;
@@ -57,6 +57,8 @@ export default function SignupPage() {
         idProof: string;
     }
     const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dyrx8qjpt/image/upload";
+
+
 
     const mutation = useMutation({
         mutationFn: async (value: FormValues) => {
@@ -85,13 +87,14 @@ export default function SignupPage() {
             } catch (error) {
                 if (isAxiosError(error)) {
                     console.log(error)
-                    toast.error(error?.response?.data.error)
+                    // toast.error(error?.response?.data.error)
                 }
             }
         },
         onError: (error) => {
             if (isAxiosError(error)) {
                 console.log(error)
+                toast.error(error.response?.data.message)
             }
             // toast.error(error.message)
         },
@@ -108,6 +111,11 @@ export default function SignupPage() {
                 return await axios.post('/verify', { formdata, enteredOtp: otpString })
             } catch (error) {
                 console.log('error while posting data to the backend for creating account', error)
+                if (isAxiosError(error)) {
+                    toast.error(error.response?.data?.message)
+                } else {
+                    toast.error('error while registering vendor')
+                }
                 if (error instanceof Error) {
                     throw new Error('data uploading to backend for creating vendor failed' + error.message)
                 } else {
@@ -122,12 +130,6 @@ export default function SignupPage() {
         },
         onError: (error: unknown) => {
             console.log(error)
-            if (isAxiosError(error)) {
-                toast.error(error.response?.data?.error)
-            } else {
-                toast.error('error while registering vendor')
-            }
-            // toast.error(error.response.data.error)
         },
 
     })
@@ -135,9 +137,16 @@ export default function SignupPage() {
 
 
     const validationSchema = yup.object().shape({
-        name: yup.string().required("Full name is required").min(3, 'name should be more that 3 characters').max(8, 'name should be less that 8 characters'),
+        name: yup.string().required("Full name is required").min(3, 'name should be more that 3 characters').max(15, 'name should be less that 15 characters'),
         email: yup.string().email("Invalid email format").required("Email is required"),
-        phone: yup.string().matches(/^\d{10}$/, "Phone number must be 10 digits").required("Phone number is required"),
+        phone: yup
+            .string()
+            .transform((value) => (value ? value.trim() : undefined)) 
+            .matches(/^[6789]\d{9}$/, "Phone number must start with 6, 7, 8, or 9 and be 10 digits long")
+            .test("not-all-same", "Phone number cannot contain all identical digits", (value) => {
+                if (!value) return true;
+                return !/^(\d)\1{9}$/.test(value);
+            }),
         password: yup
             .string()
             .test(
@@ -171,10 +180,40 @@ export default function SignupPage() {
         }
     })
 
-    const handleSubmit = (values: FormValues) => {
-        values.document = croppedImage
-        console.log(values, 'asdfhj')
-        mutation.mutate(values)
+    
+
+    const handleSubmit = async (values: FormValues) => {
+        // values.document = croppedImage
+        // console.log(values, 'asdfhj')
+        // mutation.mutate(values)
+        const fileToUpload = croppedImage || values.document;
+        if (!fileToUpload) throw new Error("No file selected");
+        if (!values.document) throw new Error("No file selected");
+        const formdata = new FormData()
+        formdata.append('file', fileToUpload)
+        formdata.append('upload_preset', 'vendor_id')
+        try {
+            const response = await cloudAxios.post(CLOUDINARY_URL, formdata);
+            const documentUrl = response.data.secure_url
+            console.log('this is the documenturl', documentUrl)
+            const vendor: VendorData = {
+                name: values.name,
+                email: values.email,
+                idProof: documentUrl,
+                password: values.password,
+                phone: values.phone,
+                confirmPassword: values.confirmPassword
+            }
+            setData(vendor)
+            console.log(vendor)
+            const uploadToBackend = await axios.post('/signup', vendor)
+            return uploadToBackend.data
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error)
+                // toast.error(error?.response?.data.error)
+            }
+        }
     }
     return (
         <div className=" min-h-screen flex flex-col md:flex-row justify-center">
@@ -260,7 +299,7 @@ export default function SignupPage() {
 
                             <div className="text-center text-sm">
                                 Already have an account?{" "}
-                                <Link to="/vendorLogin" className="font-medium text-blue-600 hover:text-blue-500">
+                                <Link to="/vendor/login" className="font-medium text-blue-600 hover:text-blue-500">
                                     Sign in
                                 </Link>
                             </div>

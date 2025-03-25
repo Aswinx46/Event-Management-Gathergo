@@ -16,6 +16,7 @@ import * as yup from 'yup'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from "jwt-decode";
 import { CredentialResponse } from "@react-oauth/google";
+import { clientGoogleLoginMutation, clientLoginMutation } from "@/hooks/ClientCustomHooks"
 export default function LoginComponent() {
 
     const initialValues = {
@@ -60,37 +61,30 @@ export default function LoginComponent() {
     const [password, setPassword] = useState<string>("")
 
     const navigate = useNavigate()
-
     const dispatch = useDispatch()
-
-    const loginMutation = useMutation({
-        mutationFn: async ({ email, password }: { email: string, password: string }) => {
-            return await axios.post('/login', { email, password })
-        },
-        onSuccess: () => {
-            console.log('user logged')
-            toast.success('user logged')
-            navigate('/',{replace:true})
-        },
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                toast.error(error.response?.data?.error || "An error occurred");
-            } else {
-                toast.error("An unexpected error occurred");
-            }
-        },
-        onSettled: (data) => {
-            console.log(data?.data.accessToken)
-            dispatch(addToken(data?.data.accessToken))
-        }
-
-    })
+    const loginMutation = clientLoginMutation()
 
     const handleLogin = async (values: login) => {
         try {
             const { email, password } = values
-            const response = await loginMutation.mutateAsync({ email, password })
-            console.log(response.data)
+            loginMutation.mutate({ email, password }, {
+                onSuccess: () => {
+                    console.log('user logged')
+                    toast.success('user logged')
+                    navigate('/', { replace: true })
+                },
+                onError: (error) => {
+                    if (isAxiosError(error)) {
+                        console.log(error)
+                        toast.error(error.response?.data?.error || "An error occurred");
+                    }
+                },
+                onSettled: (data) => {
+                    console.log(data?.data.accessToken)
+                    dispatch(addToken(data?.data.accessToken))
+                }
+
+            })
         } catch (error) {
             console.log(error)
         }
@@ -98,16 +92,18 @@ export default function LoginComponent() {
     }
 
 
-    const googleLoginMutation = useMutation({
-        mutationFn: async (client: Client) => {
-            const response = await axios.post('/googleLogin', { client })
-            console.log(response)
-        },
-        onSuccess:()=>{
-            toast.success('Login SuccessFull')
-            navigate('/',{replace:true})
-        }
-    })
+    const googleLoginMutation = clientGoogleLoginMutation()
+
+    // const googleLoginMutation = useMutation({
+    //     mutationFn: async (client: Client) => {
+    //         const response = await axios.post('/googleLogin', { client })
+    //         console.log(response)
+    //     },
+    //     onSuccess: () => {
+    //         toast.success('Login SuccessFull')
+    //         navigate('/', { replace: true })
+    //     }
+    // })
 
 
 
@@ -123,7 +119,16 @@ export default function LoginComponent() {
                     googleVerified: true,
                     profileImage: credential.picture
                 }
-                googleLoginMutation.mutate(client)
+                googleLoginMutation.mutate(client, {
+                    onSuccess: () => {
+                        toast.success('Login SuccessFull')
+                        navigate('/', { replace: true })
+                    },
+                    onError: () => {
+                        toast.success('Login SuccessFull')
+                        navigate('/', { replace: true })
+                    }
+                })
             }
         } catch (error) {
             console.log('error while google login', error)
@@ -210,11 +215,11 @@ export default function LoginComponent() {
                                                 Remember me
                                             </label>
                                         </div>
-                                        <div className="text-sm">
+                                        {/* <div className="text-sm">
                                             <Link to="#" className="font-medium text-primary hover:text-primary/80">
                                                 Forgot password?
                                             </Link>
-                                        </div>
+                                        </div> */}
                                     </motion.div>
 
                                     <motion.div
@@ -228,7 +233,7 @@ export default function LoginComponent() {
                                             {loginMutation.isPending ? "Logging in..." : "Sign In"}
                                         </Button>
                                     </motion.div>
-                                    <div onClick={googleAuthenticate}>
+                                    <div >
                                         <GoogleLogin onSuccess={googleAuthenticate} onError={() => console.log('login failed')}></GoogleLogin>
 
                                     </div>

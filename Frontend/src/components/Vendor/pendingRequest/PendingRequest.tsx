@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 function PendingRequest() {
+  const navigate=useNavigate()
   const handleLogOut = () => {
     // Add logout logic here
+    navigate(-1)
   };
 
   const containerVariants = {

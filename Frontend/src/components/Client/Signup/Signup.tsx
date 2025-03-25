@@ -14,6 +14,8 @@ import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
 import ImageCarousel from "@/components/other components/ImageCarousal"
 import Gooeynov from '../../../../addon/GooeyNav/GooeyNav'
+import { clientSignupMutation, createAccountMutation, resendOtpClientMutation } from "@/hooks/ClientCustomHooks"
+import { error } from "console"
 export default function SignupComponent() {
 
   const items = [{ text: "Home", link: '#' }, { text: 'Profile', link: '#' }]
@@ -37,25 +39,19 @@ export default function SignupComponent() {
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [data, setData] = useState<FormValues>(initialValues)
-  const [resendOtp, setResendOtp] = useState<boolean>()
-
-  const mutation = useMutation({
-    mutationFn: async (values: typeof initialValues) => {
-      return await axios.post('/Signup', values)
-    },
-    onSuccess: () => {
-      setIsOpen(true);
-    },
-    onError: (error) => {
-      console.log(error)
-      setIsOpen(false);
-    }
-  })
+  const signupMutation = clientSignupMutation()
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Full name is required").min(3, 'name should be more that 3 characters').max(8, 'name should be less that 8 characters'),
     email: yup.string().email("Invalid email format").required("Email is required"),
-    phone: yup.string().matches(/^\d{10}$/, "Phone number must be 10 digits").required("Phone number is required"),
+    phone: yup
+      .string()
+      .transform((value) => (value ? value.trim() : undefined)) // Ensure empty values are treated as undefined
+      .matches(/^[6789]\d{9}$/, "Phone number must start with 6, 7, 8, or 9 and be 10 digits long")
+      .test("not-all-same", "Phone number cannot contain all identical digits", (value) => {
+        if (!value) return true; // Allow empty values before required check
+        return !/^(\d)\1{9}$/.test(value);
+      }).required('phone is required'),
     password: yup
       .string()
       .test(
@@ -81,7 +77,15 @@ export default function SignupComponent() {
     setData(values)
     try {
 
-      mutation.mutate(values)
+      signupMutation.mutate(values, {
+        onSuccess: () => {
+          setIsOpen(true);
+        },
+        onError: (error) => {
+          console.log(error)
+          setIsOpen(false);
+        }
+      })
 
     } catch (error) {
       console.log('error while creating user', error)
@@ -90,39 +94,22 @@ export default function SignupComponent() {
 
   const navigate = useNavigate()
 
-  const mutationCreateACcount = useMutation({
-    mutationFn: async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
-      return await axios.post('/createAccount', { formdata, otpString })
-    },
-    onSuccess: () => {
-      setIsOpen(false)
-      navigate('/')
-    },
-    onError: (error: unknown) => {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "An error occurred");
-      } else {
-        toast.error("An unexpected error occurred");
-      }
-    },
-  })
+  const mutationCreateAccount = createAccountMutation()
+  const resendOtpMutation = resendOtpClientMutation()
 
-  const resendOtpMutation = useMutation({
-    mutationFn: async (email: string) => {
-      return await axios.post('/resendOtp', {email})
-    },
-    onSuccess: () => {
-      toast.success('Otp Resended')
-    },
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "An error occurred");
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+  const handleMutationSuccess = () => {
+    toast.success("Account created successfully!");
+    navigate("/", { replace: true }); // Navigate on success
+  };
+
+  const handleMutationError=(error:unknown)=>{
+    let message = "An unexpected error occurred";
+    if (isAxiosError(error)) {
+      console.log(error)
+      message = error.response?.data?.message || "An error occurred";
     }
-  })
-
+    toast.error(message);
+  }
 
   return (
     <div className="min-h-screen bg-black flex flex-col md:flex-row justify-center">
@@ -132,18 +119,8 @@ export default function SignupComponent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Image Section */}
-        {/* <motion.div
-          className="w-full md:w-1/2 relative h-[300px] md:h-auto overflow-hidden bg-primary/10"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <img src="/concertt.jpg" alt="GatherGo illustration" className="w-full h-full md:object-cover" />
-        </motion.div> */}
-        <ImageCarousel/>
+        <ImageCarousel />
 
-        {/* Form Section */}
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
             <Form className="w-full flex justify-center items-center md:w-1/2 bg-card">
@@ -160,35 +137,31 @@ export default function SignupComponent() {
                     </motion.div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {/* Name Field */}
+
                     <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }}>
                       <Label htmlFor="name">Full Name</Label>
                       <Field as={Input} name="name" placeholder="Enter your name" className="focus:ring-2 focus:ring-primary/50" />
                       <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
                     </motion.div>
 
-                    {/* Phone Field */}
                     <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
                       <Label htmlFor="phone">Phone</Label>
                       <Field as={Input} name="phone" type="text" placeholder="Enter your phone" className="focus:ring-2 focus:ring-primary/50" />
                       <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
                     </motion.div>
 
-                    {/* Email Field */}
                     <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
                       <Label htmlFor="email">Email</Label>
                       <Field as={Input} name="email" type="email" placeholder="Enter your email" className="focus:ring-2 focus:ring-primary/50" />
                       <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
                     </motion.div>
 
-                    {/* Password Field */}
                     <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
                       <Label htmlFor="password">Password</Label>
                       <Field as={Input} name="password" type="password" placeholder="Create a password" className="focus:ring-2 focus:ring-primary/50" />
                       <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                     </motion.div>
 
-                    {/* Confirm Password Field */}
                     <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
                       <Label htmlFor="confirmPassword">Confirm Password</Label>
                       <Field as={Input} name="confirmPassword" type="password" placeholder="Confirm your password" className="focus:ring-2 focus:ring-primary/50" />
@@ -208,8 +181,8 @@ export default function SignupComponent() {
           )}
         </Formik>
       </motion.div>
-        
-      <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={mutationCreateACcount} resendOtp={resendOtpMutation} email={data.email} />
+
+      <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={mutationCreateAccount} resendOtp={resendOtpMutation} email={data.email} handleError={handleMutationError} handleSuccess={handleMutationSuccess} />
     </div>
   )
 }
