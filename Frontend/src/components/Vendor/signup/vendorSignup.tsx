@@ -6,15 +6,13 @@ import { User } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
-import cloudAxios, { isAxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import ImageCarousel from "@/components/other components/ImageCarousal"
 import { useState } from "react"
-import { useMutation } from "@tanstack/react-query"
-import axios from '../../../axios/vendorAxios'
 import { toast } from "react-toastify"
 import OTPModal from "@/components/otpModal/otpModal"
 import ImageCropper from "@/components/other components/ImageCropper"
-import ModalVendorPending from "@/components/other components/ModalVendorPending"
+import { uploadeImageToCloudinaryMutation, vendorResendOtpMutation, vendorSignupMutation, vendorVerifyOtpMutation } from "@/hooks/VendorCustomHooks"
 export default function SignupPage() {
     const initialValues = {
         name: "",
@@ -33,7 +31,6 @@ export default function SignupPage() {
         idProof: ""
     }
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [otp, setOtp] = useState<string>('')
     const navigate = useNavigate()
     const [data, setData] = useState<VendorData>(initialValuesOfVendor)
     const [selectedImage, setSelectedImage] = useState<string>('');
@@ -56,84 +53,10 @@ export default function SignupPage() {
         confirmPassword: string;
         idProof: string;
     }
-    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dyrx8qjpt/image/upload";
-
-
-
-    const mutation = useMutation({
-        mutationFn: async (value: FormValues) => {
-            const fileToUpload = croppedImage || value.document;
-            if (!fileToUpload) throw new Error("No file selected");
-            if (!value.document) throw new Error("No file selected");
-            const formdata = new FormData()
-            formdata.append('file', fileToUpload)
-            formdata.append('upload_preset', 'vendor_id')
-            try {
-                const response = await cloudAxios.post(CLOUDINARY_URL, formdata);
-                const documentUrl = response.data.secure_url
-                console.log('this is the documenturl', documentUrl)
-                const vendor: VendorData = {
-                    name: value.name,
-                    email: value.email,
-                    idProof: documentUrl,
-                    password: value.password,
-                    phone: value.phone,
-                    confirmPassword: value.confirmPassword
-                }
-                setData(vendor)
-                console.log(vendor)
-                const uploadToBackend = await axios.post('/signup', vendor)
-                return uploadToBackend.data
-            } catch (error) {
-                if (isAxiosError(error)) {
-                    console.log(error)
-                    // toast.error(error?.response?.data.error)
-                }
-            }
-        },
-        onError: (error) => {
-            if (isAxiosError(error)) {
-                console.log(error)
-                toast.error(error.response?.data.message)
-            }
-            // toast.error(error.message)
-        },
-        onSuccess: (data, variables, context) => {
-            toast.success(data.message)
-            console.log(data)
-            setIsOpen(true)
-        },
-    })
-
-    const verifyOtpMutation = useMutation({
-        mutationFn: async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
-            try {
-                return await axios.post('/verify', { formdata, enteredOtp: otpString })
-            } catch (error) {
-                console.log('error while posting data to the backend for creating account', error)
-                if (isAxiosError(error)) {
-                    toast.error(error.response?.data?.message)
-                } else {
-                    toast.error('error while registering vendor')
-                }
-                if (error instanceof Error) {
-                    throw new Error('data uploading to backend for creating vendor failed' + error.message)
-                } else {
-                    throw new Error("vendor creation failed")
-                }
-            }
-        },
-        onSuccess: () => {
-            setIsOpen(false)
-            toast.success('account created')
-            setIsSuccess(true)
-        },
-        onError: (error: unknown) => {
-            console.log(error)
-        },
-
-    })
-
+    const verifyOtpMutation = vendorVerifyOtpMutation()
+    const resendOtpMutation = vendorResendOtpMutation()
+    const uploadImageCloudinaryAPI = uploadeImageToCloudinaryMutation()
+    const vendorSignupAPI = vendorSignupMutation()
 
 
     const validationSchema = yup.object().shape({
@@ -141,7 +64,7 @@ export default function SignupPage() {
         email: yup.string().email("Invalid email format").required("Email is required"),
         phone: yup
             .string()
-            .transform((value) => (value ? value.trim() : undefined)) 
+            .transform((value) => (value ? value.trim() : undefined))
             .matches(/^[6789]\d{9}$/, "Phone number must start with 6, 7, 8, or 9 and be 10 digits long")
             .test("not-all-same", "Phone number cannot contain all identical digits", (value) => {
                 if (!value) return true;
@@ -165,36 +88,36 @@ export default function SignupPage() {
             .required("Confirm password is required"),
     });
 
-    const resendOtpMutation = useMutation({
-        mutationFn: async (email: string) => {
-            try {
-                return await axios.post('/resendOtp', email)
-            } catch (error) {
-                console.log('error while resending otp', error)
-                if (error instanceof Error) {
-                    throw new Error('error while sending otp' + error.message)
-                } else {
-                    throw new Error('errow while sending otp')
-                }
-            }
-        }
-    })
 
-    
+    const handleSuccess = () => {
+        setIsOpen(false)
+        toast.success('account created')
+        setIsSuccess(true)
+        navigate('/vendor/home')
+    }
+
+    const handleError = (error: unknown) => {
+        console.log(error)
+        if (error instanceof Error) {
+            toast.error(error.message)
+        }
+    }
+
+
 
     const handleSubmit = async (values: FormValues) => {
-        // values.document = croppedImage
-        // console.log(values, 'asdfhj')
-        // mutation.mutate(values)
-        const fileToUpload = croppedImage || values.document;
-        if (!fileToUpload) throw new Error("No file selected");
-        if (!values.document) throw new Error("No file selected");
+        const fileToUpload = croppedImage;
+        if (!fileToUpload) {
+            toast.error('Please select a ID Proof')
+            throw new Error("No file selected");
+        }
         const formdata = new FormData()
         formdata.append('file', fileToUpload)
         formdata.append('upload_preset', 'vendor_id')
         try {
-            const response = await cloudAxios.post(CLOUDINARY_URL, formdata);
-            const documentUrl = response.data.secure_url
+            const response = await uploadImageCloudinaryAPI.mutateAsync(formdata)
+            console.log(response)
+            const documentUrl = response.secure_url
             console.log('this is the documenturl', documentUrl)
             const vendor: VendorData = {
                 name: values.name,
@@ -206,12 +129,13 @@ export default function SignupPage() {
             }
             setData(vendor)
             console.log(vendor)
-            const uploadToBackend = await axios.post('/signup', vendor)
-            return uploadToBackend.data
+            await vendorSignupAPI.mutateAsync(vendor)
+            setIsOpen(true)
+            return vendorSignupAPI.data
         } catch (error) {
             if (isAxiosError(error)) {
                 console.log(error)
-                // toast.error(error?.response?.data.error)
+                toast.error(error?.response?.data.error)
             }
         }
     }
@@ -309,7 +233,7 @@ export default function SignupPage() {
             </Formik>
 
             {showCropper && <ImageCropper image={selectedImage} onCropComplete={setCroppedImage} showCropper={setShowCropper} />}
-            <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={verifyOtpMutation} resendOtp={resendOtpMutation} email={data.email}></OTPModal>
+            <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={verifyOtpMutation} resendOtp={resendOtpMutation} email={data.email} handleSuccess={handleSuccess} handleError={handleError}></OTPModal>
         </div>
     )
 }

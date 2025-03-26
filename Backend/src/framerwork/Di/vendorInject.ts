@@ -10,6 +10,8 @@ import { LoginVendorUseCase } from "../../useCases/vendor/authentication/loginVe
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 import { LoginVendorController } from "../../adapters/controllers/vendor/authentication/loginVendorController";
+import { ResendOtpVendorUsecase } from "../../useCases/vendor/authentication/resendOtpVendorUseCase";
+import { ResendOtpVendorController } from "../../adapters/controllers/vendor/authentication/resendOtpController";
 
 
 //-----------------Register vendor-------------------//
@@ -21,6 +23,10 @@ const UserExistance=new userExistance(clientDatabase,vendorRespository)
 const injectedVendorUseCase=new VendorLoginUsecase(vendorRespository)
 const sendOtpVendorUsecase=new SendOtpVendorUsecase(EmailService,otpService,UserExistance)
 export const injectedVendorAuthenticationController=new VendorAuthenticationController(injectedVendorUseCase,sendOtpVendorUsecase)
+
+//-------------------Resend OTP-----------------------//
+const resendOtpVendorUseCase=new ResendOtpVendorUsecase(EmailService,otpService)
+export const injectedResendOtpVendorController=new ResendOtpVendorController(resendOtpVendorUseCase)
 
 //-----------------------Login Vendor---------------------//
 const vendorLoginUseCase=new LoginVendorUseCase(vendorRespository)

@@ -3,24 +3,24 @@ import { IotpService } from "../../../domain/interface/serviceInterface/IotpInte
 import { IsendOtpClientInterface } from "../../../domain/interface/useCaseInterfaces/client/authentication/sendOtpClientInterface";
 
 export class sendOtpClientUseCase implements IsendOtpClientInterface {
-    private otpService:IotpService
-    private emailService:IemailService
-    constructor(otpService:IotpService,emailService:IemailService){
-        this.otpService=otpService
-        this.emailService=emailService
+    private otpService: IotpService
+    private emailService: IemailService
+    constructor(otpService: IotpService, emailService: IemailService) {
+        this.otpService = otpService
+        this.emailService = emailService
     }
     async execute(email: string): Promise<void> {
-        const otp=this.otpService.genarateOtp()
-        const saveOtp=await this.otpService.storeOtp(email,otp)
-        const sendEmail=await this.emailService.sendEmailOtp(email,otp)
+        const otp = this.otpService.genarateOtp()
+        await this.otpService.storeOtp(email, otp)
+        await this.emailService.sendEmailOtp(email, otp)
     }
-    async verifyOtp(email: string,enteredOtp:string): Promise<boolean> {
-        const verify=await this.otpService.verifyOtp(email,enteredOtp)
+    async verifyOtp(email: string, enteredOtp: string): Promise<boolean> {
+        const verify = await this.otpService.verifyOtp(email, enteredOtp)
         return verify
     }
     async resendOtp(email: string): Promise<void> {
-        const otp=this.otpService.genarateOtp()
-        const saveOtp=await this.otpService.storeOtp(email,otp)
-        const sendEmail=await this.emailService.sendEmailOtp(email,otp)
+        const otp = this.otpService.genarateOtp()
+        await this.otpService.storeOtp(email, otp)
+        await this.emailService.sendEmailOtp(email, otp)
     }
 }

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { UseMutationResult } from "@tanstack/react-query"
 import { AxiosResponse } from "axios"
-import { error } from "console"
 interface OTPModalProps {
     isOpen: boolean
     onClose?: () => void
@@ -80,6 +79,7 @@ export default function OTPModal({ isOpen, data, setIsOpen, mutation,handleSucce
                     handleSuccess()
                 },
                 onError:(error)=>{
+                    console.log('error in modal',error)
                     handleError(error)
                 }
             })

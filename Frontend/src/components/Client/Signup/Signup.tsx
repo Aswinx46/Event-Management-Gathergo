@@ -6,16 +6,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
 import { Link, useNavigate } from "react-router-dom"
-import axios from '../../../axios/clientAxios'
 import OTPModal from "@/components/otpModal/otpModal"
-import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
 import ImageCarousel from "@/components/other components/ImageCarousal"
-import Gooeynov from '../../../../addon/GooeyNav/GooeyNav'
 import { clientSignupMutation, createAccountMutation, resendOtpClientMutation } from "@/hooks/ClientCustomHooks"
-import { error } from "console"
 export default function SignupComponent() {
 
   const items = [{ text: "Home", link: '#' }, { text: 'Profile', link: '#' }]
