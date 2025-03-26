@@ -11,7 +11,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
 import ImageCarousel from "@/components/other components/ImageCarousal"
-import { clientSignupMutation, createAccountMutation, resendOtpClientMutation } from "@/hooks/ClientCustomHooks"
+import { useClientSignupMutation, useCreateAccountMutation, useResendOtpClientMutation } from "@/hooks/ClientCustomHooks"
 export default function SignupComponent() {
 
   const items = [{ text: "Home", link: '#' }, { text: 'Profile', link: '#' }]
@@ -35,7 +35,7 @@ export default function SignupComponent() {
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [data, setData] = useState<FormValues>(initialValues)
-  const signupMutation = clientSignupMutation()
+  const signupMutation = useClientSignupMutation()
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Full name is required").min(3, 'name should be more that 3 characters').max(8, 'name should be less that 8 characters'),
@@ -90,15 +90,15 @@ export default function SignupComponent() {
 
   const navigate = useNavigate()
 
-  const mutationCreateAccount = createAccountMutation()
-  const resendOtpMutation = resendOtpClientMutation()
+  const mutationCreateAccount = useCreateAccountMutation()
+  const resendOtpMutation = useResendOtpClientMutation()
 
   const handleMutationSuccess = () => {
     toast.success("Account created successfully!");
     navigate("/", { replace: true }); // Navigate on success
   };
 
-  const handleMutationError=(error:unknown)=>{
+  const handleMutationError = (error: unknown) => {
     let message = "An unexpected error occurred";
     if (isAxiosError(error)) {
       console.log(error)

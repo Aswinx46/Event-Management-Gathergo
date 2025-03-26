@@ -1,11 +1,11 @@
 // src/components/EventProviders.tsx
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaSearch, FaUserCheck, FaUserTimes } from 'react-icons/fa';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from '../../../axios/adminAxios'
+import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '@/components/other components/Pagination';
+import { useFetchVendorAdminQuery } from '@/hooks/AdminCustomHooks';
+import { Table } from '@/components/other components/Table';
 interface Vendor {
   _id: string;
   vendorId: string;
@@ -26,28 +26,14 @@ interface Vendor {
 
 const EventProviders: React.FC = () => {
   const [vendors, setVendors] = useState<Vendor[] | []>([])
-  const [currentPage,setCurrentPage]=useState<number>(1)
-  const [totalPage,setTotalPage]=useState<number>(0)
-  const queryClient = useQueryClient();
-  const { data,refetch} = useQuery({
-    queryKey: ['vendors'],
-    queryFn: async () => {
-      const response = await axios.get('/vendors', { params: { pageNo:currentPage} })
-      console.log(response?.data?.vendors)
-      setVendors(response?.data?.vendors)
-      setTotalPage(response?.data?.totalPages)
-      return response.data
-    },
-    staleTime: 1000 * 60 * 5,
-    initialData: () => {
-      return queryClient.getQueryData<Vendor[]>(['vendors']) || []; // Use cache first
-    }
-  })
- useEffect(()=>{
-  refetch()
- },[currentPage])
-  
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(0)
 
+  const fetchVendor = useFetchVendorAdminQuery(currentPage)
+  useEffect(() => {
+    setVendors(fetchVendor?.data?.vendors)
+    setTotalPage(fetchVendor?.data?.totalPages)
+  }, [currentPage, fetchVendor.data])
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -56,26 +42,6 @@ const EventProviders: React.FC = () => {
   //     vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
   //     vendor.email.toLowerCase().includes(searchTerm.toLowerCase())
   //   );
-
-
-
-  const tableVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: 'easeOut' }
-    }
-  };
-
-  const rowVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: { delay: i * 0.1, duration: 0.3 }
-    })
-  };
 
   const buttonVariants = {
     hover: { scale: 1.05, transition: { duration: 0.2 } },
@@ -87,6 +53,10 @@ const EventProviders: React.FC = () => {
 
   const handleNavigateToPendingVendor = () => {
     navigate('/admin/pendingVendors')
+  }
+
+  const blockAndUnblock = () => {
+
   }
 
   return (
@@ -120,73 +90,7 @@ const EventProviders: React.FC = () => {
       </div>
 
       {/* Table */}
-      <motion.div
-        variants={tableVariants}
-        initial="hidden"
-        animate="visible"
-        className="bg-white rounded-lg shadow-lg overflow-hidden"
-      >
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-200 text-gray-700">
-              <th className="p-4 text-left">ID</th>
-              <th className="p-4 text-left">NAME</th>
-              <th className="p-4 text-left">EMAIL</th>
-              <th className="p-4 text-left">PHONE</th>
-              <th className="p-4 text-left">PROFILE</th>
-              <th className="p-4 text-left">STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vendors?.map((vendor, index) => (
-              <motion.tr
-                key={vendor._id}
-                custom={index}
-                variants={rowVariants}
-                initial="hidden"
-                animate="visible"
-                className="border-t hover:bg-gray-50"
-              >
-                <td className="p-4">{vendor._id}</td>
-                <td className="p-4">{vendor.name}</td>
-                <td className="p-4">{vendor.email}</td>
-                <td className="p-4">{vendor.phone}</td>
-                <td className="p-4">
-                  <img
-                    src={vendor.profileImage}
-                    alt={vendor.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                </td>
-                <td className="p-4">
-                  <motion.button
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                    // onClick={() => toggleStatus(vendor._id)}
-                    className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${vendor.status === 'active'
-                      ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                      : 'bg-green-100 text-green-600 hover:bg-green-200'
-                      }`}
-                  >
-                    {vendor.status === 'active' ? (
-                      <>
-                        <FaUserTimes />
-                        <span>Block</span>
-                      </>
-                    ) : (
-                      <>
-                        <FaUserCheck />
-                        <span>Unblock</span>
-                      </>
-                    )}
-                  </motion.button>
-                </td>
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
-      </motion.div>
+      <Table data={vendors} blockAndUnblock={blockAndUnblock} />
 
       {/* Footer with Pagination and Pending Requests */}
       <div className="flex justify-between items-center mt-6">
@@ -200,7 +104,7 @@ const EventProviders: React.FC = () => {
           Show Pending Requests
         </motion.button>
 
-            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPage}/>
+        <Pagination current={currentPage} setPage={setCurrentPage} total={totalPage} />
       </div>
     </div>
   );

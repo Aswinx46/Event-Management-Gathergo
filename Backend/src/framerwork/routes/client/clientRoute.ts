@@ -20,9 +20,6 @@ export class clientRoute {
         this.clientRoute.post('/login',(req:Request,res:Response)=>{
             injectedClientLoginController.handleLogin(req,res)
         })
-        this.clientRoute.get('/clients',(req:Request,res:Response)=>{
-            injectedFindAllClientController.findAllClient(req,res)
-        })
         this.clientRoute.post('/googleLogin',(req:Request,res:Response)=>{
             injectedGoogleLogincontroller.handleGoogleLogin(req,res)
         })

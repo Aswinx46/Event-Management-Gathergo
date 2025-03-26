@@ -10,6 +10,7 @@ export default function VendorDashboard() {
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [isPending, setIsPending] = useState<boolean>(false)
   useEffect(() => {
+    console.log(vendor)
     if (vendor) {
       if (vendor?.vendorStatus == 'pending') {
         setIsPending(true)

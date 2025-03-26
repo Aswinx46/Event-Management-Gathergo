@@ -6,6 +6,7 @@ import axios from '../../../axios/adminAxios'
 import ImagePreview from "./ImagePreview";
 import LoadingScreen from "@/components/other components/loadingScreen";
 import { toast } from "react-toastify";
+import { useFetchAllPendingVendorAdminQuery, useUpdatePendingVendorStatusAdmin } from "@/hooks/AdminCustomHooks";
 interface Vendor {
   _id: string;
   name: string;
@@ -16,46 +17,6 @@ interface Vendor {
   vendorId: string
 }
 
-// Sample data for vendors
-// const vendors: Vendor[] = [
-//   {
-//     id: "VE-N001",
-//     name: "Michael Johnson",
-//     email: "michael@example.com",
-//     phone: "+1 (234) 567-8901",
-//     status: "Pending",
-//   },
-//   {
-//     id: "VE-N002",
-//     name: "Sarah Williams",
-//     email: "sarahw@example.com",
-//     phone: "+1 (345) 678-9012",
-//     status: "Approved",
-//   },
-//   {
-//     id: "VE-N003",
-//     name: "David Brown",
-//     email: "david.b@example.com",
-//     phone: "+1 (456) 789-0123",
-//     status: "Pending",
-//   },
-//   {
-//     id: "VE-N004",
-//     name: "Jennifer Davis",
-//     email: "jennifer.d@example.com",
-//     phone: "+1 (567) 890-1234",
-//     status: "Pending",
-//   },
-//   {
-//     id: "VE-N005",
-//     name: "Robert Wilson",
-//     email: "robertw@example.com",
-//     phone: "+1 (678) 901-2345",
-//     status: "Pending",
-//   },
-// ];
-
-// Animation variants for the list container
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -92,35 +53,23 @@ const buttonVariants = {
 
 const PendingVendorRequests: React.FC = () => {
 
-  // const [pendingVendors, setPendingVendors] = useState<Vendor[] | []>([])
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pendingVendors, setPendingVendors] = useState<Vendor[] | []>([])
   const [preview, setPreview] = useState<boolean>(false)
   const [selectedIdProof, setSelectedProof] = useState<string>('')
   const [update, setUpdate] = useState<boolean>(false)
-  const { data, refetch, isLoading, isFetching } = useQuery({
-    queryKey: ['pendingVendor'],
-    queryFn: async () => {
-      const response = await axios.get('/pendingVendors');
-      console.log(response.data.pendingVendors);
-      return response.data;
-    },
+  
 
-  });
-  let pendingVendors = data?.pendingVendors || [];
-  // useEffect(() => {
-  //   refetch();
-
-  // }, [update]);
+  const pendingVendorQuery = useFetchAllPendingVendorAdminQuery(currentPage)
+  console.log(pendingVendorQuery.data)
+  useEffect(() => {
+    setPendingVendors(pendingVendorQuery?.data?.pendingVendors)
+  }, [pendingVendorQuery.data])
 
 
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ vendorId, newStatus }: { vendorId: string, newStatus: string }) => {
-      const response = await axios.patch('/updateVendorStatus', { vendorId, newStatus })
-      console.log(response)
-    },
-    onSuccess: () => {
-      refetch()
-    }
-  })
+
+  const updateStatusMutation=useUpdatePendingVendorStatusAdmin()
+
 
 
 

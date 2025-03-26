@@ -12,7 +12,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import OTPModal from "@/components/otpModal/otpModal"
 import ImageCropper from "@/components/other components/ImageCropper"
-import { uploadeImageToCloudinaryMutation, vendorResendOtpMutation, vendorSignupMutation, vendorVerifyOtpMutation } from "@/hooks/VendorCustomHooks"
+import { useUploadeImageToCloudinaryMutation, useVendorSignupMutation, useVendorResendOtpMutation, useVendorVerifyOtpMutation } from "@/hooks/VendorCustomHooks"
 export default function SignupPage() {
     const initialValues = {
         name: "",
@@ -53,10 +53,10 @@ export default function SignupPage() {
         confirmPassword: string;
         idProof: string;
     }
-    const verifyOtpMutation = vendorVerifyOtpMutation()
-    const resendOtpMutation = vendorResendOtpMutation()
-    const uploadImageCloudinaryAPI = uploadeImageToCloudinaryMutation()
-    const vendorSignupAPI = vendorSignupMutation()
+    const verifyOtpMutation = useVendorVerifyOtpMutation()
+    const resendOtpMutation = useVendorResendOtpMutation()
+    const uploadImageCloudinaryAPI = useUploadeImageToCloudinaryMutation()
+    const vendorSignupAPI = useVendorSignupMutation()
 
 
     const validationSchema = yup.object().shape({
@@ -142,8 +142,6 @@ export default function SignupPage() {
     return (
         <div className=" min-h-screen flex flex-col md:flex-row justify-center">
             <ImageCarousel />
-            {/* Right side - Signup Form */}
-            {/* {isSuccess && <ModalVendorPending/>} */}
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (
                     <Form className="flex w-full items-center justify-center bg-white p-8 lg:w-1/2">

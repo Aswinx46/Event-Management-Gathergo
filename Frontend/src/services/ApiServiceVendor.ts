@@ -61,7 +61,7 @@ export const verifyOtpVendor = async ({ formdata, otpString }: { formdata: Recor
 
 export const resendOtpVendor = async (email: string) => {
     try {
-        const response=await axios.post('/resendOtp',{email})
+        const response = await axios.post('/resendOtp', { email })
         return response.data
     } catch (error) {
         console.log('error while resending otp in vendor', error)
@@ -69,5 +69,18 @@ export const resendOtpVendor = async (email: string) => {
             throw new Error(error?.response?.data?.error)
         }
         throw new Error('error while resending otp')
+    }
+}
+
+export const vendorLogin = async (email: string, password: string) => {
+    try {
+        const response = await axios.post('/login', { email, password })
+        return response.data
+    } catch (error) {
+        console.log('error whilel vendor login', error)
+        if (isAxiosError(error)) {
+            throw new Error(error?.response?.data?.error)
+        }
+        throw new Error('error while login vendor')
     }
 }

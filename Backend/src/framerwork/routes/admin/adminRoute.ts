@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { injectedAdminLoginController, injectedApproveVendorStatus, injectedFindAllPendingVendorController, injectedFindAllVendorController } from "../../Di/adminInject";
+import { injectedFindAllClientController } from "../../Di/clientInject";
 
 export class AdminRoute {
     public adminRoute: Router
@@ -19,6 +20,9 @@ export class AdminRoute {
         })
         this.adminRoute.patch('/updateVendorStatus',(req:Request,res:Response)=>{
             injectedApproveVendorStatus.handleApproveVendorUseCase(req,res)
+        })
+        this.adminRoute.get('/clients',(req:Request,res:Response)=>{
+            injectedFindAllClientController.findAllClient(req,res)
         })
     }
 }

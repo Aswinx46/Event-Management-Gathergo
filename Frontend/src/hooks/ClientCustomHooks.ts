@@ -18,32 +18,32 @@ type Client = {
     name: string;
     profileImage: string
 }
-export const clientLoginMutation = () => {
+export const useClientLoginMutation = () => {
     return useMutation({
         mutationFn: ({ email, password }: LoginProps) => clientLogin({ email, password }),
     })
 }
 
-export const clientSignupMutation = () => {
+export const useClientSignupMutation = () => {
     return useMutation({
         mutationFn: (values: FormValues) => clientSignup(values)
     })
 }
 
-export const createAccountMutation = () => {
+export const useCreateAccountMutation = () => {
     return useMutation({
         mutationFn: ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => clientCreateAccount({ formdata, otpString })
 
     })
 }
 
-export const resendOtpClientMutation = () => {
+export const useResendOtpClientMutation = () => {
     return useMutation({
         mutationFn: (email: string) => clientResendOtp(email)
     })
 }
 
-export const clientGoogleLoginMutation = () => {
+export const useClientGoogleLoginMutation = () => {
     return useMutation({
         mutationFn: (client: Client) => clientGoogleLogin(client)
     })

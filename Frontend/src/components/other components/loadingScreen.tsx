@@ -1,88 +1,89 @@
-import React from "react";
-import { motion } from "framer-motion";
+"use client"
 
-// Animation variants for the container
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-      when: "beforeChildren",
-      staggerChildren: 0.3,
-    },
-  },
-  exit: { opacity: 0, transition: { duration: 0.5 } },
-};
-
-// Animation variants for the loading text
-const textVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-// Animation for the spinner
-const spinnerVariants = {
-  animate: {
-    rotate: 360,
-    transition: {
-      repeat: Infinity,
-      duration: 1.5,
-      ease: "linear",
-    },
-  },
-};
-
-// Animation for the background gradient
-const backgroundVariants = {
-  animate: {
-    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-    transition: {
-      repeat: Infinity,
-      duration: 10,
-      ease: "linear",
-    },
-  },
-};
+import type React from "react"
+import { motion } from "framer-motion"
 
 const LoadingScreen: React.FC = () => {
   return (
-    <motion.div
-      className="w-screen h-screen fixed top-0 left-0 z-50 flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
-      variants={containerVariants}
-      initial="hidden"
-    //   animate="visible"
-      exit="exit"
-      style={{
-        backgroundSize: "200% 200%",
-      }}
-      {...backgroundVariants}
-    >
-      <div className="flex flex-col items-center gap-6">
-        {/* Spinner */}
+    <div className="w-screen h-screen fixed top-0 left-0 z-50 flex items-center justify-center bg-black">
+      <div className="relative flex flex-col items-center">
+        {/* Minimalist loading animation */}
+        <div className="relative w-24 h-24">
+          {/* Rotating line */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-full h-px bg-white origin-left"
+            style={{ translateY: "-50%" }}
+            animate={{
+              rotate: 360,
+              backgroundColor: ["#ffffff", "#888888", "#ffffff"],
+            }}
+            transition={{
+              rotate: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
+              backgroundColor: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+            }}
+          />
+
+          {/* Pulsing dot */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-white -translate-x-1/2 -translate-y-1/2"
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [1, 0.8, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Circular track */}
+          <motion.div
+            className="absolute top-0 left-0 w-full h-full rounded-full border border-zinc-800"
+            animate={{
+              borderColor: ["rgba(39, 39, 42, 0.3)", "rgba(39, 39, 42, 0.6)", "rgba(39, 39, 42, 0.3)"],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+            }}
+          />
+        </div>
+
+        {/* Simple text */}
         <motion.div
-          className="w-16 h-16 border-4 border-t-transparent border-white rounded-full"
-          variants={spinnerVariants}
-          animate="animate"
-        />
-
-        {/* Loading Text */}
-        <motion.h1
-          className="text-2xl md:text-3xl font-semibold text-white"
-          variants={textVariants}
+          className="mt-8 text-zinc-400 text-sm font-light tracking-widest uppercase"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
         >
-          Loading...
-        </motion.h1>
-      </div>
-    </motion.div>
-  );
-};
+          Loading
+        </motion.div>
 
-export default LoadingScreen;
+        {/* Progress dots */}
+        <div className="flex space-x-2 mt-3">
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className="w-1 h-1 rounded-full bg-zinc-600"
+              animate={{
+                opacity: [0.3, 1, 0.3],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Number.POSITIVE_INFINITY,
+                delay: i * 0.3,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default LoadingScreen
+

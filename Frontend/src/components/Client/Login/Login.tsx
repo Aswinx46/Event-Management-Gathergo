@@ -16,7 +16,7 @@ import * as yup from 'yup'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from "jwt-decode";
 import { CredentialResponse } from "@react-oauth/google";
-import { clientGoogleLoginMutation, clientLoginMutation } from "@/hooks/ClientCustomHooks"
+import { useClientGoogleLoginMutation, useClientLoginMutation } from "@/hooks/ClientCustomHooks"
 export default function LoginComponent() {
 
     const initialValues = {
@@ -62,7 +62,7 @@ export default function LoginComponent() {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const loginMutation = clientLoginMutation()
+    const loginMutation = useClientLoginMutation()
 
     const handleLogin = async (values: login) => {
         try {
@@ -92,20 +92,7 @@ export default function LoginComponent() {
     }
 
 
-    const googleLoginMutation = clientGoogleLoginMutation()
-
-    // const googleLoginMutation = useMutation({
-    //     mutationFn: async (client: Client) => {
-    //         const response = await axios.post('/googleLogin', { client })
-    //         console.log(response)
-    //     },
-    //     onSuccess: () => {
-    //         toast.success('Login SuccessFull')
-    //         navigate('/', { replace: true })
-    //     }
-    // })
-
-
+    const googleLoginMutation = useClientGoogleLoginMutation()
 
     const googleAuthenticate = (credentialResponse: CredentialResponse) => {
         try {

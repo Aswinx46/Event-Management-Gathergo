@@ -1,15 +1,14 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@radix-ui/react-label'
-import { useMutation } from '@tanstack/react-query';
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { motion } from "framer-motion";
 import * as yup from 'yup'
-import axios from '../../../axios/adminAxios'
 import { toast } from 'react-toastify';
 import { isAxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addAdminToken } from '@/store/slices/admin/adminToken';
+import { useAdminLoginMutation } from '@/hooks/AdminCustomHooks';
 function Adminlogin() {
     const initalValues = {
         email: '',
@@ -36,26 +35,26 @@ function Adminlogin() {
     }))
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const loginMutation = useMutation({
-        mutationFn: async ({ email, password }: admin) => {
-            return await axios.post('/login', { email, password })
-        },
-        onSuccess: (data) => {
-            dispatch(addAdminToken(data.data.accessToken))
-            toast.success('admin logged')
-            navigate('/admin/dashboard', { replace: true })
-        },
-        onError: (err) => {
-            if (isAxiosError(err)) {
-                console.log(err)
-            }
-        }
-    })
 
+    const loginMutation = useAdminLoginMutation()
     const handleSubmit = (values: admin) => {
         console.log(values)
-        loginMutation.mutate(values)
+        loginMutation.mutate(values, {
+            onSuccess: (data) => {
+                dispatch(addAdminToken(data.accessToken))
+                toast.success('admin logged')
+                navigate('/admin/dashboard', { replace: true })
+            },
+            onError: (error) => {
+                if (isAxiosError(error)) {
+                    console.log(error)
+                    toast.error(error?.response?.data?.error)
+                }
+            }
+        })
     }
+
+
     return (
         <div className='w-screen h-screen absolute top-0 right-0 flex flex-col justify-center items-center'>
             <h1 className="text-3xl font-bold text-center text-gray-800 uppercase tracking-wide">
