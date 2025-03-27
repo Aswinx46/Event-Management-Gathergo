@@ -4,6 +4,7 @@ import { IClientLoginuseCase } from "../../../../domain/interface/useCaseInterfa
 import { IjwtInterface } from "../../../../domain/interface/serviceInterface/IjwtService";
 import { setCookie } from "../../../../framerwork/services/tokenCookieSettingFunc";
 import { IredisService } from "../../../../domain/interface/serviceInterface/IredisService";
+import { HttpStatus } from "../../../../domain/httpStatus";
 export class ClientLoginController implements IloginClientControllerInterface {
     private jwtService: IjwtInterface
     private clientLoginUseCase: IClientLoginuseCase
@@ -20,7 +21,7 @@ export class ClientLoginController implements IloginClientControllerInterface {
             console.log('this is the email and the password',email,password)
             const client = await this.clientLoginUseCase.loginClient(email, password)
             if (!client) {
-                res.status(400).json({ message: "invalid credentials" })
+                res.status(HttpStatus.BAD_REQUEST).json({ message: "invalid credentials" })
                 return
             }
             const ACCESSTOKEN_SECRET_KEY = process.env.ACCESSTOKEN_SECRET_KEY as string
@@ -31,11 +32,11 @@ export class ClientLoginController implements IloginClientControllerInterface {
             setCookie(res, refreshToken)
             const valueFromRedis = await this.redisService.get(`user:${client.role}:${client._id}`)
            
-            res.status(200).json({ message: "user logged", client, accessToken })
+            res.status(HttpStatus.OK).json({ message: "user logged", client, accessToken })
 
         } catch (error) {
             console.log('error while login client', error)
-            res.status(400).json({
+            res.status(HttpStatus.BAD_REQUEST).json({
                 message: "error while login client",
                 error: error instanceof Error ? error.message : 'unknown error from login client controller',
 

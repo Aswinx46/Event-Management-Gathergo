@@ -3,6 +3,7 @@ import { IloginVendorUseCase } from "../../../../domain/interface/useCaseInterfa
 import { IjwtInterface } from "../../../../domain/interface/serviceInterface/IjwtService";
 import { setCookie } from "../../../../framerwork/services/tokenCookieSettingFunc";
 import { IredisService } from "../../../../domain/interface/serviceInterface/IredisService";
+import { HttpStatus } from "../../../../domain/httpStatus";
 
 export class LoginVendorController {
     private vendorLoginUseCase: IloginVendorUseCase
@@ -36,10 +37,10 @@ export class LoginVendorController {
             await this.redisService.set(`user${vendor.role}:${vendor._id}`, 15 * 60, JSON.stringify({ status: vendor.status, vendorStatus: vendor.vendorStatus }))
             const valueFromRedis = await this.redisService.get(`user:${vendor.role}:${vendor._id}`)
             console.log('value from redis', valueFromRedis)
-            res.status(200).json({ message: "vendor logined", vendor: modifiendVendor,accessToken })
+            res.status(HttpStatus.OK).json({ message: "vendor logined", vendor: modifiendVendor,accessToken })
             return
         } catch (error) {
-            res.status(400).json({
+            res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'error while login vendor',
                 error: error instanceof Error ? error.message : 'error while login vendor'
             })

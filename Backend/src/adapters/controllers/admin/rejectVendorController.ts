@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IrejectVendorUseCase } from "../../../domain/interface/useCaseInterfaces/admin/rejectVendorUseCaseInterface";
+import { HttpStatus } from "../../../domain/httpStatus";
 
 export class RejectVendorControllerAdmin {
     private rejectVendorUseCase: IrejectVendorUseCase
@@ -10,10 +11,10 @@ export class RejectVendorControllerAdmin {
         try {
             const { vendorId, newStatus, rejectionReason } = req.body
             await this.rejectVendorUseCase.rejectVendor(vendorId, newStatus, rejectionReason)
-            res.status(200).json({ message: "Vendor rejected" })
+            res.status(HttpStatus.OK).json({ message: "Vendor rejected" })
         } catch (error) {
             console.log('error while rejecting vendor', error)
-            res.status(400).json({
+            res.status(HttpStatus.BAD_REQUEST).json({
                 message: "error while rejecting venodr",
                 error: error instanceof Error ? error.message : 'error while rejecting vendor'
             })

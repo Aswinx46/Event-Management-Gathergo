@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IgoogleLoginClientUseCase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/googleLoginUseCase";
+import { HttpStatus } from "../../../../domain/httpStatus";
 
 export class GoogleLoginClient {
     private googleLoginClientUseCase: IgoogleLoginClientUseCase
@@ -11,10 +12,10 @@ export class GoogleLoginClient {
             console.log('ajhsdfjhasf')
             const { client } = req.body
             const createdClient = await this.googleLoginClientUseCase.googleLogin(client)
-            res.status(200).json({ message: 'Google login successFull', createdClient })
+            res.status(HttpStatus.OK).json({ message: 'Google login successFull', createdClient })
         } catch (error) {
             console.log('error while google login', error)
-            res.status(400).json({
+            res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'error while google login',
                 error: error instanceof Error ? error.message : 'error while Google login'
             })
