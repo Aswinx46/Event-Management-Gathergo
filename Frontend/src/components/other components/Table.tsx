@@ -1,16 +1,30 @@
 import { motion, AnimatePresence } from "framer-motion"
-import React from "react"
+import React, { useState } from "react"
+import ProfileModal from "./detailViewOfUser"
 
+// interface Client {
+//     _id: string
+//     name: string
+//     email: string
+//     phone: string
+//     profile?: string
+//     status: "active" | "blocked"
+//     clientId: string
+// }
 interface Client {
-    _id: string
-    name: string
-    email: string
-    phone: string
-    profile?: string
-    status: "active" | "blocked"
-    clientId: string
+    _id?: string,
+    name: string,
+    email: string,
+    phone: number,
+    role: 'client',
+    status?: 'active' | 'block',
+    profileImage?: string
+    createdAt?: string,
+    lastLogin?: string,
+    onlineStatus?: 'online' | 'offline',
+    isAdmin?: boolean
+    clientId?: string
 }
-
 
 interface Vendor {
     _id: string;
@@ -18,7 +32,7 @@ interface Vendor {
     name: string;
     email: string;
     phone: number;
-    idProof: string;
+    idProof?: string;
     role: 'vendor';
     status: 'active' | 'inactive' | 'blocked';
     vendorStatus: 'pending' | 'approved' | 'rejected';
@@ -36,6 +50,11 @@ interface Table {
 }
 
 export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
+
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedUser, setSelectedUser] = useState<Vendor | Client>()
+
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -62,8 +81,16 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
             transition: { duration: 0.2 },
         },
     }
+
+    const handleDetailedView = (user: Client | Vendor) => {
+        console.log(user)
+        setSelectedUser(user)
+        setIsOpen(true)
+    }
+
     return (
         <div className="bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden">
+            {isOpen && selectedUser && <ProfileModal isOpen={isOpen} setIsOpen={setIsOpen} profile={selectedUser} />}
             <table className="w-full">
                 <thead>
                     <tr className="bg-gray-50 dark:bg-gray-700 text-left">
@@ -96,11 +123,12 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
                                 initial="hidden"
                                 animate="visible"
                                 exit="exit"
+                                onClick={() => handleDetailedView(user)}
                                 className="border-t border-gray-200 dark:border-gray-700"
                                 whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
                             >
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
-                                    {"clientId" in user ? user.clientId : user.vendorId}
+                                    {"vendorId" in user ? user.vendorId : (user as Client).clientId}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                     {user.name}

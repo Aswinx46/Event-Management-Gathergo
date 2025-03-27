@@ -5,6 +5,7 @@ import ImagePreview from "./ImagePreview";
 import { toast } from "react-toastify";
 import VendorRejectionModal from "@/components/other components/RejectionReasonModal";
 import { useFetchAllPendingVendorAdminQuery, useRejectPendingVendor, useUpdatePendingVendorStatusAdmin } from "@/hooks/AdminCustomHooks";
+import EmptyTableMessage from "@/components/other components/NoUserAvailable";
 interface Vendor {
   _id: string;
   name: string;
@@ -91,8 +92,8 @@ const PendingVendorRequests: React.FC = () => {
   const handleReject = () => {
     setShowRejectModal(false)
     setRejectionReason('')
-    rejectVendor.mutate({ vendorId: selectedVendorId, newStatus: 'rejected', rejectionReason },{
-      onSuccess:()=>{
+    rejectVendor.mutate({ vendorId: selectedVendorId, newStatus: 'rejected', rejectionReason }, {
+      onSuccess: () => {
         pendingVendorQuery.refetch()
       }
     })
@@ -127,6 +128,7 @@ const PendingVendorRequests: React.FC = () => {
             className="w-full max-w-md p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        {pendingVendors?.length <= 0 && <EmptyTableMessage />}
 
         {/* Vendor List */}
         <motion.div

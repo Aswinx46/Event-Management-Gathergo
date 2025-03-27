@@ -1,5 +1,6 @@
-import { adminLogin, approvePendingVendor, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, rejectPendingVendor } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllRejectedVendor, rejectPendingVendor } from "@/services/ApiServiceAdmin"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { number } from "yup";
 
 interface Login {
     email: string;
@@ -43,15 +44,24 @@ export const useFetchAllPendingVendorAdminQuery = (currentPage: number) => {
 export const useUpdatePendingVendorStatusAdmin = () => {
     return useMutation({
         mutationFn: async ({ vendorId, newStatus }: { vendorId: string, newStatus: string }) => {
-            return await approvePendingVendor({vendorId,newStatus})
+            return await approvePendingVendor({ vendorId, newStatus })
         }
     })
 }
 
-export const useRejectPendingVendor=()=>{
+export const useRejectPendingVendor = () => {
     return useMutation({
-        mutationFn:async({ vendorId, newStatus, rejectionReason }: { vendorId: string, newStatus: string, rejectionReason: string })=>{
-            return await rejectPendingVendor({vendorId,newStatus,rejectionReason})
+        mutationFn: async ({ vendorId, newStatus, rejectionReason }: { vendorId: string, newStatus: string, rejectionReason: string }) => {
+            return await rejectPendingVendor({ vendorId, newStatus, rejectionReason })
+        }
+    })
+}
+
+export const useFindRejectedVendors = (currentPage: number) => {
+    return useQuery({
+        queryKey: ['rejectedVendors', currentPage],
+        queryFn: async () => {
+            return await findAllRejectedVendor(currentPage)
         }
     })
 }

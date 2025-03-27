@@ -1,6 +1,7 @@
 import { AxiosResponse, isAxiosError } from 'axios';
 import axios from '../axios/adminAxios'
 import { current } from '@reduxjs/toolkit';
+import { number } from 'yup';
 interface Login {
     email: string;
     password: string
@@ -81,5 +82,18 @@ export const rejectPendingVendor = async ({ vendorId, newStatus, rejectionReason
             throw new Error(error?.response?.data?.error)
         }
         throw new Error('error while rejecting vendor')
+    }
+}
+
+export const findAllRejectedVendor = async (currentPage: number) => {
+    try {
+        const response = await axios.get('/rejectedVendors', { params: { pageNo: currentPage } })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching rejected vendors', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.message)
+        }
+        throw new Error('error while fetching rejected vendors')
     }
 }

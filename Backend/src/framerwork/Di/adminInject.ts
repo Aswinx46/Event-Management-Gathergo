@@ -1,6 +1,7 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
+import { FindAllRejectedController } from "../../adapters/controllers/admin/findAllRejectedVendorController";
 import { FindAllVendorController } from "../../adapters/controllers/admin/findAllVendorController";
 import { RejectVendorControllerAdmin } from "../../adapters/controllers/admin/rejectVendorController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
@@ -8,6 +9,7 @@ import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase"
 import { AdminLoginUseCase } from "../../useCases/admin/adminLoginuseCase";
 import { ApproveVendor } from "../../useCases/admin/ApproveVendorStatus";
 import { findAllPendingVendors } from "../../useCases/admin/findAllPendingVendorUseCase";
+import { FindAllRejectedVendorUseCase } from "../../useCases/admin/findAllRejectedVendorsUseCase";
 import { FindAllVendorUsecase } from "../../useCases/admin/findAllVendorUseCase";
 import { RejectVendorUseCase } from "../../useCases/admin/rejectVendorUseCase";
 import { JwtService } from "../services/jwtService";
@@ -36,3 +38,7 @@ export const injectedApproveVendorStatus = new ApproveVendorController(approveVe
 //-------------------------------Rejecting Vendor-----------------------------
 const rejectVendorUseCase = new RejectVendorUseCase(vendorDataBase)
 export const injectedRejectVendorController = new RejectVendorControllerAdmin(rejectVendorUseCase)
+
+//-------------------------------Find all rejected vendors----------------------------------
+const findRejectedVendorUseCase = new FindAllRejectedVendorUseCase(vendorDataBase)
+export const injectedFindAllRejectedVendorController = new FindAllRejectedController(findRejectedVendorUseCase)

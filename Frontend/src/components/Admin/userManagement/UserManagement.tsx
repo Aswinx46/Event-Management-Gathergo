@@ -8,6 +8,7 @@ import Pagination from "@/components/other components/Pagination"
 import { useFetchClientAdminQuery } from "@/hooks/AdminCustomHooks"
 import Table from "@/components/other components/Table"
 import LoadingScreen from "@/components/other components/loadingScreen"
+import EmptyTableMessage from "@/components/other components/NoUserAvailable"
 // Define the provider type
 interface Client {
   _id: string
@@ -32,10 +33,10 @@ export default function EventProvidersPanel() {
 
 
   console.log(fetchClient.data)
-  if (fetchClient.isLoading) {
-    console.log('loading')
-    return <LoadingScreen />
-  }
+  // if (fetchClient.isLoading) {
+  //   console.log('loading')
+  //   return <LoadingScreen />
+  // }
   const clients = fetchClient?.data?.clients
 
 
@@ -81,6 +82,7 @@ export default function EventProvidersPanel() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
 
       {/* Main content */}
+      {clients?.length<=0 && <EmptyTableMessage/>}
       <div className="flex-1 p-8 overflow-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="flex justify-between items-center mb-6">

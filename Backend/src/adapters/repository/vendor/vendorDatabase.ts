@@ -42,4 +42,12 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         if (!vendor) throw new Error('There is no vendor in this email')
         return vendor
     }
+    async findAllRejectedVendor(pageNo: number): Promise<{ rejectedVendors: VendorEntity[]; totalPages: number }> {
+        const limit = 5
+        const page = Math.max(pageNo, 1)
+        const skip = (page - 1) * limit
+        const rejectedVendors = await VendorModel.find({ vendorStatus: 'rejected' }).select('-password').skip(skip).limit(limit)
+        const totalPages = Math.ceil(await VendorModel.countDocuments({ vendorStatus: 'rejected' }) / limit)
+        return { rejectedVendors, totalPages }
+    }
 }

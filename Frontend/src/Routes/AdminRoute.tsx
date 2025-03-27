@@ -5,6 +5,7 @@ import AdminLayout from "@/components/Admin/sidebar/AdminLayout"
 import UserManagement from "@/components/Admin/userManagement/UserManagement"
 import EventProviders from "@/components/Admin/vendorManagement/VendorManagement"
 import PendingVendors from "@/components/Admin/vendorManagement/ShowPendingVendor"
+import RejectedVendors from "@/components/Admin/vendorManagement/RejectedVendors"
 const AdminRoute = () => {
     return (
         <Routes>
@@ -14,6 +15,7 @@ const AdminRoute = () => {
                 <Route path="userManagement" element={<UserManagement />}></Route>
                 <Route path="eventProviders" element={<EventProviders />}></Route>
                 <Route path="pendingVendors" element={<PendingVendors />}></Route>
+                <Route path="rejectedVendors" element={<RejectedVendors />}></Route>
             </Route>
         </Routes>
     )
