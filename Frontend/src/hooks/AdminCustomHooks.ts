@@ -1,4 +1,4 @@
-import { adminLogin, approvePendingVendor, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, rejectPendingVendor } from "@/services/ApiServiceAdmin"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface Login {
@@ -44,6 +44,14 @@ export const useUpdatePendingVendorStatusAdmin = () => {
     return useMutation({
         mutationFn: async ({ vendorId, newStatus }: { vendorId: string, newStatus: string }) => {
             return await approvePendingVendor({vendorId,newStatus})
+        }
+    })
+}
+
+export const useRejectPendingVendor=()=>{
+    return useMutation({
+        mutationFn:async({ vendorId, newStatus, rejectionReason }: { vendorId: string, newStatus: string, rejectionReason: string })=>{
+            return await rejectPendingVendor({vendorId,newStatus,rejectionReason})
         }
     })
 }

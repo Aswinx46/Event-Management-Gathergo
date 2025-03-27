@@ -140,7 +140,7 @@ export default function SignupPage() {
         }
     }
     return (
-        <div className=" min-h-screen flex flex-col md:flex-row justify-center">
+        <div className=" min-h-screen flex flex-col lg:flex-row justify-center">
             <ImageCarousel />
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (

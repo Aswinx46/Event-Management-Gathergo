@@ -70,3 +70,16 @@ export const approvePendingVendor = async ({ vendorId, newStatus }: { vendorId: 
         throw new Error('error while approving pending vendor')
     }
 }
+
+export const rejectPendingVendor = async ({ vendorId, newStatus, rejectionReason }: { vendorId: string, newStatus: string, rejectionReason: string }) => {
+    try {
+        const response = await axios.patch('/rejectVendor', { vendorId, newStatus, rejectionReason })
+        return response.data
+    } catch (error) {
+        console.log('error while rejecting vendor', error)
+        if (isAxiosError(error)) {
+            throw new Error(error?.response?.data?.error)
+        }
+        throw new Error('error while rejecting vendor')
+    }
+}

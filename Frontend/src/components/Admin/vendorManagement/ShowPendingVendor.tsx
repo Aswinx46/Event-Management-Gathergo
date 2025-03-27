@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button"; // Assuming you're using a UI library like Shadcn
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from '../../../axios/adminAxios'
 import ImagePreview from "./ImagePreview";
-import LoadingScreen from "@/components/other components/loadingScreen";
 import { toast } from "react-toastify";
-import { useFetchAllPendingVendorAdminQuery, useUpdatePendingVendorStatusAdmin } from "@/hooks/AdminCustomHooks";
+import VendorRejectionModal from "@/components/other components/RejectionReasonModal";
+import { useFetchAllPendingVendorAdminQuery, useRejectPendingVendor, useUpdatePendingVendorStatusAdmin } from "@/hooks/AdminCustomHooks";
 interface Vendor {
   _id: string;
   name: string;
@@ -58,9 +56,11 @@ const PendingVendorRequests: React.FC = () => {
   const [preview, setPreview] = useState<boolean>(false)
   const [selectedIdProof, setSelectedProof] = useState<string>('')
   const [update, setUpdate] = useState<boolean>(false)
-  
-
+  const [showRejectModal, setShowRejectModal] = useState<boolean>(false)
+  const [rejectionReason, setRejectionReason] = useState<string>('')
+  const [selectedVendorId, setSelectedVendorId] = useState<string>('')
   const pendingVendorQuery = useFetchAllPendingVendorAdminQuery(currentPage)
+
   console.log(pendingVendorQuery.data)
   useEffect(() => {
     setPendingVendors(pendingVendorQuery?.data?.pendingVendors)
@@ -68,9 +68,8 @@ const PendingVendorRequests: React.FC = () => {
 
 
 
-  const updateStatusMutation=useUpdatePendingVendorStatusAdmin()
-
-
+  const updateStatusMutation = useUpdatePendingVendorStatusAdmin()
+  const rejectVendor = useRejectPendingVendor()
 
 
   const handleViewProof = (id: string, idProof: string) => {
@@ -80,23 +79,40 @@ const PendingVendorRequests: React.FC = () => {
 
   const handleAccept = (id: string) => {
     console.log(`Accepting vendor ${id}`);
-    // Add logic to accept vendor
-    updateStatusMutation.mutate({ vendorId: id, newStatus: 'approved' })
+    updateStatusMutation.mutate({ vendorId: id, newStatus: 'approved' }, {
+      onSuccess: () => {
+        pendingVendorQuery.refetch()
+      }
+    })
     toast.success('vendor approved')
     setUpdate(!update)
   };
 
-  const handleReject = (id: string) => {
-    console.log(`Rejecting vendor ${id}`);
-    // Add logic to reject vendor
-    updateStatusMutation.mutate({ vendorId: id, newStatus: 'approved' })
+  const handleReject = () => {
+    setShowRejectModal(false)
+    setRejectionReason('')
+    rejectVendor.mutate({ vendorId: selectedVendorId, newStatus: 'rejected', rejectionReason },{
+      onSuccess:()=>{
+        pendingVendorQuery.refetch()
+      }
+    })
     toast.success('vendor Rejected')
     setUpdate(!update)
   };
 
+  const onOpen = (id: string) => {
+    setShowRejectModal(true)
+    setSelectedVendorId(id)
+  }
+
+  const onClose = () => {
+    setShowRejectModal(false)
+  }
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       {preview && <ImagePreview url={selectedIdProof} setIsOpen={setPreview} />}
+      {showRejectModal && <VendorRejectionModal isOpen={showRejectModal} onClose={onClose} onSubmit={handleReject} setRejectionReason={setRejectionReason} rejectionReason={rejectionReason} />}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">
           Pending Vendor Requests
@@ -119,7 +135,7 @@ const PendingVendorRequests: React.FC = () => {
           animate="visible"
           variants={containerVariants}
         >
-          {pendingVendors.map((vendor: Vendor) => (
+          {pendingVendors?.map((vendor: Vendor) => (
             <motion.div
               key={vendor._id}
               className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200"
@@ -189,7 +205,7 @@ const PendingVendorRequests: React.FC = () => {
                   className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"
                 >
                   <motion.button
-                    onClick={() => handleReject(vendor._id)}
+                    onClick={() => onOpen(vendor._id)}
                     variants={buttonVariants}
                     whileHover="hover"
                   >

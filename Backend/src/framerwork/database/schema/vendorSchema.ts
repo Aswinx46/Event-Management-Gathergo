@@ -58,6 +58,10 @@ export const VendorSchema =new Schema <VendorEntity>({
         type:String,
         enum:['pending','rejected','approved'],
         default:'pending'
+    },
+    rejectionReason:{
+        type:String,
+        required:false
     }
 },{
     timestamps:true

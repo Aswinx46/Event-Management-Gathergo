@@ -2,12 +2,14 @@ import { AdminLoginController } from "../../adapters/controllers/admin/adminLogi
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
 import { FindAllVendorController } from "../../adapters/controllers/admin/findAllVendorController";
+import { RejectVendorControllerAdmin } from "../../adapters/controllers/admin/rejectVendorController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { AdminLoginUseCase } from "../../useCases/admin/adminLoginuseCase";
 import { ApproveVendor } from "../../useCases/admin/ApproveVendorStatus";
 import { findAllPendingVendors } from "../../useCases/admin/findAllPendingVendorUseCase";
 import { FindAllVendorUsecase } from "../../useCases/admin/findAllVendorUseCase";
+import { RejectVendorUseCase } from "../../useCases/admin/rejectVendorUseCase";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 
@@ -27,6 +29,10 @@ export const injectedFindAllVendorController = new FindAllVendorController(findA
 const findAllPendingVendorUseCase = new findAllPendingVendors(vendorDataBase)
 export const injectedFindAllPendingVendorController = new FindAllPendingVendorController(findAllPendingVendorUseCase)
 
-//------------------------------Approving or rejecting vendor-------------------
-const approveVendorStatusUseCase=new ApproveVendor(vendorDataBase)
-export const injectedApproveVendorStatus=new ApproveVendorController(approveVendorStatusUseCase)
+//------------------------------Approving vendor-------------------
+const approveVendorStatusUseCase = new ApproveVendor(vendorDataBase)
+export const injectedApproveVendorStatus = new ApproveVendorController(approveVendorStatusUseCase)
+
+//-------------------------------Rejecting Vendor-----------------------------
+const rejectVendorUseCase = new RejectVendorUseCase(vendorDataBase)
+export const injectedRejectVendorController = new RejectVendorControllerAdmin(rejectVendorUseCase)

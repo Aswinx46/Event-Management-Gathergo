@@ -4,6 +4,7 @@ import { IadminLoginUseCase } from "../../../domain/interface/useCaseInterfaces/
 import { IjwtInterface } from "../../../domain/interface/serviceInterface/IjwtService";
 import { IredisService } from "../../../domain/interface/serviceInterface/IredisService";
 import { setCookie } from "../../../framerwork/services/tokenCookieSettingFunc";
+import { HttpStatus } from "../../../domain/httpStatus";
 
 export class AdminLoginController {
     private adminLoginUseCase: IadminLoginUseCase
@@ -19,15 +20,15 @@ export class AdminLoginController {
         try {
             const { email, password } = req.body
             if (!email) {
-                res.status(400).json({ message: "invalid email" })
+                res.status(HttpStatus.BAD_REQUEST).json({ message: "invalid email" })
                 return
             } else if (!password) {
-                res.status(400).json({ message: "invalid password" })
+                res.status(HttpStatus.BAD_REQUEST).json({ message: "invalid password" })
                 return
             }
             const admin = await this.adminLoginUseCase.handleLogin(email, password)
             if (!admin) {
-                res.status(400).json({ message: "invalid credentials" })
+                res.status(HttpStatus.BAD_REQUEST).json({ message: "invalid credentials" })
                 return
             }
             const accessSecretKey = process.env.ACCESSTOKEN_SECRET_KEY as string
@@ -36,11 +37,11 @@ export class AdminLoginController {
             const refreshToken = await this.jwtService.createRefreshToken(refreshSecretKey, admin._id?.toString() || '')
             await this.redisService.set(`user:admin:${admin._id}`, 15 * 60, JSON.stringify(admin.status))
             setCookie(res,refreshToken)
-            res.status(200).json({message:"admin logged",accessToken})
+            res.status(HttpStatus.OK).json({message:"admin logged",accessToken})
             return
         } catch (error) {
             console.log('error while admin login', error)
-            res.status(400).json({
+            res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'error while login admin',
                 error: error instanceof Error ? error.message : 'error while login admin'
             })

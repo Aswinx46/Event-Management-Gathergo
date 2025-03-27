@@ -7,14 +7,14 @@ import { motion } from "framer-motion";
 
 function ImageCarousel() {
     return (
-        <div className=" flex md:w-1/2 md:flex-row w-full md:h-screen overflow-hidden">
+        <div className=" flex h-1/4 lg:w-1/2 md:flex-row w-full md:h-screen overflow-hidden">
             <Swiper
                 pagination={{ clickable: true }}
                 modules={[Pagination, Autoplay]}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 className="h-full"
             >
-                {["/concertt.jpg", "/banner.jpg", "/wedding.png"].map((image, index) => (
+                {["/concert live.jpg","/wedding.png","/couple kiss.jpg"].map((image, index) => (
                     <SwiperSlide key={index}>
                         <motion.img
                             src={image}

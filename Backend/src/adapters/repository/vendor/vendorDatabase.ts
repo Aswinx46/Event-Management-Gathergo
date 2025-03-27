@@ -37,4 +37,9 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
     async findById(vendorId: string): Promise<VendorEntity | null> {
         return await VendorModel.findById(vendorId)
     }
+    async rejectPendingVendor(vendorId: string, newStatus: string, rejectionReason: string): Promise<VendorEntity> {
+        const vendor = await VendorModel.findByIdAndUpdate(vendorId, { vendorStatus: newStatus, rejectionReason }, { new: true })
+        if (!vendor) throw new Error('There is no vendor in this email')
+        return vendor
+    }
 }
