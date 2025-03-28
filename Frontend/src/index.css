@@ -122,3 +122,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shine {
+  animation: shine 2s linear infinite;
+}
