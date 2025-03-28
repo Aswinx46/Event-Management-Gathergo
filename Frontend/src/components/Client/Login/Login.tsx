@@ -16,7 +16,11 @@ import * as yup from 'yup'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from "jwt-decode";
 import { CredentialResponse } from "@react-oauth/google";
-import { useClientGoogleLoginMutation, useClientLoginMutation } from "@/hooks/ClientCustomHooks"
+import { useClientForgetPassword, useClientGoogleLoginMutation, useClientLoginMutation, useClientRequestOtpForgetPassword, useClientVerifyForgetPasswordOtp, useResendOtpClientMutation } from "@/hooks/ClientCustomHooks"
+import ForgotPasswordModal from "@/components/other components/ForgetPasswordModal"
+import OTPModal from "@/components/otpModal/otpModal"
+import ResetPasswordModal from "@/components/other components/ChangePasswordOtp"
+import LoadingScreen from "@/components/other components/loadingScreen"
 export default function LoginComponent() {
 
     const initialValues = {
@@ -57,13 +61,18 @@ export default function LoginComponent() {
             .required("Password is required"),
     }))
 
-    const [email, setEmail] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
-
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [otpModal, setOtpModal] = useState<boolean>(false)
+    const [forgetPasswordEmail, setForgetPasswordEmail] = useState<string>('')
+    const [changePasswordOpen, setChangePasswordOpen] = useState<boolean>(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const loginMutation = useClientLoginMutation()
 
+    const loginMutation = useClientLoginMutation()
+    const getForgetPasswordOtp = useClientRequestOtpForgetPassword()
+    const googleLoginMutation = useClientGoogleLoginMutation()
+    const verifyForgetPasswordOtp = useClientVerifyForgetPasswordOtp()
+    const forgetPassworMutation = useClientForgetPassword()
     const handleLogin = async (values: login) => {
         try {
             const { email, password } = values
@@ -92,7 +101,7 @@ export default function LoginComponent() {
     }
 
 
-    const googleLoginMutation = useClientGoogleLoginMutation()
+
 
     const googleAuthenticate = (credentialResponse: CredentialResponse) => {
         try {
@@ -124,9 +133,39 @@ export default function LoginComponent() {
 
     }
 
+    const handleForgetPassword = (email: string) => {
+        console.log(email)
+        setForgetPasswordEmail(email)
+        getForgetPasswordOtp.mutate(email, {
+            onSuccess: () => {
+                toast.success('OTP Sended')
+                setIsOpen(false)
+                setOtpModal(true)
+            },
+            onError: (err) => {
+                toast.error(err.message)
+            },
+
+        })
+    }
+
+    const handleSuccess = () => {
+        setOtpModal(false)
+        setChangePasswordOpen(true)
+    }
+    const handleError = (error: unknown) => {
+        if (error instanceof Error)
+            toast.error(error.message);
+    }
+
+    const resendOtpMutation = useResendOtpClientMutation()
     return (
         <div className="flex min-h-screen flex-col-reverse md:flex-row w-full">
             {/* Form Section (Left Side) */}
+            {changePasswordOpen && <ResetPasswordModal email={forgetPasswordEmail} isOpen={changePasswordOpen} setIsOpen={setChangePasswordOpen} mutation={forgetPassworMutation} />}
+            {isOpen && <ForgotPasswordModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleForgetPassword} isPending={getForgetPasswordOtp.isPending}/>}
+
+            {otpModal && <OTPModal resendOtp={resendOtpMutation} isOpen={otpModal} email={forgetPasswordEmail} forgetPasswordMutation={verifyForgetPasswordOtp} handleSuccess={handleSuccess} handleError={handleError} setIsOpen={setOtpModal} />}
             <motion.div
                 className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-12"
                 initial={{ opacity: 0, x: -50 }}
@@ -202,11 +241,11 @@ export default function LoginComponent() {
                                                 Remember me
                                             </label>
                                         </div>
-                                        {/* <div className="text-sm">
-                                            <Link to="#" className="font-medium text-primary hover:text-primary/80">
+                                        <div className="text-sm">
+                                            <Button className="font-medium bg-transparent text-black hover:bg-gray-400" onClick={() => setIsOpen(true)}>
                                                 Forgot password?
-                                            </Link>
-                                        </div> */}
+                                            </Button>
+                                        </div>
                                     </motion.div>
 
                                     <motion.div
@@ -243,23 +282,6 @@ export default function LoginComponent() {
                     </Formik>
                 </div>
             </motion.div>
-
-            {/* Image Section (Right Side) */}
-            {/* <motion.div
-                className="md:w-1/2 relative overflow-hidden"
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.9 }}
-            >
-                <img
-                    src="/concertt.jpg"
-                    alt="Concert event with crowd"
-                    className="object-cover md:h-full"
-                />
-
-
-
-            </motion.div> */}
             <ImageCarousel />
         </div>
     )

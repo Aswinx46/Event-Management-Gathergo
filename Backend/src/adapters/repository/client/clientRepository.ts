@@ -19,4 +19,7 @@ export class clientRepository implements IClientDatabaseRepository {
     async googleLogin(client: clientEntity): Promise<clientEntity | null> {
         return await ClientModel.create(client)
     }
+    async forgotPassword(email: string, newPassword: string): Promise<clientEntity | null> {
+        return await ClientModel.findOneAndUpdate({ email }, { password: newPassword }, { new: true })
+    }
 }

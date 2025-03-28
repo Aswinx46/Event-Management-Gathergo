@@ -18,7 +18,7 @@ export class ClientAuthenticationController {
             return
         } catch (error) {
             console.log('error while sending otp', error)
-            res.status(HttpStatus.BAD_REQUEST).json({ message: "error while sending otp", error })
+            res.status(HttpStatus.BAD_REQUEST).json({ message: "error while sending otp", error:error instanceof Error ? error.message : 'error while sending otp' })
         }
     }
     async register(req: Request, res: Response): Promise<void> {

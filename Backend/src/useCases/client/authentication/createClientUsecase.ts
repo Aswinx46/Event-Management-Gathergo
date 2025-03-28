@@ -23,7 +23,7 @@ export class CreateClientUseCase implements IclientUsecase {
             console.log(hashedPassword)
         }
         const clientId = genarateRandomUuid()
-
+        
         const newClient = await this.clientRepository.createClient({
             name,
             phone,

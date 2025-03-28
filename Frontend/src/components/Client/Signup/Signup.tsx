@@ -79,6 +79,7 @@ export default function SignupComponent() {
         },
         onError: (error) => {
           console.log(error)
+          toast.error(error.message)
           setIsOpen(false);
         }
       })
@@ -116,7 +117,7 @@ export default function SignupComponent() {
         transition={{ duration: 0.5 }}
       >
         <ImageCarousel />
-
+        
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
             <Form className="w-full flex justify-center items-center md:w-1/2 bg-card">
@@ -160,7 +161,7 @@ export default function SignupComponent() {
 
                     <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
                       <Label htmlFor="confirmPassword">Confirm Password</Label>
-                      <Field as={Input} name="confirmPassword" type="password" placeholder="Confirm your password" className="focus:ring-2 focus:ring-primary/50" />
+                      <Field as={Input} name="confirmPassword" type="password" placeholder="Confirm your password"  className="focus:ring-2 focus:ring-primary/50" />
                       <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm" />
                     </motion.div>
                   </CardContent>

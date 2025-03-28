@@ -1,5 +1,6 @@
-import { clientCreateAccount, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp } from "@/services/ApiServiceClient";
 import { useMutation } from "@tanstack/react-query";
+import { string } from "yup";
 type LoginProps = {
     email: string;
     password: string;
@@ -46,5 +47,23 @@ export const useResendOtpClientMutation = () => {
 export const useClientGoogleLoginMutation = () => {
     return useMutation({
         mutationFn: (client: Client) => clientGoogleLogin(client)
+    })
+}
+
+export const useClientRequestOtpForgetPassword = () => {
+    return useMutation({
+        mutationFn: (email: string) => clientForgetPasswordOtpApi(email)
+    })
+}
+
+export const useClientVerifyForgetPasswordOtp = () => {
+    return useMutation({
+        mutationFn: ({ email, enteredOtp }: { email: string, enteredOtp: string }) => clientVerifyForgetPasswordOTp({ email, enteredOtp })
+    })
+}
+
+export const useClientForgetPassword = () => {
+    return useMutation({
+        mutationFn: ({ email, newPassword }: { email: string, newPassword: string }) => clientForgetPassword({ email, newPassword })
     })
 }

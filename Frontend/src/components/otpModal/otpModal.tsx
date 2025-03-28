@@ -9,20 +9,25 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { UseMutationResult } from "@tanstack/react-query"
 import { AxiosResponse } from "axios"
+import { error } from "console"
 interface OTPModalProps {
     isOpen: boolean
     onClose?: () => void
     onVerify?: (otp: string) => void
-    data: Record<string, any>
+    data?: Record<string, any>
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    mutation: UseMutationResult<any, unknown, { formdata: Record<string, any>; otpString: string }, unknown>;
+    mutation?: UseMutationResult<any, unknown, { formdata: Record<string, any>; otpString: string }, unknown>;
+    forgetPasswordMutation?: UseMutationResult<any, Error, {
+        email: string;
+        enteredOtp: string;
+    }, unknown>
     resendOtp: UseMutationResult<AxiosResponse<any>, unknown, string, unknown>;
     email: string
-    handleError:(error:unknown)=>void
-    handleSuccess:()=>void
+    handleError: (error: unknown) => void
+    handleSuccess: () => void
 }
 
-export default function OTPModal({ isOpen, data, setIsOpen, mutation,handleSuccess,handleError, resendOtp, email }: OTPModalProps) {
+export default function OTPModal({ isOpen, data, setIsOpen, mutation, handleSuccess, handleError, resendOtp, email, forgetPasswordMutation }: OTPModalProps) {
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
     const [timeLeft, setTimeLeft] = useState<number>(300)
@@ -73,17 +78,33 @@ export default function OTPModal({ isOpen, data, setIsOpen, mutation,handleSucce
 
     const handleVerify = () => {
         const otpString = otp.join("")
-        if (otpString.length === 6) {
-            mutation.mutate({ formdata: data, otpString },{
-                onSuccess:()=>{
-                    handleSuccess()
-                },
-                onError:(error)=>{
-                    console.log('error in modal',error)
-                    handleError(error)
-                }
-            })
+        if (data && mutation) {
+            if (otpString.length === 6) {
+                mutation.mutate({ formdata: data, otpString }, {
+                    onSuccess: () => {
+                        handleSuccess()
+                    },
+                    onError: (error) => {
+                        console.log('error in modal', error)
+                        handleError(error)
+                    }
+                })
+            }
         }
+        if (!data && email && forgetPasswordMutation) {
+            if (otpString.length === 6) {
+                forgetPasswordMutation.mutate({ email, enteredOtp: otpString }, {
+                    onSuccess: () => {
+                        handleSuccess()
+                    },
+                    onError: (error) => {
+                        console.log('error in otp modal', error)
+                        handleError(error)
+                    }
+                })
+            }
+        }
+
     }
     const handleResendOtp = () => {
         resendOtp.mutate(email)

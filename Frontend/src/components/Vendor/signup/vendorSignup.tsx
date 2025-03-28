@@ -129,8 +129,15 @@ export default function SignupPage() {
             }
             setData(vendor)
             console.log(vendor)
-            await vendorSignupAPI.mutateAsync(vendor)
-            setIsOpen(true)
+            // await vendorSignupAPI.mutateAsync(vendor)
+            const mutation=vendorSignupAPI.mutate(vendor,{
+                onSuccess:()=>{
+                    setIsOpen(true)
+                },
+                onError:(error)=>{
+                    toast.error(error.message)
+                }
+            })
             return vendorSignupAPI.data
         } catch (error) {
             if (isAxiosError(error)) {

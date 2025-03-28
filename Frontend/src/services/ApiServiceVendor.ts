@@ -27,9 +27,9 @@ export const uploadImageCloudinary = async (formdata: FormData) => {
     } catch (error) {
         console.log('error while uploding image', error)
         if (isAxiosError(error)) {
-            return error.message
+            throw new Error(error.response?.data?.error) 
         }
-        return 'error while uploading image'
+        throw 'error while uploading image'
     }
 }
 
@@ -40,9 +40,9 @@ export const vendorSignup = async (vendor: VendorData) => {
     } catch (error) {
         console.log('error while signup vendor', error)
         if (isAxiosError(error)) {
-            return error.message
+            throw new Error(error.response?.data?.error) 
         }
-        return 'error while signup Vendor'
+        throw 'error while signup Vendor'
     }
 }
 
