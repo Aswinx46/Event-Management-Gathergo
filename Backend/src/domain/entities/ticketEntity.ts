@@ -1,7 +1,7 @@
 import { ObjectId } from "mongoose";
 
 export interface Ticket{
-    _id:string,
+    _id?:ObjectId,
     ticketId:string,
     createdAt:Date,
     name:string,

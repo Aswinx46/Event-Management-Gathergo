@@ -8,7 +8,7 @@ import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
 import { isAxiosError } from 'axios'
 import ImageCarousel from "@/components/other components/ImageCarousal"
-import { useState } from "react"
+import React, { useState,lazy,Suspense } from "react"
 import { toast } from "react-toastify"
 import OTPModal from "@/components/otpModal/otpModal"
 import ImageCropper from "@/components/other components/ImageCropper"
@@ -146,9 +146,12 @@ export default function SignupPage() {
             }
         }
     }
+    const lazyImageCarousel=lazy(()=>import('../../other components/ImageCarousal'))
     return (
         <div className=" min-h-screen flex flex-col lg:flex-row justify-center">
+            <Suspense fallback={<div className="text-white text-center mt-10">Loading ......</div>}>
             <ImageCarousel />
+            </Suspense>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (
                     <Form className="flex w-full items-center justify-center bg-white p-8 lg:w-1/2">
@@ -196,11 +199,6 @@ export default function SignupPage() {
                                             <User className="h-8 w-8 text-gray-400" />
                                         </div>
                                         <div className="flex-1">
-                                            {/* <Button variant="outline" className="w-full">
-                                                <Upload className="mr-2 h-4 w-4" />
-                                                Upload Document
-                                            </Button> */}
-                                            {/* <Field name='document' as={Input} type='file' placeholder='upload your id proof'></Field> */}
                                             <Field name="document">
                                                 {() => (
                                                     <input

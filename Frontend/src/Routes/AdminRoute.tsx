@@ -6,6 +6,7 @@ import UserManagement from "@/components/Admin/userManagement/UserManagement"
 import EventProviders from "@/components/Admin/vendorManagement/VendorManagement"
 import PendingVendors from "@/components/Admin/vendorManagement/ShowPendingVendor"
 import RejectedVendors from "@/components/Admin/vendorManagement/RejectedVendors"
+import CategoryManagement from "@/components/Admin/categoryManagement/CategoryManagement"
 const AdminRoute = () => {
     return (
         <Routes>
@@ -16,6 +17,7 @@ const AdminRoute = () => {
                 <Route path="eventProviders" element={<EventProviders />}></Route>
                 <Route path="pendingVendors" element={<PendingVendors />}></Route>
                 <Route path="rejectedVendors" element={<RejectedVendors />}></Route>
+                <Route path="categoryManagement" element={<CategoryManagement />}></Route>
             </Route>
         </Routes>
     )

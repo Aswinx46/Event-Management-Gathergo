@@ -57,7 +57,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     return new Promise((resolve) => {
       canvas.toBlob((blob) => {
         resolve(blob);
-      }, "image/png"); 
+      }, "image/png");
     });
   };
 
@@ -73,11 +73,11 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const handleSubmit = async () => {
     const croppedBlob = await getCroppedBlob();
     showCropper(false)
-    
+
     if (croppedBlob && onCropComplete) {
       const croppedFile = new File([croppedBlob], "cropped-image.png", { type: "image/png" });
       console.log(croppedFile)
-      onCropComplete(croppedFile); 
+      onCropComplete(croppedFile);
     }
   };
 
@@ -105,4 +105,4 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   );
 };
 
-export default ImageCropper;
+export default React.memo(ImageCropper);

@@ -85,7 +85,7 @@ const HeroSection = () => {
                     />
                 ))}
             </div>
-            <Button className=' top-[54vh] left-[32vw]  absolute md:top-[40vh] bg-transparent hover:bg-gray-500 md:right-[31vw] z-50'>BOOK EVENTS</Button>
+            <Button className=' top-[54vh] left-[32vw]  absolute md:top-[40vh] bg-transparent hover:bg-gray-500 md:right-[31vw]'>BOOK EVENTS</Button>
         </div>
     );
 };

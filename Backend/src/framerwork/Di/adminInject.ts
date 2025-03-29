@@ -1,13 +1,16 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
+import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
 import { FindAllRejectedController } from "../../adapters/controllers/admin/findAllRejectedVendorController";
 import { FindAllVendorController } from "../../adapters/controllers/admin/findAllVendorController";
 import { RejectVendorControllerAdmin } from "../../adapters/controllers/admin/rejectVendorController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
+import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { AdminLoginUseCase } from "../../useCases/admin/adminLoginuseCase";
 import { ApproveVendor } from "../../useCases/admin/ApproveVendorStatus";
+import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
 import { findAllPendingVendors } from "../../useCases/admin/findAllPendingVendorUseCase";
 import { FindAllRejectedVendorUseCase } from "../../useCases/admin/findAllRejectedVendorsUseCase";
 import { FindAllVendorUsecase } from "../../useCases/admin/findAllVendorUseCase";
@@ -42,3 +45,8 @@ export const injectedRejectVendorController = new RejectVendorControllerAdmin(re
 //-------------------------------Find all rejected vendors----------------------------------
 const findRejectedVendorUseCase = new FindAllRejectedVendorUseCase(vendorDataBase)
 export const injectedFindAllRejectedVendorController = new FindAllRejectedController(findRejectedVendorUseCase)
+
+//-------------------------------find all Category--------------------------------------
+const categoryDatabase = new CategoryDatabaseRepository()
+const findAllCategoryUseCase = new FindCategoryUseCase(categoryDatabase)
+export const injectedFindAllCategoryController = new FindCategoryController(findAllCategoryUseCase)

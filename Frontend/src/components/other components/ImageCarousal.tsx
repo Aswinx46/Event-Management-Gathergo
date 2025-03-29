@@ -14,7 +14,7 @@ function ImageCarousel() {
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 className="h-full"
             >
-                {["/concert live.jpg","/wedding.png","/couple kiss.jpg"].map((image, index) => (
+                {["/band live.jpg", "/wedding.png", "/kiss.jpg"].map((image, index) => (
                     <SwiperSlide key={index}>
                         <motion.img
                             src={image}

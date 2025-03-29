@@ -97,3 +97,14 @@ export const findAllRejectedVendor = async (currentPage: number) => {
         throw new Error('error while fetching rejected vendors')
     }
 }
+
+export const findAllCategory = async (currentPage: number) => {
+    try {
+        const response = await axios.get('/categories', { params: { pageNo:currentPage } })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching all categories', error)
+        if (error instanceof Error)
+            throw new Error(error.message)
+    }
+}

@@ -1,6 +1,6 @@
 
 
-import type React from "react"
+import React from "react"
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -26,8 +26,7 @@ interface OTPModalProps {
     handleError: (error: unknown) => void
     handleSuccess: () => void
 }
-
-export default function OTPModal({ isOpen, data, setIsOpen, mutation, handleSuccess, handleError, resendOtp, email, forgetPasswordMutation }: OTPModalProps) {
+function OTPModal({ isOpen, data, setIsOpen, mutation, handleSuccess, handleError, resendOtp, email, forgetPasswordMutation }: OTPModalProps) {
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
     const [timeLeft, setTimeLeft] = useState<number>(300)
@@ -208,3 +207,5 @@ export default function OTPModal({ isOpen, data, setIsOpen, mutation, handleSucc
     )
 }
 
+
+export default React.memo(OTPModal)

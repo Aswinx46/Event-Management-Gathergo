@@ -50,4 +50,7 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         const totalPages = Math.ceil(await VendorModel.countDocuments({ vendorStatus: 'rejected' }) / limit)
         return { rejectedVendors, totalPages }
     }
+    async forgetPassword(email: string, newPassword: string): Promise<VendorEntity | null> {
+        return await VendorModel.findOneAndUpdate({ email }, { password: newPassword }, { new: true })
+    }
 }

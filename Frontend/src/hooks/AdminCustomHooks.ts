@@ -1,6 +1,5 @@
-import { adminLogin, approvePendingVendor, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllRejectedVendor, rejectPendingVendor } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, rejectPendingVendor } from "@/services/ApiServiceAdmin"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { number } from "yup";
 
 interface Login {
     email: string;
@@ -62,6 +61,15 @@ export const useFindRejectedVendors = (currentPage: number) => {
         queryKey: ['rejectedVendors', currentPage],
         queryFn: async () => {
             return await findAllRejectedVendor(currentPage)
+        }
+    })
+}
+
+export const useFindAllCategories = (currentPage: number) => {
+    return useQuery({
+        queryKey: ['categories', currentPage],
+        queryFn: async () => {
+            return await findAllCategory(currentPage)
         }
     })
 }
