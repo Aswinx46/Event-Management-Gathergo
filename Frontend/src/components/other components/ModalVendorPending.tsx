@@ -1,3 +1,4 @@
+import React from "react"
 
 function ModalVendorPending() {
   return (
@@ -9,4 +10,4 @@ function ModalVendorPending() {
     </div>
   )
 }
-export default ModalVendorPending
+export default React.memo(ModalVendorPending)

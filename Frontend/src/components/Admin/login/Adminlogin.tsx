@@ -41,6 +41,7 @@ function Adminlogin() {
         console.log(values)
         loginMutation.mutate(values, {
             onSuccess: (data) => {
+                console.log(data)
                 dispatch(addAdminToken(data.accessToken))
                 toast.success('admin logged')
                 navigate('/admin/dashboard', { replace: true })
@@ -50,6 +51,8 @@ function Adminlogin() {
                     console.log(error)
                     toast.error(error?.response?.data?.error)
                 }
+                console.log(error)
+                toast.error(error.message)
             }
         })
     }

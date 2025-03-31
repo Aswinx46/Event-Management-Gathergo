@@ -30,4 +30,4 @@ function Pagination({total, current, setPage}:paginationParams) {
   )
 }
 
-export default Pagination
+export default React.memo(Pagination)

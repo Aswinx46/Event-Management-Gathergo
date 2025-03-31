@@ -14,7 +14,8 @@ export const adminLogin = async ({ email, password }: Login) => {
     } catch (error) {
         console.log('error while admin login')
         if (isAxiosError(error)) {
-            throw new Error(error.message)
+            console.log(error)
+            throw new Error(error.response?.data?.error)
         }
         throw new Error('error while admin login')
     }

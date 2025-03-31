@@ -4,6 +4,7 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import { Pagination, Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
+import React from "react";
 
 function ImageCarousel() {
     return (
@@ -31,4 +32,4 @@ function ImageCarousel() {
     );
 }
 
-export default ImageCarousel;
+export default React.memo(ImageCarousel);

@@ -1,5 +1,4 @@
 import { categoryEntity } from "../../../entities/categoryEntity";
-import { clientEntity } from "../../../entities/clientEntity";
 
 export interface IcategoryDatabase {
     findByName(name: string): Promise<categoryEntity | null>

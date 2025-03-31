@@ -1,5 +1,5 @@
 
-import type React from "react"
+import React from "react"
 import { motion } from "framer-motion"
 
 const LoadingScreen: React.FC = () => {
@@ -84,5 +84,5 @@ const LoadingScreen: React.FC = () => {
   )
 }
 
-export default LoadingScreen
+export default React.memo(LoadingScreen)
 

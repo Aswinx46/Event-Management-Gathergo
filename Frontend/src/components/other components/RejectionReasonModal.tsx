@@ -75,4 +75,4 @@ const VendorRejectionModal: React.FC<VendorRejectionModalProps> = ({
   );
 };
 
-export default VendorRejectionModal;
+export default React.memo(VendorRejectionModal);

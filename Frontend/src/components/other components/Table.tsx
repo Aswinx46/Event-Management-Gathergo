@@ -168,4 +168,4 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
     )
 }
 
-export default Table
+export default React.memo(Table)

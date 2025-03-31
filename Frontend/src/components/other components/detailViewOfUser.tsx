@@ -187,7 +187,7 @@
 
 "use client"
 
-import type React from "react"
+import  React from "react"
 import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
@@ -494,5 +494,5 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, setIsOpen, profile 
   )
 }
 
-export default ProfileModal
+export default React.memo(ProfileModal)
 

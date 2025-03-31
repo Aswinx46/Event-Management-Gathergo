@@ -1,5 +1,6 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
+import { CreateCategoryController } from "../../adapters/controllers/admin/categoryManagement/createCategoryController";
 import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
 import { FindAllRejectedController } from "../../adapters/controllers/admin/findAllRejectedVendorController";
@@ -10,6 +11,7 @@ import { CategoryDatabaseRepository } from "../../adapters/repository/category/c
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { AdminLoginUseCase } from "../../useCases/admin/adminLoginuseCase";
 import { ApproveVendor } from "../../useCases/admin/ApproveVendorStatus";
+import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
 import { findAllPendingVendors } from "../../useCases/admin/findAllPendingVendorUseCase";
 import { FindAllRejectedVendorUseCase } from "../../useCases/admin/findAllRejectedVendorsUseCase";
@@ -50,3 +52,7 @@ export const injectedFindAllRejectedVendorController = new FindAllRejectedContro
 const categoryDatabase = new CategoryDatabaseRepository()
 const findAllCategoryUseCase = new FindCategoryUseCase(categoryDatabase)
 export const injectedFindAllCategoryController = new FindCategoryController(findAllCategoryUseCase)
+
+//------------------------------- Create category-----------------------------
+const createCategoryUseCase = new CreateCategoryUseCase(categoryDatabase)
+export const injectedCreateCategoryController = new CreateCategoryController(createCategoryUseCase)

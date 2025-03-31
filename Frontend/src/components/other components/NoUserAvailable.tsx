@@ -50,4 +50,4 @@ const EmptyTableMessage: React.FC<EmptyTableMessageProps> = ({
   );
 };
 
-export default EmptyTableMessage;
+export default React.memo(EmptyTableMessage);
