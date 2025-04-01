@@ -3,37 +3,38 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaPlus } from 'react-icons/fa';
 import AddCategoryModal from './AddCategoryModal';
 import { useFindAllCategories } from '@/hooks/AdminCustomHooks';
-
+import Pagination from '@/components/other components/Pagination';
 interface Category {
   categoryId: string;
-  categoryName: string;
-  categoryImage: string;
+  title: string;
+  createdAt: string;
+  image: string;
   status: 'active' | 'blocked';
+  _id: string
 }
 
 const CategoryManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currentPage,setCurrentPage]=useState<number>(1)
-  const findCategoryApi=useFindAllCategories(currentPage)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  // const [categories, setCategories] = useState<Category>()
+  const [totalPages, setTotalPages] = useState<number>(1)
+
+  const findCategoryApi = useFindAllCategories(currentPage)
+
   console.log(findCategoryApi.data)
-  const categories: Category[] = [
-    {
-      categoryId: 'CAT001',
-      categoryName: 'Concerts',
-      categoryImage: 'concert.jpg',
-      status: 'active',
-    },
-  ];
+
+
+  const categories = findCategoryApi?.data?.categories
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="p-6 max-w-7xl md:w-1/2 mx-auto space-y-8"
+      className="p-6 max-w-7xl md:w-1/2 w-screen mx-auto space-y-8"
     >
-      {isOpen && <AddCategoryModal isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && <AddCategoryModal isOpen={isOpen} setIsOpen={setIsOpen} refetch={findCategoryApi.refetch} />}
 
       {/* Black Header */}
       <div className="bg-black rounded-xl p-6 shadow-lg text-white">
@@ -88,9 +89,9 @@ const CategoryManagement: React.FC = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-300">
               <AnimatePresence>
-                {categories.map((category) => (
+                {categories?.map((category: Category) => (
                   <motion.tr
-                    key={category.categoryId}
+                    key={category._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
@@ -105,21 +106,21 @@ const CategoryManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <motion.div whileHover={{ scale: 1.1 }} className="relative w-12 h-12">
                         <img
-                          src={category.categoryImage}
-                          alt={category.categoryName}
+                          src={category.image}
+                          alt={category.title}
                           className="h-12 w-12 rounded-lg object-cover border border-gray-300"
                         />
                       </motion.div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-black">{category.categoryName}</div>
+                      <div className="text-sm font-medium text-black">{category.title}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <motion.span
                         whileHover={{ scale: 1.05 }}
                         className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${category.status === 'active'
-                            ? 'bg-green-500 text-white'
-                            : 'bg-red-500 text-white'
+                          ? 'bg-green-500 text-white'
+                          : 'bg-red-500 text-white'
                           }`}
                       >
                         {category.status}
@@ -130,8 +131,8 @@ const CategoryManagement: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className={`px-4 py-2 rounded-lg shadow-sm transition-all ${category.status === 'active'
-                            ? 'bg-black text-white hover:bg-gray-800'
-                            : 'bg-gray-400 text-black hover:bg-gray-500'
+                          ? 'bg-black text-white hover:bg-gray-800'
+                          : 'bg-gray-400 text-black hover:bg-gray-500'
                           }`}
                       >
                         {category.status === 'active' ? 'Block' : 'Unblock'}
@@ -144,6 +145,7 @@ const CategoryManagement: React.FC = () => {
           </table>
         </div>
       </div>
+      <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
     </motion.div>
   );
 };

@@ -3,8 +3,9 @@ import { IcategoryDatabase } from "../../../domain/interface/repositoryInterface
 import { categoryModel } from "../../../framerwork/database/models/categoryModel";
 export class CategoryDatabaseRepository implements IcategoryDatabase {
     async findByName(name: string): Promise<categoryEntity | null> {
-        return await categoryModel.findOne({ title: name })
-
+        return await categoryModel.findOne({
+            title: { $regex: `^${name}$`, $options: "i" } // Case-insensitive exact match
+        });
     }
     async createCategory(categoryId: string, title: string, image: string): Promise<categoryEntity> {
         return await categoryModel.create({ categoryId, title, image })

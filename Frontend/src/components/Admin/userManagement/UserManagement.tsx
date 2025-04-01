@@ -82,7 +82,7 @@ export default function EventProvidersPanel() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
 
       {/* Main content */}
-      {clients?.length<=0 && <EmptyTableMessage/>}
+      {clients?.length <= 0 && <EmptyTableMessage />}
       <div className="flex-1 p-8 overflow-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="flex justify-between items-center mb-6">
@@ -106,7 +106,7 @@ export default function EventProvidersPanel() {
           </div>
 
           {/* Table */}
-          <Table data={clients} handleBlockAndUnblock={handleBlockAndUnblock} />
+          <Table data={clients} blockAndUnblock={handleBlockAndUnblock} />
           <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
         </motion.div>
       </div>

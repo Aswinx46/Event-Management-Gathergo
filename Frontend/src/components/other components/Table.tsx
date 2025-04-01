@@ -12,7 +12,7 @@ import ProfileModal from "./detailViewOfUser"
 //     clientId: string
 // }
 interface Client {
-    _id?: string,
+    _id: string,
     name: string,
     email: string,
     phone: number,
@@ -46,7 +46,7 @@ interface Vendor {
 
 interface Table {
     data: Client[] | Vendor[],
-    blockAndUnblock: () => void
+    blockAndUnblock: (id: string) => void
 }
 
 export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
@@ -150,7 +150,7 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
-                                        onClick={blockAndUnblock}
+                                        onClick={() => blockAndUnblock(user._id)}
                                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === "active"
                                             ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
                                             : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"

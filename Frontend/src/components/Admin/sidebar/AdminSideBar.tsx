@@ -96,7 +96,7 @@ const Sidebar: React.FC = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={`fixed top-0 left-0 h-screen bg-gray-800 text-white shadow-lg z-50
+            className={`fixed md:static top-0 left-0 h-screen bg-gray-800 text-white shadow-lg z-50
               ${isMobileMenuOpen ? 'w-64' : 'w-64 hidden lg:block'}`}
           >
             <div className="p-6">

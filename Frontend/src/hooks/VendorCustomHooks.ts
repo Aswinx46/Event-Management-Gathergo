@@ -22,8 +22,9 @@ export const useUploadeImageToCloudinaryMutation = () => {
 export const useVendorSignupMutation = () => {
     return useMutation({
         mutationFn: async (vendor: FormValues) => {
-            const response = await vendorSignup(vendor)
-            return response.data
+            // const response = await vendorSignup(vendor)
+            // return response.data
+            return await vendorSignup(vendor)
         }
     })
 }
@@ -44,7 +45,7 @@ export const useVendorResendOtpMutation = () => {
     })
 }
 
-export const useVendorLoginMutation=()=>{
+export const useVendorLoginMutation = () => {
     return useMutation({
 
     })

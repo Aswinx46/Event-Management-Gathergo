@@ -101,11 +101,26 @@ export const findAllRejectedVendor = async (currentPage: number) => {
 
 export const findAllCategory = async (currentPage: number) => {
     try {
-        const response = await axios.get('/categories', { params: { pageNo:currentPage } })
+        const response = await axios.get('/categories', { params: { pageNo: currentPage } })
         return response.data
     } catch (error) {
         console.log('error while fetching all categories', error)
         if (error instanceof Error)
             throw new Error(error.message)
+    }
+}
+
+interface Category { title: string; image: File | null; }
+
+export const createCategory = async ({ title, image }: Category) => {
+    try {
+        const response = await axios.post('/createCategory', { title, image })
+        return response.data
+    } catch (error) {
+        console.log('error while creating category', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data?.error)
+        }
+        throw new Error('error while creating category')
     }
 }

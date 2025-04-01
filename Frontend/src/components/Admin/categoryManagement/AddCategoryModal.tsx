@@ -1,22 +1,31 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaUpload } from "react-icons/fa";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
+import ImageCropper from "@/components/other components/ImageCropper";
+import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
+import { useCreateCategory } from "@/hooks/AdminCustomHooks";
+import { toast } from "react-toastify";
 
 interface AddCategoryModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  refetch: () => void
 }
 
-const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }) => {
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+interface Category { title: string; image: File | null; }
 
-  // Yup validation schema
+const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, refetch }) => {
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [showCropper, setShowCropper] = useState<boolean>(false)
+  const [image, setImage] = useState()
+  const [category, setCategory] = useState<Category>()
+  const [selectedImage, setSelectedImage] = useState<string>('')
+  const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const validationSchema = Yup.object({
-    categoryName: Yup.string().min(3, "Must be at least 3 characters").required("Required"),
-    categoryTitle: Yup.string().min(3, "Must be at least 3 characters").required("Required"),
-    categoryImage: Yup.mixed()
+    title: Yup.string().min(3, "Must be at least 3 characters").required("Required"),
+    image: Yup.mixed()
       .test("fileSize", "File size is too large (max 5MB)", (value: any) =>
         value ? value.size <= 5 * 1024 * 1024 : true
       )
@@ -32,10 +41,72 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
     exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
   };
 
+  const imageUpload = useUploadeImageToCloudinaryMutation()
+
+  const createCategory = useCreateCategory()
+
+  const handleSubmit = async (values: Category, { resetForm }: FormikHelpers<Category>) => {
+    try {
+      values.image = croppedImage
+      const formdata = new FormData()
+      if (values.image) {
+        formdata.append('file', values.image)
+        formdata.append('upload_preset', 'Category')
+        const response = await imageUpload.mutateAsync(formdata)
+        values.image = response?.secure_url
+        createCategory.mutate(values, {
+          onSuccess(data) {
+            toast.success(data?.message)
+            console.log('data while creating category', data)
+            refetch()
+            resetForm()
+            setCategory(values)
+            setIsOpen(false);
+            resetForm();
+            setPreviewUrl("");
+          },
+          onError(error) {
+            toast.error(error.message)
+            console.log('error inside main component', error)
+          },
+        })
+      }
+    } catch (error) {
+      console.log('error while creating category', error)
+    }
+  }
+
+  // const handleSubmit = async (values: Category, { resetForm }: FormikHelpers<Category>) => {
+  //   values.image = croppedImage
+  //   const formdata = new FormData()
+  //   if (values.image) {
+  //     formdata.append('file', values.image)
+  //     formdata.append('upload_preset', 'Category')
+  //     const response = await imageUpload.mutateAsync(formdata)
+  //     values.image = response?.secure_url
+  //     createCategory.mutate(values, {
+  //       onSuccess: (data) => {
+  //         console.log('asdkjf')
+  //         console.log('data updated', data)
+  //       },
+  //       onError: (err) => {
+  //         console.log('err')
+  //         console.log(err)
+  //       }
+  //     })
+  //   }
+  //   resetForm()
+  //   setCategory(values)
+  //   setIsOpen(false);
+  //   resetForm();
+  //   setPreviewUrl("");
+
+  // }
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 h-screen w-screen z-50 flex items-center justify-center">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -44,7 +115,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
             className="absolute inset-0 bg-black"
             onClick={() => setIsOpen(false)}
           />
-
+          {showCropper && <ImageCropper showCropper={setShowCropper} image={selectedImage} onCropComplete={setCroppedImage} />}
           {/* Modal Content */}
           <motion.div
             variants={modalVariants}
@@ -71,39 +142,22 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
 
             {/* Formik Form */}
             <Formik
-              initialValues={{ categoryName: "", categoryTitle: "", categoryImage: null }}
+              initialValues={{ title: "", image: null as File | null }}
               validationSchema={validationSchema}
-              onSubmit={(values, { resetForm }) => {
-                console.log("Submitted Values:", values);
-                setIsOpen(false);
-                resetForm();
-                setPreviewUrl("");
-              }}
+              onSubmit={handleSubmit}
             >
               {({ setFieldValue, values }) => (
                 <Form className="space-y-6">
-                  {/* Category Name */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
-                    <Field
-                      type="text"
-                      name="categoryName"
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
-                      placeholder="Enter category name"
-                    />
-                    <ErrorMessage name="categoryName" component="p" className="text-red-500 text-sm mt-1" />
-                  </div>
-
                   {/* Category Title */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Category Title</label>
                     <Field
                       type="text"
-                      name="categoryTitle"
+                      name="title"
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
                       placeholder="Enter category title"
                     />
-                    <ErrorMessage name="categoryTitle" component="p" className="text-red-500 text-sm mt-1" />
+                    <ErrorMessage name="title" component="p" className="text-red-500 text-sm mt-1" />
                   </div>
 
                   {/* Image Upload */}
@@ -113,13 +167,13 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
                       <div className="space-y-1 text-center">
                         {previewUrl ? (
                           <div className="relative w-full h-48 mb-4">
-                            <img src={previewUrl} alt="Preview" className="w-full h-full object-cover rounded-lg" />
+                            {croppedImage && <img src={URL.createObjectURL(croppedImage)} alt="Preview" className="w-full h-full object-cover rounded-lg" />}
                             <motion.button
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full"
                               onClick={() => {
-                                setFieldValue("categoryImage", null);
+                                setFieldValue("image", null);
                                 setPreviewUrl("");
                               }}
                               type="button"
@@ -140,8 +194,10 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
-                                      setFieldValue("categoryImage", file);
-                                      setPreviewUrl(URL.createObjectURL(file));
+                                      setShowCropper(true)
+                                      setSelectedImage(URL.createObjectURL(file));
+                                      setFieldValue("image", file);
+                                      setPreviewUrl(URL.createObjectURL(file))
                                     }
                                   }}
                                 />
@@ -153,7 +209,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
                         )}
                       </div>
                     </div>
-                    <ErrorMessage name="categoryImage" component="p" className="text-red-500 text-sm mt-1" />
+                    <ErrorMessage name="image" component="p" className="text-red-500 text-sm mt-1" />
                   </div>
 
                   {/* Submit Button */}
@@ -163,7 +219,8 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
                     type="submit"
                     className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors shadow-md"
                   >
-                    Create Category
+                    {/* {createCategoryMutation.isPending ? 'Creating category...' : 'Create category'} */}
+                    create category
                   </motion.button>
                 </Form>
               )}
@@ -175,4 +232,4 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen }
   );
 };
 
-export default AddCategoryModal;
+export default React.memo(AddCategoryModal);

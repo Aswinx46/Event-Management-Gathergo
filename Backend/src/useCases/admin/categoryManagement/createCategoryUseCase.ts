@@ -10,7 +10,11 @@ export class CreateCategoryUseCase implements IcreateCategoryUseCase {
     }
     async createCategory(title: string, img: string): Promise<categoryEntity> {
         const existingCategory = await this.categoryDatabase.findByName(title)
-        if (existingCategory) throw new Error('This category is already exist')
+        if (existingCategory){
+            console.log('inside category')
+            throw new Error('This category is already exist')
+            
+        } 
         const categoryId = genarateRandomUuid()
         return await this.categoryDatabase.createCategory(categoryId, title, img)
     }

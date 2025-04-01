@@ -8,7 +8,7 @@ import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
 import { isAxiosError } from 'axios'
 import ImageCarousel from "@/components/other components/ImageCarousal"
-import React, { useState,lazy,Suspense } from "react"
+import React, { useState, lazy, Suspense } from "react"
 import { toast } from "react-toastify"
 import OTPModal from "@/components/otpModal/otpModal"
 import ImageCropper from "@/components/other components/ImageCropper"
@@ -130,11 +130,11 @@ export default function SignupPage() {
             setData(vendor)
             console.log(vendor)
             // await vendorSignupAPI.mutateAsync(vendor)
-            const mutation=vendorSignupAPI.mutate(vendor,{
-                onSuccess:()=>{
+            const mutation = vendorSignupAPI.mutate(vendor, {
+                onSuccess: () => {
                     setIsOpen(true)
                 },
-                onError:(error)=>{
+                onError: (error) => {
                     toast.error(error.message)
                 }
             })
@@ -146,11 +146,11 @@ export default function SignupPage() {
             }
         }
     }
-    const lazyImageCarousel=lazy(()=>import('../../other components/ImageCarousal'))
+    const LazyImageCarousel = lazy(() => import('../../other components/ImageCarousal'))
     return (
         <div className=" min-h-screen flex flex-col lg:flex-row justify-center">
             <Suspense fallback={<div className="text-white text-center mt-10">Loading ......</div>}>
-            <ImageCarousel />
+                <LazyImageCarousel/>
             </Suspense>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (
