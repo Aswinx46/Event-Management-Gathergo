@@ -80,6 +80,9 @@ export const useCreateServiceMutation = () => {
 export const useFetchCategoryForServiceQuery = () => {
     return useQuery({
         queryKey: ['categories'],
-        queryFn: () => fetchCategoryCategoryForService()
-    })
+        queryFn: () => fetchCategoryCategoryForService(),
+    
+        refetchOnWindowFocus:false
+    },
+)
 }

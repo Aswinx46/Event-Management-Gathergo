@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import { ServiceEntity } from "../../../domain/entities/serviceEntity";
 
 export const serviceSchema = new Schema<ServiceEntity>({
-    additionalHourFees: {
+    additionalHourFee: {
         type: Number,
         required: true
     },

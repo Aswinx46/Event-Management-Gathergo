@@ -14,6 +14,12 @@ interface ServiceFormData {
     serviceDuration: string;
     servicePrice: number;
     additionalHourFee: number;
+    categoryId: string;
+}
+
+interface Category {
+    _id: string;
+    title: string;
 }
 
 interface AddServiceModalProps {
@@ -21,6 +27,7 @@ interface AddServiceModalProps {
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
     onSubmit: (values: ServiceFormData) => void;
     data?: ServiceFormData
+    categories: Category[];
 }
 
 
@@ -42,6 +49,7 @@ const validationSchema = Yup.object().shape({
     additionalHourFee: Yup.number()
         .min(0, 'Additional hour fee must be positive')
         .required('Additional hour fee is required'),
+    categoryId: Yup.string().required('Category is required'),
 });
 
 const initialValues: ServiceFormData = {
@@ -54,13 +62,15 @@ const initialValues: ServiceFormData = {
     serviceDuration: '',
     servicePrice: 0,
     additionalHourFee: 0,
+    categoryId: '',
 };
 
 const AddServiceModal: React.FC<AddServiceModalProps> = ({
     isOpen,
     setIsOpen,
     onSubmit,
-    data
+    data,
+    categories
 }) => {
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -137,7 +147,24 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
                                                     <ErrorMessage name="yearsOfExperience" component="div" className="mt-1 text-sm text-red-600" />
                                                 </div>
 
-                                            
+                                                <div>
+                                                    <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
+                                                        Category
+                                                    </label>
+                                                    <Field
+                                                        as="select"
+                                                        name="categoryId"
+                                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                                                    >
+                                                        <option value="">Select a category</option>
+                                                        {categories.map((category) => (
+                                                            <option key={category._id} value={category._id}>
+                                                                {category.title}
+                                                            </option>
+                                                        ))}
+                                                    </Field>
+                                                    <ErrorMessage name="categoryId" component="div" className="mt-1 text-sm text-red-600" />
+                                                </div>
                                             </div>
 
                                             <div>

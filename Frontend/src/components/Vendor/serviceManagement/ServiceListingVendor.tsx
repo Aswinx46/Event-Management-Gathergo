@@ -6,6 +6,8 @@ import AddServiceModal from './AddServiceModal';
 import { useCreateServiceMutation } from '@/hooks/VendorCustomHooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import { useFetchCategoryForServiceQuery } from '../../../hooks/VendorCustomHooks';
+import { toast } from 'react-toastify';
 
 interface Service {
   serviceTitle: string;
@@ -17,6 +19,11 @@ interface Service {
   servicePrice: number;
   additionalHourFee: number;
   vendorId?: string
+}
+
+interface Category {
+  _id: string;
+  title: string;
 }
 
 const dummyServices: Service[] = [
@@ -47,6 +54,11 @@ const ServiceListingVendor: React.FC = () => {
 
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
 
+  const fetchCategoryQuery = useFetchCategoryForServiceQuery()
+
+  const categories: Category[] = fetchCategoryQuery?.data?.categories
+  console.log(categories)
+
   const createServiceMutation = useCreateServiceMutation()
 
   const handleSubmit = (data: Service) => {
@@ -56,7 +68,12 @@ const ServiceListingVendor: React.FC = () => {
       onSuccess(data) {
         console.log(data)
         setIsOpen(false)
+        toast.success(data.message)
       },
+      onError(err){
+        console.log(err)
+        toast.error(err.message)
+      }
     })
   }
 
@@ -68,7 +85,7 @@ const ServiceListingVendor: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="max-w-7xl mx-auto"
       >
-        {isOpen && <AddServiceModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleSubmit} />}
+        {isOpen && <AddServiceModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleSubmit} categories={categories}/>}
         <h1 className="text-3xl font-bold text-gray-800 mb-8 bg-white bg-opacity-70 p-4 rounded-lg shadow-sm inline-block">
           My Services
         </h1>

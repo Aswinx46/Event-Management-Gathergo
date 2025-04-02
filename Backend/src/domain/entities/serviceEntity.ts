@@ -9,7 +9,7 @@ export interface ServiceEntity {
     termsAndCondition: string;
     serviceDuration: string;
     servicePrice: number;
-    additionalHourFees: number;
+    additionalHourFee: number;
     vendorId: ObjectId;
     categoryId: ObjectId
 }
