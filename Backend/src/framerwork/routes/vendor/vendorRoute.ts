@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedResendOtpVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
+import { injectedCreateServiceController, injectedFindCategoryForServiceController, injectedResendOtpVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
 
 export class VendorRoute {
     public vendorRoute: Router
@@ -22,6 +22,12 @@ export class VendorRoute {
         })
         this.vendorRoute.post('/updateProfileImage', (req: Request, res: Response) => {
             injectedUpdateImageVendorController.handleUpdateImageVendor(req, res)
+        })
+        this.vendorRoute.post('/createService', (req: Request, res: Response) => {
+            injectedCreateServiceController.handleCreateService(req, res)
+        })
+        this.vendorRoute.get('/categories', (req: Request, res: Response) => {
+            injectedFindCategoryForServiceController.handleFindCategoryForServiceUseCase(req, res)
         })
     }
 }

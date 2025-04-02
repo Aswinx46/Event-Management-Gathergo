@@ -16,19 +16,16 @@ import {
   X,
   ChevronRight,
 } from "lucide-react"
+import { useLocation, useNavigate } from "react-router-dom"
 
-interface SidebarProps {
-  activeSection: string
-  setActiveSection: (section: string) => void
-}
 
-export function Sidebar({ activeSection, setActiveSection }: SidebarProps) {
+export function Sidebar() {
   const [isOpen, setIsOpen] = useState(true)
 
   const menuItems = [
-    { id: "profile", label: "Profile", icon: User },
+    { id: "home", label: "Profile", icon: User },
     { id: "checkStatus", label: "Check Status", icon: CheckCircle },
-    { id: "service", label: "Service", icon: Briefcase },
+    { id: "services", label: "Service", icon: Briefcase },
     { id: "workSamples", label: "Work Samples", icon: Image },
     { id: "bookings", label: "Bookings", icon: Calendar },
     { id: "events", label: "Events", icon: CalendarDays },
@@ -40,10 +37,18 @@ export function Sidebar({ activeSection, setActiveSection }: SidebarProps) {
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
   }
+  const location = useLocation()
 
+  const isActive = (link: string) => {
+    const id = location.pathname.split('/')[2]
+    return id == link
+  }
+
+  const navigate = useNavigate()
+  
   const handleMenuItemClick = (sectionId: string) => {
-    setActiveSection(sectionId)
-    // On mobile, close the sidebar after selection
+    
+    navigate(`/vendor/${sectionId}`)
     if (window.innerWidth < 768) {
       setIsOpen(false)
     }
@@ -92,21 +97,19 @@ export function Sidebar({ activeSection, setActiveSection }: SidebarProps) {
                   whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleMenuItemClick(item.id)}
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors ${
-                    activeSection === item.id ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors ${isActive(item.id)? 'bg-black text-white':''} transition-all duration-500`}
                 >
                   <item.icon size={18} className="mr-3" />
                   <span>{item.label}</span>
-                  {activeSection === item.id && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="ml-auto"
-                    >
-                      <ChevronRight size={16} />
-                    </motion.div>
-                  )}
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="ml-auto"
+                  >
+                    <ChevronRight size={16} />
+                  </motion.div>
+
                 </motion.button>
               </li>
             ))}

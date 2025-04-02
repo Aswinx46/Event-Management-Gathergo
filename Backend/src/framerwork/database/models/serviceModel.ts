@@ -6,4 +6,4 @@ export interface IserviceModal extends Omit<ServiceEntity, "_id">, Document {
     _id: ObjectId
 }
 
-export const serviceModal = model<ServiceEntity>("category", serviceSchema)
+export const serviceModal = model<ServiceEntity>("service", serviceSchema)

@@ -97,3 +97,44 @@ export const updateProfileImageVendor = async (id: string, imageUrl: string) => 
         throw new Error('error while updating image vendor side')
     }
 }
+
+
+interface Service {
+    serviceTitle: string;
+    yearsOfExperience: number;
+    serviceDescription: string;
+    cancellationPolicy: string;
+    termsAndCondition: string;
+    serviceDuration: string;
+    servicePrice: number;
+    additionalHourFee: number;
+    vendorId?: string
+
+}
+
+
+export const createServiceVendor = async (service: Service) => {
+    try {
+        const response = await axios.post('/createService', { service })
+        return response.data
+    } catch (error) {
+        console.log('error while creating service', error)
+        if (isAxiosError(error)) {
+            throw new Error(error?.response?.data?.error)
+        }
+        throw new Error('error while creating service')
+    }
+}
+
+export const fetchCategoryCategoryForService = async () => {
+    try {
+        const response = await axios.get('/categories')
+        return response.data
+    } catch (error) {
+        console.log('error while fetching category', error)
+        if (isAxiosError(error)) {
+            throw new Error(error?.response?.data?.error)
+        }
+        throw new Error('error while fetching category for service')
+    }
+} 

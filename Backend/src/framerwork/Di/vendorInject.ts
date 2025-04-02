@@ -14,6 +14,12 @@ import { ResendOtpVendorUsecase } from "../../useCases/vendor/authentication/res
 import { ResendOtpVendorController } from "../../adapters/controllers/vendor/authentication/resendOtpController";
 import { ProfileImageUpdateUseCase } from "../../useCases/vendor/profileUpdations/profileImageUpdate";
 import { UpdateImageVendorController } from "../../adapters/controllers/vendor/profile/updateImageController";
+import { CreateServiceUseCase } from "../../useCases/vendor/service/createServiceUseCase";
+import { ServiceRepository } from "../../adapters/repository/service/serviceRepository";
+import { CreateServiceController } from "../../adapters/controllers/vendor/service/createServiceController";
+import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
+import { FindCategoryForServiceController } from "../../adapters/controllers/vendor/service/findCategoryForServiceController";
+import { FindCategoryForServiceUseCase } from "../../useCases/vendor/service/findCategoryForServiceUseCase";
 
 
 //-----------------Register vendor-------------------//
@@ -40,3 +46,12 @@ export const injectedVendorLoginController = new LoginVendorController(vendorLog
 const updateImageVendorUseCase = new ProfileImageUpdateUseCase(vendorRespository)
 export const injectedUpdateImageVendorController = new UpdateImageVendorController(updateImageVendorUseCase)
 
+//-------------------------Service creation-----------------------------
+const serviceRepository = new ServiceRepository()
+const createServiceUseCase = new CreateServiceUseCase(serviceRepository)
+export const injectedCreateServiceController = new CreateServiceController(createServiceUseCase)
+
+//-----------------------Finding categories -------------------------------
+const categoryRepository = new CategoryDatabaseRepository()
+const findCategoryForServiceUseCase = new FindCategoryForServiceUseCase(categoryRepository)
+export const injectedFindCategoryForServiceController = new FindCategoryForServiceController(findCategoryForServiceUseCase)

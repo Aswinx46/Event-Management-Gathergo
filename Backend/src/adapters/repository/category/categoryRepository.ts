@@ -18,4 +18,7 @@ export class CategoryDatabaseRepository implements IcategoryDatabase {
         const totalPages = Math.ceil(await categoryModel.countDocuments() / limit)
         return { categories, totalPages }
     }
+    async findCategoryForCreatingService(): Promise<categoryEntity[] | []> {
+        return await categoryModel.find({ status: 'active' }).select('title _id')
+    }
 }   

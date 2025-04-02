@@ -1,5 +1,5 @@
-import { resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
-import { useMutation } from "@tanstack/react-query"
+import { createServiceVendor, fetchCategoryCategoryForService, resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
     name: string;
@@ -15,7 +15,8 @@ export const useUploadeImageToCloudinaryMutation = () => {
         mutationFn: async (formData: FormData) => {
             return await uploadImageCloudinary(formData)
 
-        }
+        },
+
     })
 }
 
@@ -45,14 +46,40 @@ export const useVendorResendOtpMutation = () => {
     })
 }
 
-export const useVendorLoginMutation = () => {
-    return useMutation({
-
-    })
-}
+// export const useVendorLoginMutation = () => {
+//     return useMutation({
+//         mutationFn:({email,password}:{email:string,password:string})=>useLogin
+//     })
+// }
 
 export const useUpdateProfileImageMutation = () => {
     return useMutation({
         mutationFn: ({ id, imageUrl }: { id: string, imageUrl: string }) => updateProfileImageVendor(id, imageUrl)
+    })
+}
+
+interface Service {
+    serviceTitle: string;
+    yearsOfExperience: number;
+    serviceDescription: string;
+    cancellationPolicy: string;
+    termsAndCondition: string;
+    serviceDuration: string;
+    servicePrice: number;
+    additionalHourFee: number;
+    vendorId?: string
+}
+
+
+export const useCreateServiceMutation = () => {
+    return useMutation({
+        mutationFn: (service: Service) => createServiceVendor(service)
+    })
+}
+
+export const useFetchCategoryForServiceQuery = () => {
+    return useQuery({
+        queryKey: ['categories'],
+        queryFn: () => fetchCategoryCategoryForService()
     })
 }
