@@ -14,7 +14,7 @@ export class VendorAuthenticationController {
     async sendOtp(req: Request, res: Response) {
         try {
             const  vendor  = req.body
-            console.log(vendor)
+            
             
             await this.vendorSentOtp.execute(vendor.email)
             res.status(HttpStatus.OK).json({ message: "otp sended to the entered email" })

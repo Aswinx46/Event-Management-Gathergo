@@ -1,4 +1,4 @@
-import { resendOtpVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { useMutation } from "@tanstack/react-query"
 
 interface FormValues {
@@ -48,5 +48,11 @@ export const useVendorResendOtpMutation = () => {
 export const useVendorLoginMutation = () => {
     return useMutation({
 
+    })
+}
+
+export const useUpdateProfileImageMutation = () => {
+    return useMutation({
+        mutationFn: ({ id, imageUrl }: { id: string, imageUrl: string }) => updateProfileImageVendor(id, imageUrl)
     })
 }

@@ -26,7 +26,9 @@ export class LoginVendorController {
                 role: vendor?.role,
                 status: vendor?.status,
                 vendorId: vendor?.vendorId,
-                vendorStatus: vendor?.vendorStatus
+                vendorStatus: vendor?.vendorStatus,
+                rejectReason: vendor?.rejectionReason,
+                profileImage: vendor?.profileImage
             }
             if (!vendor) throw new Error('invalid credentials')
             const accessTokenSecretKey = process.env.ACCESSTOKEN_SECRET_KEY as string
@@ -37,7 +39,7 @@ export class LoginVendorController {
             await this.redisService.set(`user${vendor.role}:${vendor._id}`, 15 * 60, JSON.stringify({ status: vendor.status, vendorStatus: vendor.vendorStatus }))
             const valueFromRedis = await this.redisService.get(`user:${vendor.role}:${vendor._id}`)
             console.log('value from redis', valueFromRedis)
-            res.status(HttpStatus.OK).json({ message: "vendor logined", vendor: modifiendVendor,accessToken })
+            res.status(HttpStatus.OK).json({ message: "vendor logined", vendor: modifiendVendor, accessToken })
             return
         } catch (error) {
             res.status(HttpStatus.BAD_REQUEST).json({

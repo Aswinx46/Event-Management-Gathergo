@@ -8,7 +8,10 @@ interface vendor {
     role: 'vendor',
     status: 'active' | 'block',
     vendorId: string,
-    vendorStatus: 'pending' | 'approved' | 'rejected'
+    vendorStatus: 'pending' | 'approved' | 'rejected',
+    rejectReason?: string,
+    image?: string,
+    profileImage:string
 }
 
 const initialState:{vendor:vendor | null} = {

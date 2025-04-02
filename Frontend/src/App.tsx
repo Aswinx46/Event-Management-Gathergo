@@ -3,11 +3,12 @@ import VendorRoute from './Routes/VendorRoute'
 import './App.css'
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
 import AdminRoute from './Routes/AdminRoute'
-function App() {
- 
+import { Toaster } from 'react-hot-toast'
 
+function App() {
   return (
    <BrowserRouter>
+    <Toaster position="top-right" />
     {/* <Header/> */}
    <Routes>
     <Route path='/*' element={<UserRoute/>}></Route>
@@ -15,8 +16,6 @@ function App() {
     <Route path='/admin/*' element={<AdminRoute/>}></Route>
    </Routes>
    </BrowserRouter>
-
- 
   )
 }
 
