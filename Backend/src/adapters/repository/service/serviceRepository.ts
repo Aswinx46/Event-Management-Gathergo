@@ -20,4 +20,23 @@ export class ServiceRepository implements IserviceRepository {
     async findServiceById(serviceId: string): Promise<ServiceEntity | null> {
         return await serviceModal.findById(serviceId)
     }
+    async changeStatus(serviceId: string): Promise<ServiceEntity | null> {
+        return await serviceModal.findOneAndUpdate(
+            { _id: serviceId },
+            [
+                {
+                    $set: {
+                        status: {
+                            $cond: {
+                                if: { $eq: ["$status", "active"] },
+                                then: "blocked",
+                                else: "active"
+                            }
+                        }
+                    }
+                }
+            ],
+            { new: true }
+        );
+    }
 }

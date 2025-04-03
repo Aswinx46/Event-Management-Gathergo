@@ -24,6 +24,8 @@ import { FindServiceUseCase } from "../../useCases/vendor/service/findServiceUse
 import { FindServiceController } from "../../adapters/controllers/vendor/service/findServiceController";
 import { EditServiceUseCase } from "../../useCases/vendor/service/editServiceUseCase";
 import { EditServiceController } from "../../adapters/controllers/vendor/service/editServiceController";
+import { ChangeStatusServiceUseCase } from "../../useCases/vendor/service/changeStatusServiceUseCase";
+import { ChangestatusServiceController } from "../../adapters/controllers/vendor/service/changeStatusServiceController";
 
 
 //-----------------Register vendor-------------------//
@@ -67,3 +69,7 @@ export const injectedFindServiceController = new FindServiceController(findServi
 //------------------------Edit service---------------------------
 const editService = new EditServiceUseCase(serviceRepository)
 export const injectedEditServiceController = new EditServiceController(editService)
+
+//----------------------- Change status of service---------------------------
+const changeStatusServiceUseCase = new ChangeStatusServiceUseCase(serviceRepository)
+export const injectedChangeStatusServiceController = new ChangestatusServiceController(changeStatusServiceUseCase)

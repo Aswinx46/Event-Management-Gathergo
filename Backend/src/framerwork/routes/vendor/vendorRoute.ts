@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedCreateServiceController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedResendOtpVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
+import { injectedChangeStatusServiceController, injectedCreateServiceController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedResendOtpVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
 
 export class VendorRoute {
     public vendorRoute: Router
@@ -32,8 +32,11 @@ export class VendorRoute {
         this.vendorRoute.post('/services', (req: Request, res: Response) => {
             injectedFindServiceController.handleFindService(req, res)
         })
-        this.vendorRoute.post('/editService', (req: Request, res: Response) => {
+        this.vendorRoute.put('/editService', (req: Request, res: Response) => {
             injectedEditServiceController.handleEditService(req, res)
+        })
+        this.vendorRoute.patch('/changeStatusService', (req: Request, res: Response) => {
+            injectedChangeStatusServiceController.handleChangeStatusUseCase(req, res)
         })
     }
 }

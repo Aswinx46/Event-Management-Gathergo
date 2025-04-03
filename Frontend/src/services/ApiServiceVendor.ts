@@ -1,14 +1,6 @@
 import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
 
-interface FormValues {
-    name: string;
-    email: string;
-    phone: string;
-    password: string;
-    confirmPassword: string;
-    document: File | null;
-}
 
 interface VendorData {
     name: string;
@@ -46,7 +38,7 @@ export const vendorSignup = async (vendor: VendorData) => {
     }
 }
 
-export const verifyOtpVendor = async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
+export const verifyOtpVendor = async ({ formdata, otpString }: { formdata: Record<string, string | number | boolean>; otpString: string }) => {
     try {
         const response = await axios.post('/verify', { formdata, enteredOtp: otpString })
         return response.data
@@ -156,7 +148,7 @@ export const findServiceForVendor = async ({ vendorId, pageNo }: { vendorId: str
 
 export const editServiceVendor = async (service: Service, serviceId: string) => {
     try {
-        const response = await axios.post('/editService', { service, serviceId })
+        const response = await axios.put('/editService', { service, serviceId })
         return response.data
     } catch (error) {
         console.log('error while editing service', error)
@@ -164,5 +156,18 @@ export const editServiceVendor = async (service: Service, serviceId: string) => 
             throw new Error(error.response?.data.error)
         }
         throw new Error('error while editing service')
+    }
+}
+
+export const changeStatusService = async function (serviceId: string) {
+    try {
+        const response = await axios.patch('/changeStatusService', { serviceId })
+        return response.data
+    } catch (error) {
+        console.log('error while changing the status of the service', error)
+        if (isAxiosError(error)) {
+            throw new Error(error?.response?.data.error)
+        }
+        throw new Error('error while changing the status of the service')
     }
 }

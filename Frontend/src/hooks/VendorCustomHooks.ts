@@ -1,4 +1,4 @@
-import { createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -32,7 +32,7 @@ export const useVendorSignupMutation = () => {
 
 export const useVendorVerifyOtpMutation = () => {
     return useMutation({
-        mutationFn: async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
+        mutationFn: async ({ formdata, otpString }: { formdata: Record<string, string | number | boolean>; otpString: string }) => {
             return await verifyOtpVendor({ formdata, otpString })
         }
     })
@@ -98,5 +98,11 @@ export const useFetchServiceVendor = () => {
 export const useEditServiceVendor = () => {
     return useMutation({
         mutationFn: ({ service, serviceId }: { service: Service, serviceId: string }) => editServiceVendor(service, serviceId)
+    })
+}
+
+export const useChangeStatusServiceVendor = () => {
+    return useMutation({
+        mutationFn: (serviceId: string) => changeStatusService(serviceId)
     })
 }

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ClockIcon, CurrencyDollarIcon, CalendarIcon, DocumentTextIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import AddServiceModal from './AddServiceModal';
-import { useCreateServiceMutation, useEditServiceVendor, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
+import { useChangeStatusServiceVendor, useCreateServiceMutation, useEditServiceVendor, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFetchCategoryForServiceQuery } from '../../../hooks/VendorCustomHooks';
@@ -50,6 +50,7 @@ const ServiceListingVendor: React.FC = () => {
 
   const updateService = useEditServiceVendor()
 
+  const changeStatusService = useChangeStatusServiceVendor()
   useEffect(() => {
     if (vendor) {
       fetchService.mutate({ vendorId: vendor?._id, pageNo: currentPage }, {
@@ -72,6 +73,18 @@ const ServiceListingVendor: React.FC = () => {
     setIsOpen(true)
   }
 
+
+  const handleChangesStatusService = (serviceId: string) => {
+    changeStatusService.mutate(serviceId, {
+      onSuccess: (data) => {
+        setUpdate(!update)
+        toast.success(data.message)
+      },
+      onError: (err) => {
+        toast.error(err.message)
+      }
+    })
+  }
 
 
   const handleEditService = (service: Service) => {
@@ -146,7 +159,8 @@ const ServiceListingVendor: React.FC = () => {
                   </h2>
                   <div className="flex flex-col gap-3 items-end justify-between mb-4">
                     <motion.button whileHover={{ scale: 1.2 }}
-                      className={`px-4 py-1 ${service.status ? "bg-green-400 text-black" : "bg-red-600 text-black"} rounded-2xl text-sm font-semibold hover:cursor-pointer`}>
+                      onClick={() => handleChangesStatusService(service._id)}
+                      className={`px-4 py-1 ${service.status == 'active' ? "bg-green-400 text-black" : "bg-red-600 text-black"} rounded-2xl text-sm font-semibold hover:cursor-pointer`}>
                       {service.status}
                     </motion.button>
                     <motion.button whileHover={{ scale: 1.2 }}

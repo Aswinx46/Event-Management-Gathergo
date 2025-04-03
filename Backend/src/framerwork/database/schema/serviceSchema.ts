@@ -44,7 +44,7 @@ export const serviceSchema = new Schema<ServiceEntity>({
     },
     status: {
         type: String,
-        enum: ['active', 'block'],
+        enum: ['active', 'blocked'],
         default: 'active'
     }
 },
