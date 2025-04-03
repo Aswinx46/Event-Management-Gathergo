@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ServiceFormData {
+    _id: string
     serviceTitle: string;
     yearsOfExperience: number;
     serviceDescription: string;
@@ -15,7 +16,7 @@ interface ServiceFormData {
     servicePrice: number;
     additionalHourFee: number;
     categoryId: string;
-    status:string
+    status: string
 }
 
 interface Category {
@@ -53,20 +54,7 @@ const validationSchema = Yup.object().shape({
     categoryId: Yup.string().required('Category is required'),
 });
 
-const initialValues: ServiceFormData = {
-    serviceTitle: '',
-    yearsOfExperience: 0,
-    // availableDates: '',
-    serviceDescription: '',
-    cancellationPolicy: '',
-    termsAndCondition: '',
-    serviceDuration: '',
-    servicePrice: 0,
-    additionalHourFee: 0,
-    categoryId: '',
-    status:''
 
-};
 
 const AddServiceModal: React.FC<AddServiceModalProps> = ({
     isOpen,
@@ -75,6 +63,23 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
     data,
     categories
 }) => {
+
+    const initialValues: ServiceFormData = {
+        _id: data?._id || '',
+        serviceTitle: data?.serviceTitle || '',
+        yearsOfExperience: data?.yearsOfExperience || 0,
+        serviceDescription: data?.serviceDescription || '',
+        cancellationPolicy: data?.cancellationPolicy || '',
+        termsAndCondition: data?.termsAndCondition || '',
+        serviceDuration: data?.serviceDuration || '',
+        servicePrice: data?.servicePrice || 0,
+        additionalHourFee: data?.additionalHourFee || 0,
+        categoryId: data?.categoryId || '',
+        status: data?.status || ''
+
+    };
+
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-50 " onClose={() => setIsOpen(false)}>
@@ -261,7 +266,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
                                                     disabled={isSubmitting}
                                                     className="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
                                                 >
-                                                    {isSubmitting ? 'Adding...' : 'Add Service'}
+                                                    {data ? 'Edit Service' : 'Add service'}
                                                 </button>
                                             </div>
                                         </Form>

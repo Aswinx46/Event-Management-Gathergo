@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ClockIcon, CurrencyDollarIcon, CalendarIcon, DocumentTextIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import AddServiceModal from './AddServiceModal';
-import { useCreateServiceMutation, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
+import { useCreateServiceMutation, useEditServiceVendor, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFetchCategoryForServiceQuery } from '../../../hooks/VendorCustomHooks';
@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import Pagination from '@/components/other components/Pagination';
 
 interface Service {
+  _id: string
   serviceTitle: string;
   yearsOfExperience: number;
   serviceDescription: string;
@@ -21,6 +22,7 @@ interface Service {
   additionalHourFee: number;
   status: string
   vendorId?: string
+  categoryId: string
 }
 
 interface Category {
@@ -36,10 +38,17 @@ const ServiceListingVendor: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1)
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [update, setUpdate] = useState(false)
-
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
+  const [editService, setEditService] = useState<boolean>(false)
   const fetchCategoryQuery = useFetchCategoryForServiceQuery()
 
+  const categories: Category[] = fetchCategoryQuery?.data?.categories
+
+  const createServiceMutation = useCreateServiceMutation()
+
   const fetchService = useFetchServiceVendor()
+
+  const updateService = useEditServiceVendor()
 
   useEffect(() => {
     if (vendor) {
@@ -55,13 +64,38 @@ const ServiceListingVendor: React.FC = () => {
         },
       })
 
-
     }
   }, [update])
 
-  const categories: Category[] = fetchCategoryQuery?.data?.categories
+  const handleAddService = () => {
+    setSelectedService(null)
+    setIsOpen(true)
+  }
 
-  const createServiceMutation = useCreateServiceMutation()
+
+
+  const handleEditService = (service: Service) => {
+    console.log(service)
+    const serviceId = service._id
+    updateService.mutate({ service, serviceId }, {
+      onSuccess(data) {
+        toast.success(data.message)
+      },
+      onError(err) {
+        toast.error(err.message)
+      }
+    })
+    setIsOpen(false)
+    setUpdate(!update)
+  }
+
+
+  const handleEdit = (selectedService: Service) => {
+    setSelectedService(selectedService)
+    setEditService(true)
+    setIsOpen(true)
+    console.log(selectedService)
+  }
 
   const handleSubmit = (data: Service) => {
     data.vendorId = vendor?._id
@@ -88,12 +122,12 @@ const ServiceListingVendor: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="max-w-7xl mx-auto flex flex-col"
       >
-        {isOpen && <AddServiceModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleSubmit} categories={categories} />}
+        {isOpen && <AddServiceModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={editService ? handleEditService : handleSubmit} categories={categories} data={selectedService || undefined} />}
         <div className='bg-white flex justify-between items-center mb-5 px-5 rounded-2xl flex-shrink-0'>
           <h1 className="text-3xl font-bold text-gray-800 bg-opacity-70 p-4">
             My Services
           </h1>
-          <Button className='' onClick={() => setIsOpen(true)}>ADD SERVICE</Button>
+          <Button className='' onClick={handleAddService}>ADD SERVICE</Button>
         </div>
 
         <div className="h-[calc(100vh-15rem)] overflow-y-auto pr-2">
@@ -104,18 +138,23 @@ const ServiceListingVendor: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                // whileHover={{ scale: 1.02 }}
                 className="bg-white rounded-2xl shadow-xl overflow-hidden group"
               >
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
-                      {service.serviceTitle}
-                    </h2>
-                    <span className={`px-4 py-1 ${service.status ? "bg-green-400 text-black" : "bg-red-600 text-black"} rounded-full text-sm font-semibold`}>
+                  <h2 className="text-2xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
+                    {service.serviceTitle}
+                  </h2>
+                  <div className="flex flex-col gap-3 items-end justify-between mb-4">
+                    <motion.button whileHover={{ scale: 1.2 }}
+                      className={`px-4 py-1 ${service.status ? "bg-green-400 text-black" : "bg-red-600 text-black"} rounded-2xl text-sm font-semibold hover:cursor-pointer`}>
                       {service.status}
-                    </span>
-
+                    </motion.button>
+                    <motion.button whileHover={{ scale: 1.2 }}
+                      className={`px-4 py-1 bg-black text-white rounded-2xl text-sm font-semibold hover:cursor-pointer`}
+                      onClick={() => handleEdit(service)}
+                    >
+                      EDIT
+                    </motion.button>
                   </div>
 
                   <div className="flex gap-3 mb-4">
@@ -129,9 +168,12 @@ const ServiceListingVendor: React.FC = () => {
                     </span>
                   </div>
 
-                  <p className="text-gray-600 mb-6 line-clamp-2">
-                    {service.serviceDescription}
-                  </p>
+                  <div className="relative group/desc transition-all duration-300">
+                    <p className="text-gray-600 mb-6 line-clamp-2 group-hover/desc:line-clamp-none transition-all duration-300 ease-in-out">
+                      {service.serviceDescription}
+                    </p>
+                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent group-hover/desc:hidden transition-opacity duration-300"></div>
+                  </div>
 
                   <div className="space-y-4">
                     <div className="flex items-center text-gray-700">

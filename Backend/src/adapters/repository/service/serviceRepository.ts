@@ -14,5 +14,10 @@ export class ServiceRepository implements IserviceRepository {
         const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
         return { Services, totalPages }
     }
-
+    async editService(service: ServiceEntity, serviceId: string): Promise<ServiceEntity | null> {
+        return await serviceModal.findByIdAndUpdate(serviceId, service, { new: true })
+    }
+    async findServiceById(serviceId: string): Promise<ServiceEntity | null> {
+        return await serviceModal.findById(serviceId)
+    }
 }

@@ -22,6 +22,8 @@ import { FindCategoryForServiceController } from "../../adapters/controllers/ven
 import { FindCategoryForServiceUseCase } from "../../useCases/vendor/service/findCategoryForServiceUseCase";
 import { FindServiceUseCase } from "../../useCases/vendor/service/findServiceUseCase";
 import { FindServiceController } from "../../adapters/controllers/vendor/service/findServiceController";
+import { EditServiceUseCase } from "../../useCases/vendor/service/editServiceUseCase";
+import { EditServiceController } from "../../adapters/controllers/vendor/service/editServiceController";
 
 
 //-----------------Register vendor-------------------//
@@ -61,3 +63,7 @@ export const injectedFindCategoryForServiceController = new FindCategoryForServi
 //-----------------------Find Services---------------------------------------
 const findServiceUseCase = new FindServiceUseCase(serviceRepository)
 export const injectedFindServiceController = new FindServiceController(findServiceUseCase)
+
+//------------------------Edit service---------------------------
+const editService = new EditServiceUseCase(serviceRepository)
+export const injectedEditServiceController = new EditServiceController(editService)
