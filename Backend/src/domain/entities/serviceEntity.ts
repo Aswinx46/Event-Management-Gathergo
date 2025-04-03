@@ -10,6 +10,8 @@ export interface ServiceEntity {
     serviceDuration: string;
     servicePrice: number;
     additionalHourFee: number;
+    status: string
     vendorId: ObjectId;
     categoryId: ObjectId
+
 }

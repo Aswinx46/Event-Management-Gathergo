@@ -109,7 +109,7 @@ interface Service {
     servicePrice: number;
     additionalHourFee: number;
     vendorId?: string
-
+    status:string
 }
 
 
@@ -137,4 +137,18 @@ export const fetchCategoryCategoryForService = async () => {
         }
         throw new Error('error while fetching category for service')
     }
-} 
+}
+
+export const findServiceForVendor = async ({ vendorId, pageNo }: { vendorId: string, pageNo: number }) => {
+    try {
+
+        const response = await axios.post('/services', { vendorId, pageNo })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching service', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.error)
+        }
+        throw new Error('error while fetching service')
+    }
+}

@@ -15,6 +15,7 @@ interface ServiceFormData {
     servicePrice: number;
     additionalHourFee: number;
     categoryId: string;
+    status:string
 }
 
 interface Category {
@@ -63,6 +64,8 @@ const initialValues: ServiceFormData = {
     servicePrice: 0,
     additionalHourFee: 0,
     categoryId: '',
+    status:''
+
 };
 
 const AddServiceModal: React.FC<AddServiceModalProps> = ({

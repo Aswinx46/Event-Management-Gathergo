@@ -41,6 +41,11 @@ export const serviceSchema = new Schema<ServiceEntity>({
     yearsOfExperience: {
         type: Number,
         required: true
+    },
+    status: {
+        type: String,
+        enum: ['active', 'block'],
+        default: 'active'
     }
 },
     {

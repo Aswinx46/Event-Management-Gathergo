@@ -20,6 +20,8 @@ import { CreateServiceController } from "../../adapters/controllers/vendor/servi
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { FindCategoryForServiceController } from "../../adapters/controllers/vendor/service/findCategoryForServiceController";
 import { FindCategoryForServiceUseCase } from "../../useCases/vendor/service/findCategoryForServiceUseCase";
+import { FindServiceUseCase } from "../../useCases/vendor/service/findServiceUseCase";
+import { FindServiceController } from "../../adapters/controllers/vendor/service/findServiceController";
 
 
 //-----------------Register vendor-------------------//
@@ -55,3 +57,7 @@ export const injectedCreateServiceController = new CreateServiceController(creat
 const categoryRepository = new CategoryDatabaseRepository()
 const findCategoryForServiceUseCase = new FindCategoryForServiceUseCase(categoryRepository)
 export const injectedFindCategoryForServiceController = new FindCategoryForServiceController(findCategoryForServiceUseCase)
+
+//-----------------------Find Services---------------------------------------
+const findServiceUseCase = new FindServiceUseCase(serviceRepository)
+export const injectedFindServiceController = new FindServiceController(findServiceUseCase)

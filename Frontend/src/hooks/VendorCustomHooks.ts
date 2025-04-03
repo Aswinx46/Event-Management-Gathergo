@@ -1,4 +1,4 @@
-import { createServiceVendor, fetchCategoryCategoryForService, resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { createServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -68,6 +68,7 @@ interface Service {
     servicePrice: number;
     additionalHourFee: number;
     vendorId?: string
+    status: string
 }
 
 
@@ -81,8 +82,14 @@ export const useFetchCategoryForServiceQuery = () => {
     return useQuery({
         queryKey: ['categories'],
         queryFn: () => fetchCategoryCategoryForService(),
-    
-        refetchOnWindowFocus:false
+
+        refetchOnWindowFocus: false
     },
-)
+    )
+}
+
+export const useFetchServiceVendor = () => {
+    return useMutation({
+        mutationFn: ({ vendorId, pageNo }: { vendorId: string, pageNo: number }) => findServiceForVendor({ vendorId, pageNo })
+    })
 }
