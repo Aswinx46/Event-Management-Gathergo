@@ -1,5 +1,6 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
+import { ChangeStatusCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeStatusCategoryController";
 import { CreateCategoryController } from "../../adapters/controllers/admin/categoryManagement/createCategoryController";
 import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
@@ -11,6 +12,7 @@ import { CategoryDatabaseRepository } from "../../adapters/repository/category/c
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { AdminLoginUseCase } from "../../useCases/admin/adminLoginuseCase";
 import { ApproveVendor } from "../../useCases/admin/ApproveVendorStatus";
+import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/changeStatusOfCategoryUseCase";
 import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
 import { findAllPendingVendors } from "../../useCases/admin/findAllPendingVendorUseCase";
@@ -56,3 +58,7 @@ export const injectedFindAllCategoryController = new FindCategoryController(find
 //------------------------------- Create category-----------------------------
 const createCategoryUseCase = new CreateCategoryUseCase(categoryDatabase)
 export const injectedCreateCategoryController = new CreateCategoryController(createCategoryUseCase)
+
+//----------------------------Change status category----------------------
+const changeStatusCategory = new ChangeStatusOfCategory(categoryDatabase)
+export const InjectedChangeStatusCategoryController = new ChangeStatusCategoryController(changeStatusCategory)

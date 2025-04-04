@@ -1,4 +1,4 @@
-import { adminLogin, approvePendingVendor, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, rejectPendingVendor } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, rejectPendingVendor } from "@/services/ApiServiceAdmin"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface Login {
@@ -93,7 +93,12 @@ interface Category { title: string; image: File | null; }
 export const useCreateCategory = () => {
     return useMutation({
         mutationFn: ({ title, image }: Category) => createCategory({ title, image }),
-     
+
     })
 }
 
+export const UseChangeStatusCategory = () => {
+    return useMutation({
+        mutationFn: (categoryId: string) => changeStatusCategory(categoryId)
+    })
+}

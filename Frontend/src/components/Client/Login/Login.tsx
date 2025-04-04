@@ -3,9 +3,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { data, Link, useNavigate } from "react-router-dom"
-import { useMutation } from "@tanstack/react-query"
-import axios from '../../../axios/clientAxios'
+import {  Link, useNavigate } from "react-router-dom"
 import { isAxiosError } from "axios"
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
@@ -20,7 +18,6 @@ import { useClientForgetPassword, useClientGoogleLoginMutation, useClientLoginMu
 import ForgotPasswordModal from "@/components/other components/ForgetPasswordModal"
 import OTPModal from "@/components/otpModal/otpModal"
 import ResetPasswordModal from "@/components/other components/ChangePasswordOtp"
-import LoadingScreen from "@/components/other components/loadingScreen"
 export default function LoginComponent() {
 
     const initialValues = {

@@ -19,10 +19,10 @@ interface Category { title: string; image: File | null; }
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, refetch }) => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [showCropper, setShowCropper] = useState<boolean>(false)
-  const [image, setImage] = useState()
   const [category, setCategory] = useState<Category>()
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const validationSchema = Yup.object({
     title: Yup.string().min(3, "Must be at least 3 characters").required("Required"),
     image: Yup.mixed()
@@ -52,6 +52,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
       if (values.image) {
         formdata.append('file', values.image)
         formdata.append('upload_preset', 'Category')
+        setIsLoading(true)
         const response = await imageUpload.mutateAsync(formdata)
         values.image = response?.secure_url
         createCategory.mutate(values, {
@@ -64,6 +65,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
             setIsOpen(false);
             resetForm();
             setPreviewUrl("");
+            setIsLoading(false)
           },
           onError(error) {
             toast.error(error.message)
@@ -146,7 +148,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ setFieldValue, values }) => (
+              {({ setFieldValue }) => (
                 <Form className="space-y-6">
                   {/* Category Title */}
                   <div>
@@ -219,8 +221,8 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
                     type="submit"
                     className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors shadow-md"
                   >
-                    {/* {createCategoryMutation.isPending ? 'Creating category...' : 'Create category'} */}
-                    create category
+                    {isLoading ? 'Creating category...' : 'Create category'}
+
                   </motion.button>
                 </Form>
               )}

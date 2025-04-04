@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedAdminLoginController, injectedApproveVendorStatus, injectedCreateCategoryController, injectedFindAllCategoryController, injectedFindAllPendingVendorController, injectedFindAllRejectedVendorController, injectedFindAllVendorController, injectedRejectVendorController } from "../../Di/adminInject";
+import { injectedAdminLoginController, injectedApproveVendorStatus, InjectedChangeStatusCategoryController, injectedCreateCategoryController, injectedFindAllCategoryController, injectedFindAllPendingVendorController, injectedFindAllRejectedVendorController, injectedFindAllVendorController, injectedRejectVendorController } from "../../Di/adminInject";
 import { injectedFindAllClientController } from "../../Di/clientInject";
 
 export class AdminRoute {
@@ -35,6 +35,9 @@ export class AdminRoute {
         })
         this.adminRoute.post('/createCategory', (req: Request, res: Response) => {
             injectedCreateCategoryController.handleCreatecategory(req, res)
+        })
+        this.adminRoute.patch('/changeStatusCategory', (req: Request, res: Response) => {
+            InjectedChangeStatusCategoryController.handleChangeStatusOfCategory(req, res)
         })
     }
 }

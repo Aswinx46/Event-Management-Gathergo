@@ -1,7 +1,6 @@
 import { AxiosResponse, isAxiosError } from 'axios';
 import axios from '../axios/adminAxios'
-import { current } from '@reduxjs/toolkit';
-import { number } from 'yup';
+
 interface Login {
     email: string;
     password: string
@@ -122,5 +121,18 @@ export const createCategory = async ({ title, image }: Category) => {
             throw new Error(error.response?.data?.error)
         }
         throw new Error('error while creating category')
+    }
+}
+
+export const changeStatusCategory = async (categoryId: string) => {
+    try {
+        const response = await axios.patch('/changeStatusCategory', { categoryId })
+        return response.data
+    } catch (error) {
+        console.log('error while changing the status of the category', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.error)
+        }
+        throw new Error('error while changing the status of the category')
     }
 }

@@ -6,4 +6,5 @@ export interface IcategoryDatabase {
     findCategory(pageNo: number): Promise<{ categories: categoryEntity[] | [], totalPages: number }>
     findCategoryForCreatingService(): Promise<categoryEntity[] | []>
     findCategoryForClient(): Promise<categoryEntity[] | []>
+    changeStatusOfCategory(categoryId: string): Promise<categoryEntity | null>
 }

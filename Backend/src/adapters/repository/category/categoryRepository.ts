@@ -24,4 +24,21 @@ export class CategoryDatabaseRepository implements IcategoryDatabase {
     async findCategoryForClient(): Promise<categoryEntity[] | []> {
         return await categoryModel.find({ status: 'active' }).select('_id image title')
     }
+    async changeStatusOfCategory(categoryId: string): Promise<categoryEntity | null> {
+        return await categoryModel.findOneAndUpdate({ _id: categoryId },
+            [
+                {
+                    $set: {
+                        status: {
+                            $cond: {
+                                if: { $eq: ['$status', 'active'] },
+                                then: 'blocked',
+                                else: 'active'
+                            }
+                        }
+                    }
+                }
+            ]
+        )
+    }
 }   

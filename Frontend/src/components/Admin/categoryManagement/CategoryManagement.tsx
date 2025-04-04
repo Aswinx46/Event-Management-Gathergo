@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaPlus } from 'react-icons/fa';
 import AddCategoryModal from './AddCategoryModal';
-import { useFindAllCategories } from '@/hooks/AdminCustomHooks';
+import { UseChangeStatusCategory, useFindAllCategories } from '@/hooks/AdminCustomHooks';
 import Pagination from '@/components/other components/Pagination';
+import { toast } from 'react-toastify';
 interface Category {
   categoryId: string;
   title: string;
@@ -22,10 +23,27 @@ const CategoryManagement: React.FC = () => {
 
   const findCategoryApi = useFindAllCategories(currentPage)
 
-  console.log(findCategoryApi.data)
+  const changeStatusCategoryApi = UseChangeStatusCategory()
 
+  useEffect(() => {
+    if (findCategoryApi.data?.totalPageNo) {
+      setTotalPages(findCategoryApi.data.totalPageNo);
+    }
+  }, [findCategoryApi.data]);
 
   const categories = findCategoryApi?.data?.categories
+
+  const handleBlockCategory = (id: string) => {
+    changeStatusCategoryApi.mutate(id, {
+      onSuccess: (data) => {
+        findCategoryApi.refetch()
+        toast.success(data.message)
+      },
+      onError: (err) => {
+        toast.error(err.message)
+      }
+    })
+  }
 
   return (
     <motion.div
@@ -130,6 +148,7 @@ const CategoryManagement: React.FC = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => handleBlockCategory(category._id)}
                         className={`px-4 py-2 rounded-lg shadow-sm transition-all ${category.status === 'active'
                           ? 'bg-black text-white hover:bg-gray-800'
                           : 'bg-gray-400 text-black hover:bg-gray-500'
