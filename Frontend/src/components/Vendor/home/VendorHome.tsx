@@ -11,7 +11,6 @@ import { addVendor } from "@/store/slices/vendor/vendorSlice"
 import { isAxiosError } from "axios"
 import { Button } from "@/components/ui/button"
 export default function VendorDashboard() {
-  const [activeSection, setActiveSection] = useState("profile")
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [isPending, setIsPending] = useState(false)
   const [rejected, setRejected] = useState(false)
@@ -19,6 +18,7 @@ export default function VendorDashboard() {
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [changedProfile, setChangedProfile] = useState<boolean>(false)
+  const activeSection='profile'
   useEffect(() => {
     if (vendor) {
       if (vendor?.vendorStatus === 'pending') {

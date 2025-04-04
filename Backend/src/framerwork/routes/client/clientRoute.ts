@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedClientLoginController, injectedFindAllClientController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedClientLoginController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -29,8 +29,11 @@ export class clientRoute {
         this.clientRoute.post('/forgetPassword', (req: Request, res: Response) => {
             injectedForgetPasswordClientController.handleForgetPasswordClient(req, res)
         })
-        this.clientRoute.post('/verifyForgetPasswwordOtp',(req:Request,res:Response)=>{
-            injectedVerifyingForgetOtpClientController.handleVerifyOtp(req,res)
+        this.clientRoute.post('/verifyForgetPasswwordOtp', (req: Request, res: Response) => {
+            injectedVerifyingForgetOtpClientController.handleVerifyOtp(req, res)
+        })
+        this.clientRoute.get('/categories', (req: Request, res: Response) => {
+            injectedFindCategoryForClientController.handleFindCategoryClient(req, res)
         })
     }
 }

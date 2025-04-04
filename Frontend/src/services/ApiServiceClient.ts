@@ -47,7 +47,7 @@ export const clientSignup = async (values: FormValues) => {
     }
 }
 
-export const clientCreateAccount = async ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => {
+export const clientCreateAccount = async ({ formdata, otpString }: { formdata: Record<string, string | number | boolean>; otpString: string }) => {
     try {
         const response = await axios.post('/createAccount', { formdata, otpString })
         return response.data
@@ -104,7 +104,11 @@ export const clientForgetPassword = async ({ email, newPassword }: { email: stri
         const response = await axios.post('/forgetPassword', { email, newPassword })
         return response.data
     } catch (error) {
-        console.log('error while ')
+        console.log('error while forget password', error)
+        if (isAxiosError(error)) {
+            throw new Error(error?.response?.data.error)
+        }
+        throw new Error('error while forget password')
     }
 }
 
@@ -118,5 +122,18 @@ export const clientVerifyForgetPasswordOTp = async ({ email, enteredOtp }: { ema
             throw new Error(error?.response?.data?.error)
         }
         throw new Error('error while verifying forget password otp')
+    }
+}
+
+export const clientFindCategory = async () => {
+    try {
+        const response = await axios.get('/categories')
+        return response.data
+    } catch (error) {
+        console.log('error while fetching category', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.error)
+        }
+        throw new Error('error while fetching category')
     }
 }

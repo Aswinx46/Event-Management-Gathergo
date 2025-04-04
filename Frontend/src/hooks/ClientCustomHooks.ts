@@ -1,6 +1,5 @@
-import { clientCreateAccount, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp } from "@/services/ApiServiceClient";
-import { useMutation } from "@tanstack/react-query";
-import { string } from "yup";
+import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp } from "@/services/ApiServiceClient";
+import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
     password: string;
@@ -33,7 +32,7 @@ export const useClientSignupMutation = () => {
 
 export const useCreateAccountMutation = () => {
     return useMutation({
-        mutationFn: ({ formdata, otpString }: { formdata: Record<string, any>; otpString: string }) => clientCreateAccount({ formdata, otpString })
+        mutationFn: ({ formdata, otpString }: { formdata: Record<string, string | boolean | number>; otpString: string }) => clientCreateAccount({ formdata, otpString })
 
     })
 }
@@ -65,5 +64,13 @@ export const useClientVerifyForgetPasswordOtp = () => {
 export const useClientForgetPassword = () => {
     return useMutation({
         mutationFn: ({ email, newPassword }: { email: string, newPassword: string }) => clientForgetPassword({ email, newPassword })
+    })
+}
+
+export const useFindCategoryClient = () => {
+    return useQuery({
+        queryKey: ['categoriesClient'],
+        queryFn: clientFindCategory
+
     })
 }
