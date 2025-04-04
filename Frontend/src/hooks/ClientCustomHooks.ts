@@ -1,4 +1,4 @@
-import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
@@ -72,5 +72,21 @@ export const useFindCategoryClient = () => {
         queryKey: ['categoriesClient'],
         queryFn: clientFindCategory
 
+    })
+}
+
+export const useFindVendorForCarousal = () => {
+    return useQuery({
+        queryKey: ['vendorForCarousal'],
+        queryFn: fetchVendorForCarousal,
+        refetchOnWindowFocus: false
+    })
+}
+
+export const useFindServiceForclient = (currentPage: number) => {
+    return useQuery({
+        queryKey: ['services', currentPage],
+        queryFn: () => fetchServiceForClient(currentPage),
+        refetchOnWindowFocus: false
     })
 }

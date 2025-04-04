@@ -6,4 +6,5 @@ export interface IserviceRepository {
     editService(service: ServiceEntity, serviceId: string): Promise<ServiceEntity | null>
     findServiceById(serviceId: string): Promise<ServiceEntity | null>
     changeStatus(serviceId: string): Promise<ServiceEntity | null>
+    findServiceForClient(pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }>
 }

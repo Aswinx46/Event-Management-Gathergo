@@ -39,4 +39,12 @@ export class ServiceRepository implements IserviceRepository {
             { new: true }
         );
     }
+    async findServiceForClient(pageNo: number): Promise<{ Services: ServiceEntity[] | []; totalPages: number; }> {
+        const limit = 5
+        const page = Math.max(pageNo, 1)
+        const skip = (page - 1) * limit
+        const Services = await serviceModal.find({ status: 'active' }).select('-createdAt -updatedAt').skip(skip).limit(limit)
+        const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
+        return { Services, totalPages }
+    }
 }

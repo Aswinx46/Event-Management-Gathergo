@@ -137,3 +137,25 @@ export const clientFindCategory = async () => {
         throw new Error('error while fetching category')
     }
 }
+
+export const fetchVendorForCarousal = async () => {
+    try {
+        const response = await axios.get('/vendorsForcarousal')
+        return response.data
+    } catch (error) {
+        console.log('error while fetching vendors for carousal', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while fetching vendor for carousal')
+    }
+}
+
+export const fetchServiceForClient = async (currentPage: number) => {
+    try {
+        const response = await axios.get('/services', { params: { pageNo: currentPage } })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching service in client side', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while fetching services in client side')
+    }
+}

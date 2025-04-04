@@ -11,4 +11,5 @@ export interface IvendorDatabaseRepositoryInterface {
     findAllRejectedVendor(pageNo: number): Promise<{ rejectedVendors: VendorEntity[] | []; totalPages: number }>
     forgetPassword(email: string, newPassword: string): Promise<VendorEntity | null>
     updateProfileImage(id: string, imageUrl: string): Promise<VendorEntity | null>
+    findVendorsForCarousal(): Promise<VendorEntity[] | []>
 }

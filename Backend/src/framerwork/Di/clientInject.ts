@@ -23,6 +23,11 @@ import { VerifyForgetPasswordOtpClientController } from "../../adapters/controll
 import { FindCategoryClientUseCase } from "../../useCases/client/category/findCategoryUseCase";
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { FindCategoryClientController } from "../../adapters/controllers/client/category/findCategoryClientController";
+import { FindVendorForClientUseCase } from "../../useCases/client/vendorFetching/findVendorsForClientSIdeCarousalUseCase";
+import { FindVendorForClientCarousalController } from "../../adapters/controllers/vendor/forClient/findVendorForClientCarousalUseCase";
+import { FindServiceUseCaseClient } from "../../useCases/client/service/findServiceUseCase";
+import { ServiceRepository } from "../../adapters/repository/service/serviceRepository";
+import { FindServiceForClientController } from "../../adapters/controllers/client/service/findServiceForClientController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -64,3 +69,13 @@ export const injectedVerifyingForgetOtpClientController = new VerifyForgetPasswo
 const categoryDatabase = new CategoryDatabaseRepository()
 const findCategoryUseCase = new FindCategoryClientUseCase(categoryDatabase)
 export const injectedFindCategoryForClientController = new FindCategoryClientController(findCategoryUseCase)
+
+
+//--------------------------------- Fetching vendor for client carousal---------------------------
+const findVendorsForclientCarousalUsecase = new FindVendorForClientUseCase(vendorDatabase)
+export const injectedFindVendosForClientCarousalController = new FindVendorForClientCarousalController(findVendorsForclientCarousalUsecase)
+
+//--------------------------------Find Services in client side--------------------------
+const serviceDatabase = new ServiceRepository()
+const findServicesUseCase = new FindServiceUseCaseClient(serviceDatabase)
+export const injectedFindServiceForClientController = new FindServiceForClientController(findServicesUseCase)

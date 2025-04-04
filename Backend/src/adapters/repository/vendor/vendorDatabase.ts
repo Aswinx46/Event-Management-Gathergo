@@ -56,4 +56,7 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
     async updateProfileImage(id: string, imageUrl: string): Promise<VendorEntity | null> {
         return await VendorModel.findByIdAndUpdate(id, { profileImage: imageUrl }, { new: true })
     }
+    async findVendorsForCarousal(): Promise<VendorEntity[] | []> {
+        return await VendorModel.find({ status: 'active', vendorStatus: 'approved' }).select('name profileImage')
+    }
 }

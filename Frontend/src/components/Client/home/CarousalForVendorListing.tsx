@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Carousel,
@@ -8,33 +7,33 @@ import {
   CarouselPrevious
 } from "@/components/ui/carousel";
 
-export interface Category {
-  id: string | number;
-  title: string;
-  image: string;
+export interface Vendor {
+  _id: string | number;
+  name: string;
+  profileImage: string;
 }
 
 interface FuturisticCarouselProps {
-  categories: Category[];
+  vendors: Vendor[];
 }
 
-const FuturisticCarousel = ({ categories }: FuturisticCarouselProps) => {
+const FuturisticCarousel = ({ vendors }: FuturisticCarouselProps) => {
   return (
     <Carousel
       opts={{
         align: "start",
         loop: true,
       }}
-      className="w-full"
+      className="w-full px-30 bg-black"
     >
       <CarouselContent className="-ml-2 md:-ml-4">
-        {categories.map((category) => (
+        {vendors.map((vendor) => (
           <CarouselItem
-            key={category.id}
-            className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/5"
+            key={vendor._id}
+            className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/4"
           >
             <motion.div
-              className="relative group overflow-hidden rounded-xl aspect-[4/5] bg-black"
+              className="relative group overflow-hidden rounded-xl aspect-[3/4] bg-black"
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -42,9 +41,9 @@ const FuturisticCarousel = ({ categories }: FuturisticCarouselProps) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70 z-10" />
 
               <img
-                src={category.image}
-                alt={category.title}
-                className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-110"
+                src={vendor.profileImage}
+                alt={vendor.name}
+                className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-105"
               />
 
               {/* Border glow effect on hover */}
@@ -58,13 +57,13 @@ const FuturisticCarousel = ({ categories }: FuturisticCarouselProps) => {
               />
 
               {/* Title */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+              <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
                 <motion.h3
-                  className="text-white text-xl font-medium tracking-wide"
+                  className="text-white text-lg font-medium tracking-wide"
                   initial={{ y: 5, opacity: 0.8 }}
                   whileHover={{ y: 0, opacity: 1 }}
                 >
-                  {category.title}
+                  {vendor.name}
                 </motion.h3>
               </div>
             </motion.div>

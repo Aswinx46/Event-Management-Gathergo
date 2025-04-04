@@ -1,244 +1,245 @@
-import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ClockIcon, CurrencyDollarIcon, CalendarIcon, DocumentTextIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import AddServiceModal from './AddServiceModal';
-import { useChangeStatusServiceVendor, useCreateServiceMutation, useEditServiceVendor, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useFetchCategoryForServiceQuery } from '../../../hooks/VendorCustomHooks';
-import { toast } from 'react-toastify';
-import Pagination from '@/components/other components/Pagination';
 
-interface Service {
-  _id: string
-  serviceTitle: string;
-  yearsOfExperience: number;
-  serviceDescription: string;
-  cancellationPolicy: string;
-  termsAndCondition: string;
-  serviceDuration: string;
-  servicePrice: number;
-  additionalHourFee: number;
-  status: string
-  vendorId?: string
-  categoryId: string
+interface ServiceFormData {
+    _id?: string;
+    serviceTitle: string;
+    yearsOfExperience: number;
+    serviceDescription: string;
+    cancellationPolicy: string;
+    termsAndCondition: string;
+    serviceDuration: string;
+    servicePrice: number;
+    additionalHourFee: number;
+    status?: string;
+    vendorId?: string;
+    categoryId: string;
 }
 
-interface Category {
-  _id: string;
-  title: string;
+interface Service extends ServiceFormData {
+    _id: string;
+    status: string;
+    vendorId: string;
 }
 
+interface ServiceCardProps {
+    service: Service;
+    onStatusChange: (id: string) => void;
+    onEdit: (service: Service) => void;
+}
 
-const ServiceListingVendor: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [services, setServices] = useState<Service[]>([])
-  const [totalPages, setTotalPages] = useState<number>(1)
-  const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
-  const [update, setUpdate] = useState(false)
-  const [selectedService, setSelectedService] = useState<Service | null>(null)
-  const [editService, setEditService] = useState<boolean>(false)
-  const fetchCategoryQuery = useFetchCategoryForServiceQuery()
+const ServiceCard = ({ service, onStatusChange, onEdit }: ServiceCardProps) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-black text-white rounded-xl p-6 shadow-2xl hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-shadow"
+        >
+            <div className="space-y-6">
+                {/* Header with Status and Edit */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="flex justify-between items-start border-b border-white/10 pb-4"
+                >
+                    <div>
+                        <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                            {service.serviceTitle}
+                        </h2>
+                        <p className="text-gray-400 mt-2">
+                            {service.yearsOfExperience} Years of Experience
+                        </p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => onStatusChange(service._id)}
+                            className={`px-4 py-1 rounded-lg text-sm font-medium ${
+                                service.status === 'active' 
+                                    ? 'bg-green-500 text-black hover:bg-green-600' 
+                                    : 'bg-red-500 text-black hover:bg-red-600'
+                            } transition-colors`}
+                        >
+                            {service.status}
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => onEdit(service)}
+                            className="px-4 py-1 bg-white text-black rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                        >
+                            Edit
+                        </motion.button>
+                    </div>
+                </motion.div>
 
-  const categories: Category[] = fetchCategoryQuery?.data?.categories
-
-  const createServiceMutation = useCreateServiceMutation()
-
-  const fetchService = useFetchServiceVendor()
-
-  const updateService = useEditServiceVendor()
-
-  const changeStatusService = useChangeStatusServiceVendor()
-  useEffect(() => {
-    if (vendor) {
-      fetchService.mutate({ vendorId: vendor?._id, pageNo: currentPage }, {
-        onError(err) {
-          if (err instanceof Error) toast.error(err.message)
-          toast.error('error while fetching services')
-        },
-        onSuccess(data) {
-          console.log(data)
-          setServices(data?.Services)
-          setTotalPages(data?.totalPages)
-        },
-      })
-
-    }
-  }, [update])
-
-  const handleAddService = () => {
-    setSelectedService(null)
-    setIsOpen(true)
-  }
-
-
-  const handleChangesStatusService = (serviceId: string) => {
-    changeStatusService.mutate(serviceId, {
-      onSuccess: (data) => {
-        setUpdate(!update)
-        toast.success(data.message)
-      },
-      onError: (err) => {
-        toast.error(err.message)
-      }
-    })
-  }
-
-
-  const handleEditService = (service: Service) => {
-    console.log(service)
-    const serviceId = service._id
-    updateService.mutate({ service, serviceId }, {
-      onSuccess(data) {
-        toast.success(data.message)
-      },
-      onError(err) {
-        toast.error(err.message)
-      }
-    })
-    setIsOpen(false)
-    setUpdate(!update)
-  }
-
-
-  const handleEdit = (selectedService: Service) => {
-    setSelectedService(selectedService)
-    setEditService(true)
-    setIsOpen(true)
-    console.log(selectedService)
-  }
-
-  const handleSubmit = (data: Service) => {
-    data.vendorId = vendor?._id
-    data.status = 'active'
-    console.log(data)
-    createServiceMutation.mutate(data, {
-      onSuccess(data) {
-        setIsOpen(false)
-        toast.success(data.message)
-        setUpdate(!update)
-      },
-      onError(err) {
-        console.log(err)
-        toast.error(err.message)
-      }
-    })
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto flex flex-col"
-      >
-        {isOpen && <AddServiceModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={editService ? handleEditService : handleSubmit} categories={categories} data={selectedService || undefined} />}
-        <div className='bg-white flex justify-between items-center mb-5 px-5 rounded-2xl flex-shrink-0'>
-          <h1 className="text-3xl font-bold text-gray-800 bg-opacity-70 p-4">
-            My Services
-          </h1>
-          <Button className='' onClick={handleAddService}>ADD SERVICE</Button>
-        </div>
-
-        <div className="h-[calc(100vh-15rem)] overflow-y-auto pr-2">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6">
-            {services?.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden group"
-              >
-                <div className="p-6">
-                  <h2 className="text-2xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
-                    {service.serviceTitle}
-                  </h2>
-                  <div className="flex flex-col gap-3 items-end justify-between mb-4">
-                    <motion.button whileHover={{ scale: 1.2 }}
-                      onClick={() => handleChangesStatusService(service._id)}
-                      className={`px-4 py-1 ${service.status == 'active' ? "bg-green-400 text-black" : "bg-red-600 text-black"} rounded-2xl text-sm font-semibold hover:cursor-pointer`}>
-                      {service.status}
-                    </motion.button>
-                    <motion.button whileHover={{ scale: 1.2 }}
-                      className={`px-4 py-1 bg-black text-white rounded-2xl text-sm font-semibold hover:cursor-pointer`}
-                      onClick={() => handleEdit(service)}
-                    >
-                      EDIT
-                    </motion.button>
-                  </div>
-
-                  <div className="flex gap-3 mb-4">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                      <ClockIcon className="w-4 h-4 mr-1" />
-                      {service.yearsOfExperience} Years
-                    </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                      <CalendarIcon className="w-4 h-4 mr-1" />
-                      Available
-                    </span>
-                  </div>
-
-                  <div className="relative group/desc transition-all duration-300">
-                    <p className="text-gray-600 mb-6 line-clamp-2 group-hover/desc:line-clamp-none transition-all duration-300 ease-in-out">
-                      {service.serviceDescription}
+                {/* Description */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="border-b border-white/10 pb-4"
+                >
+                    <h3 className="text-lg font-semibold mb-2">Description</h3>
+                    <p className="text-gray-300 leading-relaxed">
+                        {service.serviceDescription}
                     </p>
-                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent group-hover/desc:hidden transition-opacity duration-300"></div>
-                  </div>
+                </motion.div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center text-gray-700">
-                      <ClockIcon className="w-5 h-5 mr-2 text-purple-500" />
-                      <span className="text-sm">Duration: {service.serviceDuration}</span>
+                {/* Service Details */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="grid grid-cols-2 gap-6"
+                >
+                    <div>
+                        <h3 className="text-lg font-semibold mb-2">Duration</h3>
+                        <p className="text-gray-300">{service.serviceDuration}</p>
                     </div>
-                    <div className="flex items-center text-gray-700">
-                      <CurrencyDollarIcon className="w-5 h-5 mr-2 text-purple-500" />
-                      <span className="text-sm">Service Price: ₹{service.servicePrice}</span>
-                    </div>
-                    <div className="flex items-center text-gray-700">
-                      <CurrencyDollarIcon className="w-5 h-5 mr-2 text-purple-500" />
-                      <span className="text-sm">Additional Hour: ₹{service.additionalHourFee}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-gray-100">
-                    <div className="space-y-4">
-                      <div className="group/policy cursor-pointer">
-                        <div className="flex items-center text-gray-700 mb-2">
-                          <ShieldCheckIcon className="w-5 h-5 mr-2 text-purple-500" />
-                          <h3 className="font-semibold">Cancellation Policy</h3>
-                        </div>
-                        <p className="text-sm text-gray-600 pl-7 group-hover/policy:text-gray-900 transition-colors">
-                          {service.cancellationPolicy}
+                    <div>
+                        <h3 className="text-lg font-semibold mb-2">Pricing</h3>
+                        <p className="text-gray-300">₹{service.servicePrice}</p>
+                        <p className="text-sm text-gray-400 mt-1">
+                            Additional Hour: ₹{service.additionalHourFee}
                         </p>
-                      </div>
-
-                      <div className="group/terms cursor-pointer">
-                        <div className="flex items-center text-gray-700 mb-2">
-                          <DocumentTextIcon className="w-5 h-5 mr-2 text-purple-500" />
-                          <h3 className="font-semibold">Terms & Conditions</h3>
-                        </div>
-                        <p className="text-sm text-gray-600 pl-7 group-hover/terms:text-gray-900 transition-colors">
-                          {service.termsAndCondition}
-                        </p>
-                      </div>
                     </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                </motion.div>
 
-        <div className="mt-4 flex-shrink-0">
-          <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
+                {/* Policies */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="space-y-4 border-t border-white/10 pt-4"
+                >
+                    <div>
+                        <h3 className="text-lg font-semibold mb-2">Cancellation Policy</h3>
+                        <p className="text-gray-300">{service.cancellationPolicy}</p>
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-semibold mb-2">Terms and Conditions</h3>
+                        <p className="text-gray-300">{service.termsAndCondition}</p>
+                    </div>
+                </motion.div>
+            </div>
+        </motion.div>
+    );
+};
+
+const ServiceListingVendor = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [editingService, setEditingService] = useState<Service | null>(null);
+    const [update, setUpdate] = useState(false);
+
+    const vendor = useSelector((state: RootState) => state.vendorSlice.vendor);
+
+    const { data: services = [] } = useQuery({
+        queryKey: ['services', update],
+        queryFn: async () => {
+            const response = await fetch(`/api/vendor/services/${vendor?._id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch services');
+            }
+            return response.json() as Promise<Service[]>;
+        }
+    });
+
+    const changeStatusMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const response = await fetch(`/api/vendor/services/${id}/status`, {
+                method: 'PATCH'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to change status');
+            }
+            return response.json();
+        },
+        onSuccess: () => {
+            setUpdate(!update);
+            toast.success('Status updated successfully');
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+
+    const updateServiceMutation = useMutation({
+        mutationFn: async (service: Service) => {
+            const response = await fetch(`/api/vendor/services/${service._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(service)
+            });
+            if (!response.ok) {
+                throw new Error('Failed to update service');
+            }
+            return response.json();
+        },
+        onSuccess: () => {
+            setUpdate(!update);
+            toast.success('Service updated successfully');
+            setIsOpen(false);
+            setEditingService(null);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+
+    const handleStatusChange = (id: string) => {
+        changeStatusMutation.mutate(id);
+    };
+
+    const handleEdit = (service: Service) => {
+        setEditingService(service);
+        setIsOpen(true);
+    };
+
+    return (
+        <div className="container mx-auto px-4 py-8">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-white">Your Services</h1>
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsOpen(true)}
+                    className="px-6 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                >
+                    Add New Service
+                </motion.button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {services.map((service: Service) => (
+                    <ServiceCard
+                        key={service._id}
+                        service={service}
+                        onStatusChange={handleStatusChange}
+                        onEdit={handleEdit}
+                    />
+                ))}
+            </div>
+
+            <AddServiceModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                onSubmit={(service) => updateServiceMutation.mutate(service as Service)}
+                categories={[]}
+                data={editingService || undefined}
+            />
         </div>
-      </motion.div>
-    </div>
-  );
+    );
 };
 
 export default ServiceListingVendor;
