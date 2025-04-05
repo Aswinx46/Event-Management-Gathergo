@@ -103,6 +103,15 @@ const EventProviders: React.FC = () => {
         >
           Show Pending Requests
         </motion.button>
+        <motion.button
+          variants={buttonVariants}
+          whileHover="hover"
+          onClick={()=>navigate('/admin/rejectedVendors')}
+          whileTap="tap"
+          className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900"
+        >
+          Show Rejected Vendors
+        </motion.button>
 
         <Pagination current={currentPage} setPage={setCurrentPage} total={totalPage} />
       </div>

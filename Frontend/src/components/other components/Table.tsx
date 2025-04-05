@@ -141,10 +141,9 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     <div className="flex items-center">
-                                        <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xs overflow-hidden">
-                                            {/* {provider.profile.charAt(0).toUpperCase()} */}
-                                        </div>
-                                        {/* <span className="ml-2">{provider.profile}</span> */}
+
+                                        <img src={user.profileImage} className="ml-2 w-8 h-8 rounded-full object-cover" />
+
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">

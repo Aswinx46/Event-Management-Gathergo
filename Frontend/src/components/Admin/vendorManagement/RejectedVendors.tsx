@@ -1,8 +1,8 @@
 import Pagination from '@/components/other components/Pagination'
 import { Table } from '@/components/other components/Table'
 import { useFindRejectedVendors } from '@/hooks/AdminCustomHooks'
-import React, { useEffect, useState } from 'react'
-import { animate, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 interface Vendor {
     _id: string;
     vendorId: string;
