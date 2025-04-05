@@ -13,5 +13,4 @@ export interface ServiceEntity {
     status: string
     vendorId: ObjectId;
     categoryId: ObjectId
-
 }

@@ -1,10 +1,13 @@
 import { ObjectId } from "mongoose";
 
-export interface Bookings{
-    _id:string | ObjectId,
-    service:string | ObjectId,
-    clientId:string | ObjectId,
-    vendorId:string | ObjectId,
-    date:Date,
-    paymentStatus:"pending"|"failed" | "successfull" | "refunded"
+export interface BookingEntity {
+    _id?: ObjectId;
+    serviceId: ObjectId;
+    clientId: ObjectId;
+    vendorId: ObjectId;
+    date: Date;
+    email:string;
+    phone:number;
+    vendorApproval: "Pending" | "Approved" | "Rejected";
+    paymentStatus: "Pending" | "Failed" | "Successfull" | "Refunded";
 }

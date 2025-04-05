@@ -138,7 +138,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           transition={{ delay: 0.8 }}
         >
           <button 
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center hover:from-indigo-600 hover:to-blue-500 shadow-lg hover:shadow-blue-500/30"
+            className="w-full bg-gradient-to-r from-white to-black text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center hover:from-white hover:to-black shadow-lg hover:shadow-blue-500/30"
           >
             Book Now
           </button>

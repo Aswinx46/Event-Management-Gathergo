@@ -1,24 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, Users, Home, User, Calendar, Layers, Wallet } from "lucide-react"
+import { motion } from "framer-motion"
+import { Search} from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Pagination from "@/components/other components/Pagination"
 import { useFetchClientAdminQuery } from "@/hooks/AdminCustomHooks"
 import Table from "@/components/other components/Table"
-import LoadingScreen from "@/components/other components/loadingScreen"
 import EmptyTableMessage from "@/components/other components/NoUserAvailable"
 // Define the provider type
-interface Client {
-  _id: string
-  name: string
-  email: string
-  phone: string
-  profile?: string
-  status: "active" | "blocked"
-  clientId: string
-}
 
 export default function EventProvidersPanel() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -40,42 +30,13 @@ export default function EventProvidersPanel() {
   const clients = fetchClient?.data?.clients
 
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
 
-  const rowVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-      },
-    },
-    exit: {
-      opacity: 0,
-      x: -20,
-      transition: { duration: 0.2 },
-    },
-  }
 
-  const sidebarItemVariants = {
-    initial: { x: -20, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    hover: { x: 5, transition: { duration: 0.2 } },
-  }
+
+
 
   const handleBlockAndUnblock = (id: string) => {
-
+    console.log(id)
   }
 
   return (

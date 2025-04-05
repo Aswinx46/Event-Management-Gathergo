@@ -28,6 +28,9 @@ import { FindVendorForClientCarousalController } from "../../adapters/controller
 import { FindServiceUseCaseClient } from "../../useCases/client/service/findServiceUseCase";
 import { ServiceRepository } from "../../adapters/repository/service/serviceRepository";
 import { FindServiceForClientController } from "../../adapters/controllers/client/service/findServiceForClientController";
+import { BookingRepository } from "../../adapters/repository/booking/bookingRepository";
+import { CreateBookingUseCase } from "../../useCases/client/booking/createBookingUseCase";
+import { CreateBookingController } from "../../adapters/controllers/client/bookings/createBookingController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -79,3 +82,8 @@ export const injectedFindVendosForClientCarousalController = new FindVendorForCl
 const serviceDatabase = new ServiceRepository()
 const findServicesUseCase = new FindServiceUseCaseClient(serviceDatabase)
 export const injectedFindServiceForClientController = new FindServiceForClientController(findServicesUseCase)
+
+//----------------------------------Create booking for service--------------------
+const bookingDatabase = new BookingRepository()
+const createBookingUseCase = new CreateBookingUseCase(bookingDatabase)
+export const injectedCreateBookingController = new CreateBookingController(createBookingUseCase)

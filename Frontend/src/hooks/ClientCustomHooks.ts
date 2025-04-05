@@ -1,4 +1,4 @@
-import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
@@ -88,5 +88,19 @@ export const useFindServiceForclient = (currentPage: number) => {
         queryKey: ['services', currentPage],
         queryFn: () => fetchServiceForClient(currentPage),
         refetchOnWindowFocus: false
+    })
+}
+
+export interface Booking {
+    date: Date;
+    email: string;
+    phone: number;
+    vendorApproval: "Pending" | "Approved" | "Rejected";
+    paymentStatus: "Pending" | "Failed" | "Successfull" | "Refunded";
+}
+
+export const useBookService = () => {
+    return useMutation({
+        mutationFn: (booking: Booking) => createBooking(booking)
     })
 }

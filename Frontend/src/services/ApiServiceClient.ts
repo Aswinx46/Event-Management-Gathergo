@@ -159,3 +159,24 @@ export const fetchServiceForClient = async (currentPage: number) => {
         throw new Error('error while fetching services in client side')
     }
 }
+
+export interface Booking {
+    date: Date;
+    email: string;
+    phone: number;
+    vendorApproval: "Pending" | "Approved" | "Rejected";
+    paymentStatus: "Pending" | "Failed" | "Successfull" | "Refunded";
+}
+
+export const createBooking = async (booking: Booking) => {
+    try {
+        const response = await axios.post('/createService', { booking })
+        return response.data
+    } catch (error) {
+        console.log('error while booking service', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.error)
+        }
+        throw new Error('error while booking service')
+    }
+}

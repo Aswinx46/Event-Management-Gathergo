@@ -135,3 +135,12 @@
 .animate-shine {
   animation: shine 2s linear infinite;
 }
+
+/* body {
+  @apply bg-black text-white;
+} */
+@layer base {
+  body {
+    @apply bg-white text-black dark:bg-black dark:text-white;
+  }
+}
