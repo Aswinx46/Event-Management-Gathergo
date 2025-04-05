@@ -8,7 +8,7 @@ import React from "react";
 
 function ImageCarousel() {
     return (
-        <div className=" flex h-1/4 lg:w-1/2 md:flex-row w-full md:h-screen overflow-hidden">
+        <div className=" flex h-full lg:w-[50vw] md:flex-row w-full md:h-screen overflow-hidden">
             <Swiper
                 pagination={{ clickable: true }}
                 modules={[Pagination, Autoplay]}

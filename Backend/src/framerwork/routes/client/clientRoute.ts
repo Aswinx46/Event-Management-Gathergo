@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedClientLoginController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedClientLoginController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedFindServiceController } from "../../Di/vendorInject";
 
 export class clientRoute {
@@ -40,7 +40,7 @@ export class clientRoute {
             injectedFindVendosForClientCarousalController.handleFindVenodorForClientCarousal(req, res)
         })
         this.clientRoute.get('/services', (req: Request, res: Response) => {
-            injectedFindServiceController.handleFindService(req, res)
+            injectedFindServiceForClientController.handleFindServiceForClient(req, res)
         })
     }
 }

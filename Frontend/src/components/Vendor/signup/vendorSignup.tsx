@@ -3,16 +3,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { User } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Formik, Field, ErrorMessage, Form } from 'formik'
 import * as yup from 'yup'
 import { isAxiosError } from 'axios'
-import ImageCarousel from "@/components/other components/ImageCarousal"
-import React, { useState, lazy, Suspense } from "react"
+
+import { useState, lazy, Suspense } from "react"
 import { toast } from "react-toastify"
 import OTPModal from "@/components/otpModal/otpModal"
 import ImageCropper from "@/components/other components/ImageCropper"
 import { useUploadeImageToCloudinaryMutation, useVendorSignupMutation, useVendorResendOtpMutation, useVendorVerifyOtpMutation } from "@/hooks/VendorCustomHooks"
+import VendorPendingModal from "@/components/other components/VendorPendingShowingSignup"
 export default function SignupPage() {
     const initialValues = {
         name: "",
@@ -31,7 +32,7 @@ export default function SignupPage() {
         idProof: ""
     }
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const navigate = useNavigate()
+
     const [data, setData] = useState<VendorData>(initialValuesOfVendor)
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showCropper, setShowCropper] = useState<boolean>(false);
@@ -91,9 +92,9 @@ export default function SignupPage() {
 
     const handleSuccess = () => {
         setIsOpen(false)
-        toast.success('account created')
+        toast.success('Account created')
         setIsSuccess(true)
-        navigate('/vendor/home')
+        
     }
 
     const handleError = (error: unknown) => {
@@ -149,9 +150,19 @@ export default function SignupPage() {
     const LazyImageCarousel = lazy(() => import('../../other components/ImageCarousal'))
     return (
         <div className=" min-h-screen flex flex-col lg:flex-row justify-center">
-            <Suspense fallback={<div className="text-white text-center mt-10">Loading ......</div>}>
+            {/* <Suspense fallback={<div className="text-white text-center mt-10">Loading ......</div>}>
                 <LazyImageCarousel/>
-            </Suspense>
+            </Suspense> */}
+            {/* <div className="min-h-screen flex flex-col lg:flex-row"> */}
+            <div className="lg:w-1/2 md:h-screen h-[50vh] relative bg-gray-900">
+                <Suspense fallback={<div className="w-full h-full flex items-center justify-center">
+                    <div className="text-white">Loading carousel...</div>
+                </div>}>
+                    <div className="absolute inset-0">
+                        <LazyImageCarousel />
+                    </div>
+                </Suspense>
+            </div>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({ isSubmitting }) => (
                     <Form className="flex w-full items-center justify-center bg-white p-8 lg:w-1/2">
@@ -221,7 +232,7 @@ export default function SignupPage() {
                                     </div>
                                 </div>
 
-                                <Button className="w-full mt-4 bg-gray-900 text-white hover:bg-gray-800">Sign Up</Button>
+                                <Button className="w-full mt-4 bg-gray-900 text-white hover:bg-gray-800">{vendorSignupAPI.isPending ? 'Signing in....' : 'Sign up'}</Button>
                             </div>
 
                             <div className="text-center text-sm">
@@ -234,7 +245,7 @@ export default function SignupPage() {
                     </Form>
                 )}
             </Formik>
-
+            {isSuccess && <VendorPendingModal isOpen={isSuccess} setIsOpen={setIsSuccess} />}
             {showCropper && <ImageCropper image={selectedImage} onCropComplete={setCroppedImage} showCropper={setShowCropper} />}
             <OTPModal isOpen={isOpen} data={data} setIsOpen={setIsOpen} mutation={verifyOtpMutation} resendOtp={resendOtpMutation} email={data.email} handleSuccess={handleSuccess} handleError={handleError}></OTPModal>
         </div>

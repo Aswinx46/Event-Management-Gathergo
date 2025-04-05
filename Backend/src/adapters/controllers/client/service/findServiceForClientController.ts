@@ -11,6 +11,7 @@ export class FindServiceForClientController {
         try {
             const pageNo = parseInt(req.params.pageNo as string, 10) || 1
             const { Services, totalPages } = await this.findServiceUseCase.findServiceForclient(pageNo)
+            console.log(Services,totalPages)
             res.status(HttpStatus.OK).json({ message: 'Services Fetched', Services, totalPages })
         } catch (error) {
             console.log('error while fetching service for client', error)
