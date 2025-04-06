@@ -33,27 +33,27 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       viewport={{ once: true }}
     >
       <div className="relative flex-1 flex flex-col">
-        {/* Price Tag */}
-        <motion.div
-          className="absolute top-4 right-4 bg-white text-black px-4 py-2 rounded-full font-bold flex items-center shadow-lg"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
-        >
-          <DollarSign size={18} className="mr-1" />
-          <span>${servicePrice}</span>
-        </motion.div>
-        
         {/* Header */}
         <div className="p-6 border-b border-gray-800">
           <motion.h3 
-            className="text-2xl font-bold text-white mb-2 line-clamp-2"
+            className="text-2xl font-bold text-white mb-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
             {serviceTitle}
           </motion.h3>
+          
+          {/* Price Tag */}
+          <motion.div
+            className="bg-white text-black px-4 py-2 rounded-full font-bold inline-flex items-center shadow-lg mb-4"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
+          >
+            <DollarSign size={18} className="mr-1" />
+            <span>${servicePrice}</span>
+          </motion.div>
           
           <motion.div 
             className="flex items-center text-sm text-gray-300 mb-4"
@@ -65,14 +65,23 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             <span>{yearsOfExperience} years of experience</span>
           </motion.div>
           
-          <motion.p 
-            className="text-gray-400 leading-relaxed line-clamp-3"
+          <motion.div 
+            className="relative group"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            {serviceDescription}
-          </motion.p>
+            <p className="text-gray-400 leading-relaxed truncate">
+              {serviceDescription}
+            </p>
+            <div className="absolute left-0 right-0 invisible opacity-0 bg-gray-800 p-4 rounded-lg shadow-xl z-20 group-hover:visible group-hover:opacity-100 transition-all duration-200 max-w-[300px]">
+              <div className="max-h-[150px] overflow-y-auto custom-scrollbar">
+                <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  {serviceDescription}
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
         
         {/* Details */}
@@ -110,9 +119,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             transition={{ delay: 0.6 }}
           >
             <Info size={18} className="mr-3 text-gray-300 flex-shrink-0 mt-1" />
-            <div>
+            <div className="flex-1">
               <p className="font-medium text-gray-100">Cancellation Policy</p>
-              <p className="text-sm text-gray-400 line-clamp-2">{cancellationPolicy}</p>
+              <div className="relative group">
+                <p className="text-sm text-gray-400 truncate">{cancellationPolicy}</p>
+                <div className="absolute left-0 right-0 invisible opacity-0 bg-gray-800 p-4 rounded-lg shadow-xl z-20 group-hover:visible group-hover:opacity-100 transition-all duration-200 max-w-[300px]">
+                  <div className="max-h-[150px] overflow-y-auto custom-scrollbar">
+                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">{cancellationPolicy}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
           
@@ -123,9 +139,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             transition={{ delay: 0.7 }}
           >
             <FileText size={18} className="mr-3 text-gray-300 flex-shrink-0 mt-1" />
-            <div>
+            <div className="flex-1">
               <p className="font-medium text-gray-100">Terms & Conditions</p>
-              <p className="text-sm text-gray-400 line-clamp-2">{termsAndCondition}</p>
+              <div className="relative group">
+                <p className="text-sm text-gray-400 truncate">{termsAndCondition}</p>
+                <div className="absolute left-0 right-0 invisible opacity-0 bg-gray-800 p-4 rounded-lg shadow-xl z-20 group-hover:visible group-hover:opacity-100 transition-all duration-200 max-w-[300px]">
+                  <div className="max-h-[150px] overflow-y-auto custom-scrollbar">
+                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">{termsAndCondition}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
