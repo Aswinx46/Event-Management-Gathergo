@@ -3,8 +3,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {  Link, useNavigate } from "react-router-dom"
-import { isAxiosError } from "axios"
+import { Link, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
 import { addToken } from "@/store/slices/user/userTokenSlice"
@@ -18,6 +17,7 @@ import { useClientForgetPassword, useClientGoogleLoginMutation, useClientLoginMu
 import ForgotPasswordModal from "@/components/other components/ForgetPasswordModal"
 import OTPModal from "@/components/otpModal/otpModal"
 import ResetPasswordModal from "@/components/other components/ChangePasswordOtp"
+import { addClient } from "@/store/slices/user/userSlice"
 export default function LoginComponent() {
 
     const initialValues = {
@@ -75,19 +75,17 @@ export default function LoginComponent() {
             const { email, password } = values
             loginMutation.mutate({ email, password }, {
                 onSuccess: () => {
-                    console.log('user logged')
                     toast.success('user logged')
                     navigate('/', { replace: true })
                 },
                 onError: (error) => {
-                    if (isAxiosError(error)) {
-                        console.log(error)
-                        toast.error(error.response?.data?.error || "An error occurred");
-                    }
+        
+                    toast.error(error.message)
                 },
                 onSettled: (data) => {
-                    console.log(data?.data.accessToken)
-                    dispatch(addToken(data?.data.accessToken))
+                    
+                    dispatch(addToken(data?.accessToken))
+                    dispatch(addClient(data?.client))
                 }
 
             })
@@ -160,7 +158,7 @@ export default function LoginComponent() {
         <div className="flex min-h-screen flex-col-reverse md:flex-row w-full">
             {/* Form Section (Left Side) */}
             {changePasswordOpen && <ResetPasswordModal email={forgetPasswordEmail} isOpen={changePasswordOpen} setIsOpen={setChangePasswordOpen} mutation={forgetPassworMutation} />}
-            {isOpen && <ForgotPasswordModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleForgetPassword} isPending={getForgetPasswordOtp.isPending}/>}
+            {isOpen && <ForgotPasswordModal isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleForgetPassword} isPending={getForgetPasswordOtp.isPending} />}
 
             {otpModal && <OTPModal resendOtp={resendOtpMutation} isOpen={otpModal} email={forgetPasswordEmail} forgetPasswordMutation={verifyForgetPasswordOtp} handleSuccess={handleSuccess} handleError={handleError} setIsOpen={setOtpModal} />}
             <motion.div

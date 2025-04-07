@@ -14,7 +14,6 @@ import ImageCarousel from "@/components/other components/ImageCarousal"
 import { useClientSignupMutation, useCreateAccountMutation, useResendOtpClientMutation } from "@/hooks/ClientCustomHooks"
 export default function SignupComponent() {
 
-  const items = [{ text: "Home", link: '#' }, { text: 'Profile', link: '#' }]
 
   const initialValues = {
     name: "",

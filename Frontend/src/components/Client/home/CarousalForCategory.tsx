@@ -102,7 +102,7 @@ export default function ImageCarousel({ items, autoPlay = true, autoPlayInterval
     <div className="relative w-full bg-black py-12" ref={carouselRef}>
       <h1 className="text-3xl text-white text-center pb-6 font-medium">CATEGORIES</h1>
       <div className="relative h-[400px] w-full ">
-        {items.map((item, index) => {
+        {items?.map((item, index) => {
           const position = getCardPosition(index)
 
           return (

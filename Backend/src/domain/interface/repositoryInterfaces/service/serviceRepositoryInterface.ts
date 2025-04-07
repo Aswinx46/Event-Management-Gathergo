@@ -1,4 +1,5 @@
 import { ServiceEntity } from "../../../entities/serviceEntity";
+import { ServiceWithVendorEntity } from "../../../entities/serviceWithVendorEntity";
 
 export interface IserviceRepository {
     createService(service: ServiceEntity): Promise<ServiceEntity>
@@ -7,4 +8,5 @@ export interface IserviceRepository {
     findServiceById(serviceId: string): Promise<ServiceEntity | null>
     changeStatus(serviceId: string): Promise<ServiceEntity | null>
     findServiceForClient(pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }>
+    showServiceDataInBookingPage(serviceId: string): Promise<ServiceWithVendorEntity | null>
 }

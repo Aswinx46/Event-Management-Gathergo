@@ -4,6 +4,7 @@ import ServiceCard from './ServiceCard';
 import { useFindServiceForclient } from '@/hooks/ClientCustomHooks';
 import Pagination from '@/components/other components/Pagination';
 import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Service {
     _id?: string;
@@ -41,6 +42,8 @@ const ServicesList: React.FC = () => {
         }
     };
 
+    const navigate = useNavigate()
+
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -58,6 +61,12 @@ const ServicesList: React.FC = () => {
     }
 
     const services: Service[] = fetchedData?.Services || [];
+    console.log(services)
+    const handleServiceBooking = (serviceId: string, vendorId: string) => {
+        console.log('this is service id',serviceId)
+        console.log('this is vendorid',vendorId)
+        navigate(`/serviceBooking/${serviceId}/${vendorId}`)
+    }
 
     return (
         <div className='w-full min-h-screen bg-black'>
@@ -90,6 +99,8 @@ const ServicesList: React.FC = () => {
                         {services.map((service: Service, index: number) => (
                             <div key={service._id || index} className="h-full">
                                 <ServiceCard
+                                    serviceId={service._id!}
+                                    vendorId={service.vendorId!}
                                     serviceTitle={service.serviceTitle}
                                     yearsOfExperience={service.yearsOfExperience}
                                     serviceDescription={service.serviceDescription}
@@ -98,6 +109,7 @@ const ServicesList: React.FC = () => {
                                     serviceDuration={service.serviceDuration}
                                     servicePrice={service.servicePrice}
                                     additionalHourFee={service.additionalHourFee}
+                                    handleServiceBooking={handleServiceBooking}
                                 />
                             </div>
                         ))}

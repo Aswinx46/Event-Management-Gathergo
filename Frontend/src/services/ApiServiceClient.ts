@@ -164,13 +164,15 @@ export interface Booking {
     date: Date;
     email: string;
     phone: number;
-    vendorApproval: "Pending" | "Approved" | "Rejected";
-    paymentStatus: "Pending" | "Failed" | "Successfull" | "Refunded";
+    name: string;
+    vendorId: string,
+    serviceId: string
+    clientId: string
 }
 
 export const createBooking = async (booking: Booking) => {
     try {
-        const response = await axios.post('/createService', { booking })
+        const response = await axios.post('/createBooking', { booking })
         return response.data
     } catch (error) {
         console.log('error while booking service', error)
@@ -178,5 +180,18 @@ export const createBooking = async (booking: Booking) => {
             throw new Error(error.response?.data.error)
         }
         throw new Error('error while booking service')
+    }
+}
+
+export const fetchServiceDetailsWithVendor = async (serviceId: string) => {
+    try {
+        const response = await axios.get(`/showClientWithVendor/${serviceId}`)
+        return response.data
+    } catch (error) {
+        console.log('error while fetching service details with vendor', error)
+        if (isAxiosError(error)) {
+            throw new Error(error.response?.data.error)
+        }
+        throw new Error('error while fetching service details with vendor')
     }
 }

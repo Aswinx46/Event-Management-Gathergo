@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar as CalendarIcon, Mail, Phone, Star, Clock, MapPin, DollarSign, User } from 'lucide-react';
+import { Calendar as CalendarIcon, Mail, Phone, Clock, DollarSign, User } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,39 @@ import { format, isBefore, startOfDay } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useParams } from 'react-router-dom';
+import { useCreateBooking, useFindSericeDataWithVendor } from '@/hooks/ClientCustomHooks';
+import BookingConfirmation from '@/components/other components/BookingConfirmationModal';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+export interface Booking {
+  date: Date;
+  email: string;
+  phone: number;
+  name: string;
+  vendorId: string,
+  serviceId: string
+  clientId: string
+}
+
+export interface VendorDTO {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  profileImage?: string;
+}
+
+export interface ServiceWithVendorEntity {
+  _id: string;
+  serviceTitle: string;
+  serviceDescription: string;
+  price: number;
+  vendor: VendorDTO;
+  duration: string
+}
+
 
 // Animation variants
 const containerVariants = {
@@ -35,7 +68,18 @@ const itemVariants = {
 };
 
 const VendorBookingCard = () => {
+
+  const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
+
   const [date, setDate] = React.useState<Date>();
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const { serviceId, vendorId } = useParams()
+  console.log('vendor id', vendorId)
+  const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!)
+  const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor
+
+  const bookingApi = useCreateBooking()
 
   const formik = useFormik({
     initialValues: {
@@ -47,7 +91,7 @@ const VendorBookingCard = () => {
     validationSchema: Yup.object({
       date: Yup.string()
         .required('Date is required')
-        .test('is-future', 'Cannot select a past date', function(value) {
+        .test('is-future', 'Cannot select a past date', function (value) {
           if (!value) return false;
           const selectedDate = new Date(value);
           const today = startOfDay(new Date());
@@ -55,41 +99,40 @@ const VendorBookingCard = () => {
         }),
       email: Yup.string().email('Invalid email address').required('Email is required'),
       phone: Yup.string()
-        .matches(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number')
+        .matches(/^[6-9]\d{9}$/, 'Phone number must start with 6-9 and contain exactly 10 digits')
         .required('Phone number is required'),
       name: Yup.string().required('Name is required')
         .min(2, 'Name must be at least 2 characters')
         .max(50, 'Name must be less than 50 characters')
     }),
-    onSubmit: (values) => {
+    onSubmit:  (values) => {
       console.log('Form submitted:', values);
-      // Handle form submission here
+      if (clientId && vendorId && serviceId) {
+        const bookingData: Booking = {
+          ...values, phone: Number(values.phone), date: new Date(values.date), serviceId: serviceId, vendorId: vendorId, clientId: clientId
+        }
+         bookingApi.mutate(bookingData, {
+          onSuccess: (data) => {
+            toast.success(data.message)
+            setIsOpen(true)
+          },
+          onError: (err) => {
+            console.log(err)
+            toast.error(err.message)
+          }
+        })
+      } else {
+        toast.error('clientId , vendorId , service Id one is missing')
+      }
+
     }
   });
 
-  // Dummy data
-  const vendor = {
-    id: '1',
-    name: 'Sarah Johnson',
-    profession: 'Professional Photographer',
-    profileImage: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
-    email: 'sarah.johnson@example.com',
-    phone: '+1 (555) 123-4567',
-    rating: 4.8,
-    reviews: 127,
-  };
 
-  const service = {
-    id: '101',
-    name: 'Premium Photography Session',
-    description: 'Professional photography session including indoor and outdoor shots, perfect for portraits, events, or special occasions.',
-    duration: '2 hours',
-    price: 199.99,
-    location: 'Client location or studio',
-  };
 
   return (
     <div className='bg-black'>
+      {isOpen && <BookingConfirmation isOpen={isOpen} setIsOpen={setIsOpen} />}
       <div className="container mx-auto  px-4 py-8 max-w-6xl">
         <motion.div
           initial="hidden"
@@ -107,14 +150,14 @@ const VendorBookingCard = () => {
               >
                 <div className="relative">
                   <motion.img
-                    src={vendor.profileImage}
-                    alt={vendor.name}
+                    src={Service?.vendor.profileImage}
+                    alt={Service?.vendor.name}
                     className="w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-md"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   />
-                  <motion.div
+                  {/* <motion.div
                     className="absolute -bottom-2 -right-2 bg-white text-black rounded-full px-2 py-1 text-xs font-medium flex items-center gap-1"
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -122,11 +165,11 @@ const VendorBookingCard = () => {
                   >
                     <Star className="h-3 w-3 fill-black stroke-black" />
                     <span>{vendor.rating}</span>
-                  </motion.div>
+                  </motion.div> */}
                 </div>
-                <motion.h2 className="text-2xl font-bold mt-4">{vendor.name}</motion.h2>
-                <motion.p className="text-gray-400">{vendor.profession}</motion.p>
-                <motion.p className="text-sm text-gray-300 mt-1">{vendor.reviews} reviews</motion.p>
+                <motion.h2 className="text-2xl font-bold mt-4">{Service?.vendor.name}</motion.h2>
+                {/* <motion.p className="text-gray-400">{vendor.profession}</motion.p>
+                <motion.p className="text-sm text-gray-300 mt-1">{vendor.reviews} reviews</motion.p> */}
               </motion.div>
 
               <Separator className="my-4 bg-white/20" />
@@ -138,7 +181,7 @@ const VendorBookingCard = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Email</p>
-                    <p className="text-white">{vendor.email}</p>
+                    <p className="text-white">{Service?.vendor.email}</p>
                   </div>
                 </motion.div>
 
@@ -148,7 +191,7 @@ const VendorBookingCard = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Phone</p>
-                    <p className="text-white">{vendor.phone}</p>
+                    <p className="text-white">{Service?.vendor.phone}</p>
                   </div>
                 </motion.div>
 
@@ -158,7 +201,7 @@ const VendorBookingCard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 }}
                 >
-                  <h3 className="font-medium mb-2 text-white">Why choose {vendor.name.split(' ')[0]}?</h3>
+                  <h3 className="font-medium mb-2 text-white">Why choose {Service?.vendor.name}?</h3>
                   <ul className="text-sm space-y-2 text-gray-300">
                     <li className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-white"></div>
@@ -170,7 +213,7 @@ const VendorBookingCard = () => {
                     </li>
                     <li className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-white"></div>
-                      <span>High-quality editing included</span>
+                      <span>High-quality work ensured</span>
                     </li>
                   </ul>
                 </motion.div>
@@ -194,7 +237,7 @@ const VendorBookingCard = () => {
               <motion.div className="space-y-4">
                 <div className="grid gap-3">
                   <Label htmlFor="date" className="text-white">Select Date</Label>
-                  <Popover>
+                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -215,6 +258,7 @@ const VendorBookingCard = () => {
                           if (newDate && !isBefore(startOfDay(newDate), startOfDay(new Date()))) {
                             setDate(newDate);
                             formik.setFieldValue('date', format(newDate, 'yyyy-MM-dd'));
+                            setIsCalendarOpen(false);
                           }
                         }}
                         disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
@@ -284,14 +328,14 @@ const VendorBookingCard = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <Button 
-                  className="w-full mt-4 bg-white text-black hover:bg-gray-300" 
-                  size="lg"
-                  onClick={() => formik.handleSubmit()}
-                  type="submit"
-                >
-                  Book Now
-                </Button>
+                  <Button
+                    className="w-full mt-4 bg-white text-black hover:bg-gray-300"
+                    size="lg"
+                    onClick={() => formik.handleSubmit()}
+                    type="submit"
+                  >
+                    Book Now
+                  </Button>
                 </motion.div>
               </motion.div>
             </Card>
@@ -318,8 +362,8 @@ const VendorBookingCard = () => {
                   transition={{ delay: 0.5 }}
                 >
                   <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                    <h4 className="font-medium text-lg text-white">{service.name}</h4>
-                    <p className="text-sm text-gray-400 mt-1">{service.description}</p>
+                    <h4 className="font-medium text-lg text-white">{Service?.serviceTitle}</h4>
+                    <p className="text-sm text-gray-400 mt-1">{Service?.serviceDescription}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -329,7 +373,7 @@ const VendorBookingCard = () => {
                       </div>
                       <div>
                         <p className="text-xs text-gray-400">Duration</p>
-                        <p className="font-medium text-white">{service.duration}</p>
+                        <p className="font-medium text-white">{Service?.duration}</p>
                       </div>
                     </div>
 
@@ -339,12 +383,12 @@ const VendorBookingCard = () => {
                       </div>
                       <div>
                         <p className="text-xs text-gray-400">Price</p>
-                        <p className="font-medium text-white">${service.price}</p>
+                        <p className="font-medium text-white">${Service?.price}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2 mt-4">
+                  {/* <div className="flex items-start gap-2 mt-4">
                     <div className="bg-white/10 p-2 rounded-full shrink-0 mt-0.5">
                       <MapPin className="h-4 w-4 text-white" />
                     </div>
@@ -352,7 +396,7 @@ const VendorBookingCard = () => {
                       <p className="text-xs text-gray-400">Location</p>
                       <p className="font-medium text-white">{service.location}</p>
                     </div>
-                  </div>
+                  </div> */}
                 </motion.div>
               </Card>
             </motion.div>

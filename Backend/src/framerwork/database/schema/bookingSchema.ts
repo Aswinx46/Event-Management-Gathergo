@@ -34,5 +34,9 @@ export const bookingSchema = new Schema<BookingEntity>({
     phone: {
         type: Number,
         required: true
+    },
+    rejectionReason:{
+        type:String,
+        required:false
     }
 })

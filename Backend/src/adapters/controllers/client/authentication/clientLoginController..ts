@@ -18,7 +18,7 @@ export class ClientLoginController implements IloginClientControllerInterface {
     async handleLogin(req: Request, res: Response): Promise<void> {
         try {
             const { email, password } = req.body
-            console.log('this is the email and the password',email,password)
+            console.log('this is the email and the password', email, password)
             const client = await this.clientLoginUseCase.loginClient(email, password)
             if (!client) {
                 res.status(HttpStatus.BAD_REQUEST).json({ message: "invalid credentials" })
@@ -31,8 +31,17 @@ export class ClientLoginController implements IloginClientControllerInterface {
             await this.redisService.set(`user:${client.role}:${client._id}`, 15 * 60, JSON.stringify(client.status))
             setCookie(res, refreshToken)
             const valueFromRedis = await this.redisService.get(`user:${client.role}:${client._id}`)
-           
-            res.status(HttpStatus.OK).json({ message: "user logged", client, accessToken })
+            const selectedFields = {
+                clientId: client.clientId,
+                email: client.email,
+                name: client.name,
+                phone: client.phone,
+                profileImage: client.profileImage,
+                _id: client._id,
+                role: client.role,
+                status: client.status
+            }
+            res.status(HttpStatus.OK).json({ message: "user logged", client: selectedFields, accessToken })
 
         } catch (error) {
             console.log('error while login client', error)

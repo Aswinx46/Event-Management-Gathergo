@@ -10,9 +10,10 @@ export class CreateBookingController {
     }
     async handleCreateBooking(req: Request, res: Response): Promise<void> {
         try {
-            const booking: BookingEntity = req.body
-            console.log(booking)
-            const createdBooking = this.createBookingUseCase.createBooking(booking)
+            const booking: BookingEntity = req.body.booking
+            const createdBooking = await this.createBookingUseCase.createBooking(booking)
+            console.log(createdBooking)
+            if (!createdBooking) res.status(HttpStatus.BAD_REQUEST).json({ message: "error while creating booking" })
             res.status(HttpStatus.OK).json({ message: "Booking created", createdBooking })
         } catch (error) {
             console.log('error while creating booking', error)

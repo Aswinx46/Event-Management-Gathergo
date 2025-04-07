@@ -27,7 +27,7 @@ const FuturisticCarousel = ({ vendors }: FuturisticCarouselProps) => {
       className="w-full px-30 bg-black"
     >
       <CarouselContent className="-ml-2 md:-ml-4">
-        {vendors.map((vendor) => (
+        {vendors?.map((vendor) => (
           <CarouselItem
             key={vendor._id}
             className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/4"

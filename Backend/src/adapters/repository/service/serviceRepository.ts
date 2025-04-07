@@ -1,7 +1,8 @@
 import { ServiceEntity } from "../../../domain/entities/serviceEntity";
+import { ServiceWithVendorEntity } from "../../../domain/entities/serviceWithVendorEntity";
 import { IserviceRepository } from "../../../domain/interface/repositoryInterfaces/service/serviceRepositoryInterface";
 import { serviceModal } from "../../../framerwork/database/models/serviceModel";
-
+import { VendorDTO } from "../../../domain/entities/vendorDTO";
 export class ServiceRepository implements IserviceRepository {
     async createService(service: ServiceEntity): Promise<ServiceEntity> {
         return await serviceModal.create(service)
@@ -47,4 +48,31 @@ export class ServiceRepository implements IserviceRepository {
         const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
         return { Services, totalPages }
     }
+    async showServiceDataInBookingPage(serviceId: string): Promise<ServiceWithVendorEntity | null> {
+        const service = await serviceModal.findOne({ _id: serviceId, status: 'active' })
+            .populate<{ vendorId: VendorDTO }>({
+                path: 'vendorId',
+                match: { status: 'active' },
+                select: 'name email phone profileImage'
+            })
+        if (!service || !service.vendorId) throw new Error('Service or active vendor not found')
+        const serviceWithVendor: ServiceWithVendorEntity = {
+            _id: service?._id,
+            price: service?.servicePrice,
+            serviceDescription: service?.serviceDescription,
+            serviceTitle: service?.serviceTitle,
+            duration: service?.serviceDuration,
+            vendor: {
+                _id: service?.vendorId?._id,
+                email: service?.vendorId?.email,
+                name: service?.vendorId?.name,
+                phone: service?.vendorId?.phone,
+                profileImage: service?.vendorId?.profileImage
+            }
+        }
+        // console.log('service',serviceWithVendor)
+        return serviceWithVendor
+    }
+
 }
+

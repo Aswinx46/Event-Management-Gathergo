@@ -6,8 +6,9 @@ export interface BookingEntity {
     clientId: ObjectId;
     vendorId: ObjectId;
     date: Date;
-    email:string;
-    phone:number;
+    email: string;
+    phone: number;
     vendorApproval: "Pending" | "Approved" | "Rejected";
     paymentStatus: "Pending" | "Failed" | "Successfull" | "Refunded";
+    rejectionReason?: string
 }

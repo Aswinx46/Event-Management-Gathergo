@@ -30,7 +30,9 @@ import { ServiceRepository } from "../../adapters/repository/service/serviceRepo
 import { FindServiceForClientController } from "../../adapters/controllers/client/service/findServiceForClientController";
 import { BookingRepository } from "../../adapters/repository/booking/bookingRepository";
 import { CreateBookingUseCase } from "../../useCases/client/booking/createBookingUseCase";
-import { CreateBookingController } from "../../adapters/controllers/client/bookings/createBookingController";
+import { CreateBookingController } from "../../adapters/controllers/client/booking/createBookingController";
+import { ServiceWithVendorUseCase } from "../../useCases/client/booking/showServiceWIthVendorUseCase";
+import { ShowServiceWithVendorController } from "../../adapters/controllers/client/booking/showServiceWithVendorController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -87,3 +89,7 @@ export const injectedFindServiceForClientController = new FindServiceForClientCo
 const bookingDatabase = new BookingRepository()
 const createBookingUseCase = new CreateBookingUseCase(bookingDatabase)
 export const injectedCreateBookingController = new CreateBookingController(createBookingUseCase)
+
+//----------------------------------show service data with vendor-----------------------
+const showServiceWithVendorUseCase = new ServiceWithVendorUseCase(serviceDatabase)
+export const injectedShowServiceWithVendorCController = new ShowServiceWithVendorController(showServiceWithVendorUseCase)

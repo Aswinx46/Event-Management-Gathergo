@@ -11,7 +11,7 @@ const UserRoute = () => {
             <Route path="/signup" element={<Signup />}></Route>
             <Route path="/login" element={<LoginComponent />}></Route>
             <Route path="/services" element={<ServicesList />}></Route>
-            <Route path="/serviceBooking" element={<ServiceBooking />}></Route>
+            <Route path="/serviceBooking/:serviceId/:vendorId" element={<ServiceBooking />}></Route>
         </Routes>
     )
 }

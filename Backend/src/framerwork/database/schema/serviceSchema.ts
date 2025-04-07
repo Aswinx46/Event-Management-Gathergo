@@ -36,6 +36,7 @@ export const serviceSchema = new Schema<ServiceEntity>({
     },
     vendorId: {
         type: Schema.Types.ObjectId,
+        ref:'vendors',
         required: true
     },
     yearsOfExperience: {
