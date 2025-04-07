@@ -3,7 +3,8 @@ import { BookingEntity } from '../../../domain/entities/bookingEntity'
 export const bookingSchema = new Schema<BookingEntity>({
     clientId: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'client'
     },
     date: {
         type: Date,
@@ -16,7 +17,8 @@ export const bookingSchema = new Schema<BookingEntity>({
     },
     serviceId: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'service'
     },
     vendorApproval: {
         type: String,
@@ -25,7 +27,8 @@ export const bookingSchema = new Schema<BookingEntity>({
     },
     vendorId: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'vendors'
     },
     email: {
         type: String,
@@ -35,8 +38,13 @@ export const bookingSchema = new Schema<BookingEntity>({
         type: Number,
         required: true
     },
-    rejectionReason:{
-        type:String,
-        required:false
+    rejectionReason: {
+        type: String,
+        required: false
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Rejected', 'Completed'],
+        default: "Pending"
     }
 })

@@ -1,5 +1,5 @@
 // VendorRejectionModal.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
 import { X } from 'lucide-react';
@@ -9,7 +9,7 @@ interface VendorRejectionModalProps {
   onClose: () => void;
   onSubmit: () => void;
   setRejectionReason: React.Dispatch<React.SetStateAction<string>>,
-  rejectionReason:string
+  rejectionReason: string
 }
 
 const VendorRejectionModal: React.FC<VendorRejectionModalProps> = ({
@@ -20,7 +20,6 @@ const VendorRejectionModal: React.FC<VendorRejectionModalProps> = ({
   rejectionReason
 
 }) => {
-  const [reason, setReason] = useState('');
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95 },
@@ -47,7 +46,7 @@ const VendorRejectionModal: React.FC<VendorRejectionModalProps> = ({
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
-          
+
           <motion.div
             className="fixed inset-0 flex flex-col items-center justify-center z-50 p-4"
             variants={modalVariants}

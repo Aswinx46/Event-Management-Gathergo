@@ -5,18 +5,22 @@ import { Check, MessageSquare, User, Clock } from "lucide-react";
 
 interface BookingConfirmationProps {
   isOpen: boolean;
-  setIsOpen:React.Dispatch<React.SetStateAction<boolean>>
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  handleBooking: () => void
 }
 
 const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   isOpen,
   setIsOpen,
+  handleBooking
 }) => {
   const handleViewBookings = () => {
     // Simply close the modal without showing toast
     setIsOpen(false)
+    handleBooking()
     // In a real application, this would navigate to the bookings page
     console.log("Navigating to bookings page");
+
   };
 
   return (
@@ -90,7 +94,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                 <Button
                   variant="outline"
                   className="flex-1 bg-white text-black border-gray-300 hover:bg-gray-100 hover:text-black"
-                  onClick={()=>setIsOpen(false)}
+                  onClick={() => setIsOpen(false)}
                 >
                   Close
                 </Button>

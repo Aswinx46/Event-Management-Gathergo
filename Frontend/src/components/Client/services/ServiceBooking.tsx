@@ -12,7 +12,7 @@ import { format, isBefore, startOfDay } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCreateBooking, useFindSericeDataWithVendor } from '@/hooks/ClientCustomHooks';
 import BookingConfirmation from '@/components/other components/BookingConfirmationModal';
 import { toast } from 'react-toastify';
@@ -80,6 +80,10 @@ const VendorBookingCard = () => {
   const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor
 
   const bookingApi = useCreateBooking()
+  const navigate = useNavigate()
+  const handleNavigate = () => {
+    navigate('/profile/bookings')
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -105,13 +109,13 @@ const VendorBookingCard = () => {
         .min(2, 'Name must be at least 2 characters')
         .max(50, 'Name must be less than 50 characters')
     }),
-    onSubmit:  (values) => {
+    onSubmit: (values) => {
       console.log('Form submitted:', values);
       if (clientId && vendorId && serviceId) {
         const bookingData: Booking = {
           ...values, phone: Number(values.phone), date: new Date(values.date), serviceId: serviceId, vendorId: vendorId, clientId: clientId
         }
-         bookingApi.mutate(bookingData, {
+        bookingApi.mutate(bookingData, {
           onSuccess: (data) => {
             toast.success(data.message)
             setIsOpen(true)
@@ -132,7 +136,7 @@ const VendorBookingCard = () => {
 
   return (
     <div className='bg-black'>
-      {isOpen && <BookingConfirmation isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && <BookingConfirmation isOpen={isOpen} setIsOpen={setIsOpen} handleBooking={handleNavigate} />}
       <div className="container mx-auto  px-4 py-8 max-w-6xl">
         <motion.div
           initial="hidden"

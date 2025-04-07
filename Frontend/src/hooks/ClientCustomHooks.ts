@@ -1,4 +1,4 @@
-import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
@@ -93,12 +93,12 @@ export const useFindServiceForclient = (currentPage: number) => {
 
 export interface Booking {
     date: Date;
-  email: string;
-  phone: number;
-  name: string;
-  vendorId: string,
-  serviceId: string
-  clientId:string
+    email: string;
+    phone: number;
+    name: string;
+    vendorId: string,
+    serviceId: string
+    clientId: string
 }
 
 export const useCreateBooking = () => {
@@ -111,5 +111,12 @@ export const useFindSericeDataWithVendor = (serviceId: string) => {
     return useQuery({
         queryKey: ['serviceDataWithVendor'],
         queryFn: () => fetchServiceDetailsWithVendor(serviceId)
+    })
+}
+
+export const useFetchBookingsInClient = (clientId: string) => {
+    return useQuery({
+        queryKey: ['Bookings'],
+        queryFn: () => fetchBookingInClient(clientId)
     })
 }

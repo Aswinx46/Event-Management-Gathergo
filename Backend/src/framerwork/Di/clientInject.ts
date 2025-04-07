@@ -33,6 +33,8 @@ import { CreateBookingUseCase } from "../../useCases/client/booking/createBookin
 import { CreateBookingController } from "../../adapters/controllers/client/booking/createBookingController";
 import { ServiceWithVendorUseCase } from "../../useCases/client/booking/showServiceWIthVendorUseCase";
 import { ShowServiceWithVendorController } from "../../adapters/controllers/client/booking/showServiceWithVendorController";
+import { ShowBookingsInClientUseCase } from "../../useCases/client/booking/showBookingsInClientUseCase";
+import { ShowBookingsInClientController } from "../../adapters/controllers/client/booking/showBookingsInClientController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -93,3 +95,7 @@ export const injectedCreateBookingController = new CreateBookingController(creat
 //----------------------------------show service data with vendor-----------------------
 const showServiceWithVendorUseCase = new ServiceWithVendorUseCase(serviceDatabase)
 export const injectedShowServiceWithVendorCController = new ShowServiceWithVendorController(showServiceWithVendorUseCase)
+
+//----------------------------------Fetch all bookings of client ------------------
+const showBookingsInClientUseCase = new ShowBookingsInClientUseCase(bookingDatabase)
+export const injectedShowBookingInClientController = new ShowBookingsInClientController(showBookingsInClientUseCase)
