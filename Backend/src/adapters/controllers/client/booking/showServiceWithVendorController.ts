@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IshowServiceWithVendorUseCase } from "../../../../domain/interface/useCaseInterfaces/client/booking/showServiceWithVendorDetailsUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ShowServiceWithVendorController {
     private showServiceWithVendorUseCase: IshowServiceWithVendorUseCase

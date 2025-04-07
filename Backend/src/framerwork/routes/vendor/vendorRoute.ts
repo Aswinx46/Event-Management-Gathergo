@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedChangeStatusServiceController, injectedCreateServiceController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedResendOtpVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
+import { injectedChangeStatusServiceController, injectedCreateServiceController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
 
 export class VendorRoute {
     public vendorRoute: Router
@@ -37,6 +37,9 @@ export class VendorRoute {
         })
         this.vendorRoute.patch('/changeStatusService', (req: Request, res: Response) => {
             injectedChangeStatusServiceController.handleChangeStatusUseCase(req, res)
+        })
+        this.vendorRoute.get('/showBookings/:vendorId', (req: Request, res: Response) => {
+            injectedShowBookingsInVendorController.handleShowBookingsInVendor(req, res)
         })
     }
 }

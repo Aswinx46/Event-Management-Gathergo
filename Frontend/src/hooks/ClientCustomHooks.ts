@@ -116,7 +116,7 @@ export const useFindSericeDataWithVendor = (serviceId: string) => {
 
 export const useFetchBookingsInClient = (clientId: string) => {
     return useQuery({
-        queryKey: ['Bookings'],
+        queryKey: ['Bookings in client'],
         queryFn: () => fetchBookingInClient(clientId)
     })
 }

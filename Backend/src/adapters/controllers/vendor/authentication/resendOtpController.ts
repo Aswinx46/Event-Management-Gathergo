@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IresendOtpVendorUsecase } from "../../../../domain/interface/useCaseInterfaces/vendor/authentication/resendOtpVendorUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ResendOtpVendorController {
     private resendOtpVendorUseCase: IresendOtpVendorUsecase

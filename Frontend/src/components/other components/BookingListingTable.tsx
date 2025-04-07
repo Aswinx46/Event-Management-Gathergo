@@ -33,6 +33,14 @@ interface Vendor {
   profileImage: string;
 }
 
+interface Client {
+  _id: string;
+  name: string;
+  email: string;
+  phone: number;
+  profileImage: string;
+}
+
 export interface Booking {
   _id: string;
   date: string;
@@ -42,6 +50,7 @@ export interface Booking {
   status: string;
   service: Service;
   vendor: Vendor;
+  client: Client
 }
 
 interface BookingListingTableProps {
@@ -135,13 +144,13 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         <img
-                          src={booking.vendor.profileImage}
-                          alt={booking.vendor.name}
+                          src={booking.vendor?.profileImage || booking.client?.profileImage}
+                          alt={booking.vendor?.name || booking.client?.profileImage}
                           className="w-10 h-10 rounded-full object-cover"
                         />?
                         <div>
-                          <p className="font-medium">{booking?.vendor?.name}</p>
-                          <p className="text-sm text-gray-500">{booking?.vendor?.email}</p>
+                          <p className="font-medium">{booking?.vendor?.name || booking?.client?.name}</p>
+                          <p className="text-sm text-gray-500">{booking?.vendor?.email || booking.client.email}</p>
                         </div>
                       </div>
                     </TableCell>

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IvendorAuthenticationUseCase } from "../../../../domain/interface/useCaseInterfaces/vendor/authentication/registerVendorUseCase";
 import { IsendOtpVendorInterface } from "../../../../domain/interface/useCaseInterfaces/vendor/authentication/sendOtpVendorUseCase";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 export class VendorAuthenticationController {
     private vendorAuthenticationUseCase: IvendorAuthenticationUseCase
     private vendorSentOtp: IsendOtpVendorInterface

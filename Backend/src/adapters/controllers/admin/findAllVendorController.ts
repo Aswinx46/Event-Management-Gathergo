@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindAllVendorUsecase } from "../../../domain/interface/useCaseInterfaces/admin/showAllVendorUseCase";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 export class FindAllVendorController {
     private findAllVendorUseCase: IfindAllVendorUsecase

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IeditServiceUseCase } from "../../../../domain/interface/useCaseInterfaces/vendor/service/editServiceUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 import { ServiceEntity } from "../../../../domain/entities/serviceEntity";
 
 interface Params {

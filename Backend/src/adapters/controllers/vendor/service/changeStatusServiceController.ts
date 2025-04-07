@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IchangeStatusServiceUseCase } from "../../../../domain/interface/useCaseInterfaces/vendor/service/changeStatusUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ChangestatusServiceController {
     private changeStatusServiceUseCase: IchangeStatusServiceUseCase

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IsendOtpForForgetPasswordClient } from "../../../../domain/interface/useCaseInterfaces/client/authentication/sendOtpForForgetPassword";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class SendOtpToClientForgetPassword {
     private sendOtpForgetPasswordClientUseCase: IsendOtpForForgetPasswordClient

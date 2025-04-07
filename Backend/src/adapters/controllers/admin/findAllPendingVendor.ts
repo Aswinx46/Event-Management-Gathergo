@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindPendingVendors } from "../../../domain/interface/useCaseInterfaces/admin/findPendingVendors";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 export class FindAllPendingVendorController {
     private findPendingVendorUseCase: IfindPendingVendors

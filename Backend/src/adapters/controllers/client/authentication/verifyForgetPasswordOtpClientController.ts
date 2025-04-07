@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IverifyForgetPasswordOTP } from "../../../../domain/interface/useCaseInterfaces/client/authentication/verifyforgetPasswordOTP";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class VerifyForgetPasswordOtpClientController {
     private verifyOtpForgetPasswordClient: IverifyForgetPasswordOTP

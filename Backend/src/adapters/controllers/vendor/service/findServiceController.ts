@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindServiceUseCaseInterface } from "../../../../domain/interface/useCaseInterfaces/vendor/service/findServiceUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class FindServiceController {
     private findServiceUseCase: IfindServiceUseCaseInterface

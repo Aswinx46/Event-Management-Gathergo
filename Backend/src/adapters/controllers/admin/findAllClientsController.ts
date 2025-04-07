@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindAllClientUseCase } from "../../../domain/interface/useCaseInterfaces/admin/findAllClientUseCaseInterface";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 export class FindAllClientsController {
     private findAllClientsUseCase: IfindAllClientUseCase

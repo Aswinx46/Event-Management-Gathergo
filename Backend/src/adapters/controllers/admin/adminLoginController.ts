@@ -4,7 +4,7 @@ import { IadminLoginUseCase } from "../../../domain/interface/useCaseInterfaces/
 import { IjwtInterface } from "../../../domain/interface/serviceInterface/IjwtService";
 import { IredisService } from "../../../domain/interface/serviceInterface/IredisService";
 import { setCookie } from "../../../framerwork/services/tokenCookieSettingFunc";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 export class AdminLoginController {
     private adminLoginUseCase: IadminLoginUseCase

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IapproveVendorStatusUsecase } from "../../../domain/interface/useCaseInterfaces/admin/approveVendorStatus";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 enum VendorStatus {
     Approved = 'approved',

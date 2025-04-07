@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindAllRejectedVendor } from "../../../domain/interface/useCaseInterfaces/admin/findAllRejectedVendorsUseCaseInterface";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 export class FindAllRejectedController {
     private findAllRejectedVendorUseCase: IfindAllRejectedVendor

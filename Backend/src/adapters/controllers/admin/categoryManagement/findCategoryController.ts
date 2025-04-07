@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindCategoryUseCase } from "../../../../domain/interface/useCaseInterfaces/admin/categoryManagement/findCategoryAdminUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class FindCategoryController {
     private findCategoryUseCase: IfindCategoryUseCase

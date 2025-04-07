@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindCategoryUseCaseClient } from "../../../../domain/interface/useCaseInterfaces/client/category/findCategoryUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class FindCategoryClientController {
     private findCategoryClientUSeCase: IfindCategoryUseCaseClient

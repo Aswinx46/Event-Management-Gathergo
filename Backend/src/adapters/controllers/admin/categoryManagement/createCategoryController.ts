@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IcreateCategoryUseCase } from "../../../../domain/interface/useCaseInterfaces/admin/categoryManagement/createCategoryUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class CreateCategoryController {
     private createCategoryConrollerUseCase: IcreateCategoryUseCase

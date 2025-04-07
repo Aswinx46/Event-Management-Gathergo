@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IprofileImageUpdateUseCase } from "../../../../domain/interface/useCaseInterfaces/vendor/profile/profileImageUpdateUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class UpdateImageVendorController {
     private updateImageVendorUseCase: IprofileImageUpdateUseCase

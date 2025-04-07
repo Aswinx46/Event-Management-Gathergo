@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IgoogleLoginClientUseCase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/googleLoginUseCase";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class GoogleLoginClient {
     private googleLoginClientUseCase: IgoogleLoginClientUseCase

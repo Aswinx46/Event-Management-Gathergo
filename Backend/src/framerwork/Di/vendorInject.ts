@@ -26,6 +26,9 @@ import { EditServiceUseCase } from "../../useCases/vendor/service/editServiceUse
 import { EditServiceController } from "../../adapters/controllers/vendor/service/editServiceController";
 import { ChangeStatusServiceUseCase } from "../../useCases/vendor/service/changeStatusServiceUseCase";
 import { ChangestatusServiceController } from "../../adapters/controllers/vendor/service/changeStatusServiceController";
+import { ShowBookingsInVendorUseCase } from "../../useCases/vendor/bookings/showBookingsInVendorUseCase";
+import { BookingRepository } from "../../adapters/repository/booking/bookingRepository";
+import { ShowBookingsInVendorController } from "../../adapters/controllers/vendor/bookings/showBookingsInVendorController";
 
 
 //-----------------Register vendor-------------------//
@@ -73,3 +76,8 @@ export const injectedEditServiceController = new EditServiceController(editServi
 //----------------------- Change status of service---------------------------
 const changeStatusServiceUseCase = new ChangeStatusServiceUseCase(serviceRepository)
 export const injectedChangeStatusServiceController = new ChangestatusServiceController(changeStatusServiceUseCase)
+
+//-------------------------show bookings in vendor side---------------------
+const bookingsDatabase = new BookingRepository()
+const showBookingsInVendorUseCase = new ShowBookingsInVendorUseCase(bookingsDatabase)
+export const injectedShowBookingsInVendorController = new ShowBookingsInVendorController(showBookingsInVendorUseCase)

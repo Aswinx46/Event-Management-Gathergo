@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IfindVendorForClientCarousalUseCase } from "../../../../domain/interface/useCaseInterfaces/client/vendorFetching/findVendorForClientUseCase";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 import { VendorEntity } from "../../../../domain/entities/vendorEntity";
 
 export class FindVendorForClientCarousalController {

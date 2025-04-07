@@ -1,4 +1,4 @@
-import { changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, resendOtpVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -104,5 +104,13 @@ export const useEditServiceVendor = () => {
 export const useChangeStatusServiceVendor = () => {
     return useMutation({
         mutationFn: (serviceId: string) => changeStatusService(serviceId)
+    })
+}
+
+
+export const useFetchBookingsInVendor = (vendorId: string) => {
+    return useQuery({
+        queryKey: ['Bookings in vendor'],
+        queryFn: () => showBookingsInVendor(vendorId)
     })
 }

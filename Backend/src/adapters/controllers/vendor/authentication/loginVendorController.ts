@@ -3,7 +3,7 @@ import { IloginVendorUseCase } from "../../../../domain/interface/useCaseInterfa
 import { IjwtInterface } from "../../../../domain/interface/serviceInterface/IjwtService";
 import { setCookie } from "../../../../framerwork/services/tokenCookieSettingFunc";
 import { IredisService } from "../../../../domain/interface/serviceInterface/IredisService";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class LoginVendorController {
     private vendorLoginUseCase: IloginVendorUseCase

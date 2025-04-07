@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IchangeStatusOfCategoryUseCase } from "../../../../domain/interface/useCaseInterfaces/admin/categoryManagement/changeStatusOfCategoryUsecaseI";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ChangeStatusCategoryController {
     private changeStatusControllerUseCase: IchangeStatusOfCategoryUseCase

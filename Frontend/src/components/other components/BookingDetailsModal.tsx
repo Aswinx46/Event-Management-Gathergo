@@ -15,7 +15,7 @@ import {
     Mail,
     Phone,
     CreditCard,
-   
+
 } from "lucide-react";
 
 // Define interfaces for our data structure
@@ -46,17 +46,24 @@ interface Service {
     serviceDescription: string;
     serviceDuration: string;
     servicePrice: number;
-  }
-  
-  interface Vendor {
+}
+
+interface Vendor {
     _id: string;
     name: string;
     email: string;
     phone: number;
     profileImage: string;
-  }
-  
-  export interface BookingDetails {
+}
+
+interface Client {
+    _id: string;
+    name: string;
+    email: string;
+    phone: number;
+    profileImage: string;
+}
+export interface BookingDetails {
     _id: string;
     date: string;
     email: string;
@@ -65,8 +72,10 @@ interface Service {
     status: string;
     service: Service;
     vendor: Vendor;
-  }
-  
+    client: Client
+}
+
+
 
 interface BookingDetailsModalProps {
     isOpen: boolean;
@@ -184,17 +193,17 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
                     {/* Vendor Info */}
                     <motion.div variants={itemVariants} className="border border-gray-800 rounded-lg p-4 flex items-center gap-4">
-                        {booking.vendor.profileImage && (
+                        {booking?.vendor?.profileImage || booking.client?.profileImage && (
                             <img
-                                src={booking.vendor.profileImage}
-                                alt={booking.vendor.name}
+                                src={booking.vendor?.profileImage || booking.client?.profileImage}
+                                alt={booking.vendor?.name || booking?.client?.profileImage}
                                 className="w-12 h-12 rounded-full object-cover"
                             />
                         )}
                         <div>
-                            <p className="text-white font-medium">{booking.vendor.name}</p>
-                            <p className="text-gray-400 text-sm">{booking.vendor.email}</p>
-                            <p className="text-gray-400 text-sm">{formatPhoneNumber(booking.vendor.phone)}</p>
+                            <p className="text-white font-medium">{booking?.vendor?.name || booking?.client?.name}</p>
+                            <p className="text-gray-400 text-sm">{booking?.vendor?.email || booking.client.email}</p>
+                            <p className="text-gray-400 text-sm">{formatPhoneNumber(booking?.vendor?.phone || booking?.client?.phone)}</p>
                         </div>
                     </motion.div>
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IclientUsecase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/clientUseCaseInterface";
 import { IsendOtpClientInterface } from "../../../../domain/interface/useCaseInterfaces/client/authentication/sendOtpClientInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ClientAuthenticationController {
     private clientUseCase: IclientUsecase

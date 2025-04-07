@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IrejectVendorUseCase } from "../../../domain/interface/useCaseInterfaces/admin/rejectVendorUseCaseInterface";
-import { HttpStatus } from "../../../domain/httpStatus";
+import { HttpStatus } from "../../../domain/entities/httpStatus";
 
 export class RejectVendorControllerAdmin {
     private rejectVendorUseCase: IrejectVendorUseCase

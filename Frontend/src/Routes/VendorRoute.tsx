@@ -5,6 +5,7 @@ import VendorDashboard from "@/components/Vendor/home/VendorHome";
 import VendorLogin from "@/components/Vendor/login/VendorLogin";
 import VendorLayout from "@/components/Vendor/sidebar/VendorLayout";
 import ServiceListingVendor from "@/components/Vendor/serviceManagement/ServiceListingVendor";
+import ShowBookingsVendor from "@/components/Vendor/bookings/ShowBookingsVendor";
 const VendorRoute = () => {
     return (
         <Routes>
@@ -14,6 +15,7 @@ const VendorRoute = () => {
                 <Route path="carousal" element={<ImageCarousel />}></Route>
                 <Route path="home" element={<VendorDashboard />}></Route>
                 <Route path="services" element={<ServiceListingVendor />}></Route>
+                <Route path="bookings" element={<ShowBookingsVendor />}></Route>
             </Route>
         </Routes>
     )

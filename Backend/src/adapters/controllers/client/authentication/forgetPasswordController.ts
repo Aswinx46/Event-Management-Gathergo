@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IforgetPasswordClientUseCase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/forgetPasswordUseCase";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ForgetPasswordClientController {
     private forgetPasswordClientUseCase: IforgetPasswordClientUseCase

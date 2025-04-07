@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IshowBookingsInClientUseCase } from "../../../../domain/interface/useCaseInterfaces/client/booking/showBookingsUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 
 export class ShowBookingsInClientController {
     private showBookingsInClient: IshowBookingsInClientUseCase

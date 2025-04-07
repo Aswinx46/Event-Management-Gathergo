@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IcreateBookingUseCase } from "../../../../domain/interface/useCaseInterfaces/client/booking/createBookingUseCaseInterface";
-import { HttpStatus } from "../../../../domain/httpStatus";
+import { HttpStatus } from "../../../../domain/entities/httpStatus";
 import { BookingEntity } from "../../../../domain/entities/bookingEntity";
 
 export class CreateBookingController {
