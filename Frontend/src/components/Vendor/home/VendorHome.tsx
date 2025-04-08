@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import RejectedVendorPage from "../rejectedModal/RejectedVendorPage"
 import ImageCropper from "@/components/other components/ImageCropper"
-import { useUpdateProfileImageMutation, useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
+import { useUpdateProfileImageMutation, useUploadeImageToCloudinaryMutation, useVendorLogout } from "@/hooks/VendorCustomHooks"
 import { toast } from "react-toastify"
-import { addVendor } from "@/store/slices/vendor/vendorSlice"
+import { addVendor, removeVendor } from "@/store/slices/vendor/vendorSlice"
 import { isAxiosError } from "axios"
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
+import { removeVendorToken } from "@/store/slices/vendor/vendorTokenSlice"
 export default function VendorDashboard() {
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [isPending, setIsPending] = useState(false)
@@ -18,7 +20,7 @@ export default function VendorDashboard() {
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [changedProfile, setChangedProfile] = useState<boolean>(false)
-  const activeSection='profile'
+  const activeSection = 'profile'
   useEffect(() => {
     if (vendor) {
       if (vendor?.vendorStatus === 'pending') {
@@ -91,6 +93,17 @@ export default function VendorDashboard() {
       toast.error(error.response?.data.message || "An error occurred");
     }
   };
+
+  const vendorLogout = useVendorLogout()
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    
+    vendorLogout.mutate()
+    navigate('/vendor/login')
+    dispatch(removeVendor(null))
+    dispatch(removeVendorToken(null))
+    toast.success('Logout SuccesFull')
+  }
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -237,6 +250,7 @@ export default function VendorDashboard() {
                 </div>
               </div>
             )}
+            <Button onClick={handleLogout}>LOGOUT</Button>
           </motion.div>
         </motion.div>
       </main>

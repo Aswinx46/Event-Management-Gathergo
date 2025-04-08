@@ -6,7 +6,7 @@ export const verifyTokenAndCheckBlackList = (TokenService: ItokenService) => {
     return async (req: Request, res: Response, next: NextFunction):Promise<void> => {
         const authHeader = req.headers.authorization
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            res.status(401).json({ message: 'Access denied. No token provided.' });
+            res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Access denied. No token provided.' });
             return 
         }
         const token = authHeader.split(' ')[1];

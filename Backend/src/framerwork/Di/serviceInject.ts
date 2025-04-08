@@ -8,3 +8,4 @@ const ACCESSTOKEN_SECRET_KEY = process.env.ACCESSTOKEN_SECRET_KEY
 const tokenService = new TokenService(redisService, jwtService, ACCESSTOKEN_SECRET_KEY!)
 
 export const injectedVerifyTokenAndCheckBlacklistMiddleWare = verifyTokenAndCheckBlackList(tokenService)
+

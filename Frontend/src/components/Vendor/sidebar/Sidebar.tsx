@@ -11,7 +11,7 @@ import {
   CalendarDays,
   Lock,
   Wallet,
-  LogOut,
+  // LogOut,
   Menu,
   X,
   ChevronRight,
@@ -31,7 +31,7 @@ export function Sidebar() {
     { id: "events", label: "Events", icon: CalendarDays },
     { id: "changePassword", label: "Change Password", icon: Lock },
     { id: "wallet", label: "Wallet", icon: Wallet },
-    { id: "logout", label: "Logout", icon: LogOut },
+    // { id: "logout", label: "Logout", icon: LogOut },
   ]
 
   const toggleSidebar = () => {

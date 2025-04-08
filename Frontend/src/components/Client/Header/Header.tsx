@@ -6,10 +6,12 @@ import { Link, useNavigate } from "react-router-dom"
 import { Instagram, Facebook, Linkedin, Menu } from "lucide-react"
 import ShinyText from '../../../../addon/ShinyText/ShinyText'
 import { Button } from "@/components/ui/button"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { useClientLogout } from "@/hooks/ClientCustomHooks"
 import { toast } from "react-toastify"
+import { removeClient } from "@/store/slices/user/userSlice"
+import { removeToken } from "@/store/slices/user/userTokenSlice"
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
@@ -17,10 +19,12 @@ export default function Header() {
   const { mutate } = useClientLogout()
 
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const handleLogOut = () => {
     mutate()
     navigate('/login')
+    dispatch(removeClient(null))
+    dispatch(removeToken(null))
     toast.success('LOGOUT SUCCESSFULL')
   }
 

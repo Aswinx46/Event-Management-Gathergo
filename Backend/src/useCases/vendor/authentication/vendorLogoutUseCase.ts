@@ -1,15 +1,15 @@
 import { IjwtInterface } from "../../../domain/interface/serviceInterface/IjwtService";
 import { IredisService } from "../../../domain/interface/serviceInterface/IredisService";
-import { IclientLogoutUseCase } from "../../../domain/interface/useCaseInterfaces/client/authentication/clientLogoutUseCase";
+import { IvendorLogoutUseCase } from "../../../domain/interface/useCaseInterfaces/vendor/authentication/vendorLogoutUseCase";
 
-export class ClientLogoutUseCase implements IclientLogoutUseCase {
+export class VendorLogoutUseCase implements IvendorLogoutUseCase {
     private redisService: IredisService
     private jwtService: IjwtInterface
     constructor(redisService: IredisService, jwtService: IjwtInterface) {
         this.redisService = redisService
         this.jwtService = jwtService
     }
-    async clientLogout(token: string): Promise<boolean> {
+    async vendorLogout(token: string): Promise<boolean> {
         const decode = this.jwtService.tokenDecode(token)
         const exp = decode?.exp
         console.log(exp)
@@ -18,6 +18,7 @@ export class ClientLogoutUseCase implements IclientLogoutUseCase {
         const ttl = exp - currentTime;
         console.log(ttl)
         if (ttl > 0) {
+            console.log('inside ttl')
             await this.redisService.set(`blacklist:${token}`, ttl, 'true')
             return true
         }

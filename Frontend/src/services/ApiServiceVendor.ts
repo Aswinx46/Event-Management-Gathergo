@@ -136,7 +136,7 @@ export const fetchCategoryCategoryForService = async () => {
 export const findServiceForVendor = async ({ vendorId, pageNo }: { vendorId: string, pageNo: number }) => {
     try {
 
-        const response = await axios.get('/services',{params:{vendorId,pageNo}})
+        const response = await axios.get('/services', { params: { vendorId, pageNo } })
         return response.data
     } catch (error) {
         console.log('error while fetching service', error)
@@ -203,5 +203,16 @@ export const rejectBooking = async (bookingId: string, rejectionReason: string) 
         console.log('error while rejecting booking', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error while rejecting booking')
+    }
+}
+
+export const vendorLogout = async () => {
+    try {
+        const response = await axios.post('/logout')
+        return response.data
+    } catch (error) {
+        console.log('error while logout', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while logout')
     }
 }

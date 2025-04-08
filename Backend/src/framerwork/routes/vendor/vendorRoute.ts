@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedApproveBookingController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController } from "../../Di/vendorInject";
+import { injectedApproveBookingController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
 
 export class VendorRoute {
     public vendorRoute: Router
@@ -46,6 +46,9 @@ export class VendorRoute {
         })
         this.vendorRoute.patch('/rejectBooking', (req: Request, res: Response) => {
             injectedRejectBookingInVendor.handleRejectBookingInVendor(req, res)
+        })
+        this.vendorRoute.post('/logout', (req: Request, res: Response) => {
+            injectedVendorLogoutController.handleVendorLogout(req, res)
         })
     }
 }

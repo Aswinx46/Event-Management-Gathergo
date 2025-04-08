@@ -8,7 +8,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const token = store.getState().adminToken.adminToken
+        const token = store.getState().vendorToken.token
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`
         }
