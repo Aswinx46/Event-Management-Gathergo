@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ServiceFormData {
-    _id: string
+    _id?: string;
     serviceTitle: string;
     yearsOfExperience: number;
     serviceDescription: string;
@@ -15,8 +15,9 @@ interface ServiceFormData {
     serviceDuration: string;
     servicePrice: number;
     additionalHourFee: number;
+    status: string;
+    vendorId?: string;
     categoryId: string;
-    status: string
 }
 
 interface Category {
@@ -30,6 +31,7 @@ interface AddServiceModalProps {
     onSubmit: (values: ServiceFormData) => void;
     data?: ServiceFormData
     categories: Category[];
+    onEdit:(values:ServiceFormData)=>void
 }
 
 
@@ -61,7 +63,8 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
     setIsOpen,
     onSubmit,
     data,
-    categories
+    categories,
+    onEdit
 }) => {
 
     const initialValues: ServiceFormData = {
@@ -78,6 +81,14 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
         status: data?.status || ''
 
     };
+
+    const handleSubmit=(values:ServiceFormData)=>{
+        if(data){
+            onEdit(values)
+        }else{
+            onSubmit(values)
+        }
+    }
 
 
     return (
@@ -124,7 +135,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
                                     initialValues={initialValues}
                                     validationSchema={validationSchema}
                                     onSubmit={(values, { setSubmitting }) => {
-                                        onSubmit(values);
+                                        handleSubmit(values);
                                         setSubmitting(false);
                                     }}
                                 >

@@ -9,7 +9,8 @@ export class FindServiceController {
     }
     async handleFindService(req: Request, res: Response): Promise<void> {
         try {
-            const { vendorId, pageNo } = req.body
+            const vendorId = req.query.vendorId as string;
+            const pageNo = req.query.pageNo as string;
             const page = parseInt(pageNo, 10) || 1;
             const { Services, totalPages } = await this.findServiceUseCase.findService(vendorId, page)
             res.status(HttpStatus.OK).json({ message: "Service fetched", Services, totalPages })

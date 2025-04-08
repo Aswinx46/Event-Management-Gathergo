@@ -92,7 +92,7 @@ export const updateProfileImageVendor = async (id: string, imageUrl: string) => 
 
 
 interface Service {
-    _id: string
+    _id?: string;
     serviceTitle: string;
     yearsOfExperience: number;
     serviceDescription: string;
@@ -101,8 +101,9 @@ interface Service {
     serviceDuration: string;
     servicePrice: number;
     additionalHourFee: number;
-    vendorId?: string
-    status: string
+    status: string;
+    vendorId?: string;
+    categoryId: string;
 }
 
 
@@ -135,7 +136,7 @@ export const fetchCategoryCategoryForService = async () => {
 export const findServiceForVendor = async ({ vendorId, pageNo }: { vendorId: string, pageNo: number }) => {
     try {
 
-        const response = await axios.post('/services', { vendorId, pageNo })
+        const response = await axios.get('/services',{params:{vendorId,pageNo}})
         return response.data
     } catch (error) {
         console.log('error while fetching service', error)

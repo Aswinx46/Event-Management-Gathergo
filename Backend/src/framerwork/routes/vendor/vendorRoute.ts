@@ -29,7 +29,7 @@ export class VendorRoute {
         this.vendorRoute.get('/categories', (req: Request, res: Response) => {
             injectedFindCategoryForServiceController.handleFindCategoryForServiceUseCase(req, res)
         })
-        this.vendorRoute.post('/services', (req: Request, res: Response) => {
+        this.vendorRoute.get('/services', (req: Request, res: Response) => {
             injectedFindServiceController.handleFindService(req, res)
         })
         this.vendorRoute.put('/editService', (req: Request, res: Response) => {

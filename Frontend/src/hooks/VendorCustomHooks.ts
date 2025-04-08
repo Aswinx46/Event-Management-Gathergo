@@ -59,7 +59,7 @@ export const useUpdateProfileImageMutation = () => {
 }
 
 interface Service {
-    _id: string
+    _id?: string;
     serviceTitle: string;
     yearsOfExperience: number;
     serviceDescription: string;
@@ -68,8 +68,9 @@ interface Service {
     serviceDuration: string;
     servicePrice: number;
     additionalHourFee: number;
-    vendorId?: string
-    status: string
+    status: string;
+    vendorId?: string;
+    categoryId: string;
 }
 
 
@@ -81,7 +82,7 @@ export const useCreateServiceMutation = () => {
 
 export const useFetchCategoryForServiceQuery = () => {
     return useQuery({
-        queryKey: ['categories'],
+        queryKey: ['categories-for-addService'],
         queryFn: () => fetchCategoryCategoryForService(),
 
         refetchOnWindowFocus: false
@@ -89,9 +90,17 @@ export const useFetchCategoryForServiceQuery = () => {
     )
 }
 
-export const useFetchServiceVendor = () => {
-    return useMutation({
-        mutationFn: ({ vendorId, pageNo }: { vendorId: string, pageNo: number }) => findServiceForVendor({ vendorId, pageNo })
+// export const useFetchServiceVendor = () => {
+//     return useMutation({
+//         mutationFn: ({ vendorId, pageNo }: { vendorId: string, pageNo: number }) => findServiceForVendor({ vendorId, pageNo })
+//     })
+// }
+
+export const useFetchServiceVendor=({vendorId,pageNo}:{vendorId:string,pageNo:number})=>{
+    return useQuery({
+        queryKey:['services-in-vendor',vendorId,pageNo],
+        queryFn:()=>findServiceForVendor({vendorId,pageNo}),
+        staleTime: 1000 * 60 * 5,
     })
 }
 
