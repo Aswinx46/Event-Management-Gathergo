@@ -7,16 +7,17 @@ import ImageCropper from "@/components/other components/ImageCropper";
 import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import { useCreateCategory } from "@/hooks/AdminCustomHooks";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AddCategoryModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  refetch: () => void
+  currentPage:number
 }
 
 interface Category { title: string; image: File | null; }
 
-const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, refetch }) => {
+const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, currentPage }) => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [showCropper, setShowCropper] = useState<boolean>(false)
   const [category, setCategory] = useState<Category>()
@@ -45,6 +46,8 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
 
   const createCategory = useCreateCategory()
 
+  const queryClient=useQueryClient()
+
   const handleSubmit = async (values: Category, { resetForm }: FormikHelpers<Category>) => {
     try {
       values.image = croppedImage
@@ -59,7 +62,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
           onSuccess(data) {
             toast.success(data?.message)
             console.log('data while creating category', data)
-            refetch()
+            queryClient.invalidateQueries({queryKey:['categories', currentPage]})
             resetForm()
             setCategory(values)
             setIsOpen(false);

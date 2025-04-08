@@ -7,6 +7,7 @@ import AddServiceModal from './AddServiceModal';
 import ServiceCard from './ServiceCard';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
+import Pagination from '@/components/other components/Pagination';
 interface Service {
     _id?: string;
     serviceTitle: string;
@@ -32,7 +33,7 @@ interface Category {
 
 const ServiceListingVendor: React.FC = () => {
 
-    const [currentPage] = useState<number>(1)
+    const [currentPage,setCurrentPage] = useState<number>(1)
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
     const [selectedService, setSelectedService] = useState<Service | null>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -47,9 +48,9 @@ const ServiceListingVendor: React.FC = () => {
     const editService = useEditServiceVendor()
     const changeStatusService = useChangeStatusServiceVendor()
     const services: Service[] = data?.Services
-
+    const totalPages=data?.totalPages
     const categories: Category[] = fetchCategory?.data?.categories
-
+    
     const queryClient = useQueryClient()
 
     const handleSubmit = (values: Service) => {
@@ -173,6 +174,7 @@ const ServiceListingVendor: React.FC = () => {
                     <ServiceCard key={service._id} service={service} onEdit={handleSelectedData} changeStatusService={handleChangeStatusofService} />
                 ))}
             </motion.div>
+            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages}/>
         </div>
     );
 };

@@ -22,12 +22,12 @@ const CategoryManagement: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1)
 
   const findCategoryApi = useFindAllCategories(currentPage)
-
+  console.log(findCategoryApi.data)
   const changeStatusCategoryApi = UseChangeStatusCategory()
 
   useEffect(() => {
-    if (findCategoryApi.data?.totalPageNo) {
-      setTotalPages(findCategoryApi.data.totalPageNo);
+    if (findCategoryApi.data?.totalPages) {
+      setTotalPages(findCategoryApi.data.totalPages);
     }
   }, [findCategoryApi.data]);
 
@@ -50,121 +50,145 @@ const CategoryManagement: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="p-6 max-w-7xl md:w-1/2 w-screen mx-auto space-y-8"
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6"
     >
-      {isOpen && <AddCategoryModal isOpen={isOpen} setIsOpen={setIsOpen} refetch={findCategoryApi.refetch} />}
+      {isOpen && <AddCategoryModal isOpen={isOpen} setIsOpen={setIsOpen} currentPage={currentPage} />}
 
-      {/* Black Header */}
-      <div className="bg-black rounded-xl p-6 shadow-lg text-white">
-        <motion.h1
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="text-3xl  font-bold"
+      {/* Header Section */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-2"
         >
-          Category Management
-        </motion.h1>
-        <p className="text-gray-400 text-sm">Manage and organize your event categories</p>
+          <h1 className="text-4xl font-bold text-gray-900">Category Management</h1>
+          <p className="text-gray-600">Manage and organize your event categories</p>
+        </motion.div>
+
+        {/* Search & Add Category */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mt-8 flex flex-col sm:flex-row gap-4 justify-between items-center"
+        >
+          <div className="relative w-full sm:w-96">
+            <input
+              type="text"
+              placeholder="Search categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-white rounded-full shadow-sm border-2 border-transparent focus:border-black focus:ring-2 focus:ring-black/5 transition-all"
+            />
+            <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setIsOpen(true)}
+            className="w-full sm:w-auto px-6 py-3 bg-black text-white rounded-full shadow-lg hover:shadow-xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 font-medium"
+          >
+            <FaPlus className="text-sm" />
+            <span>New Category</span>
+          </motion.button>
+        </motion.div>
       </div>
 
-      {/* Search & Add Category */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-xl shadow-md border border-gray-300">
-        {/* Search Bar */}
-        <div className="relative flex-grow sm:max-w-md group">
-          <input
-            type="text"
-            placeholder="Search categories..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl bg-white text-black placeholder-gray-500 focus:outline-none focus:border-black transition-all"
-          />
-          <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 group-hover:text-black transition-colors" />
-        </div>
+      {/* Categories Grid */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ 
+          duration: 0.3,
+          ease: "easeOut"
+        }}
+        className="max-w-[1920px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+      >
+        <AnimatePresence
+          mode="popLayout"
+          initial={false}>
+          {categories?.map((category: Category, index: number) => (
+            <motion.div
+              key={category._id}
+              initial={{ opacity: 0, x: -20, y: 20 }}
+              animate={{ 
+                opacity: 1, 
+                x: 0, 
+                y: 0,
+                transition: {
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 15,
+                  delay: index * 0.1
+                }
+              }}
+              exit={{ 
+                opacity: 0, 
+                x: 20, 
+                y: -20,
+                transition: {
+                  type: "tween",
+                  duration: 0.2
+                }
+              }}
+              whileHover={{ 
+                y: -5,
+                transition: {
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 10
+                }
+              }}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 transition-all"
+            >
+              <div className="aspect-w-16 aspect-h-12 bg-gray-100">
+                <img
+                  src={category.image}
+                  alt={category.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              <div className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-gray-900 truncate">{category.title}</h3>
+                  <span className="text-xs text-gray-500 font-medium">#{category.categoryId}</span>
+                </div>
 
-        {/* Add Category Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-all w-full sm:w-auto justify-center"
-        >
-          <FaPlus className="text-white" />
-          <span>Add New Category</span>
-        </motion.button>
-      </div>
-
-      {/* Categories Table */}
-      <div className="bg-white rounded-xl border border-gray-300 shadow-md">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-300">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Category ID</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Image</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-300">
-              <AnimatePresence>
-                {categories?.map((category: Category) => (
-                  <motion.tr
-                    key={category._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    whileHover={{ backgroundColor: '#f9f9f9' }}
-                    className="transition-colors"
+                <div className="flex items-center justify-between">
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${category.status === 'active'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
+                    }`}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium bg-gray-200 px-3 py-1 rounded-full">
-                        {category.categoryId}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <motion.div whileHover={{ scale: 1.1 }} className="relative w-12 h-12">
-                        <img
-                          src={category.image}
-                          alt={category.title}
-                          className="h-12 w-12 rounded-lg object-cover border border-gray-300"
-                        />
-                      </motion.div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-black">{category.title}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <motion.span
-                        whileHover={{ scale: 1.05 }}
-                        className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${category.status === 'active'
-                          ? 'bg-green-500 text-white'
-                          : 'bg-red-500 text-white'
-                          }`}
-                      >
-                        {category.status}
-                      </motion.span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleBlockCategory(category._id)}
-                        className={`px-4 py-2 rounded-lg shadow-sm transition-all ${category.status === 'active'
-                          ? 'bg-black text-white hover:bg-gray-800'
-                          : 'bg-gray-400 text-black hover:bg-gray-500'
-                          }`}
-                      >
-                        {category.status === 'active' ? 'Block' : 'Unblock'}
-                      </motion.button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
+                    {category.status}
+                  </motion.span>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleBlockCategory(category._id)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${category.status === 'active'
+                      ? 'bg-black text-white hover:bg-gray-800'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {category.status === 'active' ? 'Block' : 'Unblock'}
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Pagination */}
+      <div className="max-w-7xl mx-auto mt-8">
+        <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
       </div>
-      <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
     </motion.div>
   );
 };
