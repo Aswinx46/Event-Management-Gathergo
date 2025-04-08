@@ -29,6 +29,8 @@ import { ChangestatusServiceController } from "../../adapters/controllers/vendor
 import { ShowBookingsInVendorUseCase } from "../../useCases/vendor/bookings/showBookingsInVendorUseCase";
 import { BookingRepository } from "../../adapters/repository/booking/bookingRepository";
 import { ShowBookingsInVendorController } from "../../adapters/controllers/vendor/bookings/showBookingsInVendorController";
+import { ApproveBookingUseCase } from "../../useCases/vendor/bookings/approveBookingInVendorUseCase";
+import { ApproveBookingInVendorController } from "../../adapters/controllers/vendor/bookings/approveBookingInVendorController";
 
 
 //-----------------Register vendor-------------------//
@@ -81,3 +83,7 @@ export const injectedChangeStatusServiceController = new ChangestatusServiceCont
 const bookingsDatabase = new BookingRepository()
 const showBookingsInVendorUseCase = new ShowBookingsInVendorUseCase(bookingsDatabase)
 export const injectedShowBookingsInVendorController = new ShowBookingsInVendorController(showBookingsInVendorUseCase)
+
+//-------------------------------Approving Bookings----------------------------
+const approveBookingUseCase = new ApproveBookingUseCase(bookingsDatabase)
+export const injectedApproveBookingController = new ApproveBookingInVendorController(approveBookingUseCase)

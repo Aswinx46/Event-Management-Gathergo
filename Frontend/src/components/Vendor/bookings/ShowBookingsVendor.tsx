@@ -7,7 +7,6 @@ function ShowBookingsVendor() {
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
     const fetchBookings = useFetchBookingsInVendor(vendorId!)
     const bookings = fetchBookings.data?.bookings
-    console.log(fetchBookings.data)
     return (
         <div>
             <BookingListingTable bookings={bookings} />

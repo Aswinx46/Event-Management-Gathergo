@@ -182,3 +182,14 @@ export const showBookingsInVendor = async (vendorId: string) => {
         throw new Error('error while fetching bookings in vendor side')
     }
 }
+
+export const approveBookingVendor = async (bookingId: string) => {
+    try {
+        const response = await axios.patch('/approveBooking', { bookingId })
+        return response.data
+    } catch (error) {
+        console.log('error while approving booking in vendor side', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.message)
+        throw new Error('error whilw approving booking in vendor side')
+    }
+}

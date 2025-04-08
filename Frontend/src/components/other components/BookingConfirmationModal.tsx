@@ -15,10 +15,8 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   handleBooking
 }) => {
   const handleViewBookings = () => {
-    // Simply close the modal without showing toast
     setIsOpen(false)
     handleBooking()
-    // In a real application, this would navigate to the bookings page
     console.log("Navigating to bookings page");
 
   };

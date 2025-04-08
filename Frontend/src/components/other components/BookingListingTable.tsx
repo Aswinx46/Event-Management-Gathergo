@@ -51,6 +51,7 @@ export interface Booking {
   service: Service;
   vendor: Vendor;
   client: Client
+  vendorApproval: string
 }
 
 interface BookingListingTableProps {
@@ -125,6 +126,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                   <TableHead className="text-white font-medium">Duration & Price</TableHead>
                   <TableHead className="text-white font-medium">Status</TableHead>
                   <TableHead className="text-white font-medium">PaymentStatus</TableHead>
+                  <TableHead className="text-white font-medium">VendorStatus</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -193,8 +195,23 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                     </TableCell>
                     <TableCell>
                       <div className="space-y-2">
-                        <span className="block px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-black">
+                        <span className="block px-2.5 py-1 rounded-full text-center text-xs font-medium bg-gray-100 text-black">
                           {booking?.paymentStatus}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-2">
+                        <span
+                          className={`block px-2.5 py-1 rounded-full text-center text-xs font-medium
+                              ${booking?.vendorApproval === 'Approved'
+                              ? 'bg-green-100 text-green-800'
+                              : booking?.vendorApproval === 'Rejected'
+                                ? 'bg-red-100 text-red-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}
+                        >
+                          {booking?.vendorApproval}
                         </span>
                       </div>
                     </TableCell>

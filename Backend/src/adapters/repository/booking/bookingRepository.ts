@@ -32,7 +32,7 @@ export class BookingRepository implements IbookingRepository {
             _id: booking._id,
             date: booking.date,
             paymentStatus: booking.paymentStatus,
-            vendorAproval: booking.vendorAproval,
+            vendorApproval: booking.vendorApproval,
             email: booking.email,
             phone: booking.phone,
             status: booking.status,
@@ -61,9 +61,11 @@ export class BookingRepository implements IbookingRepository {
             service: booking.serviceId,
             client: booking.clientId,
             status: booking.status,
-            vendorAproval: booking.vendorAproval
+            vendorApproval: booking.vendorApproval
         }));
         return selectedBooking
     }
-
+    async approveBooking(bookingId: string): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { vendorApproval: "Approved" }, { new: true })
+    }
 }

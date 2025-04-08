@@ -8,7 +8,8 @@ export class ShowBookingsInClientUseCase implements IshowBookingsInClientUseCase
         this.bookingsDatabase = bookingsDatabase
     }
     async findBookings(clientId: string): Promise<BookingsInClientEntity[] | []> {
-        const bookings = await this.bookingsDatabase.showBookingsInClient(clientId)
-        return bookings
+        return await this.bookingsDatabase.showBookingsInClient(clientId)
+
+
     }
 }
