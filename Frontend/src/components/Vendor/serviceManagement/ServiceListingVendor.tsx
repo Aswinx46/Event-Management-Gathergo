@@ -1,4 +1,4 @@
-import { useCreateServiceMutation, useEditServiceVendor, useFetchCategoryForServiceQuery, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
+import { useChangeStatusServiceVendor, useCreateServiceMutation, useEditServiceVendor, useFetchCategoryForServiceQuery, useFetchServiceVendor } from '@/hooks/VendorCustomHooks';
 import { RootState } from '@/store/store';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
@@ -44,7 +44,8 @@ const ServiceListingVendor: React.FC = () => {
 
     const fetchCategory = useFetchCategoryForServiceQuery()
     const createService = useCreateServiceMutation()
-    const editService=useEditServiceVendor()
+    const editService = useEditServiceVendor()
+    const changeStatusService = useChangeStatusServiceVendor()
     const services: Service[] = data?.Services
 
     const categories: Category[] = fetchCategory?.data?.categories
@@ -70,13 +71,13 @@ const ServiceListingVendor: React.FC = () => {
 
     const handleEditData = (service: Service) => {
         console.log(service)
-        editService.mutate({service,serviceId:service._id!},{
-            onSuccess:(data)=>{
+        editService.mutate({ service, serviceId: service._id! }, {
+            onSuccess: (data) => {
                 toast.success(data.message)
                 queryClient.invalidateQueries({ queryKey: ['services-in-vendor', vendorId, currentPage] })
                 setIsOpen(false)
             },
-            onError:(err)=>{
+            onError: (err) => {
                 toast.error(err.message)
             }
         })
@@ -88,6 +89,17 @@ const ServiceListingVendor: React.FC = () => {
         setIsOpen(true)
     }
 
+    const handleChangeStatusofService = (serviceId: string) => {
+        changeStatusService.mutate(serviceId, {
+            onSuccess: (data) => {
+                toast.success(data.message)
+                queryClient.invalidateQueries({ queryKey: ['services-in-vendor', vendorId, currentPage] })
+            },
+            onError: (err) => {
+                toast.error(err.message)
+            }
+        })
+    }
 
     if (isLoading) {
         return (
@@ -158,7 +170,7 @@ const ServiceListingVendor: React.FC = () => {
                 className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
                 {services?.map((service) => (
-                    <ServiceCard key={service._id} service={service} onEdit={handleSelectedData} />
+                    <ServiceCard key={service._id} service={service} onEdit={handleSelectedData} changeStatusService={handleChangeStatusofService} />
                 ))}
             </motion.div>
         </div>

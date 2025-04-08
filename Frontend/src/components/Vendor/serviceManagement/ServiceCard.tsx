@@ -23,12 +23,13 @@ interface Service {
 interface ServiceCardProps {
     service: Service;
     onEdit: (service: Service) => void;
+    changeStatusService: (serviceId: string) => void
 }
 
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service,onEdit }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ service, onEdit,changeStatusService }) => {
 
-    const handleEdit=(service:Service)=>{
+    const handleEdit = (service: Service) => {
         console.log(service)
         onEdit(service)
     }
@@ -128,9 +129,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service,onEdit }) => {
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={()=>changeStatusService(service._id!)}
                     className="flex-1 border border-white text-white py-2 rounded-lg font-medium hover:bg-white/10 transition-colors"
                 >
-                    Delete
+                    {service.status}
                 </motion.button>
             </motion.div>
         </motion.div>
