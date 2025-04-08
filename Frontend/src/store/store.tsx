@@ -10,7 +10,7 @@ import clientSlice from './slices/user/userSlice'
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: []
+    blacklist: ['token']
 }
 
 const rootReducer = combineReducers({

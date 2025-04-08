@@ -126,7 +126,7 @@ const VendorBookingCard = () => {
           }
         })
       } else {
-        toast.error('clientId , vendorId , service Id one is missing')
+        toast.error('Please Login To Book')
       }
 
     }

@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { clientAuthenticationController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -41,7 +42,7 @@ export class clientRoute {
         this.clientRoute.get('/services', (req: Request, res: Response) => {
             injectedFindServiceForClientController.handleFindServiceForClient(req, res)
         })
-        this.clientRoute.post('/createBooking', (req: Request, res: Response) => {
+        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, (req: Request, res: Response) => {
 
             injectedCreateBookingController.handleCreateBooking(req, res)
         })
