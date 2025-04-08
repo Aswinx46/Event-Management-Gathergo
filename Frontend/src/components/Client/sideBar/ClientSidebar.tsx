@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
   BookOpen,
@@ -10,61 +10,67 @@ import {
   Menu,
   X,
   ChevronRight,
-} from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
+  Home,
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const menuItems = [
   {
+    icon: Home,
+    label: "Home",
+    path: "/",
+  },
+  {
     icon: User,
     label: "My Profile",
-    path: "/profile"
+    path: "/profile",
   },
   {
     icon: BookOpen,
     label: "Bookings",
-    path: "/bookings"
+    path: "/profile/bookings",
   },
   {
     icon: Wallet,
     label: "Wallet",
-    path: "/wallet"
+    path: "/wallet",
   },
   {
     icon: Lock,
     label: "Change Password",
-    path: "/change-password"
+    path: "/change-password",
   },
   {
     icon: Calendar,
     label: "Booked Events",
-    path: "/events"
+    path: "/events",
   },
   {
     icon: LogOut,
     label: "Logout",
-    path: "/logout"
-  }
+    path: "/profile/logout",
+  },
 ];
 
 export function ClientSidebar() {
-  const [isOpen, setIsOpen] = useState(true)
-  const location = useLocation()
-  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   const isActive = (path: string) => {
-    return location.pathname === path
-  }
+    return location.pathname === path;
+  };
 
   const handleMenuItemClick = (path: string) => {
-    navigate(path)
+    navigate(path);
     if (window.innerWidth < 768) {
-      setIsOpen(false)
+      setIsOpen(false);
     }
-  }
+  };
 
   return (
     <>
@@ -95,7 +101,7 @@ export function ClientSidebar() {
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed md:static top-0 left-0 z-40 h-screen w-64 bg-white shadow-lg flex flex-col"
+        className="fixed md:static top-0 left-0 z-40 h-screen w-64 bg-white shadow-lg flex flex-col overflow-hidden"
       >
         <div className="p-5 border-b">
           <h2 className="text-xl font-bold text-gray-800">Client Dashboard</h2>
@@ -109,7 +115,11 @@ export function ClientSidebar() {
                   whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleMenuItemClick(item.path)}
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors ${isActive(item.path) ? 'bg-black text-white' : ''} transition-all duration-500`}
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors duration-300 ${
+                    isActive(item.path)
+                      ? "bg-black text-white"
+                      : "hover:bg-gray-100 text-gray-800"
+                  }`}
                 >
                   <item.icon size={18} className="mr-3" />
                   <span>{item.label}</span>
@@ -141,4 +151,4 @@ export function ClientSidebar() {
       </motion.aside>
     </>
   );
-};
+}

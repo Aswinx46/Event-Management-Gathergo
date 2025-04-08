@@ -2,11 +2,29 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Instagram, Facebook, Linkedin, Menu } from "lucide-react"
 import ShinyText from '../../../../addon/ShinyText/ShinyText'
+import { Button } from "@/components/ui/button"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
+import { useClientLogout } from "@/hooks/ClientCustomHooks"
+import { toast } from "react-toastify"
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
+
+  const { mutate } = useClientLogout()
+
+  const navigate = useNavigate()
+
+  const handleLogOut = () => {
+    mutate()
+    navigate('/login')
+    toast.success('LOGOUT SUCCESSFULL')
+  }
+
+
 
   return (
     <motion.header
@@ -80,15 +98,15 @@ export default function Header() {
         animate={
           isMenuOpen
             ? {
-                opacity: 1,
-                clipPath: "circle(150% at top right)",
-                display: "flex",
-              }
+              opacity: 1,
+              clipPath: "circle(150% at top right)",
+              display: "flex",
+            }
             : {
-                opacity: 0,
-                clipPath: "circle(0% at top right)",
-                transitionEnd: { display: "none" },
-              }
+              opacity: 0,
+              clipPath: "circle(0% at top right)",
+              transitionEnd: { display: "none" },
+            }
         }
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
@@ -105,24 +123,31 @@ export default function Header() {
         </motion.button>
 
         <nav className="flex flex-col items-center space-y-6 text-xl">
-          {["Home", "About", "Services", "Contact"].map((item, index) => (
+          {[
+            { name: "Home", path: "/" },
+            { name: "Profile", path: "/profile" },
+            { name: "Events", path: "/events" }
+          ].map((item, index) => (
             <motion.div
-              key={item}
+              key={item.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * index, duration: 0.5 }}
               exit={{ opacity: 0, y: 20 }}
             >
               <Link
-                to={`/${item.toLowerCase()}`}
+                to={item.path}
                 className="text-white hover:text-gray-600 tracking-wide"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <motion.span whileHover={{ scale: 1.05 }}>{item}</motion.span>
+                <motion.span whileHover={{ scale: 1.05 }}>{item.name}</motion.span>
               </Link>
             </motion.div>
           ))}
+          {clientId && <Button onClick={handleLogOut} className="">LOGOUT</Button>}
+          {!clientId && <Button onClick={() => navigate('/login')} className="">LOGIN</Button>}
         </nav>
+
       </motion.div>
     </motion.header>
   )

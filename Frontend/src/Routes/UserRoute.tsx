@@ -16,6 +16,7 @@ const UserRoute = () => {
             <Route path="/serviceBooking/:serviceId/:vendorId" element={<ServiceBooking />}></Route>
             <Route path="/profile/*" element={<ClientLayout />}>
                 <Route path="bookings" element={<BookingListing/>} ></Route>
+                {/* <Route path="logout" element={<LogoutConfirmation/>} ></Route> */}
             </Route>
         </Routes>
     )

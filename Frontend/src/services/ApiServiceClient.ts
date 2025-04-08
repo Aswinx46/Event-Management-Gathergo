@@ -206,3 +206,14 @@ export const fetchBookingInClient = async (clientId: string) => {
         throw new Error('error while fetching booking details in client')
     }
 }
+
+export const clientLogout = async () => {
+    try {
+        const reponse = await axios.post('/logout')
+        return reponse.data
+    } catch (error) {
+        console.log('error while client logout', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while client logout')
+    }
+}

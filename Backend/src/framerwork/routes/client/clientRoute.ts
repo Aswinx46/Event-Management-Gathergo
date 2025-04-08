@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedClientLoginController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -50,6 +50,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/showBookings/:clientId', (req: Request, res: Response) => {
             injectedShowBookingInClientController.handleShowBookingsInClient(req, res)
+        })
+        this.clientRoute.post('/logout', (req: Request, res: Response) => {
+            injectedClientLogoutController.handleClientLogout(req, res)
         })
     }
 }

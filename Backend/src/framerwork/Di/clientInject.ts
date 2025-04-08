@@ -35,6 +35,8 @@ import { ServiceWithVendorUseCase } from "../../useCases/client/booking/showServ
 import { ShowServiceWithVendorController } from "../../adapters/controllers/client/booking/showServiceWithVendorController";
 import { ShowBookingsInClientUseCase } from "../../useCases/client/booking/showBookingsInClientUseCase";
 import { ShowBookingsInClientController } from "../../adapters/controllers/client/booking/showBookingsInClientController";
+import { ClientLogoutUseCase } from "../../useCases/client/authentication/clientLogoutUseCase";
+import { ClientLogoutController } from "../../adapters/controllers/client/authentication/clientLogoutController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -99,3 +101,7 @@ export const injectedShowServiceWithVendorCController = new ShowServiceWithVendo
 //----------------------------------Fetch all bookings of client ------------------
 const showBookingsInClientUseCase = new ShowBookingsInClientUseCase(bookingDatabase)
 export const injectedShowBookingInClientController = new ShowBookingsInClientController(showBookingsInClientUseCase)
+
+//-----------------------------------Client logout----------------------------------
+const clientLogoutUseCase = new ClientLogoutUseCase(redisService, jwtService)
+export const injectedClientLogoutController = new ClientLogoutController(clientLogoutUseCase)
