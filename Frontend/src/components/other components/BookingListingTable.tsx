@@ -52,6 +52,7 @@ export interface Booking {
   vendor: Vendor;
   client: Client
   vendorApproval: string
+  rejectionReason?:string
 }
 
 interface BookingListingTableProps {

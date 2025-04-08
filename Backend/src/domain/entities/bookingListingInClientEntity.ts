@@ -10,6 +10,7 @@ export interface BookingsInClientEntity {
     email: string,
     phone: number,
     status: "Pending" | "Rejected" | "Completed",
+    rejectionReason?:string,
     vendor: VendorDTO,
     service: ServiceBookingDTO
 }

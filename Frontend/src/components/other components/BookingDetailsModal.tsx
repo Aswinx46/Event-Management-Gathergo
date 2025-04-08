@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -17,11 +17,12 @@ import {
     CreditCard,
 
 } from "lucide-react";
-import { useApproveBooking } from "@/hooks/VendorCustomHooks";
+import { useApproveBooking, useRejectBooking } from "@/hooks/VendorCustomHooks";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import RejectionReasonModal from "./RejectionReasonModal";
 
 
 interface Service {
@@ -56,6 +57,8 @@ export interface BookingDetails {
     service: Service;
     vendor: Vendor;
     client: Client
+    vendorApproval:string
+    rejectionReason?:string
 }
 
 
@@ -100,9 +103,12 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     booking
 }) => {
     const approveBooking = useApproveBooking()
+    const rejectBooking = useRejectBooking()
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
     const queryClient = useQueryClient()
-
+    const [rejectionModal, setRejectionModal] = useState<boolean>(false)
+    const [rejectionReason, setRejectionReason] = useState<string>('')
+    const [rejectingBookingId, setRejectingBookingId] = useState<string>('')
     if (!booking) return null;
 
     // Animation variants
@@ -132,8 +138,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     const handleApproveBooking = (bookingId: string) => {
         if (vendorId && bookingId) {
-            console.log(bookingId)
-            console.log(vendorId)
+
             approveBooking.mutate(bookingId, {
                 onSuccess: (data) => {
                     toast.success(data.message)
@@ -145,13 +150,34 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                 }
             })
         }
+    }
+    const handleOnClose = () => setRejectionModal(false)
 
+    const handleDecline = (bookindId: string) => {
+        setRejectingBookingId(bookindId)
+        setRejectionModal(true)
+    }
+
+    const handleReject = () => {
+        console.log(rejectionReason)
+        console.log(rejectingBookingId)
+        rejectBooking.mutate({ bookingId: rejectingBookingId, rejectionReason }, {
+            onSuccess: (data) => {
+                toast.success(data.message)
+                queryClient.invalidateQueries({ queryKey: ['Bookings-in-vendor', vendorId] })
+                setRejectionModal(false)
+            },
+            onError:(err)=>{
+                toast.success(err.message)
+            }
+        })
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
             <DialogContent className="max-w-md max-h-[80vh] bg-gray-900 border border-gray-800 text-white p-0 rounded-xl overflow-hidden">
                 <div className="custom-scrollbar overflow-y-auto max-h-[calc(80vh-4rem)]">
+                    {rejectionModal && <RejectionReasonModal isOpen={rejectionModal} onClose={handleOnClose} onSubmit={handleReject} rejectionReason={rejectionReason} setRejectionReason={setRejectionReason} />}
                     <DialogHeader className="bg-black py-6 px-5">
                         <DialogTitle className="text-xl font-bold flex items-center justify-between">
                             <span>Booking Details</span>
@@ -244,12 +270,21 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                         <motion.div variants={itemVariants} className="text-center pt-2 border-t border-gray-800">
                             <p className="text-xs text-gray-500">Booking ID: {booking._id}</p>
                         </motion.div>
-                        {booking?.client?.email && booking?.status == 'Pending' &&
+                        {booking?.client?.email && booking?.vendorApproval == 'Pending' &&
                             <motion.div variants={itemVariants} className="text-center pt-2 border-t flex justify-center gap-3 border-gray-800">
                                 <Button onClick={() => handleApproveBooking(booking._id)} className="bg-green-500">{approveBooking.isPending ? 'Approving' : 'Approve'}</Button>
-                                <Button className="bg-red-600">DECLINE</Button>
+                                <Button onClick={() => handleDecline(booking._id)} className="bg-red-600">DECLINE</Button>
                             </motion.div>}
                     </motion.div>
+
+                   {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
+                            <h3 className="text-sm font-medium text-gray-400">'Rejection Reason</h3>
+                            <div className="grid grid-cols-1 gap-3">
+                                <div className="flex items-center gap-3">
+                                    <p className="text-white">{booking.rejectionReason}</p>
+                                </div>
+                            </div>
+                        </motion.div>}
 
                     <DialogFooter className="bg-gray-900 p-4 border-t border-gray-800">
                         <Button

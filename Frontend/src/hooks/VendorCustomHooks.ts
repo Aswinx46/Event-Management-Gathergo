@@ -1,4 +1,4 @@
-import { approveBookingVendor, changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, uploadImageCloudinary, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -110,7 +110,7 @@ export const useChangeStatusServiceVendor = () => {
 
 export const useFetchBookingsInVendor = (vendorId: string) => {
     return useQuery({
-        queryKey: ['Bookings-in-vendor',vendorId],
+        queryKey: ['Bookings-in-vendor', vendorId],
         queryFn: () => showBookingsInVendor(vendorId)
     })
 }
@@ -118,5 +118,11 @@ export const useFetchBookingsInVendor = (vendorId: string) => {
 export const useApproveBooking = () => {
     return useMutation({
         mutationFn: (bookingId: string) => approveBookingVendor(bookingId)
+    })
+}
+
+export const useRejectBooking = () => {
+    return useMutation({
+        mutationFn: ({ bookingId, rejectionReason }: { bookingId: string, rejectionReason: string }) => rejectBooking(bookingId, rejectionReason)
     })
 }

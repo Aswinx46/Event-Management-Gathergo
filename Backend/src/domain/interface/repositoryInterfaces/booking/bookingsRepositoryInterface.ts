@@ -8,4 +8,5 @@ export interface IbookingRepository {
     approveBooking(bookingId: string): Promise<BookingEntity | null>
     showBookingsInClient(clientId: string): Promise<BookingsInClientEntity[] | []>
     showBookingsInVendor(vendorId: string): Promise<BookingListingEntityVendor[] | []>
+    rejectBooking(bookingId: string, rejectionReasoneason: string): Promise<BookingEntity | null>
 }

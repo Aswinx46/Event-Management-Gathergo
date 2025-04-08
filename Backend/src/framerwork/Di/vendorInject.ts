@@ -31,6 +31,8 @@ import { BookingRepository } from "../../adapters/repository/booking/bookingRepo
 import { ShowBookingsInVendorController } from "../../adapters/controllers/vendor/bookings/showBookingsInVendorController";
 import { ApproveBookingUseCase } from "../../useCases/vendor/bookings/approveBookingInVendorUseCase";
 import { ApproveBookingInVendorController } from "../../adapters/controllers/vendor/bookings/approveBookingInVendorController";
+import { RejectBookingInVendorUseCase } from "../../useCases/vendor/bookings/rejectBookingInVendorUseCcase";
+import { RejectBookingInVendorController } from "../../adapters/controllers/vendor/bookings/rejectBookingInVendorController";
 
 
 //-----------------Register vendor-------------------//
@@ -87,3 +89,7 @@ export const injectedShowBookingsInVendorController = new ShowBookingsInVendorCo
 //-------------------------------Approving Bookings----------------------------
 const approveBookingUseCase = new ApproveBookingUseCase(bookingsDatabase)
 export const injectedApproveBookingController = new ApproveBookingInVendorController(approveBookingUseCase)
+
+//-------------------------------Reject Bookings---------------------------------
+const rejectBookingUseCase = new RejectBookingInVendorUseCase(bookingsDatabase)
+export const injectedRejectBookingInVendor = new RejectBookingInVendorController(rejectBookingUseCase)

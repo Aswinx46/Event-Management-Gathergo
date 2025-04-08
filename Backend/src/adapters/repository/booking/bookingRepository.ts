@@ -37,7 +37,8 @@ export class BookingRepository implements IbookingRepository {
             phone: booking.phone,
             status: booking.status,
             vendor: booking.vendorId,
-            service: booking.serviceId
+            service: booking.serviceId,
+            rejectionReason:booking.rejectionReason
         }));
 
 
@@ -61,11 +62,15 @@ export class BookingRepository implements IbookingRepository {
             service: booking.serviceId,
             client: booking.clientId,
             status: booking.status,
-            vendorApproval: booking.vendorApproval
+            vendorApproval: booking.vendorApproval,
+            rejectionReason: booking.rejectionReason
         }));
         return selectedBooking
     }
     async approveBooking(bookingId: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { vendorApproval: "Approved" }, { new: true })
+    }
+    async rejectBooking(bookingId: string, rejectionReason: string): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate(bookingId, { vendorApproval: "Rejected", rejectionReason: rejectionReason })
     }
 }
