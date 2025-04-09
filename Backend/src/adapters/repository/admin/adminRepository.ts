@@ -8,4 +8,8 @@ export class AdminRepository implements IadminRepository {
     async findById(id: string): Promise<clientEntity | null> {
         return await ClientModel.findById(id)
     }
+    async findState(id:string):Promise<string | null>{
+        const client= await ClientModel.findById(id).select('role')
+        return client?.role ?? null;
+    }
 }

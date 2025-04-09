@@ -1,4 +1,5 @@
 import { RefreshTokenController } from "../../adapters/controllers/auth/refreshTokenController";
+import { checkAdminState } from "../../adapters/middlewares/checkAdmin";
 import { tokenTimeExpiryValidationMiddleware } from "../../adapters/middlewares/tokenTimeExpiryMiddleWare";
 import { verifyTokenAndCheckBlackList } from "../../adapters/middlewares/tokenValidationMiddleWare";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
@@ -24,3 +25,4 @@ export const injectedRefreshTokenController = new RefreshTokenController(refresh
 
 //--------------------------Token expiry validation checking middleware-----------
 export const injectedTokenExpiryValidationChecking = tokenTimeExpiryValidationMiddleware(jwtService)
+export const checkAdminMiddleWare=checkAdminState(jwtService,redisService,adminRepository)

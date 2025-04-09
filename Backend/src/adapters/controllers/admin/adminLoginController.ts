@@ -33,12 +33,13 @@ export class AdminLoginController {
             }
             const accessSecretKey = process.env.ACCESSTOKEN_SECRET_KEY as string
             const refreshSecretKey = process.env.REFRESHTOKEN_SECRET_KEY as string
-            console.log('this is admin',admin)
+            console.log('this is admin', admin)
             const accessToken = await this.jwtService.createAccessToken(accessSecretKey, admin._id?.toString() || '', admin.role)
             const refreshToken = await this.jwtService.createRefreshToken(refreshSecretKey, admin._id?.toString() || '')
             await this.redisService.set(`user:admin:${admin._id}`, 15 * 60, JSON.stringify(admin.status))
-            setCookie(res,refreshToken)
-            res.status(HttpStatus.OK).json({message:"admin logged",accessToken})
+            await this.redisService.set(`adminRole`, 15 * 60, JSON.stringify(admin.role))
+            setCookie(res, refreshToken)
+            res.status(HttpStatus.OK).json({ message: "admin logged", accessToken })
             return
         } catch (error) {
             console.log('error while admin login', error)
