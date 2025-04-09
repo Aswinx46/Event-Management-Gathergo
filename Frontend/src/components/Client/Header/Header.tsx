@@ -21,11 +21,15 @@ export default function Header() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const handleLogOut = () => {
-    mutate()
-    navigate('/login')
-    dispatch(removeClient(null))
-    dispatch(removeToken(null))
-    toast.success('LOGOUT SUCCESSFULL')
+    mutate(undefined, {
+      onSuccess: () => {
+        dispatch(removeClient(null))
+        dispatch(removeToken(null))
+        navigate('/login')
+        toast.success('LOGOUT SUCCESSFULL')
+      }
+    })
+
   }
 
 

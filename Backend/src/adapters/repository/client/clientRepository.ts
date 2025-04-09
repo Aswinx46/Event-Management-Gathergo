@@ -22,4 +22,7 @@ export class clientRepository implements IClientDatabaseRepository {
     async forgotPassword(email: string, newPassword: string): Promise<clientEntity | null> {
         return await ClientModel.findOneAndUpdate({ email }, { password: newPassword }, { new: true })
     }
+    async findById(id: string): Promise<clientEntity | null> {
+        return await ClientModel.findById(id)
+    }
 }

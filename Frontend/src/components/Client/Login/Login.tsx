@@ -71,28 +71,22 @@ export default function LoginComponent() {
     const verifyForgetPasswordOtp = useClientVerifyForgetPasswordOtp()
     const forgetPassworMutation = useClientForgetPassword()
     const handleLogin = async (values: login) => {
-        try {
-            const { email, password } = values
-            loginMutation.mutate({ email, password }, {
-                onSuccess: () => {
-                    toast.success('user logged')
-                    navigate('/', { replace: true })
-                },
-                onError: (error) => {
-        
-                    toast.error(error.message)
-                },
-                onSettled: (data) => {
-                    
-                    dispatch(addToken(data?.accessToken))
-                    dispatch(addClient(data?.client))
-                }
+        const { email, password } = values
+        loginMutation.mutate({ email, password }, {
+            onSuccess: (data) => {
+                console.log(data)
+                toast.success('user logged')
+                
+                dispatch(addToken(data?.accessToken))
+                dispatch(addClient(data?.client))
+                navigate('/', { replace: true })
+            },
+            onError: (error) => {
+    
+                toast.error(error.message)
+            }
 
-            })
-        } catch (error) {
-            console.log(error)
-        }
-
+        })
     }
 
 
@@ -254,10 +248,10 @@ export default function LoginComponent() {
                                             {loginMutation.isPending ? "Logging in..." : "Sign In"}
                                         </Button>
                                     </motion.div>
-                                    <div >
+                                    {/* <div >
                                         <GoogleLogin onSuccess={googleAuthenticate} onError={() => console.log('login failed')}></GoogleLogin>
 
-                                    </div>
+                                    </div> */}
                                     <motion.div
                                         className="mt-6 text-center"
                                         initial={{ opacity: 0 }}

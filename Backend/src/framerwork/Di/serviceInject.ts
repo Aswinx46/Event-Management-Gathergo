@@ -1,4 +1,10 @@
+import { RefreshTokenController } from "../../adapters/controllers/auth/refreshTokenController";
+import { tokenTimeExpiryValidationMiddleware } from "../../adapters/middlewares/tokenTimeExpiryMiddleWare";
 import { verifyTokenAndCheckBlackList } from "../../adapters/middlewares/tokenValidationMiddleWare";
+import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
+import { clientRepository } from "../../adapters/repository/client/clientRepository";
+import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
+import { RefreshTokenUseCase } from "../../useCases/auth/refreshTokenuseCase";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 import { TokenService } from "../services/tokenService";
@@ -9,3 +15,12 @@ const tokenService = new TokenService(redisService, jwtService, ACCESSTOKEN_SECR
 
 export const injectedVerifyTokenAndCheckBlacklistMiddleWare = verifyTokenAndCheckBlackList(tokenService)
 
+//----------------------------Refresh Token service Inject-----------------------
+const clientDatabase = new clientRepository()
+const vendorDatabase = new VendorDatabase()
+const adminRepository = new AdminRepository()
+const refreshTokenUseCase = new RefreshTokenUseCase(jwtService, clientDatabase, vendorDatabase, adminRepository)
+export const injectedRefreshTokenController = new RefreshTokenController(refreshTokenUseCase)
+
+//--------------------------Token expiry validation checking middleware-----------
+export const injectedTokenExpiryValidationChecking = tokenTimeExpiryValidationMiddleware(jwtService)

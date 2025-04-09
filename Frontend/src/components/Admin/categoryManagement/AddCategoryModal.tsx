@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 interface AddCategoryModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  currentPage:number
+  currentPage: number
 }
 
 interface Category { title: string; image: File | null; }
@@ -25,15 +25,17 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const validationSchema = Yup.object({
-    title: Yup.string().min(3, "Must be at least 3 characters").required("Required"),
-    image: Yup.mixed()
-      .test("fileSize", "File size is too large (max 5MB)", (value: any) =>
-        value ? value.size <= 5 * 1024 * 1024 : true
-      )
-      .test("fileType", "Unsupported file type (only JPG, PNG, GIF)", (value: any) =>
-        value ? ["image/jpeg", "image/png", "image/gif"].includes(value.type) : true
-      )
-      .required("Category image is required"),
+    title: Yup.string()
+      .min(3, "Must be at least 3 characters")
+      .matches(/^[a-zA-Z0-9 ]*$/, "Special characters are not allowed")
+      .required("Required"), image: Yup.mixed()
+        .test("fileSize", "File size is too large (max 5MB)", (value: any) =>
+          value ? value.size <= 5 * 1024 * 1024 : true
+        )
+        .test("fileType", "Unsupported file type (only JPG, PNG, GIF)", (value: any) =>
+          value ? ["image/jpeg", "image/png", "image/gif"].includes(value.type) : true
+        )
+        .required("Category image is required"),
   });
 
   const modalVariants = {
@@ -46,7 +48,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
 
   const createCategory = useCreateCategory()
 
-  const queryClient=useQueryClient()
+  const queryClient = useQueryClient()
 
   const handleSubmit = async (values: Category, { resetForm }: FormikHelpers<Category>) => {
     try {
@@ -58,11 +60,12 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
         setIsLoading(true)
         const response = await imageUpload.mutateAsync(formdata)
         values.image = response?.secure_url
+        values.title = values.title.trim()
         createCategory.mutate(values, {
           onSuccess(data) {
             toast.success(data?.message)
             console.log('data while creating category', data)
-            queryClient.invalidateQueries({queryKey:['categories', currentPage]})
+            queryClient.invalidateQueries({ queryKey: ['categories', currentPage] })
             resetForm()
             setCategory(values)
             setIsOpen(false);

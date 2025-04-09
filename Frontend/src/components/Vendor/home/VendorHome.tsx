@@ -98,11 +98,15 @@ export default function VendorDashboard() {
   const navigate = useNavigate()
   const handleLogout = () => {
     
-    vendorLogout.mutate()
-    navigate('/vendor/login')
-    dispatch(removeVendor(null))
-    dispatch(removeVendorToken(null))
-    toast.success('Logout SuccesFull')
+    vendorLogout.mutate(undefined,{
+      onSuccess:()=>{
+        navigate('/vendor/login')
+        dispatch(removeVendor(null))
+        dispatch(removeVendorToken(null))
+        toast.success('Logout SuccesFull')
+      }
+    })
+
   }
 
   return (

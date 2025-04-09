@@ -3,13 +3,13 @@ import { ItokenService } from "../../domain/interface/serviceInterface/ItokenSer
 import { HttpStatus } from "../../domain/entities/httpStatus";
 
 export const verifyTokenAndCheckBlackList = (TokenService: ItokenService) => {
-    return async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const authHeader = req.headers.authorization
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Access denied. No token provided.' });
-            return 
+            return
         }
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.split(' ')[1]
         try {
             const isBlacklisted = await TokenService.checkTokenBlacklist(token)
             if (isBlacklisted) {
@@ -21,7 +21,7 @@ export const verifyTokenAndCheckBlackList = (TokenService: ItokenService) => {
             next()
         } catch (error) {
             res.status(HttpStatus.FORBIDDEN).json({ message: 'Invalid token.', error: error instanceof Error ? error.message : 'invalid Token' });
-            
+
         }
     }
 }

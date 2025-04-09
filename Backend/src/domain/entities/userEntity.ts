@@ -6,7 +6,7 @@ export interface User{
     email:string,
     phone:number,
     password:string,
-    role:'client'|'vendor',
+    role:'client'|'vendor' | 'admin',
     status?:'active'|'block',
     profileImage?:string
     createdAt?:Date,

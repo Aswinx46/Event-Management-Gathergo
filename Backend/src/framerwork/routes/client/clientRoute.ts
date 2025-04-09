@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { clientAuthenticationController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
-import { injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
+import { injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
+import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 
 export class clientRoute {
     public clientRoute: Router
@@ -42,7 +43,7 @@ export class clientRoute {
         this.clientRoute.get('/services', (req: Request, res: Response) => {
             injectedFindServiceForClientController.handleFindServiceForClient(req, res)
         })
-        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, (req: Request, res: Response) => {
+        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
 
             injectedCreateBookingController.handleCreateBooking(req, res)
         })
@@ -52,7 +53,7 @@ export class clientRoute {
         this.clientRoute.get('/showBookings/:clientId', (req: Request, res: Response) => {
             injectedShowBookingInClientController.handleShowBookingsInClient(req, res)
         })
-        this.clientRoute.post('/logout', (req: Request, res: Response) => {
+        this.clientRoute.post('/logout', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
             injectedClientLogoutController.handleClientLogout(req, res)
         })
     }

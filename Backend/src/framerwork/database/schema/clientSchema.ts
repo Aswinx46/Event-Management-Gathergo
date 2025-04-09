@@ -36,7 +36,7 @@ export const clientSchema = new Schema<clientEntity>({
     },
     role:{
         type:String,
-        enum:["client","vendor"],
+        enum:["client","vendor","admin"],
         default:'client'
     },
     lastLogin:{

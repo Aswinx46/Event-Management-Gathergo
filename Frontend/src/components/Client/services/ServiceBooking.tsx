@@ -110,7 +110,6 @@ const VendorBookingCard = () => {
         .max(50, 'Name must be less than 50 characters')
     }),
     onSubmit: (values) => {
-      console.log('Form submitted:', values);
       if (clientId && vendorId && serviceId) {
         const bookingData: Booking = {
           ...values, phone: Number(values.phone), date: new Date(values.date), serviceId: serviceId, vendorId: vendorId, clientId: clientId
@@ -135,7 +134,7 @@ const VendorBookingCard = () => {
 
 
   return (
-    <div className='bg-black'>
+    <div className='bg-black h-screen'>
       {isOpen && <BookingConfirmation isOpen={isOpen} setIsOpen={setIsOpen} handleBooking={handleNavigate} />}
       <div className="container mx-auto  px-4 py-8 max-w-6xl">
         <motion.div
@@ -367,7 +366,7 @@ const VendorBookingCard = () => {
                 >
                   <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                     <h4 className="font-medium text-lg text-white">{Service?.serviceTitle}</h4>
-                    <p className="text-sm text-gray-400 mt-1">{Service?.serviceDescription}</p>
+                    <p className="text-sm text-gray-400 mt-1 line-clamp-4 overflow-y-auto">{Service?.serviceDescription}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">

@@ -4,5 +4,6 @@ export interface IClientDatabaseRepository {
     findByEmail(email: string): Promise<clientEntity | null>
     findAllClients(pageNo: number): Promise<{ clients: clientEntity[]; totalPages: number }>
     googleLogin(client: clientEntity): Promise<clientEntity | null>
-    forgotPassword(email: string,newPassword:string): Promise<clientEntity | null>
+    forgotPassword(email: string, newPassword: string): Promise<clientEntity | null>
+    findById(id: string): Promise<clientEntity | null>
 }

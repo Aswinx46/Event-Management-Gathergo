@@ -1,4 +1,3 @@
-import { Jwt } from "jsonwebtoken"
 
 export interface ItokenService {
     checkTokenBlacklist(token: string): Promise<boolean>

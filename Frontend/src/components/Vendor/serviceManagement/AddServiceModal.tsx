@@ -48,10 +48,10 @@ const validationSchema = Yup.object().shape({
     termsAndCondition: Yup.string().required('Terms and conditions are required'),
     serviceDuration: Yup.string().required('Service duration is required'),
     servicePrice: Yup.number()
-        .min(0, 'Price must be positive')
+        .min(1000, 'Price must be positive and greater than 1000')
         .required('Service price is required'),
     additionalHourFee: Yup.number()
-        .min(0, 'Additional hour fee must be positive')
+        .min(1000, 'Additional hour fee must be positive and greater than 1000')
         .required('Additional hour fee is required'),
     categoryId: Yup.string().required('Category is required'),
 });

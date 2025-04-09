@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 import { store } from '../store/store'
 import { addToken } from '@/store/slices/user/userTokenSlice';
+import authAxios from './authAxios'
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_BASEURL,
     withCredentials: true
@@ -35,12 +36,13 @@ instance.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const refreshResponse = await instance.post<{ accessToken: string }>(
+                const refreshResponse = await authAxios.post<{ newAccessToken: string }>(
                     '/refreshToken',
                     {},
                     { withCredentials: true }
                 );
-                const newAccessToken = refreshResponse.data.accessToken;
+                console.log('this is the refreshResponse',refreshResponse)
+                const newAccessToken = refreshResponse.data.newAccessToken;
 
                 store.dispatch(addToken(newAccessToken));
                 originalRequest.headers = {
@@ -55,6 +57,7 @@ instance.interceptors.response.use(
                 return Promise.reject(refreshError);
             }
         }
+        return Promise.reject(error);
 
     }
 )
