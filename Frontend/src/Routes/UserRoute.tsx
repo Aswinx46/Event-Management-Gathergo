@@ -7,6 +7,7 @@ import ServiceBooking from "@/components/Client/services/ServiceBooking";
 import ClientLayout from "@/components/Client/sideBar/ClientLayout";
 import BookingListing from "@/components/Client/bookingListing/BookingListing";
 import CategoryListing from "@/components/Client/category/CategoryListing";
+import { UserProfile } from "@/components/Client/profile/UserProfile";
 const UserRoute = () => {
     return (
         <Routes>
@@ -19,6 +20,7 @@ const UserRoute = () => {
             <Route path="/categories" element={<CategoryListing/>}></Route>
             <Route path="/profile/*" element={<ClientLayout />}>
                 <Route path="bookings" element={<BookingListing/>} ></Route>
+                <Route path="home" element={<UserProfile />} ></Route>
                 {/* <Route path="logout" element={<LogoutConfirmation/>} ></Route> */}
             </Route>
         </Routes>

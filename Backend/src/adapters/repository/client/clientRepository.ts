@@ -25,4 +25,13 @@ export class clientRepository implements IClientDatabaseRepository {
     async findById(id: string): Promise<clientEntity | null> {
         return await ClientModel.findById(id)
     }
+    async changeProfileImage(clientId: string, profileImage: string): Promise<clientEntity | null> {
+        return await ClientModel.findByIdAndUpdate(clientId, { profileImage })
+    }
+    async showProfileDetails(cliendId: string): Promise<clientEntity | null> {
+        return await ClientModel.findOne({ status: 'active', _id: cliendId }).select('name email phone profileImage')
+    }
+    async updateProfile(client: clientEntity): Promise<clientEntity> {
+        return await ClientModel.findByIdAndUpdate(client._id, { name: client.name, phone: client.name, profileImage: client.profileImage }, { new: true })
+    }
 }

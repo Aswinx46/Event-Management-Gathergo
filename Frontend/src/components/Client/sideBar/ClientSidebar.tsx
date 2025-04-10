@@ -18,7 +18,7 @@ const menuItems = [
   {
     icon: Home,
     label: "Home",
-    path: "/",
+    path: "/profile/home",
   },
   {
     icon: User,

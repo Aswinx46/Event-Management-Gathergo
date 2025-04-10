@@ -39,6 +39,10 @@ import { ClientLogoutUseCase } from "../../useCases/client/authentication/client
 import { ClientLogoutController } from "../../adapters/controllers/client/authentication/clientLogoutController";
 import { FindServiceOnCategorybasisUseCase } from "../../useCases/client/service/findServiceBasedOnCategory";
 import { FindServiceBasedOnCategoryController } from "../../adapters/controllers/client/service/findServiceBasedOnCategory";
+import { ChangeProfileImageClientUseCase } from "../../useCases/client/profile/changeProfileImageUseCase";
+import { ChangeProfileImageClientController } from "../../adapters/controllers/client/profile/changeProfileImageClientController";
+import { ShowProfileDetailsInClientUseCase } from "../../useCases/client/profile/showProfileDetailsInClientUseCase";
+import { ShowProfileClientController } from "../../adapters/controllers/client/profile/showProfileClientControlller";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -111,3 +115,11 @@ export const injectedClientLogoutController = new ClientLogoutController(clientL
 //----------------------------------Find services on basis of category-------------------------
 const findServiceOnBasisOfCategoryUseCase = new FindServiceOnCategorybasisUseCase(serviceDatabase)
 export const injectedFindServiceOncategoryBasis = new FindServiceBasedOnCategoryController(findServiceOnBasisOfCategoryUseCase)
+
+//----------------------------------Update profile image client---------------------------
+const changeProfileImageClientUseCase = new ChangeProfileImageClientUseCase(ClientRepository)
+export const injectedChangeProfileImageClientController = new ChangeProfileImageClientController(changeProfileImageClientUseCase)
+
+//---------------------------------- Show profile client ----------------------------------
+const showProfileClientUseCase = new ShowProfileDetailsInClientUseCase(ClientRepository)
+export const showProfileClientController = new ShowProfileClientController(showProfileClientUseCase)

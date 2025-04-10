@@ -6,4 +6,7 @@ export interface IClientDatabaseRepository {
     googleLogin(client: clientEntity): Promise<clientEntity | null>
     forgotPassword(email: string, newPassword: string): Promise<clientEntity | null>
     findById(id: string): Promise<clientEntity | null>
+    changeProfileImage(clientId: string, profileImage: string): Promise<clientEntity | null>
+    showProfileDetails(cliendId: string): Promise<clientEntity | null>
+    updateProfile(client: clientEntity): Promise<clientEntity>
 }
