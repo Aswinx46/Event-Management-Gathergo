@@ -73,6 +73,14 @@ export class ServiceRepository implements IserviceRepository {
         // console.log('service',serviceWithVendor)
         return serviceWithVendor
     }
+    async findServiceByCategory(categoryId: string, pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }> {
+        const page = Math.max(pageNo, 1)
+        const limit = 5
+        const skip = (page - 1) * limit
+        const Services = await serviceModal.find({ categoryId: categoryId, status: 'active' }).select('-createdAt -updatedAt').skip(skip).limit(limit)
+        const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
+        return { Services, totalPages }
+    }
 
 }
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
-import { useFindServiceForclient } from '@/hooks/ClientCustomHooks';
+import { useFindServiceForclient, useFindServiceOnCategoryBasis } from '@/hooks/ClientCustomHooks';
 import Pagination from '@/components/other components/Pagination';
 import { Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface Service {
     _id?: string;
@@ -24,7 +24,13 @@ interface Service {
 const ServicesList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
-    const { data: fetchedData, isLoading, error } = useFindServiceForclient(currentPage);
+    const { data: fetchedData, isLoading: isLoadingAll, error: errorAll } = useFindServiceForclient(currentPage);
+
+
+    const { categoryId } = useParams()
+    const { data: servicesWithCategory, isLoading: isLoadingCategory, error: errorCategory } = useFindServiceOnCategoryBasis(categoryId ?? '', currentPage, { enabled: !!categoryId })
+    console.log(categoryId)
+
 
     useEffect(() => {
         if (fetchedData?.totalPages) {
@@ -44,7 +50,7 @@ const ServicesList: React.FC = () => {
 
     const navigate = useNavigate()
 
-    if (isLoading) {
+    if (isLoadingAll || isLoadingCategory) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
@@ -52,7 +58,7 @@ const ServicesList: React.FC = () => {
         );
     }
 
-    if (error) {
+    if (errorAll || errorCategory) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <p className="text-red-500">Error loading services. Please try again later.</p>
@@ -60,11 +66,13 @@ const ServicesList: React.FC = () => {
         );
     }
 
-    const services: Service[] = fetchedData?.Services || [];
-    console.log(services)
+    // const services: Service[] = fetchedData?.Services || [];
+    // const isLoading = categoryId ? isLoadingCategory : isLoadingAll;
+    // const error = categoryId ? errorCategory : errorAll;
+    const services: Service[] = categoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || []; console.log(services)
     const handleServiceBooking = (serviceId: string, vendorId: string) => {
-        console.log('this is service id',serviceId)
-        console.log('this is vendorid',vendorId)
+        console.log('this is service id', serviceId)
+        console.log('this is vendorid', vendorId)
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }
 
@@ -96,7 +104,7 @@ const ServicesList: React.FC = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                     >
-                        {services.map((service: Service, index: number) => (
+                        {services?.map((service: Service, index: number) => (
                             <div key={service._id || index} className="h-full">
                                 <ServiceCard
                                     serviceId={service._id!}

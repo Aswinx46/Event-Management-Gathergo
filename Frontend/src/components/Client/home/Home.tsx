@@ -5,6 +5,7 @@ const LazyHeroSection = lazy(() => import('./HeroSection'))
 const CategoryCarousal = lazy(() => import('./CarousalForCategory'))
 const QuoteForService = lazy(() => import('./QuoteForService'))
 const VendorCarousal = lazy(() => import('./CarousalForVendorListing'))
+const BlackHero = lazy(() => import('./BlackHero'))
 function Home() {
 
   const findCategory = useFindCategoryClient()
@@ -20,6 +21,7 @@ function Home() {
     <div className='bg-black  h-screen w-full'>
       <Header />
       <Suspense fallback={<div className="text-white text-center mt-10">Loading...</div>}>
+        {/* <BlackHero /> */}
         <LazyHeroSection />
         {categories && <CategoryCarousal items={categories} />}
         <QuoteForService />

@@ -1,4 +1,4 @@
-import { clientCreateAccount, clientFindCategory, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
@@ -70,8 +70,9 @@ export const useClientForgetPassword = () => {
 export const useFindCategoryClient = () => {
     return useQuery({
         queryKey: ['categoriesClient'],
-        queryFn: clientFindCategory
-
+        queryFn: clientFindCategory,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false
     })
 }
 
@@ -79,7 +80,8 @@ export const useFindVendorForCarousal = () => {
     return useQuery({
         queryKey: ['vendorForCarousal'],
         queryFn: fetchVendorForCarousal,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,
     })
 }
 
@@ -87,6 +89,7 @@ export const useFindServiceForclient = (currentPage: number) => {
     return useQuery({
         queryKey: ['services', currentPage],
         queryFn: () => fetchServiceForClient(currentPage),
+        // staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false
     })
 }
@@ -110,19 +113,32 @@ export const useCreateBooking = () => {
 export const useFindSericeDataWithVendor = (serviceId: string) => {
     return useQuery({
         queryKey: ['serviceDataWithVendor'],
-        queryFn: () => fetchServiceDetailsWithVendor(serviceId)
+        queryFn: () => fetchServiceDetailsWithVendor(serviceId),
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false
     })
 }
 
 export const useFetchBookingsInClient = (clientId: string) => {
     return useQuery({
         queryKey: ['Bookings in client'],
-        queryFn: () => fetchBookingInClient(clientId)
+        queryFn: () => fetchBookingInClient(clientId),
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false
     })
 }
 
 export const useClientLogout = () => {
     return useMutation({
-        mutationFn: () => clientLogout()
+        mutationFn: () => clientLogout(),
+    })
+}
+
+export const useFindServiceOnCategoryBasis = (categoryId: string, pageNo: number, options?: { enabled?: boolean }) => {
+    return useQuery({
+        queryKey: ['servicesOnCategoryBasis', categoryId, pageNo],
+        queryFn: () => clientFindServiceOnCategoryBasis(categoryId, pageNo),
+        enabled: options?.enabled,
+        staleTime: 5 * 60 * 1000
     })
 }

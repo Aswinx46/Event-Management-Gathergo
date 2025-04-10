@@ -217,3 +217,14 @@ export const clientLogout = async () => {
         throw new Error('error while client logout')
     }
 }
+
+export const clientFindServiceOnCategoryBasis = async (categoryId: string, pageNo: number) => {
+    try {
+        const response = await axios.get(`/services/${categoryId}/${pageNo}`)
+        return response.data
+    } catch (error) {
+        console.log('error while fetching services on the basis of category', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while fetching services on the basis of category')
+    }
+}

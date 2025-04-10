@@ -37,6 +37,8 @@ import { ShowBookingsInClientUseCase } from "../../useCases/client/booking/showB
 import { ShowBookingsInClientController } from "../../adapters/controllers/client/booking/showBookingsInClientController";
 import { ClientLogoutUseCase } from "../../useCases/client/authentication/clientLogoutUseCase";
 import { ClientLogoutController } from "../../adapters/controllers/client/authentication/clientLogoutController";
+import { FindServiceOnCategorybasisUseCase } from "../../useCases/client/service/findServiceBasedOnCategory";
+import { FindServiceBasedOnCategoryController } from "../../adapters/controllers/client/service/findServiceBasedOnCategory";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -105,3 +107,7 @@ export const injectedShowBookingInClientController = new ShowBookingsInClientCon
 //-----------------------------------Client logout----------------------------------
 const clientLogoutUseCase = new ClientLogoutUseCase(redisService, jwtService)
 export const injectedClientLogoutController = new ClientLogoutController(clientLogoutUseCase)
+
+//----------------------------------Find services on basis of category-------------------------
+const findServiceOnBasisOfCategoryUseCase = new FindServiceOnCategorybasisUseCase(serviceDatabase)
+export const injectedFindServiceOncategoryBasis = new FindServiceBasedOnCategoryController(findServiceOnBasisOfCategoryUseCase)
