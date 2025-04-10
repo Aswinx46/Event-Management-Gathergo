@@ -22,7 +22,7 @@ export class CategoryDatabaseRepository implements IcategoryDatabase {
         return await categoryModel.find({ status: 'active' }).select('title _id')
     }
     async findCategoryForClient(): Promise<categoryEntity[] | []> {
-        return await categoryModel.find({ status: 'active' }).select('_id image title')
+        return await categoryModel.find({ status: 'active' }).select('_id image title').limit(5)
     }
     async changeStatusOfCategory(categoryId: string): Promise<categoryEntity | null> {
         return await categoryModel.findOneAndUpdate({ _id: categoryId },

@@ -198,8 +198,8 @@ export const fetchServiceDetailsWithVendor = async (serviceId: string) => {
 
 export const fetchBookingInClient = async (clientId: string) => {
     try {
-        const reponse = await axios.get(`/showBookings/${clientId}`)
-        return reponse.data
+        const response = await axios.get(`/showBookings/${clientId}`)
+        return response.data
     } catch (error) {
         console.log('error while fetch bookings in client', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
@@ -209,8 +209,8 @@ export const fetchBookingInClient = async (clientId: string) => {
 
 export const clientLogout = async () => {
     try {
-        const reponse = await axios.post('/logout')
-        return reponse.data
+        const response = await axios.post('/logout')
+        return response.data
     } catch (error) {
         console.log('error while client logout', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
@@ -226,5 +226,16 @@ export const clientFindServiceOnCategoryBasis = async (categoryId: string, pageN
         console.log('error while fetching services on the basis of category', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error while fetching services on the basis of category')
+    }
+}
+
+export const findCategoriesForCategoryListing = async (pageNo: number) => {
+    try {
+        const response = await axios.get(`/categories/${pageNo}`)
+        return response.data
+    } catch (error) {
+        console.log('error while fetching categories for listing', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.message)
+        throw new Error('error whiel fetching categories for listing')
     }
 }

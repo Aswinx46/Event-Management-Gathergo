@@ -9,7 +9,7 @@ export class AdminRepository implements IadminRepository {
         return await ClientModel.findById(id)
     }
     async findState(id:string):Promise<string | null>{
-        const client= await ClientModel.findById(id).select('role')
+        const client= await ClientModel.findById(id).select('isAdmin')
         return client?.role ?? null;
     }
 }

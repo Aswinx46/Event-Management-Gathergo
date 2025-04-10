@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
+import { Button } from "@/components/ui/button"
 
 interface CarouselItem {
   _id: string
@@ -79,8 +80,7 @@ export default function ImageCarousel({
   const navigate = useNavigate()
   const handleSelectedCategory = (index: number, item: CarouselItem) => {
     setCurrentIndex(index)
-    navigate(`/services/${item._id}`)
-    console.log(item)
+    navigate(`/services/${item._id}/${item.title}`)
   }
 
   return (
@@ -133,7 +133,11 @@ export default function ImageCarousel({
           })}
         </AnimatePresence>
       </div>
+      <div className="flex justify-center items-center gap-3">
 
+        <h1 className="text-white relative font-medium text-xl text-center">FIND ALL CATEGORIES</h1>
+        <Button onClick={()=>navigate('/categories')} className="h-9 bg-blue-700">SHOW</Button>
+      </div>
       {/* Navigation buttons */}
       <button
         onClick={handlePrev}

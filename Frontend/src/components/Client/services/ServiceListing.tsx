@@ -27,9 +27,8 @@ const ServicesList: React.FC = () => {
     const { data: fetchedData, isLoading: isLoadingAll, error: errorAll } = useFindServiceForclient(currentPage);
 
 
-    const { categoryId } = useParams()
+    const { categoryId, title } = useParams()
     const { data: servicesWithCategory, isLoading: isLoadingCategory, error: errorCategory } = useFindServiceOnCategoryBasis(categoryId ?? '', currentPage, { enabled: !!categoryId })
-    console.log(categoryId)
 
 
     useEffect(() => {
@@ -66,13 +65,10 @@ const ServicesList: React.FC = () => {
         );
     }
 
-    // const services: Service[] = fetchedData?.Services || [];
-    // const isLoading = categoryId ? isLoadingCategory : isLoadingAll;
-    // const error = categoryId ? errorCategory : errorAll;
-    const services: Service[] = categoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || []; console.log(services)
+
+    const services: Service[] = categoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || []; 
     const handleServiceBooking = (serviceId: string, vendorId: string) => {
-        console.log('this is service id', serviceId)
-        console.log('this is vendorid', vendorId)
+
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }
 
@@ -85,7 +81,7 @@ const ServicesList: React.FC = () => {
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-2">SERVICES</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-2">{categoryId ? `SERVICES ON ${title} CATEGORY` : 'SERVICES'}</h2>
                     <div className="w-20 h-1 bg-white mx-auto mb-8"></div>
                     <p className="text-center text-gray-300 mb-12 max-w-2xl mx-auto">
                         Browse through our selection of professional services tailored to meet your needs.

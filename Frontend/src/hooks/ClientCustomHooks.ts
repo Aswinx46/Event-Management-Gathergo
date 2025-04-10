@@ -1,4 +1,4 @@
-import { clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing } from "@/services/ApiServiceClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
@@ -139,6 +139,14 @@ export const useFindServiceOnCategoryBasis = (categoryId: string, pageNo: number
         queryKey: ['servicesOnCategoryBasis', categoryId, pageNo],
         queryFn: () => clientFindServiceOnCategoryBasis(categoryId, pageNo),
         enabled: options?.enabled,
+        staleTime: 5 * 60 * 1000
+    })
+}
+
+export const useFindAllCategoryForListing = (pageNo: number) => {
+    return useQuery({
+        queryKey: ['allCategories', pageNo],
+        queryFn: () => findCategoriesForCategoryListing(pageNo),
         staleTime: 5 * 60 * 1000
     })
 }

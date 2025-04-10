@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { clientAuthenticationController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
+import { injectedFindAllCategoryController } from "../../Di/adminInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -58,6 +59,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/services/:categoryId/:pageNo', (req: Request, res: Response) => {
             injectedFindServiceOncategoryBasis.handleFindServiceOnCategorybasis(req, res)
+        })
+        this.clientRoute.get('/categories/:pageNo', (req: Request, res: Response) => {
+            injectedFindAllCategoryController.handleFindCategory(req, res)
         })
     }
 }
