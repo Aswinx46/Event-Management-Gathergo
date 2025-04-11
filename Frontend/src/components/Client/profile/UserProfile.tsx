@@ -1,433 +1,418 @@
+"use client"
 
-import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Edit, Mail, Phone, Save, X, CheckCircle, XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
-import ImageCropper from "@/components/other components/ImageCropper";
+import type React from "react"
 
-export interface User {
-    _id?: string;
-    clientId: string;
-    role: string;
-    status: string;
-    name: string;
-    email: string;
-    phone: number;
+import { useEffect, useState } from "react"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+import * as Yup from "yup"
+import { motion, AnimatePresence } from "framer-motion"
+import { Edit, Check, X, Camera, User, Mail, Phone } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "@/store/store"
+import ImageCropper from "@/components/other components/ImageCropper"
+import { useUpdateClientProfie } from "@/hooks/ClientCustomHooks"
+import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
+import { toast } from "react-toastify"
+import { isAxiosError } from "axios"
+import { addClient } from "@/store/slices/user/userSlice"
+
+// Define the user type
+interface UserData {
+    _id:string,
+    clientId: string,
+    email: string,
+    name: string,
+    phone: number,
+    profileImage?: string,
+    role: 'client',
+    status: 'active' | 'block'
+}
+
+type EditableUserFields = {
+    _id:string
+    name: string
+    phone: number
     profileImage?: string
 }
 
 
+// Validation schema
+const validationSchema = Yup.object({
+    name: Yup.string().required("Name is required"),
+    phone: Yup.string()
+        .required("Phone number is required")
+        .matches(/^[6-9]\d{9}$/, "Phone number must be 10 digits and start with 6, 7, 8, or 9"),
+    profileImage: Yup.string().required("Profile image is required"),
+})
 
-
-const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (i: number) => ({
-        opacity: 1,
-        y: 0,
-        transition: { delay: i * 0.1, duration: 0.3 }
-    })
-};
-
-const formVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-            delayChildren: 0.1
-        }
-    }
-};
-
-const toastVariants = {
-    hidden: { opacity: 0, y: -20, scale: 0.95 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { type: "spring", stiffness: 400, damping: 20 }
-    },
-    exit: {
-        opacity: 0,
-        y: -20,
-        scale: 0.95,
-        transition: { duration: 0.2 }
-    }
-};
-
-
-export const UserProfile = () => {
+export default function UserDetails() {
     const client = useSelector((state: RootState) => state.clientSlice.client)
-    useEffect(() => {
-        setUser(client!)
-    }, [client])
-    const [user, setUser] = useState<User>();
-    const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState<User>({ ...user! });
-    const [imageUrl, setImageUrl] = useState(client?.profileImage);
+    const [userData, setUserData] = useState<UserData>(client as UserData)
+    const [isEditing, setIsEditing] = useState(false)
+    const [previewImage, setPreviewImage] = useState<string | null>(null)
+    const [croppedImage, setCropperImage] = useState<File | null>(null)
     const [showCropper, setShowCropper] = useState<boolean>(false)
-    const [croppedImage, setCroppedImage] = useState<File | null>(null);
-    const [rezisedImage, setRezisedImage] = useState<string>('')
-    const [toast, setToast] = useState<{
-        visible: boolean;
-        title: string;
-        description: string;
-        type: "success" | "error";
-    } | null>(null);
+    const [imageUrl, setImageUrl] = useState<string>('')
+    const [updating, setUpdating] = useState<boolean>(false)
+    useEffect(() => {
+        setUserData(client as UserData)
+    }, [client])
+
+    const updateProfile = useUpdateClientProfie()
+    const uploadImageCloudinary = useUploadeImageToCloudinaryMutation()
 
     useEffect(() => {
         if (croppedImage) {
             const resizedImage = URL.createObjectURL(croppedImage);
-            setRezisedImage(resizedImage);
-            setFormData((prev) => ({ ...prev, profileImage: resizedImage }));
+            // setResizedImage(resizedImage);
+            setPreviewImage(resizedImage)
+            setUserData((prev) => ({ ...prev, profileImage: resizedImage }));
 
             return () => {
                 URL.revokeObjectURL(resizedImage);
             };
         }
-    }, [croppedImage]);
+    }, [croppedImage])
 
-    const handleEditToggle = () => {
-        // Reset form data when toggling edit mode
+    const dispatch=useDispatch()
 
-        if (!isEditing) {
-            setFormData({ ...user! });
-            setImageUrl(user?.profileImage);
+    const handleSubmit = async (values: EditableUserFields) => {
+        // const { email, ...rest } = values
+        try {
+            setUpdating(true)
+            const fileToUpload = croppedImage;
+            if (fileToUpload) {
+                // toast.error('Please select a ID Proof')
+                // throw new Error("No file selected");
+                const formdata = new FormData()
+                formdata.append('file', fileToUpload)
+                formdata.append('upload_preset', 'clientProfile')
+                const response = await uploadImageCloudinary.mutateAsync(formdata)
+                const imageUrl = response.secure_url
+                values.profileImage = imageUrl
+                values._id=userData?._id
+            }
+            // values.phone = Number(values.phone)
+            updateProfile.mutate(values, {
+                onSuccess: (data) => {
+                    console.log(data)
+                    dispatch(addClient(data.updatedProfile))
+                    toast.success(data.message)
+                    setIsEditing(false)
+                    setPreviewImage(null)
+                },
+                onError: (err) => {
+                    toast.error(err.message)
+                }
+            })
+        } catch (error) {
+            console.log('error while updating image to the cloudinary', error)
+            toast.error(isAxiosError(error) ? error.response?.data.message : 'error while updating image to cloudinary')
         }
-        setIsEditing(!isEditing);
-    };
+        // setUserData({ ...userData, ...rest })
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+    const handleCancel = () => {
+        setIsEditing(false)
+        setPreviewImage(null)
+    }
+
+    const handleImageChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        setFieldValue: (field: string, value: any) => void,
+    ) => {
+        setShowCropper(true)
+        const file = e.target.files?.[0]
         if (file) {
-            const reader = new FileReader();
+            const reader = new FileReader()
             reader.onloadend = () => {
-                const result = reader.result as string;
-                setImageUrl(result);
-                setShowCropper(true);
-            };
-            reader.readAsDataURL(file);
+                const result = reader.result as string
+                setPreviewImage(result)
+                setImageUrl(result)
+                setFieldValue("profileImage", result)
+            }
+            reader.readAsDataURL(file)
         }
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Basic validation
-        if (!formData.name.trim()) {
-            showToast({
-                title: "Error",
-                description: "Name is required",
-                type: "error"
-            });
-            return;
-        }
-
- 
-
-        // Update user data and exit edit mode
-        setUser(formData);
-        setIsEditing(false);
-
-        // Show success toast
-        showToast({
-            title: "Profile updated",
-            description: "Your profile information has been updated successfully",
-            type: "success"
-        });
-
-        // In a real application, you would save this to a database or API
-        console.log("User updated:", formData);
-    };
-
-    const showToast = ({
-        title,
-        description,
-        type = "success"
-    }: {
-        title: string;
-        description: string;
-        type: "success" | "error";
-    }) => {
-        setToast({ visible: true, title, description, type });
-
-        // Auto-hide toast after 3 seconds
-        setTimeout(() => {
-            setToast(prev => prev ? { ...prev, visible: false } : null);
-
-            // Remove from DOM after animation completes
-            setTimeout(() => {
-                setToast(null);
-            }, 300);
-        }, 3000);
-    };
-
-    const getInitials = (name: string) => {
-        return name
-            .split(" ")
-            .map((part) => part.charAt(0))
-            .join("")
-            .toUpperCase();
-    };
-
-
+    }
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="w-full max-w-md mx-auto px-4 py-6"
-        >
+        <div className="w-full max-w-md mx-auto overflow-hidden">
             <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={containerVariants}
-                className="relative"
+                className="relative bg-white rounded-2xl shadow-xl overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
             >
-                {/* Custom Toast Notification */}
-                {showCropper && <ImageCropper image={imageUrl ?? ''} showCropper={setShowCropper} onCropComplete={setCroppedImage} />}
-                <AnimatePresence>
-                    {toast?.visible && (
-                        <motion.div
-                            key="toast"
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            variants={toastVariants}
-                            className={cn(
-                                "fixed top-4 right-4 z-50 flex items-center gap-3 p-4 rounded-lg shadow-lg max-w-md",
-                                toast.type === "success"
-                                    ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                                    : "bg-gradient-to-r from-red-500 to-red-600 text-white"
-                            )}
-                        >
-                            <div className="shrink-0">
-                                {toast.type === "success" ? (
-                                    <CheckCircle className="h-5 w-5" />
-                                ) : (
-                                    <XCircle className="h-5 w-5" />
-                                )}
-                            </div>
-                            <div className="flex-1">
-                                <h4 className="font-medium text-sm">{toast.title}</h4>
-                                <p className="text-xs opacity-90">{toast.description}</p>
-                            </div>
-                            <button
-                                onClick={() => setToast(prev => prev ? { ...prev, visible: false } : null)}
-                                className="p-1 rounded-full hover:bg-black/10"
-                            >
-                                <XCircle className="h-4 w-4" />
-                            </button>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                <Card className="max-w-md w-full mx-auto overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                    <CardHeader className="relative pb-0">
-                        <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="absolute top-2 right-2 z-10"
-                        >
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={handleEditToggle}
-                                aria-label={isEditing ? "Cancel editing" : "Edit profile"}
-                                className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
-                            >
-                                <Edit className="h-4 w-4" />
-                            </Button>
-                        </motion.div>
-                        <div className="flex flex-col items-center">
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ type: "spring", stiffness: 300 }}
-                            >
-                                <Avatar className="h-28 w-28 mb-3 border-4 border-white dark:border-slate-800 shadow-md">
-                                    <AvatarImage src={isEditing ? imageUrl : user?.profileImage} alt={user?.name} className="object-cover" />
-                                    <AvatarFallback className="text-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
-                                        {user && getInitials(user?.name)}
-                                    </AvatarFallback>
-                                </Avatar>
-                            </motion.div>
-                            {!isEditing && (
-                                <motion.div
-                                    initial="hidden"
-                                    animate="visible"
-                                    variants={itemVariants}
-                                    custom={0}
-                                >
-                                    <h3 className="text-center text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
-                                        {user?.name}
-                                    </h3>
-                                </motion.div>
-                            )}
-                        </div>
-                    </CardHeader>
-                    <CardContent className={cn("pt-6", isEditing ? "px-2 sm:px-6" : "")}>
+                {/* Background decoration */}
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-blue-400 to-white" />
+                {showCropper && <ImageCropper image={imageUrl} showCropper={setShowCropper} onCropComplete={setCropperImage} />}
+                <div className="relative px-6 pt-10 pb-8">
+                    <AnimatePresence mode="wait">
                         {isEditing ? (
-                            <motion.form
-                                initial="hidden"
-                                animate="visible"
-                                variants={formVariants}
-                                onSubmit={handleSubmit}
-                                className="space-y-5"
+                            <motion.div
+                                key="edit-form"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{
+                                    duration: 0.4,
+                                    ease: [0.4, 0, 0.2, 1],
+                                }}
                             >
-                                <motion.div
-                                    className="flex justify-center mb-4"
-                                    variants={itemVariants}
+                                <div className="text-center mb-8">
+                                    <h2 className="text-2xl font-bold text-gray-800">Edit Your Profile</h2>
+                                    <p className="text-gray-500 mt-1">Update your personal information</p>
+                                </div>
+
+                                <Formik<EditableUserFields>
+                                    initialValues={{
+                                        _id:userData?._id,
+                                        name: userData?.name,
+                                        phone: userData?.phone,
+                                        profileImage: userData?.profileImage,
+                                    }}
+                                    validationSchema={validationSchema}
+                                    onSubmit={handleSubmit}
                                 >
-                                    <div className="relative">
-                                        <motion.div
-                                            whileHover={{ scale: 1.05 }}
-                                            transition={{ type: "spring", stiffness: 300 }}
-                                        >
-                                            <img
-                                                src={rezisedImage ?? imageUrl}
-                                                alt="Profile Preview"
-                                                className="rounded-full w-28 h-28 object-cover border-4 border-white shadow-md"
-                                            />
-                                        </motion.div>
-                                        <div className="absolute bottom-0 right-0">
-                                            <Label
-                                                htmlFor="profile-image"
-                                                className="cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full p-2 inline-flex shadow-md hover:shadow-lg transition-all"
-                                            >
-                                                <Edit className="h-4 w-4" />
-                                            </Label>
-                                            <Input
-                                                id="profile-image"
-                                                type="file"
-                                                accept="image/*"
-                                                className="hidden"
-                                                onChange={handleImageChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </motion.div>
+                                    {({ setFieldValue, errors, touched }) => (
+                                        <Form className="space-y-6">
+                                            <div className="flex flex-col items-center mb-8">
+                                                <motion.div
+                                                    className="relative w-32 h-32 mb-4"
+                                                    whileHover={{ scale: 1.05 }}
+                                                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                                                >
+                                                    <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg">
+                                                        <img
+                                                            src={previewImage || userData.profileImage}
+                                                            alt="Profile"
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                    <motion.label
+                                                        htmlFor="profileImage"
+                                                        className="absolute bottom-0 right-0 bg-gradient-to-r from-purple-600 to-pink-500 text-white p-3 rounded-full cursor-pointer shadow-md"
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.9 }}
+                                                    >
+                                                        <Camera size={18} />
+                                                        <span className="sr-only">Change profile picture</span>
+                                                    </motion.label>
+                                                </motion.div>
+                                                <input
+                                                    id="profileImage"
+                                                    name="profileImage"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={(e) => handleImageChange(e, setFieldValue)}
+                                                />
+                                                {errors.profileImage && touched.profileImage && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="text-red-500 text-sm mt-1"
+                                                    >
+                                                        {errors.profileImage}
+                                                    </motion.div>
+                                                )}
+                                            </div>
 
-                                <motion.div className="space-y-2" variants={itemVariants}>
-                                    <Label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        Name
-                                    </Label>
-                                    <Input
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder="Enter your name"
-                                        className="bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md"
-                                    />
-                                </motion.div>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label htmlFor="name" className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                                        <User size={16} className="mr-2 text-purple-500" />
+                                                        Name
+                                                    </label>
+                                                    <Field
+                                                        type="text"
+                                                        id="name"
+                                                        name="name"
+                                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                                        placeholder="Enter your name"
+                                                    />
+                                                    <ErrorMessage name="name">
+                                                        {(msg) => (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, y: -10 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                className="text-red-500 text-sm mt-1"
+                                                            >
+                                                                {msg}
+                                                            </motion.div>
+                                                        )}
+                                                    </ErrorMessage>
+                                                </div>
 
-                                {/* <motion.div className="space-y-2" variants={itemVariants}>
-                                    <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        Email
-                                    </Label>
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="Enter your email"
-                                        className="bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md"
-                                    />
-                                </motion.div> */}
+                                                <div>
+                                                    <label htmlFor="email" className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                                        <Mail size={16} className="mr-2 text-purple-500" />
+                                                        Email (Cannot be changed)
+                                                    </label>
+                                                    <div className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-500">
+                                                        {userData.email}
+                                                    </div>
+                                                </div>
 
-                                <motion.div className="space-y-2" variants={itemVariants}>
-                                    <Label htmlFor="phone" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        Phone
-                                    </Label>
-                                    <Input
-                                        id="phone"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        placeholder="Enter your phone number"
-                                        className="bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md"
-                                    />
-                                </motion.div>
+                                                <div>
+                                                    <label htmlFor="phone" className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                                        <Phone size={16} className="mr-2 text-purple-500" />
+                                                        Phone
+                                                    </label>
+                                                    <Field
+                                                        type="text"
+                                                        id="phone"
+                                                        name="phone"
+                                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                                        placeholder="Enter your phone number"
+                                                    />
+                                                    <ErrorMessage name="phone">
+                                                        {(msg) => (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, y: -10 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                className="text-red-500 text-sm mt-1"
+                                                            >
+                                                                {msg}
+                                                            </motion.div>
+                                                        )}
+                                                    </ErrorMessage>
+                                                </div>
+                                            </div>
 
-                                <motion.div
-                                    className="flex justify-end gap-2 pt-3"
-                                    variants={itemVariants}
-                                >
-                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={handleEditToggle}
-                                            className="gap-1 border-slate-200 hover:bg-slate-100 hover:text-slate-900"
-                                        >
-                                            <X className="h-4 w-4" />
-                                            Cancel
-                                        </Button>
-                                    </motion.div>
-                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                        <Button
-                                            type="submit"
-                                            className="gap-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-                                        >
-                                            <Save className="h-4 w-4" />
-                                            Save Changes
-                                        </Button>
-                                    </motion.div>
-                                </motion.div>
-                            </motion.form>
+                                            <div className="flex space-x-4 pt-4">
+                                                <motion.button
+                                                    whileHover={{ scale: 1.03 }}
+                                                    whileTap={{ scale: 0.97 }}
+                                                    type="submit"
+                                                    className="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                                                >
+                                                    <Check size={18} className="mr-2" />
+                                                    {updating ? 'Saving changes' : 'Save changes'}
+
+                                                </motion.button>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.03 }}
+                                                    whileTap={{ scale: 0.97 }}
+                                                    type="button"
+                                                    onClick={handleCancel}
+                                                    className="flex items-center justify-center px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg shadow-sm hover:bg-gray-50 transition-all duration-200"
+                                                >
+                                                    <X size={18} className="mr-2" />
+                                                    Cancel
+                                                </motion.button>
+                                            </div>
+                                        </Form>
+                                    )}
+                                </Formik>
+                            </motion.div>
                         ) : (
-                            <div className="space-y-5">
+                            <motion.div
+                                key="user-details"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{
+                                    duration: 0.4,
+                                    ease: [0.4, 0, 0.2, 1],
+                                }}
+                                className="flex flex-col items-center"
+                            >
+                                <div className="text-center mb-8">
+                                    <h2 className="text-2xl font-bold text-gray-800">User Profile</h2>
+                                    <p className="text-gray-500 mt-1">Your personal information</p>
+                                </div>
+
                                 <motion.div
-                                    className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50"
-                                    variants={itemVariants}
-                                    custom={1}
+                                    className="relative w-36 h-36 mb-8"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
                                 >
-                                    <div className="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-full">
-                                        <Mail className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                    <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg">
+                                        <img
+                                            src={userData.profileImage || "/placeholder.svg"}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Email</p>
-                                        <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{user?.email}</p>
+                                    <div className="absolute -bottom-2 left-0 right-0 text-center">
+                                        <span className="inline-block px-4 py-1 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-sm rounded-full shadow-md">
+                                            {userData.name.split(" ")[0]}
+                                        </span>
                                     </div>
                                 </motion.div>
 
-                                <motion.div
-                                    className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50"
-                                    variants={itemVariants}
-                                    custom={2}
-                                >
-                                    <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
-                                        <Phone className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Phone</p>
-                                        <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{user?.phone}</p>
-                                    </div>
-                                </motion.div>
-                            </div>
+                                <div className="w-full space-y-6">
+                                    <motion.div
+                                        className="flex items-center p-4 bg-gray-50 rounded-lg"
+                                        whileHover={{
+                                            y: -2,
+                                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                                        }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full mr-4">
+                                            <User size={18} className="text-purple-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm text-gray-500 font-medium">Name</div>
+                                            <div className="font-semibold text-gray-800">{userData.name}</div>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        className="flex items-center p-4 bg-gray-50 rounded-lg"
+                                        whileHover={{
+                                            y: -2,
+                                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                                        }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full mr-4">
+                                            <Mail size={18} className="text-purple-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm text-gray-500 font-medium">Email</div>
+                                            <div className="font-semibold text-gray-800">{userData.email}</div>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        className="flex items-center p-4 bg-gray-50 rounded-lg"
+                                        whileHover={{
+                                            y: -2,
+                                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                                        }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-full mr-4">
+                                            <Phone size={18} className="text-purple-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm text-gray-500 font-medium">Phone</div>
+                                            <div className="font-semibold text-gray-800">{userData.phone}</div>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.button
+                                        whileHover={{
+                                            scale: 1.03,
+                                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                                        }}
+                                        whileTap={{ scale: 0.97 }}
+                                        onClick={() => setIsEditing(true)}
+                                        className="mt-8 flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg shadow-md transition-all duration-200"
+                                    >
+                                        <Edit size={18} className="mr-2" />
+                                        Edit Profile
+                                    </motion.button>
+                                </div>
+                            </motion.div>
                         )}
-                    </CardContent>
-                </Card>
+                    </AnimatePresence>
+                </div>
             </motion.div>
-        </motion.div>
-    );
-};
+        </div>
+    )
+}

@@ -1,3 +1,4 @@
+import { ClientUpdateProfileEntity } from "../../../entities/client/clientUpdateProfileDTO";
 import { clientEntity } from "../../../entities/clientEntity";
 export interface IClientDatabaseRepository {
     createClient(client: clientEntity): Promise<clientEntity | null>
@@ -8,5 +9,5 @@ export interface IClientDatabaseRepository {
     findById(id: string): Promise<clientEntity | null>
     changeProfileImage(clientId: string, profileImage: string): Promise<clientEntity | null>
     showProfileDetails(cliendId: string): Promise<clientEntity | null>
-    updateProfile(client: clientEntity): Promise<clientEntity>
+    updateProfile(client: ClientUpdateProfileEntity): Promise<clientEntity | null>
 }

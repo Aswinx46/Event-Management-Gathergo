@@ -43,6 +43,8 @@ import { ChangeProfileImageClientUseCase } from "../../useCases/client/profile/c
 import { ChangeProfileImageClientController } from "../../adapters/controllers/client/profile/changeProfileImageClientController";
 import { ShowProfileDetailsInClientUseCase } from "../../useCases/client/profile/showProfileDetailsInClientUseCase";
 import { ShowProfileClientController } from "../../adapters/controllers/client/profile/showProfileClientControlller";
+import { UpdateProfileClientUseCase } from "../../useCases/client/profile/updateProfileDataClientUseCase";
+import { UpdateProfileClientController } from "../../adapters/controllers/client/profile/updateProfileClientController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -123,3 +125,7 @@ export const injectedChangeProfileImageClientController = new ChangeProfileImage
 //---------------------------------- Show profile client ----------------------------------
 const showProfileClientUseCase = new ShowProfileDetailsInClientUseCase(ClientRepository)
 export const showProfileClientController = new ShowProfileClientController(showProfileClientUseCase)
+
+//---------------------------------- Update client profile data---------------------------
+const updateProfileClientUseCase = new UpdateProfileClientUseCase(ClientRepository)
+export const injectedUpdateProfileClientController = new UpdateProfileClientController(updateProfileClientUseCase)

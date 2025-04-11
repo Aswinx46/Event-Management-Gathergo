@@ -1,3 +1,4 @@
+import { ClientUpdateProfileEntity } from "../../../domain/entities/client/clientUpdateProfileDTO";
 import { clientEntity } from "../../../domain/entities/clientEntity";
 import { IClientDatabaseRepository } from "../../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
 import { ClientModel } from "../../../framerwork/database/models/clientModel";
@@ -31,7 +32,7 @@ export class clientRepository implements IClientDatabaseRepository {
     async showProfileDetails(cliendId: string): Promise<clientEntity | null> {
         return await ClientModel.findOne({ status: 'active', _id: cliendId }).select('name email phone profileImage')
     }
-    async updateProfile(client: clientEntity): Promise<clientEntity> {
-        return await ClientModel.findByIdAndUpdate(client._id, { name: client.name, phone: client.name, profileImage: client.profileImage }, { new: true })
+    async updateProfile(client: ClientUpdateProfileEntity): Promise<clientEntity | null> {
+        return await ClientModel.findByIdAndUpdate(client._id, { name: client.name, phone: client.phone, profileImage: client.profileImage }, { new: true }).select('_id clientId email name phone profileImage role stat')
     }
 }

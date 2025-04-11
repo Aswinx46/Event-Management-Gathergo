@@ -1,4 +1,5 @@
-import { clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing } from "@/services/ApiServiceClient";
+import { clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, updateProfileClient } from "@/services/ApiServiceClient";
+import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
@@ -148,5 +149,11 @@ export const useFindAllCategoryForListing = (pageNo: number) => {
         queryKey: ['allCategories', pageNo],
         queryFn: () => findCategoriesForCategoryListing(pageNo),
         staleTime: 5 * 60 * 1000
+    })
+}
+
+export const useUpdateClientProfie = () => {
+    return useMutation({
+        mutationFn: (client: ClientUpdateProfileEntity) => updateProfileClient(client)
     })
 }

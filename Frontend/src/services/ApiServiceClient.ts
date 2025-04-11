@@ -1,5 +1,6 @@
 import { isAxiosError } from 'axios';
 import axios from '../axios/clientAxios'
+import { ClientUpdateProfileEntity } from '@/types/ClientUpdateProfileType';
 
 interface Login {
     email: string;
@@ -237,5 +238,16 @@ export const findCategoriesForCategoryListing = async (pageNo: number) => {
         console.log('error while fetching categories for listing', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.message)
         throw new Error('error whiel fetching categories for listing')
+    }
+}
+
+export const updateProfileClient = async (client: ClientUpdateProfileEntity) => {
+    try {
+        const response = await axios.put('/updateProfileClient', { client })
+        return response.data
+    } catch (error) {
+        console.log('error while udpating client profile', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while updating client profile')
     }
 }

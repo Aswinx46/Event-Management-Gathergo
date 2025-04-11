@@ -94,7 +94,7 @@ export default function SignupPage() {
         setIsOpen(false)
         toast.success('Account created')
         setIsSuccess(true)
-        
+
     }
 
     const handleError = (error: unknown) => {

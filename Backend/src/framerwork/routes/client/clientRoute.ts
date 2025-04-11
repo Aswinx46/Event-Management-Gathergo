@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
@@ -63,9 +63,11 @@ export class clientRoute {
         this.clientRoute.get('/categories/:pageNo', (req: Request, res: Response) => {
             injectedFindAllCategoryController.handleFindCategory(req, res)
         })
-        this.clientRoute.patch('/updateProfileImage',injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),(req:Request,res:Response)=>{
-            injectedChangeProfileImageClientController.handleUpdateProfileImageClient(req,res)
+        this.clientRoute.patch('/updateProfileImage', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
+            injectedChangeProfileImageClientController.handleUpdateProfileImageClient(req, res)
         })
-        
+        this.clientRoute.put('/updateProfileClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
+            injectedUpdateProfileClientController.handleUpdateProfileClient(req, res)
+        })
     }
 }

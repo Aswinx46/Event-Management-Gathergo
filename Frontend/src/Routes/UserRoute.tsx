@@ -7,7 +7,7 @@ import ServiceBooking from "@/components/Client/services/ServiceBooking";
 import ClientLayout from "@/components/Client/sideBar/ClientLayout";
 import BookingListing from "@/components/Client/bookingListing/BookingListing";
 import CategoryListing from "@/components/Client/category/CategoryListing";
-import { UserProfile } from "@/components/Client/profile/UserProfile";
+import  UserProfile  from "@/components/Client/profile/UserProfile";
 const UserRoute = () => {
     return (
         <Routes>
