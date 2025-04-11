@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
-import { useFindServiceForclient, useFindServiceOnCategoryBasis } from '@/hooks/ClientCustomHooks';
+import { useFindAllCategoryForListing, useFindServiceForclient, useFindServiceOnCategoryBasis } from '@/hooks/ClientCustomHooks';
 import Pagination from '@/components/other components/Pagination';
 import { Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import FilterComponent from '@/components/other components/Filter';
 
+interface FilterItem {
+    _id: string
+    title: string
+    profileImage: string
+  }
 interface Service {
     _id?: string;
     serviceTitle: string;
@@ -26,10 +32,11 @@ const ServicesList: React.FC = () => {
     const [totalPages, setTotalPages] = useState<number>(1);
     const { data: fetchedData, isLoading: isLoadingAll, error: errorAll } = useFindServiceForclient(currentPage);
 
-
+    const findCategory=useFindAllCategoryForListing(1)
     const { categoryId, title } = useParams()
     const { data: servicesWithCategory, isLoading: isLoadingCategory, error: errorCategory } = useFindServiceOnCategoryBasis(categoryId ?? '', currentPage, { enabled: !!categoryId })
 
+    const categories=findCategory.data?.categories
 
     useEffect(() => {
         if (fetchedData?.totalPages) {
@@ -72,8 +79,13 @@ const ServicesList: React.FC = () => {
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }
 
+    const handleSelectItem=(item:FilterItem)=>{
+        console.log(item)
+    }
+
     return (
         <div className='w-full min-h-screen bg-black'>
+          { !categoryId && <FilterComponent items={categories} onSelect={handleSelectItem}/>}
             <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
