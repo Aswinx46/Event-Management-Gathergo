@@ -120,7 +120,7 @@ export default function UserDetails() {
 
     const handleImageChange = (
         e: React.ChangeEvent<HTMLInputElement>,
-        setFieldValue: (field: string, value: any) => void,
+        setFieldValue: (field: string, value: string|boolean|number|File|Blob) => void,
     ) => {
         setShowCropper(true)
         const file = e.target.files?.[0]
@@ -137,7 +137,7 @@ export default function UserDetails() {
     }
 
     return (
-        <div className="w-full max-w-md mx-auto overflow-hidden">
+        <div className="md:w-full  max-w-md mt-20 md:mt-30  mx-auto overflow-hidden">
             <motion.div
                 className="relative bg-white rounded-2xl shadow-xl overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}

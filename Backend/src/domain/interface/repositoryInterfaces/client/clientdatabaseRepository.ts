@@ -10,4 +10,6 @@ export interface IClientDatabaseRepository {
     changeProfileImage(clientId: string, profileImage: string): Promise<clientEntity | null>
     showProfileDetails(cliendId: string): Promise<clientEntity | null>
     updateProfile(client: ClientUpdateProfileEntity): Promise<clientEntity | null>
+    findPassword(clientId: string): Promise<string | null>
+    changePassword(clientId: string, password: string): Promise<clientEntity | null>
 }

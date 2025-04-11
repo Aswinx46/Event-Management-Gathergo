@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
@@ -68,6 +68,9 @@ export class clientRoute {
         })
         this.clientRoute.put('/updateProfileClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
             injectedUpdateProfileClientController.handleUpdateProfileClient(req, res)
+        })
+        this.clientRoute.patch('/changePasswordClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
+            injectedChangeClientPasswordController.handeChangePasswordClient(req, res)
         })
     }
 }

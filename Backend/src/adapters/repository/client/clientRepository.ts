@@ -35,4 +35,11 @@ export class clientRepository implements IClientDatabaseRepository {
     async updateProfile(client: ClientUpdateProfileEntity): Promise<clientEntity | null> {
         return await ClientModel.findByIdAndUpdate(client._id, { name: client.name, phone: client.phone, profileImage: client.profileImage }, { new: true }).select('_id clientId email name phone profileImage role stat')
     }
+    async findPassword(clientId: string): Promise<string | null> {
+        const client = await ClientModel.findById(clientId).select('password')
+        return client?.password || null
+    }
+    async changePassword(clientId: string, password: string): Promise<clientEntity | null> {
+        return await ClientModel.findByIdAndUpdate(clientId, { password }, { new: true })
+    }
 }

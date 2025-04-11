@@ -18,12 +18,12 @@ const menuItems = [
   {
     icon: Home,
     label: "Home",
-    path: "/profile/home",
+    path: "/",
   },
   {
     icon: User,
     label: "My Profile",
-    path: "/profile",
+    path: "/profile/home",
   },
   {
     icon: BookOpen,
@@ -38,7 +38,7 @@ const menuItems = [
   {
     icon: Lock,
     label: "Change Password",
-    path: "/change-password",
+    path: "/profile/changePassword",
   },
   {
     icon: Calendar,

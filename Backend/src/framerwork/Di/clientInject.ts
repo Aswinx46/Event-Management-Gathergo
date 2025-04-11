@@ -45,6 +45,9 @@ import { ShowProfileDetailsInClientUseCase } from "../../useCases/client/profile
 import { ShowProfileClientController } from "../../adapters/controllers/client/profile/showProfileClientControlller";
 import { UpdateProfileClientUseCase } from "../../useCases/client/profile/updateProfileDataClientUseCase";
 import { UpdateProfileClientController } from "../../adapters/controllers/client/profile/updateProfileClientController";
+import { ChangePasswordClientUseCase } from "../../useCases/client/profile/changePasswordClientUseCase";
+import { hashPassword } from "../hashPassword/hashpassword";
+import { ChangePasswordClientController } from "../../adapters/controllers/client/profile/changePasswordClientController";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -129,3 +132,8 @@ export const showProfileClientController = new ShowProfileClientController(showP
 //---------------------------------- Update client profile data---------------------------
 const updateProfileClientUseCase = new UpdateProfileClientUseCase(ClientRepository)
 export const injectedUpdateProfileClientController = new UpdateProfileClientController(updateProfileClientUseCase)
+
+//---------------------------------- Client password change---------------
+const HashPassword = new hashPassword()
+const changeClientPasswordUseCase = new ChangePasswordClientUseCase(ClientRepository, HashPassword)
+export const injectedChangeClientPasswordController = new ChangePasswordClientController(changeClientPasswordUseCase)
