@@ -11,5 +11,6 @@ export interface BookingEntity {
     vendorApproval: "Pending" | "Approved" | "Rejected";
     paymentStatus: "Pending" | "Failed" | "Successfull" | "Refunded";
     rejectionReason?: string
-    status:"Pending" | "Rejected" | "Completed"
+    status: "Pending" | "Rejected" | "Completed"
+    createdAt: Date
 }

@@ -51,7 +51,7 @@ export class clientRoute {
         this.clientRoute.get('/showClientWithVendor/:serviceId', (req: Request, res: Response) => {
             injectedShowServiceWithVendorCController.handleShowServiceWithVendor(req, res)
         })
-        this.clientRoute.get('/showBookings/:clientId', (req: Request, res: Response) => {
+        this.clientRoute.get('/showBookings/:clientId/:pageNo', (req: Request, res: Response) => {
             injectedShowBookingInClientController.handleShowBookingsInClient(req, res)
         })
         this.clientRoute.post('/logout', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {

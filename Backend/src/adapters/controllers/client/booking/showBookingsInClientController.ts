@@ -9,10 +9,10 @@ export class ShowBookingsInClientController {
     }
     async handleShowBookingsInClient(req: Request, res: Response): Promise<void> {
         try {
-            const { clientId } = req.params
-            const bookings = await this.showBookingsInClient.findBookings(clientId)
-            console.log(bookings)
-            res.status(HttpStatus.OK).json({ message: 'Bookings fetched', bookings })
+            const { clientId, pageNo } = req.params
+            const page = parseInt(pageNo, 10) || 1
+            const { Bookings, totalPages } = await this.showBookingsInClient.findBookings(clientId, page)
+            res.status(HttpStatus.OK).json({ message: 'Bookings fetched', Bookings, totalPages })
         } catch (error) {
             console.log('error while fetching bookings in client', error)
             res.status(HttpStatus.BAD_REQUEST).json({

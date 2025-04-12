@@ -197,9 +197,9 @@ export const fetchServiceDetailsWithVendor = async (serviceId: string) => {
     }
 }
 
-export const fetchBookingInClient = async (clientId: string) => {
+export const fetchBookingInClient = async (clientId: string, pageNo: number) => {
     try {
-        const response = await axios.get(`/showBookings/${clientId}`)
+        const response = await axios.get(`/showBookings/${clientId}/${pageNo}`)
         return response.data
     } catch (error) {
         console.log('error while fetch bookings in client', error)

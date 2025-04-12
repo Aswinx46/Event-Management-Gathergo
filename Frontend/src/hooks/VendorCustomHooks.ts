@@ -117,10 +117,10 @@ export const useChangeStatusServiceVendor = () => {
 }
 
 
-export const useFetchBookingsInVendor = (vendorId: string) => {
+export const useFetchBookingsInVendor = (vendorId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['Bookings-in-vendor', vendorId],
-        queryFn: () => showBookingsInVendor(vendorId)
+        queryFn: () => showBookingsInVendor(vendorId, pageNo)
     })
 }
 

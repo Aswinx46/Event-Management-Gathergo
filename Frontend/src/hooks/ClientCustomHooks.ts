@@ -120,10 +120,10 @@ export const useFindSericeDataWithVendor = (serviceId: string) => {
     })
 }
 
-export const useFetchBookingsInClient = (clientId: string) => {
+export const useFetchBookingsInClient = (clientId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['Bookings in client'],
-        queryFn: () => fetchBookingInClient(clientId),
+        queryFn: () => fetchBookingInClient(clientId, pageNo),
         staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false
     })
@@ -158,8 +158,8 @@ export const useUpdateClientProfie = () => {
     })
 }
 
-export const useChangePasswordClient=()=>{
+export const useChangePasswordClient = () => {
     return useMutation({
-        mutationFn:({clientId,oldPassword,newPassword}:{clientId: string, oldPassword: string, newPassword: string})=>changePasswordClient(clientId,oldPassword,newPassword)
+        mutationFn: ({ clientId, oldPassword, newPassword }: { clientId: string, oldPassword: string, newPassword: string }) => changePasswordClient(clientId, oldPassword, newPassword)
     })
 }

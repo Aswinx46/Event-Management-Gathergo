@@ -6,7 +6,7 @@ import { BookingListingEntityVendor } from "../../../entities/vendor/BookingList
 export interface IbookingRepository {
     createBooking(booking: BookingEntity): Promise<BookingEntity>
     approveBooking(bookingId: string): Promise<BookingEntity | null>
-    showBookingsInClient(clientId: string): Promise<BookingsInClientEntity[] | []>
-    showBookingsInVendor(vendorId: string): Promise<BookingListingEntityVendor[] | []>
+    showBookingsInClient(clientId: string, pageNo: number): Promise<{ Bookings: BookingsInClientEntity[] | [], totalPages: number }>
+    showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: BookingListingEntityVendor[] | [], totalPages: number }>
     rejectBooking(bookingId: string, rejectionReasoneason: string): Promise<BookingEntity | null>
 }

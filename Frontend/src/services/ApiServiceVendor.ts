@@ -173,9 +173,9 @@ export const changeStatusService = async (serviceId: string) => {
     }
 }
 
-export const showBookingsInVendor = async (vendorId: string) => {
+export const showBookingsInVendor = async (vendorId: string, pageNo: number) => {
     try {
-        const response = await axios.get(`/showBookings/${vendorId}`)
+        const response = await axios.get(`/showBookings/${vendorId}/${pageNo}`)
         return response.data
     } catch (error) {
         console.log('error while fetching bookings in vendor side', error)

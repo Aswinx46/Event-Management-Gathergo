@@ -9,9 +9,10 @@ export class ShowBookingsInVendorController {
     }
     async handleShowBookingsInVendor(req: Request, res: Response): Promise<void> {
         try {
-            const { vendorId } = req.params
-            const bookings = await this.showBookingsInVendorUseCase.showBookingsInVendor(vendorId)
-            res.status(HttpStatus.OK).json({ message: "Bookings fetched", bookings })
+            const { vendorId, pageNo } = req.params
+            const page = parseInt(pageNo, 10) || 1
+            const { Bookings, totalPages } = await this.showBookingsInVendorUseCase.showBookingsInVendor(vendorId, page)
+            res.status(HttpStatus.OK).json({ message: "Bookings fetched", Bookings, totalPages })
         } catch (error) {
             console.log('error while fetching bookigns for vendorSide', error)
             res.status(HttpStatus.BAD_REQUEST).json({

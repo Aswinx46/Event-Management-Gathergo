@@ -7,8 +7,8 @@ export class ShowBookingsInVendorUseCase implements IshowBookingsInVendorUseCase
     constructor(bookingDatabase: IbookingRepository) {
         this.bookingDatabase = bookingDatabase
     }
-    async showBookingsInVendor(vendorId: string): Promise<BookingListingEntityVendor[] | []> {
-        return await this.bookingDatabase.showBookingsInVendor(vendorId)
+    async showBookingsInVendor(vendorId: string,pageNo:number): Promise<{ Bookings: BookingListingEntityVendor[] | [], totalPages: number }> {
+        return await this.bookingDatabase.showBookingsInVendor(vendorId,pageNo)
 
     }
 }
