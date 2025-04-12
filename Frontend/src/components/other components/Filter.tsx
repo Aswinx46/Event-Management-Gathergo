@@ -15,12 +15,14 @@ interface FilterComponentProps {
   items: FilterItem[]
   onSelect: (item: FilterItem) => void
   title?: string
+  handleClearAll: () => void
 }
 
 export default function FilterComponent({
   items = dummyFilterItems, // Default to dummy data
   onSelect,
   title = "Filter Options",
+  handleClearAll
 }: FilterComponentProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
@@ -38,6 +40,11 @@ export default function FilterComponent({
       }
     })
     onSelect(item)
+  }
+
+  const handleClear=()=>{
+    setSelectedItems([])
+    handleClearAll()
   }
 
   return (
@@ -82,9 +89,8 @@ export default function FilterComponent({
                       className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0"
                     />
                     <span
-                      className={`text-sm ${
-                        selectedItems.includes(item._id) ? "font-medium text-purple-400" : "text-gray-300"
-                      }`}
+                      className={`text-sm ${selectedItems.includes(item._id) ? "font-medium text-purple-400" : "text-gray-300"
+                        }`}
                     >
                       {item.title}
                     </span>
@@ -96,7 +102,7 @@ export default function FilterComponent({
             {selectedItems.length > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 flex justify-between">
                 <span className="text-xs text-gray-400">{selectedItems.length} selected</span>
-                <button onClick={() => setSelectedItems([])} className="text-xs text-purple-400 hover:text-purple-300">
+                <button onClick={handleClear} className="text-xs text-purple-400 hover:text-purple-300">
                   Clear all
                 </button>
               </motion.div>

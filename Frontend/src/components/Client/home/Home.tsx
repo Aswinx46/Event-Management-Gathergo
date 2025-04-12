@@ -19,7 +19,7 @@ function Home() {
   }, [])
   return (
     <div className='bg-black  h-screen w-full'>
-      <Header />
+      {/* <Header /> */}
       <Suspense fallback={<div className="text-white text-center mt-10">Loading...</div>}>
         {/* <BlackHero /> */}
         <LazyHeroSection />

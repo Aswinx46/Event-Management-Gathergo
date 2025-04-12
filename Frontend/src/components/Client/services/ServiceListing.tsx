@@ -11,7 +11,7 @@ interface FilterItem {
     _id: string
     title: string
     profileImage: string
-  }
+}
 interface Service {
     _id?: string;
     serviceTitle: string;
@@ -32,11 +32,13 @@ const ServicesList: React.FC = () => {
     const [totalPages, setTotalPages] = useState<number>(1);
     const { data: fetchedData, isLoading: isLoadingAll, error: errorAll } = useFindServiceForclient(currentPage);
 
-    const findCategory=useFindAllCategoryForListing(1)
+    const findCategory = useFindAllCategoryForListing(1)
     const { categoryId, title } = useParams()
-    const { data: servicesWithCategory, isLoading: isLoadingCategory, error: errorCategory } = useFindServiceOnCategoryBasis(categoryId ?? '', currentPage, { enabled: !!categoryId })
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId ?? null);
+    const [selecteCategoryTitle, setSelectedCategoryTitle] = useState<string | null>(title ?? null)
+    const { data: servicesWithCategory, isLoading: isLoadingCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, { enabled: !!selectedCategoryId })
 
-    const categories=findCategory.data?.categories
+    const categories = findCategory.data?.categories
 
     useEffect(() => {
         if (fetchedData?.totalPages) {
@@ -73,19 +75,26 @@ const ServicesList: React.FC = () => {
     }
 
 
-    const services: Service[] = categoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || []; 
+    const services: Service[] = selectedCategoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || [];
     const handleServiceBooking = (serviceId: string, vendorId: string) => {
 
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }
 
-    const handleSelectItem=(item:FilterItem)=>{
+    const handleSelectItem = (item: FilterItem) => {
         console.log(item)
+        setSelectedCategoryId(item._id)
+        setSelectedCategoryTitle(item.title)
+        // refetch()
+    }
+
+    const handleClearAll = () => {
+        setSelectedCategoryId(null)
     }
 
     return (
         <div className='w-full min-h-screen bg-black'>
-          { !categoryId && <FilterComponent items={categories} onSelect={handleSelectItem}/>}
+            {!categoryId && <FilterComponent items={categories} onSelect={handleSelectItem} handleClearAll={handleClearAll} />}
             <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
@@ -93,7 +102,7 @@ const ServicesList: React.FC = () => {
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-2">{categoryId ? `SERVICES ON ${title} CATEGORY` : 'SERVICES'}</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-100 mb-2">{categoryId ? `SERVICES ON ${selecteCategoryTitle} CATEGORY` : 'SERVICES'}</h2>
                     <div className="w-20 h-1 bg-white mx-auto mb-8"></div>
                     <p className="text-center text-gray-300 mb-12 max-w-2xl mx-auto">
                         Browse through our selection of professional services tailored to meet your needs.
