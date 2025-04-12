@@ -38,7 +38,7 @@ export class AdminLoginController {
             await this.redisService.set(`user:admin:${admin._id}`, 15 * 60, JSON.stringify(admin.status))
             await this.redisService.set(`adminRole`, 15 * 60, JSON.stringify(admin.isAdmin))
             setCookie(res, refreshToken)
-            res.status(HttpStatus.OK).json({ message: "admin logged", accessToken })
+            res.status(HttpStatus.OK).json({ message: "admin logged", accessToken,id:admin._id })
             return
         } catch (error) {
             console.log('error while admin login', error)

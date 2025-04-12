@@ -21,33 +21,34 @@ export default function VendorLogin() {
         password: ''
     }
 
-    type value={
-        email:string;
-        password:string
+    type value = {
+        email: string;
+        password: string
     }
     const [rememberMe, setRememberMe] = useState(false)
-    const dispatch=useDispatch()
-    const navigate=useNavigate()
-    const loginMutation=useMutation({
-        mutationFn:async({email,password}:value)=>{
-            return await axios.post('/login',{email,password})
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const loginMutation = useMutation({
+        mutationFn: async ({ email, password }: value) => {
+            return await axios.post('/login', { email, password })
         },
-        onSuccess:(data)=>{
+        onSuccess: (data) => {
+            localStorage.setItem('id', data.data.vendor._id)
             dispatch(addVendorToken(data.data.accessToken))
             dispatch(addVendor(data.data.vendor))
             navigate('/vendor/home')
+
         },
-        onError:(error:Error)=>{
-            if(isAxiosError(error))
-            {
-                toast.error(error?.response?.data.error)    
-            }else{
+        onError: (error: Error) => {
+            if (isAxiosError(error)) {
+                toast.error(error?.response?.data.error)
+            } else {
                 toast.error('error while login vendor')
             }
         }
     })
 
-    const handleSubmit = (values:value) => {
+    const handleSubmit = (values: value) => {
         loginMutation.mutate(values)
     }
 

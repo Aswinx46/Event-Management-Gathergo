@@ -43,6 +43,7 @@ function Adminlogin() {
             onSuccess: (data) => {
                 console.log(data)
                 dispatch(addAdminToken(data.accessToken))
+                localStorage.setItem('id',data.id)
                 toast.success('admin logged')
                 navigate('/admin/dashboard', { replace: true })
             },

@@ -76,13 +76,13 @@ export default function LoginComponent() {
             onSuccess: (data) => {
                 console.log(data)
                 toast.success('user logged')
-                
+                localStorage.setItem('id', data.client._id)
                 dispatch(addToken(data?.accessToken))
                 dispatch(addClient(data?.client))
                 navigate('/', { replace: true })
             },
             onError: (error) => {
-    
+
                 toast.error(error.message)
             }
 
