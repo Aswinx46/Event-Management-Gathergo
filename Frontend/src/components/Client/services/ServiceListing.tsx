@@ -85,7 +85,6 @@ const ServicesList: React.FC = () => {
         console.log(item)
         setSelectedCategoryId(item._id)
         setSelectedCategoryTitle(item.title)
-        // refetch()
     }
 
     const handleClearAll = () => {

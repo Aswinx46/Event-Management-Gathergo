@@ -5,7 +5,7 @@ export interface BookingEntity {
     serviceId: ObjectId;
     clientId: ObjectId;
     vendorId: ObjectId;
-    date: Date;
+    date: Date[];
     email: string;
     phone: number;
     vendorApproval: "Pending" | "Approved" | "Rejected";

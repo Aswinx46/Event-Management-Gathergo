@@ -19,7 +19,7 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 export interface Booking {
-  date: Date;
+  date: Date[];
   email: string;
   phone: number;
   name: string;
@@ -71,11 +71,11 @@ const VendorBookingCard = () => {
 
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
 
-  const [date, setDate] = React.useState<Date>();
+  // const [date, setDate] = React.useState<Date>();
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { serviceId, vendorId } = useParams()
-  console.log('vendor id', vendorId)
   const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!)
   const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor
 
@@ -87,14 +87,15 @@ const VendorBookingCard = () => {
 
   const formik = useFormik({
     initialValues: {
-      date: '',
+      date: [],
       email: '',
       phone: '',
       name: ''
     },
     validationSchema: Yup.object({
       date: Yup.string()
-        .required('Date is required')
+        .min(1, 'Please select at least one date')
+        .required('Date(s) required')
         .test('is-future', 'Cannot select a past date', function (value) {
           if (!value) return false;
           const selectedDate = new Date(value);
@@ -111,9 +112,13 @@ const VendorBookingCard = () => {
     }),
     onSubmit: (values) => {
       if (clientId && vendorId && serviceId) {
+        const dateObjects = selectedDates.map(date =>
+          new Date(date.getFullYear(), date.getMonth(), date.getDate())
+        );
         const bookingData: Booking = {
-          ...values, phone: Number(values.phone), date: new Date(values.date), serviceId: serviceId, vendorId: vendorId, clientId: clientId
+          ...values, phone: Number(values.phone), date: dateObjects, serviceId: serviceId, vendorId: vendorId, clientId: clientId
         }
+        console.log(bookingData)
         bookingApi.mutate(bookingData, {
           onSuccess: (data) => {
             toast.success(data.message)
@@ -240,7 +245,7 @@ const VendorBookingCard = () => {
               <motion.div className="space-y-4">
                 <div className="grid gap-3">
                   <Label htmlFor="date" className="text-white">Select Date</Label>
-                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                  {/* <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -254,20 +259,67 @@ const VendorBookingCard = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0 bg-black border-white/30">
+
                       <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={(newDate) => {
-                          if (newDate && !isBefore(startOfDay(newDate), startOfDay(new Date()))) {
-                            setDate(newDate);
-                            formik.setFieldValue('date', format(newDate, 'yyyy-MM-dd'));
-                            setIsCalendarOpen(false);
-                          }
+                        mode="multiple"
+                        selected={selectedDates}
+                        onSelect={(dates) => {
+                          const validDates = dates?.filter(
+                            (date) => !isBefore(startOfDay(date), startOfDay(new Date()))
+                          ) || [];
+                          setSelectedDates(validDates);
+                          formik.setFieldValue('date', validDates.map(date => format(date, 'yyyy-MM-dd')));
                         }}
                         disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
                         initialFocus
                         className="bg-black text-white"
                       />
+                    </PopoverContent>
+                  </Popover> */}
+                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal bg-black border-white/30 text-white",
+                          selectedDates.length === 0 && "text-gray-500"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDates.length > 0
+                          ? selectedDates.map((d) => format(d, "MMM dd")).join(", ")
+                          : "Pick a date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-4 bg-black border-white/30 space-y-4">
+                      <Calendar
+                        mode="multiple"
+                        selected={selectedDates}
+                        onSelect={(dates) => {
+                          const validDates =
+                            dates?.filter(
+                              (date) =>
+                                !isBefore(startOfDay(date), startOfDay(new Date()))
+                            ) || [];
+                          setSelectedDates(validDates);
+                          formik.setFieldValue(
+                            "date",
+                            validDates.map((d) => format(d, "yyyy-MM-dd")).join(", ")
+                          );
+                        }}
+                        disabled={(date) =>
+                          isBefore(startOfDay(date), startOfDay(new Date()))
+                        }
+                        initialFocus
+                        className="bg-black text-white"
+                      />
+                      <Button
+                        variant="secondary"
+                        className="w-full bg-white text-black"
+                        onClick={() => setIsCalendarOpen(false)}
+                      >
+                        Done
+                      </Button>
                     </PopoverContent>
                   </Popover>
                   {formik.touched.date && formik.errors.date && (
@@ -390,16 +442,6 @@ const VendorBookingCard = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* <div className="flex items-start gap-2 mt-4">
-                    <div className="bg-white/10 p-2 rounded-full shrink-0 mt-0.5">
-                      <MapPin className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Location</p>
-                      <p className="font-medium text-white">{service.location}</p>
-                    </div>
-                  </div> */}
                 </motion.div>
               </Card>
             </motion.div>
@@ -411,3 +453,18 @@ const VendorBookingCard = () => {
 };
 
 export default VendorBookingCard;
+
+{/* <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={(newDate) => {
+                          if (newDate && !isBefore(startOfDay(newDate), startOfDay(new Date()))) {
+                            setDate(newDate);
+                            formik.setFieldValue('date', format(newDate, 'yyyy-MM-dd'));
+                            setIsCalendarOpen(false);
+                          }
+                        }}
+                        disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
+                        initialFocus
+                        className="bg-black text-white"
+                      /> */}

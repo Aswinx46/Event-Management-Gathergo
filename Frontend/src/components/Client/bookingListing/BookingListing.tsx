@@ -30,7 +30,7 @@ interface Client {
 
 export interface Booking {
   _id: string;
-  date: string;
+  date: string[];
   email: string;
   phone: number;
   paymentStatus: string;

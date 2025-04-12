@@ -162,7 +162,7 @@ export const fetchServiceForClient = async (currentPage: number) => {
 }
 
 export interface Booking {
-    date: Date;
+    date: Date[];
     email: string;
     phone: number;
     name: string;

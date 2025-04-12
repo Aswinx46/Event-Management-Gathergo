@@ -43,7 +43,7 @@ interface Client {
 
 export interface Booking {
   _id: string;
-  date: string;
+  date: string[];
   email: string;
   phone: number;
   paymentStatus: string;
@@ -52,7 +52,7 @@ export interface Booking {
   vendor: Vendor;
   client: Client
   vendorApproval: string
-  rejectionReason?:string
+  rejectionReason?: string
 }
 
 interface BookingListingTableProps {
@@ -158,10 +158,13 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <span>{formatDate(booking?.date)}</span>
-                      </div>
+                      {Array.isArray(booking.date) &&
+                        booking.date.map((d, i) => (
+                          <div key={i} className="flex items-center gap-1.5">
+                            <Calendar className="h-4 w-4 text-gray-500" />
+                            <span>{formatDate(d)}</span>
+                          </div>
+                        ))}
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">

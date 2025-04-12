@@ -49,7 +49,7 @@ interface Client {
 }
 export interface BookingDetails {
     _id: string;
-    date: string;
+    date: string[];
     email: string;
     phone: number;
     paymentStatus: string;
@@ -57,8 +57,8 @@ export interface BookingDetails {
     service: Service;
     vendor: Vendor;
     client: Client
-    vendorApproval:string
-    rejectionReason?:string
+    vendorApproval: string
+    rejectionReason?: string
 }
 
 
@@ -131,8 +131,8 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
         }
     };
 
-    const bookingDate = new Date(booking.date);
-    const timeAgo = formatDistanceToNow(bookingDate, { addSuffix: true });
+    // const bookingDate = new Date(booking.date);
+    // const timeAgo = formatDistanceToNow(bookingDate, { addSuffix: true });
 
 
 
@@ -167,7 +167,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                 queryClient.invalidateQueries({ queryKey: ['Bookings-in-vendor', vendorId] })
                 setRejectionModal(false)
             },
-            onError:(err)=>{
+            onError: (err) => {
                 toast.success(err.message)
             }
         })
@@ -200,17 +200,29 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
                         {/* Date and Time */}
                         <motion.div variants={itemVariants} className="bg-gray-800 p-4 rounded-lg">
-                            <div className="flex items-start gap-3">
-                                <Calendar className="h-5 w-5 text-gray-400 mt-1" />
-                                <div>
-                                    <p className="text-white">{bookingDate.toLocaleDateString('en-US', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    })}</p>
-                                    <p className="text-gray-400 text-sm">{timeAgo}</p>
-                                </div>
+                            <div className="flex flex-col gap-2">
+                                {Array.isArray(booking.date) &&
+                                    booking.date.map((date, index) => {
+                                        const dateObj = new Date(date);
+                                        return (
+                                            <div key={index} className="flex items-center gap-3">
+                                                <Calendar className="h-5 w-5 text-gray-400" />
+                                                <div>
+                                                    <p className="text-white">
+                                                        {dateObj.toLocaleDateString("en-US", {
+                                                            weekday: "long",
+                                                            year: "numeric",
+                                                            month: "long",
+                                                            day: "numeric"
+                                                        })}
+                                                    </p>
+                                                    <p className="text-gray-400 text-sm">
+                                                        {formatDistanceToNow(dateObj, { addSuffix: true })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                             </div>
                             <div className="flex items-center gap-3 mt-3">
                                 <Clock className="h-5 w-5 text-gray-400" />
@@ -277,14 +289,14 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                             </motion.div>}
                     </motion.div>
 
-                   {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
-                            <h3 className="text-sm font-medium text-gray-400">'Rejection Reason</h3>
-                            <div className="grid grid-cols-1 gap-3">
-                                <div className="flex items-center gap-3">
-                                    <p className="text-white">{booking.rejectionReason}</p>
-                                </div>
+                    {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
+                        <h3 className="text-sm font-medium text-gray-400">'Rejection Reason</h3>
+                        <div className="grid grid-cols-1 gap-3">
+                            <div className="flex items-center gap-3">
+                                <p className="text-white">{booking.rejectionReason}</p>
                             </div>
-                        </motion.div>}
+                        </div>
+                    </motion.div>}
 
                     <DialogFooter className="bg-gray-900 p-4 border-t border-gray-800">
                         <Button

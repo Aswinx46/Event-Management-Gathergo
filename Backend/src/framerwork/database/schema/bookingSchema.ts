@@ -6,10 +6,10 @@ export const bookingSchema = new Schema<BookingEntity>({
         required: true,
         ref: 'client'
     },
-    date: {
+    date: [{
         type: Date,
         required: true
-    },
+    }],
     paymentStatus: {
         type: String,
         enum: ["Pending", "Failed", "Successfull", "Refunded"],
