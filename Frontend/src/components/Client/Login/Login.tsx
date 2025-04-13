@@ -105,7 +105,11 @@ export default function LoginComponent() {
                     profileImage: credential.picture
                 }
                 googleLoginMutation.mutate(client, {
-                    onSuccess: () => {
+                    onSuccess: (data) => {
+                        console.log(data)
+                        dispatch(addClient(data.client))
+                        dispatch(addToken(data.accessToken))
+                        localStorage.setItem('id', data.client._id)
                         toast.success('Login SuccessFull')
                         navigate('/', { replace: true })
                     },
@@ -248,10 +252,10 @@ export default function LoginComponent() {
                                             {loginMutation.isPending ? "Logging in..." : "Sign In"}
                                         </Button>
                                     </motion.div>
-                                    {/* <div >
+                                    <div >
                                         <GoogleLogin onSuccess={googleAuthenticate} onError={() => console.log('login failed')}></GoogleLogin>
 
-                                    </div> */}
+                                    </div>
                                     <motion.div
                                         className="mt-6 text-center"
                                         initial={{ opacity: 0 }}

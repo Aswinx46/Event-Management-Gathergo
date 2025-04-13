@@ -71,7 +71,7 @@ export const injectedFindAllClientController = new FindAllClientsController(find
 
 //-----------------------------google login-------------------------
 const googleLoginClientUseCase = new GoogleLoginClientUseCase(ClientRepository)
-export const injectedGoogleLogincontroller = new GoogleLoginClient(googleLoginClientUseCase)
+export const injectedGoogleLogincontroller = new GoogleLoginClient(googleLoginClientUseCase, jwtService,redisService)
 
 //------------------------------send otp for forget password-------------------
 const sendOtpForForgetPasswordUseCase = new SendOtpForForgetPassword(EmailService, otpService, ClientRepository)
