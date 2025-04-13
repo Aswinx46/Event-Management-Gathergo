@@ -3,22 +3,31 @@ import { ApproveVendorController } from "../../adapters/controllers/admin/approv
 import { ChangeStatusCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeStatusCategoryController";
 import { CreateCategoryController } from "../../adapters/controllers/admin/categoryManagement/createCategoryController";
 import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
+import { BlockClientController } from "../../adapters/controllers/admin/client/blockClientController";
+import { ClientUnblockController } from "../../adapters/controllers/admin/client/unblockClientController";
+import { FindAllClientsController } from "../../adapters/controllers/admin/findAllClientsController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
 import { FindAllRejectedController } from "../../adapters/controllers/admin/findAllRejectedVendorController";
 import { FindAllVendorController } from "../../adapters/controllers/admin/findAllVendorController";
 import { RejectVendorControllerAdmin } from "../../adapters/controllers/admin/rejectVendorController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
+import { clientRepository } from "../../adapters/repository/client/clientRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
-import { AdminLoginUseCase } from "../../useCases/admin/adminLoginuseCase";
-import { ApproveVendor } from "../../useCases/admin/ApproveVendorStatus";
+import { AdminLoginUseCase } from "../../useCases/admin/authentication/adminLoginuseCase";
+
 import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/changeStatusOfCategoryUseCase";
 import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
-import { findAllPendingVendors } from "../../useCases/admin/findAllPendingVendorUseCase";
-import { FindAllRejectedVendorUseCase } from "../../useCases/admin/findAllRejectedVendorsUseCase";
-import { FindAllVendorUsecase } from "../../useCases/admin/findAllVendorUseCase";
-import { RejectVendorUseCase } from "../../useCases/admin/rejectVendorUseCase";
+import { BlockClientUseCase } from "../../useCases/admin/userManagement/clientBlockUseCase";
+import { ClientUnblockUseCase } from "../../useCases/admin/userManagement/clientUnblockUseCase";
+
+import { FindAllClientUseCase } from "../../useCases/admin/userManagement/findAllClientUseCase";
+import { ApproveVendor } from "../../useCases/admin/vendorManagement/ApproveVendorStatus";
+import { findAllPendingVendors } from "../../useCases/admin/vendorManagement/findAllPendingVendorUseCase";
+import { FindAllRejectedVendorUseCase } from "../../useCases/admin/vendorManagement/findAllRejectedVendorsUseCase";
+import { FindAllVendorUsecase } from "../../useCases/admin/vendorManagement/findAllVendorUseCase";
+import { RejectVendorUseCase } from "../../useCases/admin/vendorManagement/rejectVendorUseCase";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 
@@ -50,6 +59,11 @@ export const injectedRejectVendorController = new RejectVendorControllerAdmin(re
 const findRejectedVendorUseCase = new FindAllRejectedVendorUseCase(vendorDataBase)
 export const injectedFindAllRejectedVendorController = new FindAllRejectedController(findRejectedVendorUseCase)
 
+//------------------------------Find all Clients-----------------------
+const ClientRepository = new clientRepository()
+const findAllClientUseCase = new FindAllClientUseCase(ClientRepository)
+export const injectedFindAllClientController = new FindAllClientsController(findAllClientUseCase)
+
 //-------------------------------find all Category--------------------------------------
 const categoryDatabase = new CategoryDatabaseRepository()
 const findAllCategoryUseCase = new FindCategoryUseCase(categoryDatabase)
@@ -62,3 +76,11 @@ export const injectedCreateCategoryController = new CreateCategoryController(cre
 //----------------------------Change status category----------------------
 const changeStatusCategory = new ChangeStatusOfCategory(categoryDatabase)
 export const InjectedChangeStatusCategoryController = new ChangeStatusCategoryController(changeStatusCategory)
+
+//-----------------------------block client-----------------------
+const blockClientUseCase = new BlockClientUseCase(ClientRepository)
+export const injectedBlockClientController = new BlockClientController(blockClientUseCase,redisService)
+
+//---------------------------- unblock client------------------
+const unblockClientUseCase = new ClientUnblockUseCase(ClientRepository)
+export const injectedClientUnblockController = new ClientUnblockController(unblockClientUseCase,redisService)

@@ -1,4 +1,4 @@
-import { adminLogin, approvePendingVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, rejectPendingVendor } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, blockClient, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, rejectPendingVendor, unblockClient } from "@/services/ApiServiceAdmin"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface Login {
@@ -100,5 +100,17 @@ export const useCreateCategory = () => {
 export const UseChangeStatusCategory = () => {
     return useMutation({
         mutationFn: (categoryId: string) => changeStatusCategory(categoryId)
+    })
+}
+
+export const useBlockClient = () => {
+    return useMutation({
+        mutationFn: (clientId: string) => blockClient(clientId)
+    })
+}
+
+export const useUnblockClient = () => {
+    return useMutation({
+        mutationFn: (clientId: string) => unblockClient(clientId)
     })
 }

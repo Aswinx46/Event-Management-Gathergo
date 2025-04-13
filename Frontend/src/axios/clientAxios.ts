@@ -21,13 +21,19 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
     _retry?: boolean;
 }
 
+interface CustomErrorResponse {
+    code?: string;
+    message?: string;
+    // [key: string]: any;
+}
 
 instance.interceptors.response.use(
     response => response,
     async (error: AxiosError) => {
         const originalRequest = error.config as CustomAxiosRequestConfig
-
-        if (error.response?.status === 423) {
+        const data = error.response?.data as CustomErrorResponse;
+        console.log('this is error',error.response)
+        if (error.response?.status === 403 && data?.code === "USER_BLOCKED") {
             window.location.href = '/userBlockNotice';
             return Promise.reject(error);
         }
@@ -41,7 +47,7 @@ instance.interceptors.response.use(
                     {},
                     { withCredentials: true }
                 );
-                console.log('this is the refreshResponse',refreshResponse)
+                console.log('this is the refreshResponse', refreshResponse)
                 const newAccessToken = refreshResponse.data.newAccessToken;
 
                 store.dispatch(addToken(newAccessToken));

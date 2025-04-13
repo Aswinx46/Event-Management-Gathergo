@@ -1,26 +1,27 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { Search} from "lucide-react"
+import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Pagination from "@/components/other components/Pagination"
-import { useFetchClientAdminQuery } from "@/hooks/AdminCustomHooks"
+import { useBlockClient, useFetchClientAdminQuery, useUnblockClient } from "@/hooks/AdminCustomHooks"
 import Table from "@/components/other components/Table"
 import EmptyTableMessage from "@/components/other components/NoUserAvailable"
+import { toast } from "react-toastify"
+import { useQueryClient } from "@tanstack/react-query"
 // Define the provider type
 
 export default function EventProvidersPanel() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState<number>(1)
 
   const fetchClient = useFetchClientAdminQuery(currentPage)
-  useEffect(() => {
-    setTotalPages(fetchClient?.data?.totalPages)
-  }, [fetchClient?.data?.totalPages])
+  const totalPages = fetchClient?.data?.totalPages
+  const blockClient = useBlockClient()
+  const unblockClient = useUnblockClient()
 
-
+  const queryClient = useQueryClient()
 
   console.log(fetchClient.data)
   // if (fetchClient.isLoading) {
@@ -35,8 +36,30 @@ export default function EventProvidersPanel() {
 
 
 
-  const handleBlockAndUnblock = (id: string) => {
-    console.log(id)
+  const handleBlockAndUnblock = ({ userId, userStatus }: { userId: string, userStatus: string }) => {
+    console.log(userId)
+    console.log(userStatus)
+    if (userStatus == 'active') {
+      blockClient.mutate(userId, {
+        onSuccess: (data) => {
+          toast.success(data.message)
+          queryClient.invalidateQueries({ queryKey: ['clients', currentPage] })
+        },
+        onError: (err) => {
+          toast.error(err.message)
+        }
+      })
+    } else if (userStatus == 'block') {
+      unblockClient.mutate(userId, {
+        onSuccess: (data) => {
+          toast.success(data.message)
+          queryClient.invalidateQueries({ queryKey: ['clients', currentPage] })
+        },
+        onError: (err) => {
+          toast.error(err.message)
+        }
+      })
+    }
   }
 
   return (

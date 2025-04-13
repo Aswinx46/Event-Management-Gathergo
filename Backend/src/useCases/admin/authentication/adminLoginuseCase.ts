@@ -1,7 +1,8 @@
-import { clientEntity } from "../../domain/entities/clientEntity";
-import { IadminRepository } from "../../domain/interface/repositoryInterfaces/admin/IadminDatabaseRepoInterface";
-import { IadminLoginUseCase } from "../../domain/interface/useCaseInterfaces/admin/adminLoginUseCaseInterface";
-import { hashPassword } from "../../framerwork/hashPassword/hashpassword";
+import { clientEntity } from "../../../domain/entities/clientEntity"
+import { IadminRepository } from "../../../domain/interface/repositoryInterfaces/admin/IadminDatabaseRepoInterface"
+import { IadminLoginUseCase } from "../../../domain/interface/useCaseInterfaces/admin/adminLoginUseCaseInterface"
+import { hashPassword } from "../../../framerwork/hashPassword/hashpassword"
+
 
 
 export class AdminLoginUseCase implements IadminLoginUseCase {

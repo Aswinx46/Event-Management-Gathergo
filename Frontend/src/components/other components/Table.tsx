@@ -46,7 +46,7 @@ interface Vendor {
 
 interface Table {
     data: Client[] | Vendor[],
-    blockAndUnblock: (id: string) => void
+    blockAndUnblock: ({ userId, userStatus }: { userId: string, userStatus: string }) => void
 }
 
 export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
@@ -123,23 +123,23 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
                                 initial="hidden"
                                 animate="visible"
                                 exit="exit"
-                                onClick={() => handleDetailedView(user)}
+
                                 className="border-t border-gray-200 dark:border-gray-700"
                                 whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
                             >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
+                                <td onClick={() => handleDetailedView(user)} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
                                     {"vendorId" in user ? user.vendorId : (user as Client).clientId}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                <td onClick={() => handleDetailedView(user)} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                     {user.name}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td onClick={() => handleDetailedView(user)} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {user.email}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td onClick={() => handleDetailedView(user)} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {user.phone}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <td onClick={() => handleDetailedView(user)} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     <div className="flex items-center">
 
                                         <img src={user.profileImage} className="ml-2 w-8 h-8 rounded-full object-cover" />
@@ -149,8 +149,8 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
-                                        onClick={() => blockAndUnblock(user._id)}
-                                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === "active"
+                                        onClick={() => blockAndUnblock({ userId: user._id, userStatus: user.status! })}
+                                        className={`inline-flex hover:cursor-pointer items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === "active"
                                             ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
                                             : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
                                             }`}

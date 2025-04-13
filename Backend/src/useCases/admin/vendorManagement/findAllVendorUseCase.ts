@@ -1,6 +1,7 @@
-import { VendorEntity } from "../../domain/entities/vendorEntity";
-import { IvendorDatabaseRepositoryInterface } from "../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
-import { IfindAllVendorUsecase } from "../../domain/interface/useCaseInterfaces/admin/showAllVendorUseCase";
+import { VendorEntity } from "../../../domain/entities/vendorEntity";
+import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
+import { IfindAllVendorUsecase } from "../../../domain/interface/useCaseInterfaces/admin/showAllVendorUseCase";
+
 
 export class FindAllVendorUsecase implements IfindAllVendorUsecase {
     private vendorDatabase: IvendorDatabaseRepositoryInterface

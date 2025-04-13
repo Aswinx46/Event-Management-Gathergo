@@ -1,6 +1,7 @@
-import { clientEntity } from "../../domain/entities/clientEntity";
-import { IClientDatabaseRepository } from "../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
-import { IfindAllClientUseCase } from "../../domain/interface/useCaseInterfaces/admin/findAllClientUseCaseInterface";
+import { clientEntity } from "../../../domain/entities/clientEntity";
+import { IClientDatabaseRepository } from "../../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
+import { IfindAllClientUseCase } from "../../../domain/interface/useCaseInterfaces/admin/findAllClientUseCaseInterface";
+
 
 export class FindAllClientUseCase implements IfindAllClientUseCase {
     private clientDatabase: IClientDatabaseRepository

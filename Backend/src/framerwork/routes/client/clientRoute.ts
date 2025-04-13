@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedClientStatusCheckingMiddleware, injectedCreateBookingController, injectedFindAllClientController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
-import { injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
+import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
 
@@ -44,14 +44,14 @@ export class clientRoute {
         this.clientRoute.get('/services', (req: Request, res: Response) => {
             injectedFindServiceForClientController.handleFindServiceForClient(req, res)
         })
-        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), (req: Request, res: Response) => {
+        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
 
             injectedCreateBookingController.handleCreateBooking(req, res)
         })
         this.clientRoute.get('/showClientWithVendor/:serviceId', (req: Request, res: Response) => {
             injectedShowServiceWithVendorCController.handleShowServiceWithVendor(req, res)
         })
-        this.clientRoute.get('/showBookings/:clientId/:pageNo', (req: Request, res: Response) => {
+        this.clientRoute.get('/showBookings/:clientId/:pageNo',injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedShowBookingInClientController.handleShowBookingsInClient(req, res)
         })
         this.clientRoute.post('/logout', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {

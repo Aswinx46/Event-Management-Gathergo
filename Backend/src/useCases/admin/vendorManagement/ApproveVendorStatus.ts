@@ -1,6 +1,6 @@
-import { VendorEntity } from "../../domain/entities/vendorEntity";
-import { IvendorDatabaseRepositoryInterface } from "../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
-import { IapproveVendorStatusUsecase } from "../../domain/interface/useCaseInterfaces/admin/approveVendorStatus";
+import { VendorEntity } from "../../../domain/entities/vendorEntity"
+import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository"
+import { IapproveVendorStatusUsecase } from "../../../domain/interface/useCaseInterfaces/admin/approveVendorStatus"
 
 enum VendorStatus {
     Approved = 'approved',

@@ -47,4 +47,12 @@ export class clientRepository implements IClientDatabaseRepository {
         if (!client) throw new Error('No clint found in this ID')
         return client.status!
     }
+    async blockUser(clientId: string): Promise<string | null> {
+        const blockedUser = await ClientModel.findByIdAndUpdate(clientId, { status: 'block' }, { new: true }).select('status')
+        return blockedUser?.status || null
+    }
+    async unblockUser(clientId: string): Promise<string | null> {
+        const unblockUser = await ClientModel.findByIdAndUpdate(clientId, { status: 'active' }, { new: true }).select('status')
+        return unblockUser?.status || null
+    }
 }

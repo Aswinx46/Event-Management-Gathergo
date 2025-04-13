@@ -20,7 +20,7 @@ export class RefreshTokenUseCase implements IrefreshTokenUseCase {
             this.vendorRepository = vendorRepository
     }
     async execute(token: string): Promise<string> {
-        const payload =  this.jwtService.verifyRefreshToken(token, process.env.REFRESHTOKEN_SECRET_KEY as string)
+        const payload = this.jwtService.verifyRefreshToken(token, process.env.REFRESHTOKEN_SECRET_KEY as string)
         if (!payload) throw new Error('Invalid or Expired Refresh Token')
         const userId = payload.userId
         const client = await this.clientRepository.findById(userId)
@@ -32,11 +32,11 @@ export class RefreshTokenUseCase implements IrefreshTokenUseCase {
 
         if (!user || !role) throw new Error('User Not Found')
 
-        if (user.status == 'block') throw new Error('User Blocked')
-        const newAccessToken =  this.jwtService.createAccessToken(process.env.ACCESSTOKEN_SECRET_KEY as string,
+        // if (user.status == 'block') throw new Error('User Blocked')
+        const newAccessToken = this.jwtService.createAccessToken(process.env.ACCESSTOKEN_SECRET_KEY as string,
             userId,
             role)
 
-            return newAccessToken
+        return newAccessToken
     }
 }

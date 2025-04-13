@@ -8,8 +8,6 @@ import { LoginClientUseCase } from "../../useCases/client/authentication/loginCl
 import { ClientLoginController } from "../../adapters/controllers/client/authentication/clientLoginController.";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from '../services/redisService'
-import { FindAllClientUseCase } from "../../useCases/admin/findAllClientUseCase";
-import { FindAllClientsController } from "../../adapters/controllers/admin/findAllClientsController";
 import { GoogleLoginClientUseCase } from "../../useCases/client/authentication/googleLoginClientUseCase";
 import { GoogleLoginClient } from "../../adapters/controllers/client/authentication/clientGoogleLogin";
 import { SendOtpForForgetPassword } from "../../useCases/client/authentication/sendOtpForForgetPassword";
@@ -48,7 +46,7 @@ import { UpdateProfileClientController } from "../../adapters/controllers/client
 import { ChangePasswordClientUseCase } from "../../useCases/client/profile/changePasswordClientUseCase";
 import { hashPassword } from "../hashPassword/hashpassword";
 import { ChangePasswordClientController } from "../../adapters/controllers/client/profile/changePasswordClientController";
-import { clientStatusCheckingMiddleware } from "../../adapters/middlewares/Client/ClientBlockCheckingMiddleware";
+
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -66,9 +64,7 @@ const redisService = new RedisService()
 const loginClientUseCase = new LoginClientUseCase(ClientRepository)
 export const injectedClientLoginController = new ClientLoginController(loginClientUseCase, jwtService, redisService)
 
-//------------------------------Find all Clients-----------------------
-const findAllClientUseCase = new FindAllClientUseCase(ClientRepository)
-export const injectedFindAllClientController = new FindAllClientsController(findAllClientUseCase)
+
 
 //-----------------------------google login-------------------------
 const googleLoginClientUseCase = new GoogleLoginClientUseCase(ClientRepository)
@@ -139,4 +135,4 @@ const HashPassword = new hashPassword()
 const changeClientPasswordUseCase = new ChangePasswordClientUseCase(ClientRepository, HashPassword)
 export const injectedChangeClientPasswordController = new ChangePasswordClientController(changeClientPasswordUseCase)
 
-export const injectedClientStatusCheckingMiddleware = clientStatusCheckingMiddleware(redisService, ClientRepository)
+

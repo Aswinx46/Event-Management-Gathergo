@@ -1,6 +1,7 @@
-import { VendorEntity } from "../../domain/entities/vendorEntity";
-import { IvendorDatabaseRepositoryInterface } from "../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
-import { IfindAllRejectedVendor } from "../../domain/interface/useCaseInterfaces/admin/findAllRejectedVendorsUseCaseInterface";
+import { VendorEntity } from "../../../domain/entities/vendorEntity";
+import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
+import { IfindAllRejectedVendor } from "../../../domain/interface/useCaseInterfaces/admin/findAllRejectedVendorsUseCaseInterface";
+
 
 export class FindAllRejectedVendorUseCase implements IfindAllRejectedVendor {
     private vendorDatabase: IvendorDatabaseRepositoryInterface

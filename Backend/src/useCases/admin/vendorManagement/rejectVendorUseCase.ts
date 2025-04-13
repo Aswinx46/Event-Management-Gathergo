@@ -1,6 +1,7 @@
-import { VendorEntity } from "../../domain/entities/vendorEntity";
-import { IvendorDatabaseRepositoryInterface } from "../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
-import { IrejectVendorUseCase } from "../../domain/interface/useCaseInterfaces/admin/rejectVendorUseCaseInterface";
+import { VendorEntity } from "../../../domain/entities/vendorEntity"
+import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository"
+import { IrejectVendorUseCase } from "../../../domain/interface/useCaseInterfaces/admin/rejectVendorUseCaseInterface"
+
 
 export class RejectVendorUseCase implements IrejectVendorUseCase {
     private vendorDatabase: IvendorDatabaseRepositoryInterface

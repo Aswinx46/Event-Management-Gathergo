@@ -1,6 +1,7 @@
-import { VendorEntity } from "../../domain/entities/vendorEntity";
-import { IvendorDatabaseRepositoryInterface } from "../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
-import { IfindPendingVendors } from "../../domain/interface/useCaseInterfaces/admin/findPendingVendors";
+import { VendorEntity } from "../../../domain/entities/vendorEntity";
+import { IvendorDatabaseRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/vendor/vendorDatabaseRepository";
+import { IfindPendingVendors } from "../../../domain/interface/useCaseInterfaces/admin/findPendingVendors";
+
 
 export class findAllPendingVendors implements IfindPendingVendors {
     private vendorDatabase: IvendorDatabaseRepositoryInterface

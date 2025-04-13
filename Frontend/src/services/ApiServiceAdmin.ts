@@ -136,3 +136,25 @@ export const changeStatusCategory = async (categoryId: string) => {
         throw new Error('error while changing the status of the category')
     }
 }
+
+export const blockClient = async (clientId: string) => {
+    try {
+        const response = await axios.patch('/blockClient', { clientId })
+        return response.data
+    } catch (error) {
+        console.log('error while blocking user', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while blocking user')
+    }
+}
+
+export const unblockClient = async (clientId: string) => {
+    try {
+        const response = await axios.patch('/unblockClient', { clientId })
+        return response.data
+    } catch (error) {
+        console.log('error while unblocking client', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while unblocking client')
+    }
+}
