@@ -12,4 +12,5 @@ export interface IClientDatabaseRepository {
     updateProfile(client: ClientUpdateProfileEntity): Promise<clientEntity | null>
     findPassword(clientId: string): Promise<string | null>
     changePassword(clientId: string, password: string): Promise<clientEntity | null>
+    findStatusForMiddleware(clientId:string):Promise<string>
 }

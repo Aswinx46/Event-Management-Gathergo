@@ -42,4 +42,9 @@ export class clientRepository implements IClientDatabaseRepository {
     async changePassword(clientId: string, password: string): Promise<clientEntity | null> {
         return await ClientModel.findByIdAndUpdate(clientId, { password }, { new: true })
     }
+    async findStatusForMiddleware(clientId: string): Promise<string> {
+        const client = await ClientModel.findById(clientId).select('status')
+        if (!client) throw new Error('No clint found in this ID')
+        return client.status!
+    }
 }

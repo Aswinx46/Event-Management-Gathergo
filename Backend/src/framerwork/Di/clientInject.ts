@@ -48,6 +48,7 @@ import { UpdateProfileClientController } from "../../adapters/controllers/client
 import { ChangePasswordClientUseCase } from "../../useCases/client/profile/changePasswordClientUseCase";
 import { hashPassword } from "../hashPassword/hashpassword";
 import { ChangePasswordClientController } from "../../adapters/controllers/client/profile/changePasswordClientController";
+import { clientStatusCheckingMiddleware } from "../../adapters/middlewares/Client/ClientBlockCheckingMiddleware";
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -71,7 +72,7 @@ export const injectedFindAllClientController = new FindAllClientsController(find
 
 //-----------------------------google login-------------------------
 const googleLoginClientUseCase = new GoogleLoginClientUseCase(ClientRepository)
-export const injectedGoogleLogincontroller = new GoogleLoginClient(googleLoginClientUseCase, jwtService,redisService)
+export const injectedGoogleLogincontroller = new GoogleLoginClient(googleLoginClientUseCase, jwtService, redisService)
 
 //------------------------------send otp for forget password-------------------
 const sendOtpForForgetPasswordUseCase = new SendOtpForForgetPassword(EmailService, otpService, ClientRepository)
@@ -137,3 +138,5 @@ export const injectedUpdateProfileClientController = new UpdateProfileClientCont
 const HashPassword = new hashPassword()
 const changeClientPasswordUseCase = new ChangePasswordClientUseCase(ClientRepository, HashPassword)
 export const injectedChangeClientPasswordController = new ChangePasswordClientController(changeClientPasswordUseCase)
+
+export const injectedClientStatusCheckingMiddleware = clientStatusCheckingMiddleware(redisService, ClientRepository)

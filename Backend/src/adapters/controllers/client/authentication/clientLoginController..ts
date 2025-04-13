@@ -30,7 +30,6 @@ export class ClientLoginController implements IloginClientControllerInterface {
             const refreshToken = this.jwtService.createRefreshToken(REFRESHTOKEN_SECRET_KEY, client._id?.toString() || "")
             await this.redisService.set(`user:${client.role}:${client._id}`, 15 * 60, JSON.stringify(client.status))
             setCookie(res, refreshToken)
-            // const valueFromRedis = await this.redisService.get(`user:${client.role}:${client._id}`)
             const selectedFields = {
                 clientId: client.clientId,
                 email: client.email,
