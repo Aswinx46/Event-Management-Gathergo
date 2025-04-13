@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
 import { useFindAllCategoryForListing, useFindServiceForclient, useFindServiceOnCategoryBasis } from '@/hooks/ClientCustomHooks';
 import Pagination from '@/components/other components/Pagination';
-import { Loader2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FilterComponent from '@/components/other components/Filter';
 
@@ -30,13 +29,13 @@ interface Service {
 const ServicesList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
-    const { data: fetchedData, isLoading: isLoadingAll, error: errorAll } = useFindServiceForclient(currentPage);
+    const { data: fetchedData, error: errorAll } = useFindServiceForclient(currentPage);
 
     const findCategory = useFindAllCategoryForListing(1)
     const { categoryId, title } = useParams()
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId ?? null);
     const [selecteCategoryTitle, setSelectedCategoryTitle] = useState<string | null>(title ?? null)
-    const { data: servicesWithCategory, isLoading: isLoadingCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, { enabled: !!selectedCategoryId })
+    const { data: servicesWithCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, { enabled: !!selectedCategoryId })
 
     const categories = findCategory.data?.categories
 
@@ -58,13 +57,13 @@ const ServicesList: React.FC = () => {
 
     const navigate = useNavigate()
 
-    if (isLoadingAll || isLoadingCategory) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
-            </div>
-        );
-    }
+    // if (isLoadingAll || isLoadingCategory) {
+    //     return (
+    //         <div className="min-h-screen flex items-center justify-center">
+    //             <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+    //         </div>
+    //     );
+    // }
 
     if (errorAll || errorCategory) {
         return (
@@ -82,7 +81,6 @@ const ServicesList: React.FC = () => {
     }
 
     const handleSelectItem = (item: FilterItem) => {
-        console.log(item)
         setSelectedCategoryId(item._id)
         setSelectedCategoryTitle(item.title)
     }

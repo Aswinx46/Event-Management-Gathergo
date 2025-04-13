@@ -3,82 +3,119 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useClientLogout } from '@/hooks/ClientCustomHooks';
+import { removeClient } from '@/store/slices/user/userSlice';
+import { removeToken } from '@/store/slices/user/userTokenSlice';
 
-const navItems = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Services', path: '/services' },
-  { name: 'Profile', path: '/profile/home' },
-  { name: 'Categories', path: '/categories' },
-];
+type NavItem =
+  | { name: string; path: string; onClick?: never }
+  | { name: string; onClick: () => void; path?: never };
+
+// Variants for the mobile menu
+const menuVariants = {
+  closed: {
+    opacity: 0,
+    height: 0,
+    transition: {
+      duration: 0.3,
+      staggerChildren: 0.05,
+      staggerDirection: -1
+    }
+  },
+  open: {
+    opacity: 1,
+    height: 'auto',
+    transition: {
+      duration: 0.4,
+      staggerChildren: 0.1,
+      staggerDirection: 1
+    }
+  }
+};
+
+// Variants for individual nav items
+const itemVariants = {
+  closed: { opacity: 0, y: -10 },
+  open: { opacity: 1, y: 0 }
+};
+
+// Hamburger button animation variants
+const topBarVariants = {
+  closed: { rotate: 0, translateY: 0 },
+  open: { rotate: 45, translateY: 6 }
+};
+
+const middleBarVariants = {
+  closed: { opacity: 1 },
+  open: { opacity: 0 }
+};
+
+const bottomBarVariants = {
+  closed: { rotate: 0, translateY: 0 },
+  open: { rotate: -45, translateY: -6 }
+};
+
+// Logo animation variants
+const logoVariants = {
+  initial: { opacity: 0, y: -20 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+};
+
 
 const Header = () => {
+
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-
+  const client = useSelector((state: RootState) => state.clientSlice.client)
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  // Variants for the mobile menu
-  const menuVariants = {
-    closed: {
-      opacity: 0,
-      height: 0,
-      transition: {
-        duration: 0.3,
-        staggerChildren: 0.05,
-        staggerDirection: -1
+  const clientLogout = useClientLogout()
+  const dispatch = useDispatch()
+
+  const navItems: NavItem[] = [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Services', path: '/services' },
+    { name: 'Profile', path: '/profile/home' },
+    { name: 'Categories', path: '/categories' },
+
+  ];
+
+  if (client) {
+    navItems.push({
+      name: 'logout',
+      onClick: () => {
+        console.log('user logged out')
+        clientLogout.mutate(undefined, {
+          onSuccess: () => {
+            dispatch(removeClient(null))
+            dispatch(removeToken(null))
+            localStorage.removeItem('id')
+          }
+        })
+
       }
-    },
-    open: {
-      opacity: 1,
-      height: 'auto',
-      transition: {
-        duration: 0.4,
-        staggerChildren: 0.1,
-        staggerDirection: 1
-      }
-    }
-  };
-
-  // Variants for individual nav items
-  const itemVariants = {
-    closed: { opacity: 0, y: -10 },
-    open: { opacity: 1, y: 0 }
-  };
-
-  // Hamburger button animation variants
-  const topBarVariants = {
-    closed: { rotate: 0, translateY: 0 },
-    open: { rotate: 45, translateY: 6 }
-  };
-
-  const middleBarVariants = {
-    closed: { opacity: 1 },
-    open: { opacity: 0 }
-  };
-
-  const bottomBarVariants = {
-    closed: { rotate: 0, translateY: 0 },
-    open: { rotate: -45, translateY: -6 }
-  };
-
-  // Logo animation variants
-  const logoVariants = {
-    initial: { opacity: 0, y: -20 },
-    animate: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: "easeOut" } 
-    }
-  };
+    })
+  } else {
+    navItems.push({
+      name: 'Login',
+      path: '/login'
+    })
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-black text-white shadow-lg">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <motion.div 
-            className="flex items-center" 
+          <motion.div
+            className="flex items-center"
             initial="initial"
             animate="animate"
             variants={logoVariants}
@@ -98,12 +135,21 @@ const Header = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                 >
-                  <Link 
-                    to={item.path} 
-                    className="nav-link font-medium hover:text-cyan-400 transition-colors duration-300"
-                  >
-                    {item.name}
-                  </Link>
+                  {item.path ? (
+                    <Link
+                      to={item.path}
+                      className="nav-link font-medium hover:text-cyan-400 transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={item.onClick}
+                      className="nav-link font-medium hover:text-cyan-400 hover:cursor-pointer transition-colors duration-300"
+                    >
+                      {item.name}
+                    </button>
+                  )}
                 </motion.div>
               ))}
             </nav>
@@ -155,20 +201,27 @@ const Header = () => {
                     variants={itemVariants}
                     className="px-4"
                   >
-                    <Link
-                      to={item.path}
-                      className="block py-2 font-medium hover:text-cyan-400 transition-colors duration-300"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
+                    {item.path ? (
+                      <Link
+                        to={item.path}
+                        className="nav-link font-medium hover:text-cyan-400 transition-colors duration-300"
+                      >
+                        {item.name}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={item.onClick}
+                        className="nav-link font-medium hover:text-cyan-400 hover:cursor-pointer transition-colors duration-300"
+                      >
+                        {item.name}
+                      </button>
+                    )}
                   </motion.div>
                 ))}
               </nav>
             </motion.div>
           )}
         </AnimatePresence>
-        
       </div>
     </header>
   );
