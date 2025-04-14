@@ -3,6 +3,7 @@ import { checkAdminState } from "../../adapters/middlewares/checkAdmin";
 import { clientStatusCheckingMiddleware } from "../../adapters/middlewares/Client/ClientBlockCheckingMiddleware";
 import { tokenTimeExpiryValidationMiddleware } from "../../adapters/middlewares/tokenTimeExpiryMiddleWare";
 import { verifyTokenAndCheckBlackList } from "../../adapters/middlewares/tokenValidationMiddleWare";
+import { vendorStatusCheckingMiddleware } from "../../adapters/middlewares/vendor/vendorStatusCheckingMiddlleware";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
@@ -31,3 +32,6 @@ export const checkAdminMiddleWare = checkAdminState(jwtService, redisService, ad
 //-------------------------------Clilent status checking middleware
 const ClientRepository = new clientRepository()
 export const injectedClientStatusCheckingMiddleware = clientStatusCheckingMiddleware(redisService, ClientRepository)
+
+//-------------------------------Vendor status checking middleware-------------------
+export const injectedVendorStatusCheckingMiddleware = vendorStatusCheckingMiddleware(redisService, vendorDatabase)

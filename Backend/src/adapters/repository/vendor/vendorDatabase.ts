@@ -67,4 +67,9 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         const unblockVendor = await VendorModel.findByIdAndUpdate(vendorId, { status: 'active' }).select('status')
         return unblockVendor?.status || null
     }
+    async findStatusForMiddleware(vendorId: string): Promise<{ status: string, vendorStatus: string } | null> {
+        const status = await VendorModel.findById(vendorId).select('status vendorStatus')
+        if (!status) return null
+        return { status: status?.status!, vendorStatus: status?.vendorStatus }
+    }
 }

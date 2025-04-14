@@ -24,13 +24,26 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
     _retry?: boolean
 }
 
+interface CustomErrorResponse {
+    code?: string;
+    message?: string;
+    // [key: string]: any;
+}
+
 instance.interceptors.response.use(
-    respone  => respone ,
+    respone => respone,
     async (error: AxiosError) => {
         const originalRequest = error.config as CustomAxiosRequestConfig
-        if (error.response?.status == 423) {
-            window.location.href = '/userBlockNotice'
-            return Promise.reject(error)
+        const data = error.response?.data as CustomErrorResponse;
+
+        if (error.response?.status === 403 && data?.code === "USER_BLOCKED") {
+            window.location.href = '/vendor/userBlockNotice';
+            return Promise.reject(error);
+        }
+
+        if (error.response?.status === 403 && data?.code === "NOT_APPROVED") {
+            window.location.href = '/vendor/userBlockNotice';
+            return Promise.reject(error);
         }
 
         if (error.response?.status == 401 && !originalRequest._retry) {

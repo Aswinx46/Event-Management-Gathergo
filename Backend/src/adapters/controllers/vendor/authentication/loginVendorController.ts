@@ -36,7 +36,7 @@ export class LoginVendorController {
             const accessToken = await this.jwtService.createAccessToken(accessTokenSecretKey, vendor._id?.toString() || '', vendor.role)
             const refreshToken = await this.jwtService.createRefreshToken(refreshTokenSecretKey, vendor._id?.toString() || '')
             setCookie(res, refreshToken)
-            await this.redisService.set(`user${vendor.role}:${vendor._id}`, 15 * 60, JSON.stringify({ status: vendor.status, vendorStatus: vendor.vendorStatus }))
+            await this.redisService.set(`user:${vendor.role}:${vendor._id}`, 15 * 60, JSON.stringify({ status: vendor.status, vendorStatus: vendor.vendorStatus }))
             const valueFromRedis = await this.redisService.get(`user:${vendor.role}:${vendor._id}`)
             console.log('value from redis', valueFromRedis)
             res.status(HttpStatus.OK).json({ message: "vendor logined", vendor: modifiendVendor, accessToken })

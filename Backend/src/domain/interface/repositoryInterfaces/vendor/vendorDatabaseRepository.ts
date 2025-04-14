@@ -14,4 +14,5 @@ export interface IvendorDatabaseRepositoryInterface {
     findVendorsForCarousal(): Promise<VendorEntity[] | []>
     blockVendor(vendorId: string): Promise<string | null>
     unblockVendor(vendorId: string): Promise<string | null>
+    findStatusForMiddleware(vendorId: string): Promise<{ status: string, vendorStatus: string } | null>
 }

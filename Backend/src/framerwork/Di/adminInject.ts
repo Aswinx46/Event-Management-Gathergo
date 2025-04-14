@@ -91,8 +91,8 @@ export const injectedClientUnblockController = new ClientUnblockController(unblo
 
 //----------------------------block vendor-------------------------
 const blockVendorUsecase = new VendorBlockUseCase(vendorDataBase)
-export const injectedVendorBlockController = new VendorBlockController(blockVendorUsecase)
+export const injectedVendorBlockController = new VendorBlockController(blockVendorUsecase,redisService)
 
 //--------------------------unblock vendor------------------
 const unblockVendorUseCase = new VendorUnblockUseCase(vendorDataBase)
-export const injectedVendorUnblockController = new VendorUnblockController(unblockVendorUseCase)
+export const injectedVendorUnblockController = new VendorUnblockController(unblockVendorUseCase,redisService)
