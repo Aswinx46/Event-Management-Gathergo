@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedAdminLoginController, injectedApproveVendorStatus, injectedBlockClientController, InjectedChangeStatusCategoryController, injectedClientUnblockController, injectedCreateCategoryController, injectedFindAllCategoryController, injectedFindAllPendingVendorController, injectedFindAllRejectedVendorController, injectedFindAllVendorController, injectedRejectVendorController } from "../../Di/adminInject";
+import { injectedAdminLoginController, injectedApproveVendorStatus, injectedBlockClientController, InjectedChangeStatusCategoryController, injectedClientUnblockController, injectedCreateCategoryController, injectedFindAllCategoryController, injectedFindAllPendingVendorController, injectedFindAllRejectedVendorController, injectedFindAllVendorController, injectedRejectVendorController, injectedVendorBlockController, injectedVendorUnblockController } from "../../Di/adminInject";
 import { injectedFindAllClientController } from "../../Di/adminInject";
 import { checkAdminMiddleWare, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 
@@ -45,6 +45,12 @@ export class AdminRoute {
         })
         this.adminRoute.patch('/unblockClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkAdminMiddleWare, (req: Request, res: Response) => {
             injectedClientUnblockController.handleClientUnblock(req, res)
+        })
+        this.adminRoute.patch('/blockVendor', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkAdminMiddleWare, (req: Request, res: Response) => {
+            injectedVendorBlockController.handleVendorBlock(req, res)
+        })
+        this.adminRoute.patch('/unblockVendor', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkAdminMiddleWare, (req: Request, res: Response) => {
+            injectedVendorUnblockController.handleVendorUnblock(req, res)
         })
     }
 }

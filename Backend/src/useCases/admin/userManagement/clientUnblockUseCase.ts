@@ -1,5 +1,5 @@
 import { IClientDatabaseRepository } from "../../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
-import { IclientUnblockUseCase } from "../../../domain/interface/useCaseInterfaces/client/authentication/clientUnblockUseCaseInterface";
+import { IclientUnblockUseCase } from "../../../domain/interface/useCaseInterfaces/admin/clientManagement/clientUnblockUseCaseInterface";
 
 export class ClientUnblockUseCase implements IclientUnblockUseCase {
     private cilentDatabase: IClientDatabaseRepository

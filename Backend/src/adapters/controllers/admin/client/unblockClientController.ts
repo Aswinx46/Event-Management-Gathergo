@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IclientUnblockUseCase } from "../../../../domain/interface/useCaseInterfaces/client/authentication/clientUnblockUseCaseInterface";
+import { IclientUnblockUseCase } from "../../../../domain/interface/useCaseInterfaces/admin/clientManagement/clientUnblockUseCaseInterface";
 import { HttpStatus } from "../../../../domain/entities/httpStatus";
 import { IredisService } from "../../../../domain/interface/serviceInterface/IredisService";
 

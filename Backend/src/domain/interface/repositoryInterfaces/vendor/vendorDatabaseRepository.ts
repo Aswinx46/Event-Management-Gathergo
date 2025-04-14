@@ -12,4 +12,6 @@ export interface IvendorDatabaseRepositoryInterface {
     forgetPassword(email: string, newPassword: string): Promise<VendorEntity | null>
     updateProfileImage(id: string, imageUrl: string): Promise<VendorEntity | null>
     findVendorsForCarousal(): Promise<VendorEntity[] | []>
+    blockVendor(vendorId: string): Promise<string | null>
+    unblockVendor(vendorId: string): Promise<string | null>
 }

@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '@/components/other components/Pagination';
-import { useFetchVendorAdminQuery } from '@/hooks/AdminCustomHooks';
+import { useBlockVendor, useFetchVendorAdminQuery, useUnblockVendor } from '@/hooks/AdminCustomHooks';
 import { Table } from '@/components/other components/Table';
+import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 interface Vendor {
   _id: string;
   vendorId: string;
@@ -35,6 +37,8 @@ const EventProviders: React.FC = () => {
     setTotalPage(fetchVendor?.data?.totalPages)
   }, [currentPage, fetchVendor.data])
 
+
+
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filter vendors based on search term
@@ -50,13 +54,38 @@ const EventProviders: React.FC = () => {
 
 
   const navigate = useNavigate()
-
+  const blockVendor = useBlockVendor()
+  const unblockVendor = useUnblockVendor()
+  const queryClient = useQueryClient()
   const handleNavigateToPendingVendor = () => {
     navigate('/admin/pendingVendors')
   }
 
-  const blockAndUnblock = () => {
-
+  const blockAndUnblock = ({ userId, userStatus }: { userId: string, userStatus: string }) => {
+    console.log(userId)
+    console.log(userStatus)
+    if (userStatus == 'active') {
+      blockVendor.mutate(userId, {
+        onSuccess: (data) => {
+          toast.success(data.message)
+          queryClient.invalidateQueries({ queryKey: ['vendors', currentPage] })
+        },
+        onError: (err) => {
+          toast.error(err.message)
+        }
+      })
+    } else if (userStatus == 'block') {
+      unblockVendor.mutate(userId,{
+        onSuccess:(data)=>{
+          toast.success(data.message)
+          queryClient.invalidateQueries({ queryKey: ['vendors', currentPage] })
+        },
+        onError:(err)=>{
+          toast.error(err.message)
+          
+        }
+      })
+    }
   }
 
   return (
@@ -106,7 +135,7 @@ const EventProviders: React.FC = () => {
         <motion.button
           variants={buttonVariants}
           whileHover="hover"
-          onClick={()=>navigate('/admin/rejectedVendors')}
+          onClick={() => navigate('/admin/rejectedVendors')}
           whileTap="tap"
           className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900"
         >

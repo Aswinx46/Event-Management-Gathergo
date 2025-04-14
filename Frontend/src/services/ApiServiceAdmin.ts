@@ -158,3 +158,25 @@ export const unblockClient = async (clientId: string) => {
         throw new Error('error while unblocking client')
     }
 }
+
+export const blockVendor = async (vendorId: string) => {
+    try {
+        const response = await axios.patch('/blockVendor', { vendorId })
+        return response.data
+    } catch (error) {
+        console.log('error while blocking vendor', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while blocking vendor')
+    }
+}
+
+export const unblockVendor = async (vendorId: string) => {
+    try {
+        const response = await axios.patch('/unblockVendor', { vendorId })
+        return response.data
+    } catch (error) {
+        console.log('error while unblocking vendor', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while unblocking vendor')
+    }
+}

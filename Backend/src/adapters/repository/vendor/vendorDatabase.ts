@@ -59,4 +59,12 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
     async findVendorsForCarousal(): Promise<VendorEntity[] | []> {
         return await VendorModel.find({ status: 'active', vendorStatus: 'approved' }).select('name profileImage')
     }
+    async blockVendor(vendorId: string): Promise<string | null> {
+        const blockedVendor = await VendorModel.findByIdAndUpdate(vendorId, { status: 'block' }).select('status')
+        return blockedVendor?.status || null
+    }
+    async unblockVendor(vendorId: string): Promise<string | null> {
+        const unblockVendor = await VendorModel.findByIdAndUpdate(vendorId, { status: 'active' }).select('status')
+        return unblockVendor?.status || null
+    }
 }

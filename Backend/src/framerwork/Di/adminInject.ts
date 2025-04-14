@@ -10,6 +10,8 @@ import { FindAllPendingVendorController } from "../../adapters/controllers/admin
 import { FindAllRejectedController } from "../../adapters/controllers/admin/findAllRejectedVendorController";
 import { FindAllVendorController } from "../../adapters/controllers/admin/findAllVendorController";
 import { RejectVendorControllerAdmin } from "../../adapters/controllers/admin/rejectVendorController";
+import { VendorBlockController } from "../../adapters/controllers/admin/vendorManagement/vendorBlockController";
+import { VendorUnblockController } from "../../adapters/controllers/admin/vendorManagement/vendorUnblockController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
@@ -28,6 +30,8 @@ import { findAllPendingVendors } from "../../useCases/admin/vendorManagement/fin
 import { FindAllRejectedVendorUseCase } from "../../useCases/admin/vendorManagement/findAllRejectedVendorsUseCase";
 import { FindAllVendorUsecase } from "../../useCases/admin/vendorManagement/findAllVendorUseCase";
 import { RejectVendorUseCase } from "../../useCases/admin/vendorManagement/rejectVendorUseCase";
+import { VendorBlockUseCase } from "../../useCases/admin/vendorManagement/vendorBlockUseCase";
+import { VendorUnblockUseCase } from "../../useCases/admin/vendorManagement/vendorUnblockUseCase";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 
@@ -79,8 +83,16 @@ export const InjectedChangeStatusCategoryController = new ChangeStatusCategoryCo
 
 //-----------------------------block client-----------------------
 const blockClientUseCase = new BlockClientUseCase(ClientRepository)
-export const injectedBlockClientController = new BlockClientController(blockClientUseCase,redisService)
+export const injectedBlockClientController = new BlockClientController(blockClientUseCase, redisService)
 
 //---------------------------- unblock client------------------
 const unblockClientUseCase = new ClientUnblockUseCase(ClientRepository)
-export const injectedClientUnblockController = new ClientUnblockController(unblockClientUseCase,redisService)
+export const injectedClientUnblockController = new ClientUnblockController(unblockClientUseCase, redisService)
+
+//----------------------------block vendor-------------------------
+const blockVendorUsecase = new VendorBlockUseCase(vendorDataBase)
+export const injectedVendorBlockController = new VendorBlockController(blockVendorUsecase)
+
+//--------------------------unblock vendor------------------
+const unblockVendorUseCase = new VendorUnblockUseCase(vendorDataBase)
+export const injectedVendorUnblockController = new VendorUnblockController(unblockVendorUseCase)
