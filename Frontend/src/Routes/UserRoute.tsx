@@ -12,6 +12,7 @@ import PasswordChange from "@/components/Client/profile/ChangePassword";
 import ClientHeaderLayout from "@/components/Client/ClientLayout/ClientLayout";
 import ProtectedRouteClient from "@/components/ProtectedRoute/ProtectedRoute";
 import BlockedScreen from "@/components/other components/UserBlockNotice";
+import NotFound from "@/components/other components/NotFound";
 const UserRoute = () => {
     return (
         <Routes>
@@ -19,6 +20,7 @@ const UserRoute = () => {
             <Route path="/" element={<Home />}></Route>
             <Route path="/signup" element={<Signup />}></Route>
             <Route path="/login" element={<LoginComponent />}></Route>
+            <Route path="*" element={<NotFound />} />
             <Route path="/userBlockNotice" element={<BlockedScreen />}></Route>
             <Route path="/" element={<ClientHeaderLayout />}>
                 <Route index element={<Home />} />

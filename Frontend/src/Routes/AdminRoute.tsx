@@ -8,10 +8,12 @@ import PendingVendors from "@/components/Admin/vendorManagement/ShowPendingVendo
 import RejectedVendors from "@/components/Admin/vendorManagement/RejectedVendors"
 import CategoryManagement from "@/components/Admin/categoryManagement/CategoryManagement"
 import AdminProtectedRoute from "@/components/Admin/ProtectedRoute/ProtectedRoute"
+import NotFound from "@/components/other components/NotFound"
 const AdminRoute = () => {
     return (
         <Routes>
             <Route path="login" element={<Adminlogin />}></Route>
+            <Route path="*" element={<NotFound/>} />
             <Route path="/" element={<AdminLayout />}>
                 <Route path="dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>}></Route>
                 <Route path="userManagement" element={<AdminProtectedRoute><UserManagement /></AdminProtectedRoute>}></Route>

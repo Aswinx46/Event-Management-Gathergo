@@ -10,6 +10,7 @@ export class GoogleLoginClientUseCase implements IgoogleLoginClientUseCase {
     async googleLogin(client: clientEntity): Promise<clientEntity | null> {
         const exitingUser = await this.clientDatabase.findByEmail(client.email)
         if (exitingUser) {
+            if(exitingUser.status !='active') throw new Error('User Blocked by admin')
             return exitingUser
         } else {
 

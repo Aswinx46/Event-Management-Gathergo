@@ -113,9 +113,8 @@ export default function LoginComponent() {
                         toast.success('Login SuccessFull')
                         navigate('/', { replace: true })
                     },
-                    onError: () => {
-                        toast.success('Login SuccessFull')
-                        navigate('/', { replace: true })
+                    onError: (err) => {
+                        toast.error(err.message)
                     }
                 })
             }

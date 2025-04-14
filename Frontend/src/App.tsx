@@ -14,6 +14,7 @@ function App() {
     <Route path='/*' element={<UserRoute/>}></Route>
     <Route path='/vendor/*' element={<VendorRoute/>}></Route>
     <Route path='/admin/*' element={<AdminRoute/>}></Route>
+    
    </Routes>
    </BrowserRouter>
   )
