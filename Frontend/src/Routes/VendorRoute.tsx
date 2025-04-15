@@ -14,7 +14,7 @@ import AddWorkSample from "@/components/Vendor/workSamples/AddWorkSamples";
 const VendorRoute = () => {
     return (
         <Routes>
-                <Route path="*" element={<NotFound/>} />
+            <Route path="*" element={<NotFound />} />
             <Route path="signup" element={<VendorSignup />}></Route>
             <Route path="login" element={<VendorLogin />}></Route>
             <Route path="/userBlockNotice" element={<BlockedScreen />}></Route>
@@ -23,8 +23,8 @@ const VendorRoute = () => {
                 <Route path="home" element={<ProtectedRouteVendor><VendorDashboard /></ProtectedRouteVendor>}></Route>
                 <Route path="services" element={<ProtectedRouteVendor><ServiceListingVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="bookings" element={<ProtectedRouteVendor><ShowBookingsVendor /></ProtectedRouteVendor>}></Route>
-                <Route path="workSamples" element={<ProtectedRouteVendor><WorkSamples/></ProtectedRouteVendor>}></Route>
-                <Route path="addWorkSamples" element={<ProtectedRouteVendor><AddWorkSample/></ProtectedRouteVendor>}></Route>
+                <Route path="workSamples" element={<ProtectedRouteVendor><WorkSamples /></ProtectedRouteVendor>}></Route>
+                <Route path="addWorkSamples" element={<ProtectedRouteVendor><AddWorkSample /></ProtectedRouteVendor>}></Route>
             </Route>
         </Routes>
     )

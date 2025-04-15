@@ -4,7 +4,7 @@ interface ProtectedRouteProps {
     children: ReactNode;
   }
 function ProtectedRouteVendor({ children }:ProtectedRouteProps) {
-    const id = localStorage.getItem('id')
+    const id = localStorage.getItem('vendorId')
     return (
         id ? children : <Navigate to='/vendor/login' />
     )

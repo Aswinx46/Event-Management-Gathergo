@@ -94,7 +94,6 @@ export default function LoginComponent() {
 
     const googleAuthenticate = (credentialResponse: CredentialResponse) => {
         try {
-            console.log('cliecled')
             if (credentialResponse.credential) {
                 const credential: GoogleAuth = jwtDecode(credentialResponse.credential)
                 console.log(credential)

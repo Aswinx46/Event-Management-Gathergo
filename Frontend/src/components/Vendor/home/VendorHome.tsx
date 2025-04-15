@@ -128,9 +128,10 @@ export default function VendorDashboard() {
 
     vendorLogout.mutate(undefined, {
       onSuccess: () => {
-        navigate('/vendor/login')
+        localStorage.removeItem('vendorId')
         dispatch(removeVendor(null))
         dispatch(removeVendorToken(null))
+        navigate('/vendor/login')
         toast.success('Logout SuccesFull')
       },
       onError: (err) => {

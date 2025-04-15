@@ -38,7 +38,8 @@ export class ClientLoginController implements IloginClientControllerInterface {
                 profileImage: client.profileImage,
                 _id: client._id,
                 role: client.role,
-                status: client.status
+                status: client.status,
+                googleVerified:client.googleVerified
             }
             res.status(HttpStatus.OK).json({ message: "user logged", client: selectedFields, accessToken })
 

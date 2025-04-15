@@ -34,7 +34,8 @@ export class GoogleLoginClient {
                 profileImage: createdClient?.profileImage,
                 _id: createdClient?._id,
                 role: createdClient?.role,
-                status: createdClient?.status
+                status: createdClient?.status,
+                googleVerified:createdClient?.googleVerified
             }
             res.status(HttpStatus.OK).json({ message: 'Google login successFull', client: selectedFields, accessToken })
         } catch (error) {

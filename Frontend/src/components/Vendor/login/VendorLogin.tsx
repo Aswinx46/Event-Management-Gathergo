@@ -33,7 +33,7 @@ export default function VendorLogin() {
             return await axios.post('/login', { email, password })
         },
         onSuccess: (data) => {
-            localStorage.setItem('id', data.data.vendor._id)
+            localStorage.setItem('vendorId', data.data.vendor._id)
             dispatch(addVendorToken(data.data.accessToken))
             dispatch(addVendor(data.data.vendor))
             navigate('/vendor/home')
