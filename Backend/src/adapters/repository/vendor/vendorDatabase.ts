@@ -72,4 +72,7 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         if (!status) return null
         return { status: status?.status!, vendorStatus: status?.vendorStatus }
     }
+    async updateAboutAndPhone(vendorId: string, about: string, phone: string,name:string): Promise<VendorEntity | null> {
+        return await VendorModel.findByIdAndUpdate(vendorId, { aboutVendor: about, phone,name }).select('_id email name phone role status vendorId vendorStatus profileImage aboutVendor role')
+    }
 }

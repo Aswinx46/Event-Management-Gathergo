@@ -28,7 +28,8 @@ export class LoginVendorController {
                 vendorId: vendor?.vendorId,
                 vendorStatus: vendor?.vendorStatus,
                 rejectReason: vendor?.rejectionReason,
-                profileImage: vendor?.profileImage
+                profileImage: vendor?.profileImage,
+                aboutVendor: vendor?.aboutVendor
             }
             if (!vendor) throw new Error('invalid credentials')
             const accessTokenSecretKey = process.env.ACCESSTOKEN_SECRET_KEY as string

@@ -3,6 +3,7 @@ import clodAxios, { isAxiosError } from 'axios'
 
 
 interface VendorData {
+    about?: string;
     name: string;
     email: string;
     phone: string;
@@ -203,6 +204,17 @@ export const rejectBooking = async (bookingId: string, rejectionReason: string) 
         console.log('error while rejecting booking', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error while rejecting booking')
+    }
+}
+
+export const updateVendorDetails = async (id: string, about: string, phone: string,name:string) => {
+    try {
+        const response = await axios.patch('/updateDetailsVendor', { id, about, phone,name })
+        return response.data
+    } catch (error) {
+        console.log('error while updating vendor details', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while updating vendor details')
     }
 }
 

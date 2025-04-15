@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import RejectedVendorPage from "../rejectedModal/RejectedVendorPage"
 import ImageCropper from "@/components/other components/ImageCropper"
-import { useUpdateProfileImageMutation, useUploadeImageToCloudinaryMutation, useVendorLogout } from "@/hooks/VendorCustomHooks"
+import { useUpdateProfileImageMutation, useUploadeImageToCloudinaryMutation, useVendorLogout, useUpdateVendorDetailsMutation } from "@/hooks/VendorCustomHooks"
 import { toast } from "react-toastify"
 import { addVendor, removeVendor } from "@/store/slices/vendor/vendorSlice"
 import { isAxiosError } from "axios"
@@ -20,6 +20,10 @@ export default function VendorDashboard() {
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [changedProfile, setChangedProfile] = useState<boolean>(false)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [about, setAbout] = useState<string>(vendor?.aboutVendor || '')
+  const [phone, setPhone] = useState<string>(vendor?.phone?.toString() || '')
+  const [name, setName] = useState<string>(vendor?.name || '')
   const activeSection = 'profile'
   useEffect(() => {
     if (vendor) {
@@ -84,6 +88,30 @@ export default function VendorDashboard() {
 
   }
 
+  const updateVendorDetails = useUpdateVendorDetailsMutation()
+
+  const handleUpdateDetails = async () => {
+    if (!vendor?._id) return
+    try {
+      updateVendorDetails.mutate(
+        { id: vendor._id, about, phone, name },
+        {
+          onSuccess: (data) => {
+            console.log(data)
+            toast.success('Details updated successfully')
+            dispatch(addVendor(data.updatedVendor))
+            setIsEditing(false)
+          },
+          onError: (err) => {
+            toast.error(err.message)
+          },
+        }
+      )
+    } catch (error) {
+      handleError(error, 'Error updating vendor details')
+    }
+  }
+
   const handleError = (error: unknown, message: string) => {
     console.error(message, error);
     if (error instanceof Error) {
@@ -97,13 +125,16 @@ export default function VendorDashboard() {
   const vendorLogout = useVendorLogout()
   const navigate = useNavigate()
   const handleLogout = () => {
-    
-    vendorLogout.mutate(undefined,{
-      onSuccess:()=>{
+
+    vendorLogout.mutate(undefined, {
+      onSuccess: () => {
         navigate('/vendor/login')
         dispatch(removeVendor(null))
         dispatch(removeVendorToken(null))
         toast.success('Logout SuccesFull')
+      },
+      onError: (err) => {
+        toast.error(err.message)
       }
     })
 
@@ -180,7 +211,16 @@ export default function VendorDashboard() {
                     </div>
                   </motion.div>
                   <div className="mt-4 md:mt-0">
-                    <h2 className="text-2xl font-bold text-gray-800">{vendor?.name}</h2>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="text-2xl font-bold text-gray-800 border rounded px-2 py-1 mb-2"
+                      />
+                    ) : (
+                      <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
+                    )}
                     <p className="text-purple-600 font-medium mt-1">Professional Event Vendor</p>
                     <p className="text-sm text-gray-500 mt-2 flex pb-3 items-center">
                       <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -210,10 +250,42 @@ export default function VendorDashboard() {
                         <span className="font-medium mr-2">Email:</span>
                         {vendor?.email || 'Not Available'}
                       </p>
-                      <p className="flex items-center">
-                        <span className="font-medium mr-2">Phone:</span>
-                        {vendor?.phone || 'Not Available'}
-                      </p>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">Phone:</span>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            className="border rounded px-2 py-1 text-gray-700"
+                          />
+                        ) : (
+                          <span>{phone || 'Not Available'}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">About:</span>
+                        {isEditing ? (
+                          <textarea
+                            value={about}
+                            onChange={(e) => setAbout(e.target.value)}
+                            className="border rounded px-2 py-1  text-gray-700 w-full"
+                            rows={3}
+                          />
+                        ) : (
+                          <span className="line-clamp-3 overflow-y-auto">{about || 'Not Available'}</span>
+                        )}
+                      </div>
+                      <div className="mt-2">
+                        {isEditing ? (
+                          <div className="space-x-2">
+                            <Button onClick={handleUpdateDetails}>Save</Button>
+                            <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
+                          </div>
+                        ) : (
+                          <Button variant="outline" onClick={() => setIsEditing(true)}>Edit Details</Button>
+                        )}
+                      </div>
                       <p className="flex items-center">
                         <span className="font-medium mr-2">Status:</span>
                         <span className={`capitalize ${vendor?.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>

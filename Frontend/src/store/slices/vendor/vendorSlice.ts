@@ -11,7 +11,8 @@ interface vendor {
     vendorStatus: 'pending' | 'approved' | 'rejected',
     rejectReason?: string,
     image?: string,
-    profileImage:string
+    profileImage:string,
+    aboutVendor?: string
 }
 
 const initialState:{vendor:vendor | null} = {

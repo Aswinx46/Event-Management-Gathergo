@@ -8,7 +8,7 @@ export class ServiceRepository implements IserviceRepository {
         return await serviceModal.create(service)
     }
     async findServiceOfAVendor(vendorId: string, pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }> {
-        const limit = 5
+        const limit = 3
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
         const Services = await serviceModal.find({ vendorId }).skip(skip).limit(limit)

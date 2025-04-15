@@ -35,6 +35,8 @@ import { RejectBookingInVendorUseCase } from "../../useCases/vendor/bookings/rej
 import { RejectBookingInVendorController } from "../../adapters/controllers/vendor/bookings/rejectBookingInVendorController";
 import { VendorLogoutUseCase } from "../../useCases/vendor/authentication/vendorLogoutUseCase";
 import { VendorLogoutController } from "../../adapters/controllers/vendor/authentication/vendorLogoutController";
+import { updateAboutAndPhoneUseCase } from "../../useCases/vendor/profileUpdations/updateAboutAndPhoneUseCase";
+import { UpdateAboutAndPhoneVendorController } from "../../adapters/controllers/vendor/profile/updateAboutAndPhoneVendorController";
 
 
 //-----------------Register vendor-------------------//
@@ -99,3 +101,7 @@ export const injectedRejectBookingInVendor = new RejectBookingInVendorController
 //-----------------------------Vendor logout---------------------------
 const vendorLogoutUsecase = new VendorLogoutUseCase(redisService, jwtService)
 export const injectedVendorLogoutController = new VendorLogoutController(vendorLogoutUsecase)
+
+//------------------------Update about and phone vendor----------------------------------
+const UpdateAboutAndPhoneUseCase = new updateAboutAndPhoneUseCase(vendorRespository)
+export const injectedUpdateAboutAndPhoneController = new UpdateAboutAndPhoneVendorController(UpdateAboutAndPhoneUseCase)

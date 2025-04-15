@@ -142,7 +142,7 @@ const ServiceListingVendor: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white  p-4 sm:p-6 lg:p-8">
             {/* Header */}
             {isOpen && <AddServiceModal categories={categories} isOpen={isOpen} setIsOpen={setIsOpen} onSubmit={handleSubmit} data={selectedService || undefined} onEdit={handleEditData} />}
             <motion.div
@@ -168,7 +168,7 @@ const ServiceListingVendor: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-10 gap-8"
             >
                 {services?.map((service) => (
                     <ServiceCard key={service._id} service={service} onEdit={handleSelectedData} changeStatusService={handleChangeStatusofService} />
