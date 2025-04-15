@@ -160,6 +160,6 @@ export const useUpdateClientProfie = () => {
 
 export const useChangePasswordClient = () => {
     return useMutation({
-        mutationFn: ({ clientId, oldPassword, newPassword }: { clientId: string, oldPassword: string, newPassword: string }) => changePasswordClient(clientId, oldPassword, newPassword)
+        mutationFn: ({ userId, oldPassword, newPassword }: { userId: string, oldPassword: string, newPassword: string }) => changePasswordClient(userId, oldPassword, newPassword)
     })
 }

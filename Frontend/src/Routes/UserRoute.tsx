@@ -8,11 +8,11 @@ import ClientLayout from "@/components/Client/sideBar/ClientLayout";
 import BookingListing from "@/components/Client/bookingListing/BookingListing";
 import CategoryListing from "@/components/Client/category/CategoryListing";
 import UserProfile from "@/components/Client/profile/UserProfile";
-import PasswordChange from "@/components/Client/profile/ChangePassword";
 import ClientHeaderLayout from "@/components/Client/ClientLayout/ClientLayout";
 import ProtectedRouteClient from "@/components/ProtectedRoute/ProtectedRoute";
 import BlockedScreen from "@/components/other components/UserBlockNotice";
 import NotFound from "@/components/other components/NotFound";
+import ChangePasswordClient from "@/components/Client/profile/ChangePasswordClient";
 const UserRoute = () => {
     return (
         <Routes>
@@ -32,7 +32,7 @@ const UserRoute = () => {
             <Route path="/profile/*" element={<ProtectedRouteClient><ClientLayout /> </ProtectedRouteClient>}>
                 <Route path="bookings" element={<ProtectedRouteClient><BookingListing /></ProtectedRouteClient>} ></Route>
                 <Route path="home" element={<ProtectedRouteClient><UserProfile /></ProtectedRouteClient>} ></Route>
-                <Route path="changePassword" element={<ProtectedRouteClient><PasswordChange /></ProtectedRouteClient>} ></Route>
+                <Route path="changePassword" element={<ProtectedRouteClient><ChangePasswordClient /></ProtectedRouteClient>} ></Route>
                 {/* <Route path="logout" element={<LogoutConfirmation/>} ></Route> */}
             </Route>
         </Routes>

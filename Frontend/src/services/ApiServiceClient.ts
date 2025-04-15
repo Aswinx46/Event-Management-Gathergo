@@ -252,9 +252,9 @@ export const updateProfileClient = async (client: ClientUpdateProfileEntity) => 
     }
 }
 
-export const changePasswordClient = async (clientId: string, oldPassword: string, newPassword: string) => {
+export const changePasswordClient = async (userId: string, oldPassword: string, newPassword: string) => {
     try {
-        const response = await axios.patch('/changePasswordClient', { clientId, oldPassword, newPassword })
+        const response = await axios.patch('/changePasswordClient', { userId, oldPassword, newPassword })
         return response.data
     } catch (error) {
         console.log('error while changing password client', error)

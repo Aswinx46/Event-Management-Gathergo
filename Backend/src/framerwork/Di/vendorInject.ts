@@ -37,6 +37,9 @@ import { VendorLogoutUseCase } from "../../useCases/vendor/authentication/vendor
 import { VendorLogoutController } from "../../adapters/controllers/vendor/authentication/vendorLogoutController";
 import { updateAboutAndPhoneUseCase } from "../../useCases/vendor/profileUpdations/updateAboutAndPhoneUseCase";
 import { UpdateAboutAndPhoneVendorController } from "../../adapters/controllers/vendor/profile/updateAboutAndPhoneVendorController";
+import { ChangePasswordVendorUseCase } from "../../useCases/vendor/profileUpdations/changePasswordUseCase";
+import { hashPassword } from "../hashPassword/hashpassword";
+import { ChangePasswordVendorControler } from "../../adapters/controllers/vendor/profile/changePasswordVendorController";
 
 
 //-----------------Register vendor-------------------//
@@ -105,3 +108,8 @@ export const injectedVendorLogoutController = new VendorLogoutController(vendorL
 //------------------------Update about and phone vendor----------------------------------
 const UpdateAboutAndPhoneUseCase = new updateAboutAndPhoneUseCase(vendorRespository)
 export const injectedUpdateAboutAndPhoneController = new UpdateAboutAndPhoneVendorController(UpdateAboutAndPhoneUseCase)
+
+//----------------------- Change password-----------------------
+const HashPassword = new hashPassword()
+const changePasswordUseCase = new ChangePasswordVendorUseCase(vendorRespository, HashPassword)
+export const injectedChangePasswordVendorController = new ChangePasswordVendorControler(changePasswordUseCase)

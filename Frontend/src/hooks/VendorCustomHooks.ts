@@ -1,4 +1,4 @@
-import { approveBookingVendor, changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -138,12 +138,18 @@ export const useRejectBooking = () => {
 
 export const useUpdateVendorDetailsMutation = () => {
     return useMutation({
-        mutationFn: ({ id, about, phone, name }: { id: string, about: string, phone: string, name: string }) => updateVendorDetails(id, about, phone,name)
+        mutationFn: ({ id, about, phone, name }: { id: string, about: string, phone: string, name: string }) => updateVendorDetails(id, about, phone, name)
     })
 }
 
 export const useVendorLogout = () => {
     return useMutation({
         mutationFn: () => vendorLogout()
+    })
+}
+
+export const useVendorChangePassword = () => {
+    return useMutation({
+        mutationFn: ({ userId, oldPassword, newPassword }: { userId: string, oldPassword: string, newPassword: string }) => changePasswordVendor(userId, oldPassword, newPassword)
     })
 }

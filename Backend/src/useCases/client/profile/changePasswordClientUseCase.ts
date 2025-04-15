@@ -19,7 +19,7 @@ export class ChangePasswordClientUseCase implements IchangePasswordClientUseCAse
         const checkingOldPasswordIsSameAsNew = await this.hashPassword.comparePassword(newPassword, clientOldPassword)
         if(checkingOldPasswordIsSameAsNew) throw new Error("Cant use Old password as new again")
         const hashedPassword = await this.hashPassword.hashPassword(newPassword)
-        if (!hashPassword) throw new Error('Error whiw hashing password')
+        if (!hashedPassword) throw new Error('Error while hashing password')
         return await this.clientDatabase.changePassword(clientId, hashedPassword)
 
     }

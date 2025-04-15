@@ -9,8 +9,9 @@ export class ChangePasswordClientController {
     }
     async handeChangePasswordClient(req: Request, res: Response): Promise<void> {
         try {
-            const { clientId, oldPassword,  newPassword } = req.body
-            const changePasswordClient = await this.changePasswordCientUseCase.changePasswordClient(clientId, oldPassword, newPassword)
+            const { userId, oldPassword, newPassword } = req.body
+            console.log(userId)
+            const changePasswordClient = await this.changePasswordCientUseCase.changePasswordClient(userId, oldPassword, newPassword)
             res.status(HttpStatus.OK).json({ message: "Password Changed", changePasswordClient })
         } catch (error) {
             console.log('error while changing the password of the client', error)

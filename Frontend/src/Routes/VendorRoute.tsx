@@ -11,6 +11,7 @@ import BlockedScreen from "@/components/other components/UserBlockNotice";
 import NotFound from "@/components/other components/NotFound";
 import WorkSamples from "@/components/Vendor/workSamples/ShowWorkSamples";
 import AddWorkSample from "@/components/Vendor/workSamples/AddWorkSamples";
+import ChangePasswordVendor from "@/components/Vendor/passwordChange/ChangePasswordVendor";
 const VendorRoute = () => {
     return (
         <Routes>
@@ -25,6 +26,7 @@ const VendorRoute = () => {
                 <Route path="bookings" element={<ProtectedRouteVendor><ShowBookingsVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="workSamples" element={<ProtectedRouteVendor><WorkSamples /></ProtectedRouteVendor>}></Route>
                 <Route path="addWorkSamples" element={<ProtectedRouteVendor><AddWorkSample /></ProtectedRouteVendor>}></Route>
+                <Route path="changePassword" element={<ProtectedRouteVendor><ChangePasswordVendor/></ProtectedRouteVendor>}></Route>
             </Route>
         </Routes>
     )

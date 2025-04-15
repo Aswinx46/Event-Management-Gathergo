@@ -3,10 +3,18 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Check, X, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useChangePasswordClient } from "@/hooks/ClientCustomHooks";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+
 import { toast } from "react-toastify";
+
+interface PasswordChangeProps {
+  changePasswordMutation: {
+    mutate: (data: { userId: string; oldPassword: string; newPassword: string }, options: {
+      onSuccess: () => void;
+      onError: (err: { message: string }) => void;
+    }) => void;
+  },
+  userId: string
+}
 
 interface PasswordStrengthIndicatorProps {
   password: string;
@@ -105,7 +113,7 @@ const Alert: React.FC<{
   );
 };
 
-const PasswordChange: React.FC = () => {
+const PasswordChange: React.FC<PasswordChangeProps> = ({ changePasswordMutation, userId }) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -114,7 +122,6 @@ const PasswordChange: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
   const [alert, setAlert] = useState<{
     show: boolean;
     title: string;
@@ -127,7 +134,6 @@ const PasswordChange: React.FC = () => {
     variant: "error",
   });
 
-  const changePasswordClient = useChangePasswordClient()
 
   const showAlert = (title: string, description?: string, variant: "success" | "error" = "error") => {
     setAlert({
@@ -164,10 +170,9 @@ const PasswordChange: React.FC = () => {
     }
 
     console.log(currentPassword, newPassword, confirmPassword)
-    if (clientId) {
+    if (userId) {
       setLoading(true);
-
-      changePasswordClient.mutate({ clientId, oldPassword: currentPassword, newPassword: newPassword }, {
+      changePasswordMutation.mutate({ userId, oldPassword: currentPassword, newPassword: newPassword }, {
         onSuccess: () => {
           setSuccess(true);
           showAlert("Success!", "Your password has been updated", "success");
@@ -175,6 +180,7 @@ const PasswordChange: React.FC = () => {
           setNewPassword("");
           setConfirmPassword("");
           setSuccess(false);
+          setLoading(false);
         },
         onError: (err) => {
           toast.error(err.message)

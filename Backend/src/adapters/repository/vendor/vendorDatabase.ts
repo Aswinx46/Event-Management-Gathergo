@@ -72,7 +72,16 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         if (!status) return null
         return { status: status?.status!, vendorStatus: status?.vendorStatus }
     }
-    async updateAboutAndPhone(vendorId: string, about: string, phone: string,name:string): Promise<VendorEntity | null> {
-        return await VendorModel.findByIdAndUpdate(vendorId, { aboutVendor: about, phone,name }).select('_id email name phone role status vendorId vendorStatus profileImage aboutVendor role')
+    async updateAboutAndPhone(vendorId: string, about: string, phone: string, name: string): Promise<VendorEntity | null> {
+        return await VendorModel.findByIdAndUpdate(vendorId, { aboutVendor: about, phone, name }).select('_id email name phone role status vendorId vendorStatus profileImage aboutVendor role')
+    }
+    async changePassword(vendorId: string, newPassword: string): Promise<boolean> {
+        const changedPasswordVendor = await VendorModel.findByIdAndUpdate(vendorId, { password: newPassword })
+        if (!changedPasswordVendor) return false
+        return true
+    }
+    async findPassword(vendorId: string): Promise<string | null> {
+        const oldPassword = await VendorModel.findById(vendorId).select('password')
+        return oldPassword?.password || null
     }
 }
