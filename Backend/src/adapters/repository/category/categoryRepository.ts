@@ -2,6 +2,7 @@ import { categoryEntity } from "../../../domain/entities/categoryEntity";
 import { CategoryUpdate } from "../../../domain/entities/categoryUpdatePayload";
 import { IcategoryDatabase } from "../../../domain/interface/repositoryInterfaces/category/categorydatabaseInterface";
 import { categoryModel } from "../../../framerwork/database/models/categoryModel";
+
 export class CategoryDatabaseRepository implements IcategoryDatabase {
     async findByName(name: string): Promise<categoryEntity | null> {
         return await categoryModel.findOne({
@@ -52,5 +53,9 @@ export class CategoryDatabaseRepository implements IcategoryDatabase {
         );
 
         return updatedCategory ? true : false;
+    }
+    async searchCategory(query: string): Promise<categoryEntity[] | []> {
+        const regex = new RegExp(query, 'i'); // 'i' = case-insensitive
+        return categoryModel.find({ title: { $regex: regex}, status: 'active' }).select('title image _id ').exec()
     }
 }   

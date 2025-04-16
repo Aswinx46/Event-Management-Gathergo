@@ -263,3 +263,14 @@ export const changePasswordClient = async (userId: string, oldPassword: string, 
         throw new Error('error while changing client password')
     }
 }
+
+export const searchCategory = async (query: string) => {
+    try {
+        const response = await axios.get('/searchCategory', { params: { query } })
+        return response.data
+    } catch (error) {
+        console.log('error while searchCategory', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while search category')
+    }
+}

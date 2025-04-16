@@ -2,11 +2,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useFindAllCategoryForListing } from "@/hooks/ClientCustomHooks";
+import { useFindAllCategoryForListing, useSearchCategory } from "@/hooks/ClientCustomHooks";
 import Pagination from "@/components/other components/Pagination";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SearchContainer from "@/components/other components/search/SearchContainer";
+import { toast } from "react-toastify";
+import { isAxiosError } from "axios";
 
 interface Category {
   _id: string,
@@ -15,36 +17,39 @@ interface Category {
 }
 
 interface SearchResult {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  active: boolean;
+  _id: string
+  title: string
+  image: string
 }
 
 const CategoryListing = () => {
-  // const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [searchOpen, setSearchOpen] = useState<boolean>(false)
   const fetchCategoryQuery = useFindAllCategoryForListing(currentPage)
-  
+  const searchCategory = useSearchCategory()
   const handleSearch = async (query: string): Promise<SearchResult[]> => {
     // Implement your search logic here
-    console.log('Search query:', query);return[]
-    // For now, return empty array or mock data
-    // return fetchCategoryQuery.data?.categories.map(cat => ({
-    //   id: parseInt(cat._id),
-    //   title: cat.title,
-    //   description: cat.title,
-    //   image: cat.image,
-    //   active: true
-    // })) || [];
+    try {
+      const data = await searchCategory.mutateAsync(query)
+      console.log(data)
+      return data.searchedCategories
+    } catch (error) {
+      const message = isAxiosError(error)
+        ? error.response?.data.message
+        : 'error while fetching categories';
+
+      toast.error(message);
+      return []
+    }
+
+
   };
 
-  const handleSearchResult = (result: SearchResult) => {
-    console.log('Selected result:', result);
-    if (result) {
-      navigate(`/services/${result.id}/${result.title}`);
+  const handleOnClick = (id: string, title: string) => {
+    console.log('Selected result:', id);
+    if (id) {
+      navigate(`/services/${id}/${title}`);
     }
     setSearchOpen(false);
   };
@@ -62,10 +67,13 @@ const CategoryListing = () => {
       transition={{ duration: 0.6 }}
     >
       {searchOpen && (
-        <SearchContainer 
-          onSearch={handleSearch}
-          onSelect={handleSearchResult}
-          onClose={setSearchOpen}
+        <SearchContainer
+          onSubmit={handleSearch}
+          setIsOpen={setSearchOpen}
+          setText={setSearchQuery}
+          text={searchQuery}
+          isOpen={searchOpen}
+          handleOnClick={handleOnClick}
         />
       )}
       <div className="max-w-7xl mx-auto">
@@ -83,16 +91,7 @@ const CategoryListing = () => {
 
           {/* Search and Add Category Section */}
           <div className="w-full max-w-5xl flex flex-col md:flex-row gap-4 mb-8 justify-between">
-            {/* <div className="relative w-full md:max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search categories..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white"
-              />
-            </div> */}
+
             <Button onClick={() => setSearchOpen(true)}>SEARCH</Button>
           </div>
 

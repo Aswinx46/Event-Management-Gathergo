@@ -8,8 +8,6 @@ export interface IcategoryDatabase {
     findCategoryForCreatingService(): Promise<categoryEntity[] | []>
     findCategoryForClient(): Promise<categoryEntity[] | []>
     changeStatusOfCategory(categoryId: string): Promise<categoryEntity | null>
-    // changeNameAndImage(categoryId: string, title: string, image: string): Promise<boolean | null>
-    // changeName(categoryId: string, title: string): Promise<boolean | null>
-    // changeImage(categoryId: string, image: string): Promise<boolean | null>
     changeNameAndImage(categoryId: string, updates: CategoryUpdate): Promise<boolean | null>
+    searchCategory(query: string): Promise<categoryEntity[] | []>
 }

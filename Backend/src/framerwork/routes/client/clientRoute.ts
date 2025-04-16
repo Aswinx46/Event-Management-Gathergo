@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindCategoryForClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSearchCategoryController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
@@ -44,17 +44,17 @@ export class clientRoute {
         this.clientRoute.get('/services', (req: Request, res: Response) => {
             injectedFindServiceForClientController.handleFindServiceForClient(req, res)
         })
-        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.post('/createBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
 
             injectedCreateBookingController.handleCreateBooking(req, res)
         })
         this.clientRoute.get('/showClientWithVendor/:serviceId', (req: Request, res: Response) => {
             injectedShowServiceWithVendorCController.handleShowServiceWithVendor(req, res)
         })
-        this.clientRoute.get('/showBookings/:clientId/:pageNo',injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.get('/showBookings/:clientId/:pageNo', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedShowBookingInClientController.handleShowBookingsInClient(req, res)
         })
-        this.clientRoute.post('/logout', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.post('/logout', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedClientLogoutController.handleClientLogout(req, res)
         })
         this.clientRoute.get('/services/:categoryId/:pageNo', (req: Request, res: Response) => {
@@ -63,14 +63,17 @@ export class clientRoute {
         this.clientRoute.get('/categories/:pageNo', (req: Request, res: Response) => {
             injectedFindAllCategoryController.handleFindCategory(req, res)
         })
-        this.clientRoute.patch('/updateProfileImage', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.patch('/updateProfileImage', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedChangeProfileImageClientController.handleUpdateProfileImageClient(req, res)
         })
-        this.clientRoute.put('/updateProfileClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.put('/updateProfileClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedUpdateProfileClientController.handleUpdateProfileClient(req, res)
         })
-        this.clientRoute.patch('/changePasswordClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'),injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.patch('/changePasswordClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedChangeClientPasswordController.handeChangePasswordClient(req, res)
+        })
+        this.clientRoute.get('/searchCategory', (req: Request, res: Response) => {
+            injectedSearchCategoryController.handleSearchCategory(req, res)
         })
     }
 }

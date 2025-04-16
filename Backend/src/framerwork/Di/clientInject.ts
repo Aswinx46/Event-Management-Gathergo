@@ -46,6 +46,8 @@ import { UpdateProfileClientController } from "../../adapters/controllers/client
 import { ChangePasswordClientUseCase } from "../../useCases/client/profile/changePasswordClientUseCase";
 import { hashPassword } from "../hashPassword/hashpassword";
 import { ChangePasswordClientController } from "../../adapters/controllers/client/profile/changePasswordClientController";
+import { SearchCategoryUseCase } from "../../useCases/client/category/searchCategoryUseCase";
+import { SearchCategoryController } from "../../adapters/controllers/client/category/searchCategoryController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -135,4 +137,6 @@ const HashPassword = new hashPassword()
 const changeClientPasswordUseCase = new ChangePasswordClientUseCase(ClientRepository, HashPassword)
 export const injectedChangeClientPasswordController = new ChangePasswordClientController(changeClientPasswordUseCase)
 
-
+//---------------------------------Client Searching category
+const searchCategoryUseCase = new SearchCategoryUseCase(categoryDatabase)
+export const injectedSearchCategoryController = new SearchCategoryController(searchCategoryUseCase)
