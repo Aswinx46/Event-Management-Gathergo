@@ -40,6 +40,9 @@ import { UpdateAboutAndPhoneVendorController } from "../../adapters/controllers/
 import { ChangePasswordVendorUseCase } from "../../useCases/vendor/profileUpdations/changePasswordUseCase";
 import { hashPassword } from "../hashPassword/hashpassword";
 import { ChangePasswordVendorControler } from "../../adapters/controllers/vendor/profile/changePasswordVendorController";
+import { WorkSampleCreationUseCase } from "../../useCases/vendor/workSamples/workSampleCreationUseCase";
+import { WorkSampleRepository } from "../../adapters/repository/workSamples/workSampleRepository";
+import { CreateWorkSampleController } from "../../adapters/controllers/vendor/workSamples/addWorkSamplesController";
 
 
 //-----------------Register vendor-------------------//
@@ -113,3 +116,8 @@ export const injectedUpdateAboutAndPhoneController = new UpdateAboutAndPhoneVend
 const HashPassword = new hashPassword()
 const changePasswordUseCase = new ChangePasswordVendorUseCase(vendorRespository, HashPassword)
 export const injectedChangePasswordVendorController = new ChangePasswordVendorControler(changePasswordUseCase)
+
+//---------------------------Creating workSamples------------------------
+const worksampleDatabase = new WorkSampleRepository()
+const createWorkSampleUseCase = new WorkSampleCreationUseCase(worksampleDatabase)
+export const injectedCreateWorkSampleController = new CreateWorkSampleController(createWorkSampleUseCase)

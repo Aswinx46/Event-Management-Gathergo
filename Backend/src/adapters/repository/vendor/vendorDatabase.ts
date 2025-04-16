@@ -84,4 +84,5 @@ export class VendorDatabase implements IvendorDatabaseRepositoryInterface {
         const oldPassword = await VendorModel.findById(vendorId).select('password')
         return oldPassword?.password || null
     }
+    
 }

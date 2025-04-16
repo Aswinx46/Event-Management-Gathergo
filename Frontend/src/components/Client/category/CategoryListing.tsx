@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFindAllCategoryForListing, useSearchCategory } from "@/hooks/ClientCustomHooks";
 import Pagination from "@/components/other components/Pagination";
