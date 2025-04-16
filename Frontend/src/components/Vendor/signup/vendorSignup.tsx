@@ -37,7 +37,7 @@ export default function SignupPage() {
     const [selectedImage, setSelectedImage] = useState<string>('');
     const [showCropper, setShowCropper] = useState<boolean>(false);
     const [croppedImage, setCroppedImage] = useState<File | null>(null);
-    const [isSuccess, setIsSuccess] = useState<boolean>(true)
+    const [isSuccess, setIsSuccess] = useState<boolean>(false)
     interface FormValues {
         name: string;
         email: string;

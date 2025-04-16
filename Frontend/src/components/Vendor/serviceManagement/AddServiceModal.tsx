@@ -37,7 +37,7 @@ interface AddServiceModalProps {
 
 
 const validationSchema = Yup.object().shape({
-    serviceTitle: Yup.string().required('Service title is required'),
+    serviceTitle: Yup.string().required('Service title is required')  .matches(/^[^*]*$/, 'Service title cannot contain a star (*)').matches(/[a-zA-Z]/, 'Service title cannot be numbers only'),
     yearsOfExperience: Yup.number()
         .min(0, 'Years of experience must be positive')
         .required('Years of experience is required'),
@@ -66,7 +66,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
     categories,
     onEdit
 }) => {
-
+    console.log('modal')
     const initialValues: ServiceFormData = {
         _id: data?._id || '',
         serviceTitle: data?.serviceTitle || '',

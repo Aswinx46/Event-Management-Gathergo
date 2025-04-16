@@ -55,7 +55,8 @@ export const clientCreateAccount = async ({ formdata, otpString }: { formdata: R
     } catch (error) {
         console.log('error while client create account', error)
         if (isAxiosError(error)) {
-            throw new Error(error.response?.data?.error)
+            console.log(error.response?.data?.message)
+            throw new Error(error.response?.data?.message)
         }
         throw new Error('error while client create account')
     }

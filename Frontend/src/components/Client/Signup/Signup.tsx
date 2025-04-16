@@ -9,7 +9,6 @@ import { Link, useNavigate } from "react-router-dom"
 import OTPModal from "@/components/otpModal/otpModal"
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { isAxiosError } from "axios"
 import ImageCarousel from "@/components/other components/ImageCarousal"
 import { useClientSignupMutation, useCreateAccountMutation, useResendOtpClientMutation } from "@/hooks/ClientCustomHooks"
 export default function SignupComponent() {
@@ -77,7 +76,7 @@ export default function SignupComponent() {
           setIsOpen(true);
         },
         onError: (error) => {
-          console.log(error)
+          console.log('error in comp',error)
           toast.error(error.message)
           setIsOpen(false);
         }
@@ -100,9 +99,9 @@ export default function SignupComponent() {
 
   const handleMutationError = (error: unknown) => {
     let message = "An unexpected error occurred";
-    if (isAxiosError(error)) {
-      console.log(error)
-      message = error.response?.data?.message || "An error occurred";
+    if (error instanceof Error) {
+      console.log('error in hande',error)
+      message = error.message || "An error occurred";
     }
     toast.error(message);
   }
