@@ -7,6 +7,7 @@ import Pagination from '@/components/other components/Pagination';
 import { toast } from 'react-toastify';
 import { useUploadeImageToCloudinaryMutation } from '@/hooks/VendorCustomHooks';
 import { useQueryClient } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 
 interface Category {
   categoryId: string;
@@ -89,23 +90,53 @@ const CategoryManagement: React.FC = () => {
   const uploadImageToCloudinary = useUploadeImageToCloudinaryMutation()
   const clientQuery = useQueryClient()
 
-  const collectEditedData = () => {
+  const collectEditedData = async () => {
     if (!selectedCategory) return null;
     if (!selectedFile) {
       const updates = {
-        title: editedTitle
+        title: editedTitle.trim()
       }
       updateCategory.mutate({ categoryId: selectedCategory._id, updates }, {
         onSuccess: (data) => {
           toast.success(data.message)
           clientQuery.invalidateQueries({ queryKey: ['categories', currentPage] })
           setIsEditModalOpen(false)
+          return
         },
         onError: (err) => {
           toast.error(err.message)
+          return
         }
       })
+    } else if (selectedFile) {
+      try {
+        const formdata = new FormData()
+        formdata.append('file', selectedFile)
+        formdata.append('upload_preset', 'Category')
+        const response = await uploadImageToCloudinary.mutateAsync(formdata)
+        const updates = {
+          title: editedTitle.trim(),
+          image: response.secure_url
+        }
+        updateCategory.mutate({ categoryId: selectedCategory._id, updates }, {
+          onSuccess: (data) => {
+            toast.success(data.message)
+            clientQuery.invalidateQueries({ queryKey: ['categories', currentPage] })
+            setIsEditModalOpen(false)
+            return
+          },
+          onError: (err) => {
+            toast.error(err.message)
+            return
+          }
+        })
+      } catch (error) {
+        console.log('Error while updating image of category', error)
+        if (isAxiosError(error)) toast.error(error.response?.data.message)
+
+      }
     }
+
     return {
       categoryId: selectedCategory._id,
       title: editedTitle,
@@ -288,7 +319,7 @@ const CategoryManagement: React.FC = () => {
                 </motion.div>
               </div>
 
-              <div className="aspect-w-16 aspect-h-12 bg-gray-100">
+              <div className="aspect-w-16 aspect-h-12 h-1/2 bg-gray-100">
                 <img
                   src={category.image}
                   alt={category.title}
