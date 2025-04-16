@@ -1,4 +1,5 @@
 import { categoryEntity } from "../../../entities/categoryEntity";
+import { CategoryUpdate } from "../../../entities/categoryUpdatePayload";
 
 export interface IcategoryDatabase {
     findByName(name: string): Promise<categoryEntity | null>
@@ -7,4 +8,8 @@ export interface IcategoryDatabase {
     findCategoryForCreatingService(): Promise<categoryEntity[] | []>
     findCategoryForClient(): Promise<categoryEntity[] | []>
     changeStatusOfCategory(categoryId: string): Promise<categoryEntity | null>
+    // changeNameAndImage(categoryId: string, title: string, image: string): Promise<boolean | null>
+    // changeName(categoryId: string, title: string): Promise<boolean | null>
+    // changeImage(categoryId: string, image: string): Promise<boolean | null>
+    changeNameAndImage(categoryId: string, updates: CategoryUpdate): Promise<boolean | null>
 }

@@ -1,6 +1,7 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
 import { ChangeStatusCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeStatusCategoryController";
+import { ChangeTitleAndImageCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeTitleAndImageController";
 import { CreateCategoryController } from "../../adapters/controllers/admin/categoryManagement/createCategoryController";
 import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
 import { BlockClientController } from "../../adapters/controllers/admin/client/blockClientController";
@@ -19,6 +20,7 @@ import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase"
 import { AdminLoginUseCase } from "../../useCases/admin/authentication/adminLoginuseCase";
 
 import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/changeStatusOfCategoryUseCase";
+import { ChangeTitleAndImageUseCase } from "../../useCases/admin/categoryManagement/changeTitleAndImageUseCase";
 import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
 import { BlockClientUseCase } from "../../useCases/admin/userManagement/clientBlockUseCase";
@@ -91,8 +93,12 @@ export const injectedClientUnblockController = new ClientUnblockController(unblo
 
 //----------------------------block vendor-------------------------
 const blockVendorUsecase = new VendorBlockUseCase(vendorDataBase)
-export const injectedVendorBlockController = new VendorBlockController(blockVendorUsecase,redisService)
+export const injectedVendorBlockController = new VendorBlockController(blockVendorUsecase, redisService)
 
 //--------------------------unblock vendor------------------
 const unblockVendorUseCase = new VendorUnblockUseCase(vendorDataBase)
-export const injectedVendorUnblockController = new VendorUnblockController(unblockVendorUseCase,redisService)
+export const injectedVendorUnblockController = new VendorUnblockController(unblockVendorUseCase, redisService)
+
+//---------------------------Category title and image change----------------------------
+const changeTitleAndImageUseCase = new ChangeTitleAndImageUseCase(categoryDatabase)
+export const injectedChangeTitleAndImageController = new ChangeTitleAndImageCategoryController(changeTitleAndImageUseCase)

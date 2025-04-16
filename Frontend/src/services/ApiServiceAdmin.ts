@@ -1,5 +1,6 @@
 import { AxiosResponse, isAxiosError } from 'axios';
 import axios from '../axios/adminAxios'
+import { CategoryUpdate } from '@/types/CategoryUpdate';
 
 interface Login {
     email: string;
@@ -178,5 +179,16 @@ export const unblockVendor = async (vendorId: string) => {
         console.log('error while unblocking vendor', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error while unblocking vendor')
+    }
+}
+
+export const updateCategory = async (categoryId: string, updates: CategoryUpdate) => {
+    try {
+        const response = await axios.patch('/updateCategory', { categoryId, updates })
+        return response.data
+    } catch (error) {
+        console.log('error while changning titlle and image of category', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while changning titlle and image of category')
     }
 }

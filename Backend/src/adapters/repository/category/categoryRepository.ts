@@ -1,4 +1,5 @@
 import { categoryEntity } from "../../../domain/entities/categoryEntity";
+import { CategoryUpdate } from "../../../domain/entities/categoryUpdatePayload";
 import { IcategoryDatabase } from "../../../domain/interface/repositoryInterfaces/category/categorydatabaseInterface";
 import { categoryModel } from "../../../framerwork/database/models/categoryModel";
 export class CategoryDatabaseRepository implements IcategoryDatabase {
@@ -40,5 +41,16 @@ export class CategoryDatabaseRepository implements IcategoryDatabase {
                 }
             ]
         )
+    }
+    async changeNameAndImage(categoryId: string, updates: CategoryUpdate): Promise<boolean | null> {
+        if (!Object.keys(updates).length) return false;
+
+        const updatedCategory = await categoryModel.findByIdAndUpdate(
+            categoryId,
+            updates,
+            { new: true }
+        );
+
+        return updatedCategory ? true : false;
     }
 }   
