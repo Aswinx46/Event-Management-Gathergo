@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Field, ErrorMessage } from "formik";
 import { Label } from "@/components/ui/label";
@@ -8,9 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { EventType } from "@/types/EventType";
 
 interface BasicInfoFormProps {
-  values: any;
+  values: EventType;
   setFieldValue: (field: string, value: any) => void;
   posterImages: string[];
   setPosterImages: (images: string[]) => void;
@@ -18,9 +19,9 @@ interface BasicInfoFormProps {
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { 
+  visible: {
     opacity: 1,
-    transition: { 
+    transition: {
       staggerChildren: 0.1
     }
   }
@@ -28,23 +29,24 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
     transition: { type: "spring", stiffness: 100 }
   }
 };
 
-const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ 
-  values, 
-  setFieldValue, 
-  posterImages, 
-  setPosterImages 
+const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
+  values,
+  setFieldValue,
+  posterImages,
+  setPosterImages
 }) => {
   const handleImageUpload = (imageUrls: string[]) => {
     setPosterImages([...posterImages, ...imageUrls]);
   };
-
+  const [imageFiles, setImageFiles] = useState<File[] | null>(null)
+  values.posterImage = imageFiles
   const handleRemoveImage = (index: number) => {
     const newImages = [...posterImages];
     newImages.splice(index, 1);
@@ -58,13 +60,13 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
       animate="visible"
       className="bg-white p-6 rounded-lg shadow-sm mb-8"
     >
-      <motion.h3 
-        variants={itemVariants} 
+      <motion.h3
+        variants={itemVariants}
         className="text-xl font-semibold mb-6 text-purple-800"
       >
         Basic Information
       </motion.h3>
-      
+
       <motion.div variants={itemVariants} className="mb-6">
         <Label htmlFor="title" className="block text-sm font-medium mb-1">
           Event Title <span className="text-red-500">*</span>
@@ -78,7 +80,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
         />
         <ErrorMessage name="title" component="p" className="text-red-500 text-sm mt-1" />
       </motion.div>
-      
+
       <motion.div variants={itemVariants} className="mb-6">
         <Label htmlFor="description" className="block text-sm font-medium mb-1">
           Event Description <span className="text-red-500">*</span>
@@ -92,7 +94,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
         />
         <ErrorMessage name="description" component="p" className="text-red-500 text-sm mt-1" />
       </motion.div>
-      
+
       <motion.div variants={itemVariants} className="mb-6">
         <Label htmlFor="category" className="block text-sm font-medium mb-1">
           Category <span className="text-red-500">*</span>
@@ -117,17 +119,17 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
         </Select>
         <ErrorMessage name="category" component="p" className="text-red-500 text-sm mt-1" />
       </motion.div>
-      
+
       <motion.div variants={itemVariants} className="mb-6">
         <Label className="block text-sm font-medium mb-1">
           Event Poster Images
         </Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {posterImages.map((image, index) => (
+          {posterImages?.map((image, index) => (
             <div key={index} className="relative">
-              <img 
-                src={image} 
-                alt={`Event poster ${index + 1}`} 
+              <img
+                src={image}
+                alt={`Event poster ${index + 1}`}
                 className="w-full h-40 object-cover rounded-lg"
               />
               <button
@@ -140,10 +142,10 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
             </div>
           ))}
         </div>
-        <ImageUpload onImageUploaded={handleImageUpload} />
+        <ImageUpload onImageUploaded={handleImageUpload} setImageFiles={setImageFiles} />
       </motion.div>
     </motion.div>
   );
 };
 
-export default BasicInfoForm;
+export default React.memo(BasicInfoForm)

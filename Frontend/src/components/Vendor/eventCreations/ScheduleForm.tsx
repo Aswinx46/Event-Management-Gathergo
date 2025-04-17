@@ -2,7 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import {  ErrorMessage } from "formik";
+import { ErrorMessage } from "formik";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Clock, Plus, X } from "lucide-react";
+import { EventType } from "@/types/EventType";
 
 interface ScheduleFormProps {
   dates: Date[];
@@ -19,15 +20,15 @@ interface ScheduleFormProps {
   setStartTime: (time: string) => void;
   endTime: string;
   setEndTime: (time: string) => void;
-  values: any;
+  values: EventType;
   setFieldValue: (field: string, value: any) => void;
 }
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { 
+  visible: {
     opacity: 1,
-    transition: { 
+    transition: {
       staggerChildren: 0.1
     }
   }
@@ -35,8 +36,8 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
     transition: { type: "spring", stiffness: 100 }
   }
@@ -60,12 +61,15 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
     const newDates = [...dates];
     newDates.splice(index, 1);
     setDates(newDates);
+    setFieldValue("date", newDates); // sync with formik
   };
 
   const handleDateChange = (newDate: Date, index: number) => {
     const newDates = [...dates];
     newDates[index] = newDate;
     setDates(newDates);
+    setFieldValue("date", newDates); // sync with formik
+
   };
 
   return (
@@ -75,20 +79,20 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
       animate="visible"
       className="bg-white p-6 rounded-lg shadow-sm mb-8"
     >
-      <motion.h3 
-        variants={itemVariants} 
+      <motion.h3
+        variants={itemVariants}
         className="text-xl font-semibold mb-6 text-purple-800"
       >
         Event Schedule
       </motion.h3>
-      
+
       <motion.div variants={itemVariants} className="mb-6">
         <Label className="block text-sm font-medium mb-2">
           Event Dates <span className="text-red-500">*</span>
         </Label>
         <div className="space-y-4">
           {dates.map((date, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
@@ -160,7 +164,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
             />
           </div>
         </motion.div>
-        
+
         <motion.div variants={itemVariants} className="mb-6">
           <Label htmlFor="endTime" className="block text-sm font-medium mb-1">
             End Time <span className="text-red-500">*</span>
@@ -203,4 +207,4 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
   );
 };
 
-export default ScheduleForm;
+export default React.memo(ScheduleForm);

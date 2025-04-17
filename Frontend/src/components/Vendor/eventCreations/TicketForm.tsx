@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import { Field, ErrorMessage } from "formik";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { EventType } from "@/types/EventType";
 
 interface TicketFormProps {
-  values: any;
+  values: EventType;
 }
 
 const containerVariants = {
@@ -95,4 +96,4 @@ const TicketForm: React.FC<TicketFormProps> = ({ values }) => {
   );
 };
 
-export default TicketForm;
+export default React.memo(TicketForm);

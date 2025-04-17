@@ -3,9 +3,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
+import { EventType } from "@/types/EventType";
 
 interface ReviewFormProps {
-  values: any;
+  values: EventType;
   dates: Date[];
   startTime: string;
   endTime: string;
@@ -34,9 +35,10 @@ const itemVariants = {
 const ReviewForm: React.FC<ReviewFormProps> = ({ 
   values,
   dates,
+  posterImages,
   startTime,
   endTime,
-  posterImages
+  
 }) => {
   return (
     <motion.div
@@ -132,11 +134,11 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         </Card>
       </motion.div>
       
-      {posterImages.length > 0 && (
+      {posterImages?.length > 0 && (
         <motion.div variants={itemVariants} className="mt-6">
           <h4 className="font-medium text-lg mb-4">Event Images</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {posterImages.map((image, index) => (
+            {posterImages?.map((image, index) => (
               <img 
                 key={index} 
                 src={image} 
@@ -151,4 +153,4 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
   );
 };
 
-export default ReviewForm;
+export default React.memo(ReviewForm);

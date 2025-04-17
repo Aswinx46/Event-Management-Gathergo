@@ -1,3 +1,4 @@
+import { EventType } from '@/types/EventType';
 import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
 
@@ -237,5 +238,16 @@ export const changePasswordVendor = async (userId: string, newPassword: string, 
         console.log('error while changing password vendor', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error whiel changing password vendor')
+    }
+}
+
+export const createEvent = async (event: EventType) => {
+    try {
+        const response = await axios.post('/createEvent', { event })
+        return response.data
+    } catch (error) {
+        console.log('error while creating event', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('Error whilw creating event')
     }
 }

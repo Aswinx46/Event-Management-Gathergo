@@ -1,4 +1,5 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { EventType } from "@/types/EventType";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -151,5 +152,11 @@ export const useVendorLogout = () => {
 export const useVendorChangePassword = () => {
     return useMutation({
         mutationFn: ({ userId, oldPassword, newPassword }: { userId: string, oldPassword: string, newPassword: string }) => changePasswordVendor(userId, oldPassword, newPassword)
+    })
+}
+
+export const useCreateEvent = () => {
+    return useMutation({
+        mutationFn: (event: EventType) => createEvent(event)
     })
 }

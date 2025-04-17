@@ -4,7 +4,7 @@ import './App.css'
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
 import AdminRoute from './Routes/AdminRoute'
 import { Toaster } from 'react-hot-toast'
-
+import 'leaflet/dist/leaflet.css';
 function App() {
   return (
    <BrowserRouter>

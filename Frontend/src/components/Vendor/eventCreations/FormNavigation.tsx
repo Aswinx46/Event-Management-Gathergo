@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 
@@ -17,6 +16,7 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
   nextStep,
   isSubmitting
 }) => {
+
   return (
     <div className="flex justify-between mt-6">
       {currentStep > 0 && (
@@ -43,11 +43,11 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
           className="bg-purple-600 hover:bg-purple-700 ml-auto"
           disabled={isSubmitting}
         >
-          Create Event
+          {isSubmitting ? "Creating..." : "Create Event"}
         </Button>
       )}
     </div>
   );
 };
 
-export default FormNavigation;
+export default React.memo(FormNavigation);
