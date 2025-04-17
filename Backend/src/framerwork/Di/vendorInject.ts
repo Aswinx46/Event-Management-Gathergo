@@ -43,6 +43,9 @@ import { ChangePasswordVendorControler } from "../../adapters/controllers/vendor
 import { WorkSampleCreationUseCase } from "../../useCases/vendor/workSamples/workSampleCreationUseCase";
 import { WorkSampleRepository } from "../../adapters/repository/workSamples/workSampleRepository";
 import { CreateWorkSampleController } from "../../adapters/controllers/vendor/workSamples/addWorkSamplesController";
+import { EventRepository } from "../../adapters/repository/event/eventRepository";
+import { EventCreationUseCase } from "../../useCases/vendor/event/eventCreationUseCase";
+import { EventCreationController } from "../../adapters/controllers/vendor/event/eventCreationController";
 
 
 //-----------------Register vendor-------------------//
@@ -121,3 +124,8 @@ export const injectedChangePasswordVendorController = new ChangePasswordVendorCo
 const worksampleDatabase = new WorkSampleRepository()
 const createWorkSampleUseCase = new WorkSampleCreationUseCase(worksampleDatabase)
 export const injectedCreateWorkSampleController = new CreateWorkSampleController(createWorkSampleUseCase)
+
+//----------------------------Create event-----------------------------------
+const eventRepository = new EventRepository()
+const eventCreationUseCase = new EventCreationUseCase(eventRepository)
+export const injectedEventCreationController = new EventCreationController(eventCreationUseCase)

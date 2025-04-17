@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateAboutAndPhoneController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
+import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateAboutAndPhoneController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
 import { injectedTokenExpiryValidationChecking, injectedVendorStatusCheckingMiddleware, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 
@@ -60,6 +60,9 @@ export class VendorRoute {
         })
         this.vendorRoute.post('/createWorkSample', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedCreateWorkSampleController.handleAddWorkSample(req, res)
+        })
+        this.vendorRoute.post('/createEvent', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedEventCreationController.handleCreateEvent(req, res)
         })
     }
 }
