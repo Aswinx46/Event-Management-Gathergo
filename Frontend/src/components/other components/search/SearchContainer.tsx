@@ -80,11 +80,11 @@ export default function SearchModal({ text, setText, onSubmit, setIsOpen, isOpen
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div
+            <motion.div
                     className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                 >
                     <motion.div
@@ -108,9 +108,9 @@ export default function SearchModal({ text, setText, onSubmit, setIsOpen, isOpen
                                 initial={{ y: -10, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.1 }}
-                            >
-                                Search...
-                            </motion.h1>
+                    >
+                        Search...
+                    </motion.h1>
 
                             <motion.div
                                 className="relative mb-4 w-full"
@@ -155,7 +155,7 @@ export default function SearchModal({ text, setText, onSubmit, setIsOpen, isOpen
                                         <div className="flex items-center space-x-2">
                                             <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                                             <span>Searching...</span>
-                                        </div>
+                </div>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -225,7 +225,7 @@ export default function SearchModal({ text, setText, onSubmit, setIsOpen, isOpen
                             <X className="h-6 w-6" />
                         </motion.button>
                     </motion.div>
-                </motion.div>
+            </motion.div>
             )}
         </AnimatePresence>
     )

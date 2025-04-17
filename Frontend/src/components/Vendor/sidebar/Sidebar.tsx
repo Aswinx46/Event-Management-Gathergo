@@ -28,7 +28,7 @@ export function Sidebar() {
     { id: "services", label: "Service", icon: Briefcase },
     { id: "workSamples", label: "Work Samples", icon: Image },
     { id: "bookings", label: "Bookings", icon: Calendar },
-    { id: "events", label: "Events", icon: CalendarDays },
+    { id: "addEvent", label: "Events", icon: CalendarDays },
     { id: "changePassword", label: "Change Password", icon: Lock },
     { id: "wallet", label: "Wallet", icon: Wallet },
     // { id: "logout", label: "Logout", icon: LogOut },
@@ -45,9 +45,9 @@ export function Sidebar() {
   }
 
   const navigate = useNavigate()
-  
+
   const handleMenuItemClick = (sectionId: string) => {
-    
+
     navigate(`/vendor/${sectionId}`)
     if (window.innerWidth < 768) {
       setIsOpen(false)
@@ -97,7 +97,7 @@ export function Sidebar() {
                   whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleMenuItemClick(item.id)}
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors ${isActive(item.id)? 'bg-black text-white':''} transition-all duration-500`}
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors ${isActive(item.id) ? 'bg-black text-white' : ''} transition-all duration-500`}
                 >
                   <item.icon size={18} className="mr-3" />
                   <span>{item.label}</span>
