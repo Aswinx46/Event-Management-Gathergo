@@ -11,12 +11,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { EventEdit } from "@/components/Vendor/event/EditEvent";
 import { useUpdateEvent } from "@/hooks/VendorCustomHooks";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface EventDetailModalProps {
     event: EventEntity | null;
     isOpen: boolean;
     onClose: () => void;
     onEdit: (event: EventEntity) => void;
+    currentPage: number
 }
 
 const formatDate = (date: Date): string => {
@@ -68,9 +70,11 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     isOpen,
     onClose,
     onEdit,
+    currentPage
 }) => {
     const location = useLocation()
     const editEvent = useUpdateEvent()
+    const queryClient = useQueryClient()
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
@@ -78,7 +82,6 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     const ticketsRemaining = event.totalTicket - event.ticketPurchased;
     const percentageSold = (event.ticketPurchased / event.totalTicket) * 100;
     const handleEdit = (event: EventEntity) => {
-        console.log(event)
         setSelectedEvent(event)
         onClose()
         setShowEdit(true)
@@ -89,6 +92,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
         editEvent.mutate({ eventId: event._id, update: event }, {
             onSuccess: (data) => {
                 toast.success(data.message)
+                queryClient.invalidateQueries({ queryKey: ['eventsInVendor', currentPage] })
                 setShowEdit(false)
             },
             onError: (err) => {

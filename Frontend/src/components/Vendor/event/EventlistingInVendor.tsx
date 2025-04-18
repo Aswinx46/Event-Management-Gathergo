@@ -13,7 +13,7 @@ function EventlistingInVendor() {
     const totalPages = findEventsInVendor.data?.totalPages
     return (
         <div>
-            <EventList events={events} isLoading={findEventsInVendor.isLoading} />
+            <EventList events={events} isLoading={findEventsInVendor.isLoading} currentPage={currentPage}/>
             <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
         </div>
     )
