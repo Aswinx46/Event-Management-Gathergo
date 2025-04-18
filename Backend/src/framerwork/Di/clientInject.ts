@@ -48,6 +48,9 @@ import { hashPassword } from "../hashPassword/hashpassword";
 import { ChangePasswordClientController } from "../../adapters/controllers/client/profile/changePasswordClientController";
 import { SearchCategoryUseCase } from "../../useCases/client/category/searchCategoryUseCase";
 import { SearchCategoryController } from "../../adapters/controllers/client/category/searchCategoryController";
+import { EventRepository } from "../../adapters/repository/event/eventRepository";
+import { FindAllEventsUseCase } from "../../useCases/client/events/findAllEventsUseCase";
+import { FindAllEventsClientController } from "../../adapters/controllers/client/events/findAllEventsController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -140,3 +143,9 @@ export const injectedChangeClientPasswordController = new ChangePasswordClientCo
 //---------------------------------Client Searching category
 const searchCategoryUseCase = new SearchCategoryUseCase(categoryDatabase)
 export const injectedSearchCategoryController = new SearchCategoryController(searchCategoryUseCase)
+
+
+//----------------------------------find events in client side---------------------
+const eventDatabase = new EventRepository()
+const findEventsClientUseCase = new FindAllEventsUseCase(eventDatabase)
+export const injectedFindEventsClientController = new FindAllEventsClientController(findEventsClientUseCase)

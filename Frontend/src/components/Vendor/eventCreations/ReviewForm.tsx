@@ -10,14 +10,14 @@ interface ReviewFormProps {
   dates: Date[];
   startTime: string;
   endTime: string;
-  posterImages: string[];
+  posterImages: File[];
 }
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { 
+  visible: {
     opacity: 1,
-    transition: { 
+    transition: {
       staggerChildren: 0.1
     }
   }
@@ -25,20 +25,20 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
-  visible: { 
-    y: 0, 
+  visible: {
+    y: 0,
     opacity: 1,
     transition: { type: "spring", stiffness: 100 }
   }
 };
 
-const ReviewForm: React.FC<ReviewFormProps> = ({ 
+const ReviewForm: React.FC<ReviewFormProps> = ({
   values,
   dates,
   posterImages,
   startTime,
   endTime,
-  
+
 }) => {
   return (
     <motion.div
@@ -47,13 +47,13 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       animate="visible"
       className="bg-white p-6 rounded-lg shadow-sm mb-8"
     >
-      <motion.h3 
-        variants={itemVariants} 
+      <motion.h3
+        variants={itemVariants}
         className="text-xl font-semibold mb-6 text-purple-800"
       >
         Review Your Event
       </motion.h3>
-      
+
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardContent className="pt-6">
@@ -74,7 +74,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="pt-6">
             <h4 className="font-medium text-lg mb-4">Schedule</h4>
@@ -96,7 +96,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="pt-6">
             <h4 className="font-medium text-lg mb-4">Location</h4>
@@ -112,7 +112,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="pt-6">
             <h4 className="font-medium text-lg mb-4">Tickets</h4>
@@ -133,18 +133,20 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
           </CardContent>
         </Card>
       </motion.div>
-      
+
       {posterImages?.length > 0 && (
         <motion.div variants={itemVariants} className="mt-6">
           <h4 className="font-medium text-lg mb-4">Event Images</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {posterImages?.map((image, index) => (
-              <img 
-                key={index} 
-                src={image} 
-                alt={`Event poster ${index + 1}`} 
-                className="w-full h-24 object-cover rounded-lg"
-              />
+              <>
+                <img
+                  key={index}
+                  src={URL.createObjectURL(image)}
+                  alt={`Event poster ${index + 1}`}
+                  className="w-full h-24 object-cover rounded-lg"
+                />
+              </>
             ))}
           </div>
         </motion.div>

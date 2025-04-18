@@ -13,8 +13,8 @@ import { EventType } from "@/types/EventType";
 interface BasicInfoFormProps {
   values: EventType;
   setFieldValue: (field: string, value: any) => void;
-  posterImages: string[];
-  setPosterImages: (images: string[]) => void;
+  posterImages: File[];
+  setPosterImages: (images: File[]) => void;
 }
 
 const containerVariants = {
@@ -43,9 +43,12 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
   setPosterImages
 }) => {
   const handleImageUpload = (imageUrls: string[]) => {
+    console.log(imageUrls)
     setPosterImages([...posterImages, ...imageUrls]);
   };
-  const [imageFiles, setImageFiles] = useState<File[] | null>(null)
+  const [imageFiles, setImageFiles] = useState<File[] | null>([])
+
+  console.log('image files',imageFiles)
   values.posterImage = imageFiles
   const handleRemoveImage = (index: number) => {
     const newImages = [...posterImages];
@@ -128,7 +131,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
           {posterImages?.map((image, index) => (
             <div key={index} className="relative">
               <img
-                src={image}
+                src={URL.createObjectURL(image)}
                 alt={`Event poster ${index + 1}`}
                 className="w-full h-40 object-cover rounded-lg"
               />
@@ -142,7 +145,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
             </div>
           ))}
         </div>
-        <ImageUpload onImageUploaded={handleImageUpload} setImageFiles={setImageFiles} />
+        <ImageUpload onImageUploaded={handleImageUpload} setPosterImage={setPosterImages} />
       </motion.div>
     </motion.div>
   );

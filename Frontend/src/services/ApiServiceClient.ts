@@ -274,3 +274,14 @@ export const searchCategory = async (query: string) => {
         throw new Error('error while search category')
     }
 }
+
+export const findevents = async (pageNo: number) => {
+    try {
+        const resposne = await axios.get(`/findEvents/${pageNo}`)
+        return resposne.data
+    } catch (error) {
+        console.log('error while fetching events in client side', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while fetching events in client side')
+    }
+}

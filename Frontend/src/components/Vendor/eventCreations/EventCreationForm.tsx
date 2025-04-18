@@ -22,14 +22,10 @@ const basicInfoValidation = Yup.object({
         .min(10, "Description must be at least 10 characters")
         .required("Description is required"),
     category: Yup.string().required("Category is required"),
-    posterImage: Yup.array().min(1, "At least one image is required"),
+    // posterImage: Yup.array().min(1, "At least one image is required"),
 });
 
-// const scheduleValidation = Yup.object({
-//     date: Yup.array().min(1, "At least one date is required"),
-//     startTime: Yup.string().required("Start time is required"),
-//     endTime: Yup.string().required("End time is required"),
-// });
+
 const scheduleValidation = Yup.object({
     date: Yup.array()
         .min(1, "At least one date is required")
@@ -90,7 +86,7 @@ const EventCreationForm: React.FC = () => {
     const [dates, setDates] = useState<Date[]>([new Date()]);
     const [startTime, setStartTime] = useState<string>("10:00");
     const [endTime, setEndTime] = useState<string>("18:00");
-    const [posterImages, setPosterImages] = useState<string[]>([]);
+    const [posterImages, setPosterImages] = useState<File[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [isStepValid, setIsStepValid] = useState(true);
     const initialValues: EventType = {
@@ -192,7 +188,7 @@ const EventCreationForm: React.FC = () => {
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
         console.log('handleCreateEvent called with values:', values);
         const imageUrls = []
-
+        values.posterImage = posterImages
         if (!values.posterImage || values.posterImage.length === 0) {
             toast.error("Please select at least one image.");
             setSubmitting(false);
@@ -256,7 +252,7 @@ const EventCreationForm: React.FC = () => {
                 validationSchema={validationSchema}
                 onSubmit={handleCreateEvent}
             >
-                {({ values, setFieldValue, handleSubmit, isSubmitting, errors, touched }) => {
+                {({ values, setFieldValue, handleSubmit, isSubmitting }) => {
                     // Check validation on every render
                     // const currentStepValid = checkStepValidation(values, currentStep);
                     // Promise.resolve(currentStepValid).then(setIsStepValid);

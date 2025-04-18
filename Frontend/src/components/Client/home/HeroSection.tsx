@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const slides = [
     {
@@ -35,6 +36,8 @@ const HeroSection = () => {
 
         return () => clearInterval(timer);
     }, []);
+
+    const navigate = useNavigate()
 
     return (
         <div className="relative h-[600px] w-full overflow-hidden">
@@ -85,7 +88,7 @@ const HeroSection = () => {
                     />
                 ))}
             </div>
-            <Button className=' top-[54vh] left-[32vw]  absolute md:top-[40vh] bg-transparent hover:bg-gray-500 md:right-[31vw]'>BOOK EVENTS</Button>
+            <Button onClick={() => navigate('/events')} className=' top-[54vh] left-[32vw]  absolute md:top-[40vh] bg-transparent hover:bg-gray-500 md:right-[31vw]'>BOOK EVENTS</Button>
         </div>
     );
 };

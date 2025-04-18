@@ -1,26 +1,23 @@
 
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { motion } from "framer-motion";
 import { Upload } from "lucide-react";
+import ImageCropper from "@/components/other components/ImageCropper";
 // import { Button } from "@/components/ui/button";
 
 interface ImageUploadProps {
   onImageUploaded: (imageUrls: string[]) => void;
-  setImageFiles: React.Dispatch<React.SetStateAction<File[] | null>>
+  setPosterImage: React.Dispatch<React.SetStateAction<File[]>>
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, setImageFiles }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({
+  onImageUploaded,
+  setPosterImage,
+}) => {
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [imageStrings, setImageStrings] = useState<string[]>()
-  // Placeholder image URLs for demo purposes
-  // const placeholderImages = [
-  //   "https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=800&q=80",
-  //   "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80",
-  //   "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
-  //   "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
-  // ];
+  const [showCropper, setShowCropper] = useState<boolean>(false);
+  const [currentImageString, setCurrentImageString] = useState<string>("");
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -39,51 +36,43 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, setImageFile
     e.stopPropagation();
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-
-    // In a real application, you would handle file upload to a storage service here
-    // For demo purposes, we'll just simulate an upload delay and select multiple random images
-    setLoading(true);
-
-    setTimeout(() => {
-      // Get multiple random placeholder images
-      const randomImages = [];
-      const numberOfImages = Math.floor(Math.random() * 3) + 1; // Random number between 1-3
-
-      for (let i = 0; i < numberOfImages; i++) {
-        const randomIndex = Math.floor(Math.random() * selectedImages.length);
-        randomImages.push(placeholderImages[randomIndex]);
-      }
-
-      setSelectedImages(randomImages);
-      onImageUploaded(randomImages);
-      setLoading(false);
-    }, 1000);
-  };
-
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
+    const files = e.target.files;
     if (files && files.length > 0) {
-      setLoading(true)
-      const fileArray = Array.from(files)
-      const fileUrls = fileArray.map((file) => URL.createObjectURL(file))
-      setSelectedImages(fileUrls)
-      onImageUploaded(fileUrls)
-      setImageFiles(fileArray)
-      setLoading(false)
+      setLoading(true);
+      setShowCropper(true);
+      const url = URL.createObjectURL(files[0]);
+      setCurrentImageString(url);
+   
+      // don't update fileArray or selectedImages here; wait for cropComplete
       e.target.value = "";
-
+      setLoading(false);
     }
   };
 
-  const handleSelectPlaceholder = (url: string) => {
-    const newImages = [url];
-    setSelectedImages(newImages);
-    onImageUploaded(newImages);
-  };
+  const handleCropComplete = (croppedBlob: File | null) => {
+    console.log('crop complete', croppedBlob)
+    setPosterImage((prev) => [...(prev || []), croppedBlob!])
+  }
+
+  // when cropping is done, update fileArray and preview
+  // useEffect(() => {
+  //   if (cropComplete) {
+  //     setFileArray((prev) => {
+  //       const updatedArray = [...prev, cropComplete];
+  //       const fileUrls = updatedArray.map((file) =>
+  //         URL.createObjectURL(file)
+  //       );
+  //       setSelectedImages(fileUrls);
+  //       onImageUploaded(fileUrls);
+  //       setImageFiles(updatedArray);
+  //       return updatedArray;
+  //     });
+  //     setCropComplete(null); // reset after processing
+  //   }
+  // }, [cropComplete, onImageUploaded, setImageFiles]);
+
+
 
   return (
     <div className="space-y-4">
@@ -93,7 +82,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, setImageFile
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
-        onDrop={handleDrop}
+        // onDrop={handleDrop}
         whileHover={{ scale: 1.01 }}
         animate={loading ? { opacity: 0.7 } : { opacity: 1 }}
       >
@@ -117,25 +106,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded, setImageFile
         </div>
       </motion.div>
 
-      {/* <div>
-        <h4 className="text-sm font-medium mb-2">Or select placeholder images:</h4>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {placeholderImages?.map((url, index) => (
-            <motion.div
-              key={index}
-              className="relative cursor-pointer rounded-md overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              onClick={() => handleSelectPlaceholder(url)}
-            >
-              <img
-                src={url}
-                alt={`Placeholder ${index + 1}`}
-                className="h-20 w-full object-cover"
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div> */}
+
+      {showCropper && <ImageCropper showCropper={setShowCropper} image={currentImageString} onCropComplete={handleCropComplete} />}
     </div>
   );
 };
