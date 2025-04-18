@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import FormHeader from "./FormHeader";
 import BasicInfoForm from "./BasicInfoForm";
 import ScheduleForm from "./ScheduleForm";
@@ -25,11 +25,34 @@ const basicInfoValidation = Yup.object({
     posterImage: Yup.array().min(1, "At least one image is required"),
 });
 
+// const scheduleValidation = Yup.object({
+//     date: Yup.array().min(1, "At least one date is required"),
+//     startTime: Yup.string().required("Start time is required"),
+//     endTime: Yup.string().required("End time is required"),
+// });
 const scheduleValidation = Yup.object({
-    date: Yup.array().min(1, "At least one date is required"),
+    date: Yup.array()
+        .min(1, "At least one date is required")
+        .test(
+            "no-past-date",
+            "Dates must be today or in the future",
+            (dates) => {
+                if (!dates || dates.length === 0) return false;
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // remove time part for accurate comparison
+
+                return dates.every((d) => {
+                    const date = new Date(d);
+                    date.setHours(0, 0, 0, 0);
+                    return date >= today;
+                });
+            }
+        ),
     startTime: Yup.string().required("Start time is required"),
     endTime: Yup.string().required("End time is required"),
 });
+
 
 const locationValidation = Yup.object({
     location: Yup.object({
@@ -138,6 +161,7 @@ const EventCreationForm: React.FC = () => {
             return true;
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
+                console.log(error.inner)
                 error.inner.forEach((err) => {
                     toast.error(err.message);
                 });
@@ -164,7 +188,7 @@ const EventCreationForm: React.FC = () => {
 
     const handleUpdateImage = useUploadeImageToCloudinaryMutation()
     const createEvent = useCreateEvent()
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
         console.log('handleCreateEvent called with values:', values);
         const imageUrls = []
@@ -205,7 +229,7 @@ const EventCreationForm: React.FC = () => {
                 toast("Event Created", {
                     description: "Your event has been created successfully!",
                 });
-                toast.success(data.message)
+                // toast.success(data.message)
                 navigate('/vendor/home')
             },
             onError: (err) => {
@@ -220,7 +244,7 @@ const EventCreationForm: React.FC = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl h-[100vh] overflow-hidden overflow-y-scroll hide-scrollbar mx-auto pb-3">
             <FormHeader
                 steps={steps}
                 currentStep={currentStep}
@@ -234,8 +258,8 @@ const EventCreationForm: React.FC = () => {
             >
                 {({ values, setFieldValue, handleSubmit, isSubmitting, errors, touched }) => {
                     // Check validation on every render
-                    const currentStepValid = checkStepValidation(values, currentStep);
-                    Promise.resolve(currentStepValid).then(setIsStepValid);
+                    // const currentStepValid = checkStepValidation(values, currentStep);
+                    // Promise.resolve(currentStepValid).then(setIsStepValid);
 
                     return (
                         <Form>
@@ -291,9 +315,9 @@ const EventCreationForm: React.FC = () => {
                                 nextStep={() => nextStep(values)}
                                 isSubmitting={isSubmitting}
                                 onSubmit={handleSubmit}
-                                isStepValid={isStepValid}
-                                errors={errors}
-                                touched={touched}
+                            // isStepValid={isStepValid}
+                            // errors={errors}
+                            // touched={touched}
                             />
                         </Form>
                     );

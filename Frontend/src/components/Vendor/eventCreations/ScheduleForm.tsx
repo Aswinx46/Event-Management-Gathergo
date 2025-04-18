@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { ErrorMessage } from "formik";
@@ -53,8 +52,23 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
   values,
   setFieldValue
 }) => {
+  const [showAddCalendar, setShowAddCalendar] = useState(false);
+  const [tempDate, setTempDate] = useState<Date | undefined>(undefined);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const handleAddDate = () => {
-    setDates([...dates, new Date()]);
+    setShowAddCalendar(true);
+    setTempDate(undefined);
+  };
+
+  const handleAddNewDate = () => {
+    if (tempDate) {
+      setDates([...dates, tempDate]);
+      setFieldValue("date", [...dates, tempDate]);
+      setShowAddCalendar(false);
+      setTempDate(undefined);
+    }
   };
 
   const handleRemoveDate = (index: number) => {
@@ -69,7 +83,23 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
     newDates[index] = newDate;
     setDates(newDates);
     setFieldValue("date", newDates); // sync with formik
+  };
 
+  const calendarStyles = {
+    day_selected: "bg-purple-600 text-white hover:bg-purple-700 font-bold rounded-full",
+    day_today: "bg-purple-100 text-purple-900 font-semibold rounded-full",
+    day: "h-9 w-9 p-0 font-normal hover:bg-purple-100 rounded-full focus:bg-purple-100",
+    day_disabled: "text-gray-400 bg-gray-50 hover:bg-gray-50 cursor-not-allowed opacity-50",
+    head_cell: "text-purple-900 font-semibold",
+    caption: "flex justify-center pt-1 relative items-center text-purple-900 font-semibold",
+    nav_button_previous: "absolute left-1 top-1 bg-transparent p-0 opacity-50 hover:opacity-100",
+    nav_button_next: "absolute right-1 top-1 bg-transparent p-0 opacity-50 hover:opacity-100",
+    table: "w-full border-collapse",
+    head_row: "flex",
+    cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-purple-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+    nav: "space-x-1 flex items-center",
+    nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+    row: "flex w-full mt-2"
   };
 
   return (
@@ -119,7 +149,13 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
                     selected={date}
                     onSelect={(newDate) => newDate && handleDateChange(newDate, index)}
                     initialFocus
-                    className="p-3 pointer-events-auto"
+                    disabled={(date) => {
+                      const currentDate = new Date(date);
+                      currentDate.setHours(0, 0, 0, 0);
+                      return currentDate < today;
+                    }}
+                    className="p-3 pointer-events-auto rounded-md border"
+                    classNames={calendarStyles}
                   />
                 </PopoverContent>
               </Popover>
@@ -137,15 +173,54 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
             </motion.div>
           ))}
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={handleAddDate}
-          className="mt-2"
-        >
-          <Plus size={16} className="mr-1" /> Add More Dates
-        </Button>
+
+        <Popover open={showAddCalendar} onOpenChange={setShowAddCalendar}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleAddDate}
+              className="mt-2"
+            >
+              <Plus size={16} className="mr-1" /> Add More Dates
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 z-50 bg-white" align="start">
+            <div className="p-3">
+              <Calendar
+                mode="single"
+                selected={tempDate}
+                onSelect={setTempDate}
+                initialFocus
+                disabled={(date) => {
+                  const currentDate = new Date(date);
+                  currentDate.setHours(0, 0, 0, 0);
+                  return currentDate < today;
+                }}
+                className="rounded-md border"
+                classNames={calendarStyles}
+              />
+              <div className="flex justify-end mt-3 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowAddCalendar(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleAddNewDate}
+                  disabled={!tempDate}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  Add Date
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

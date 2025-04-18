@@ -7,6 +7,7 @@ interface FormNavigationProps {
   prevStep: () => void;
   nextStep: () => void;
   isSubmitting: boolean;
+  onSubmit: () => void
 }
 
 const FormNavigation: React.FC<FormNavigationProps> = ({
@@ -14,7 +15,8 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
   steps,
   prevStep,
   nextStep,
-  isSubmitting
+  isSubmitting,
+  onSubmit
 }) => {
 
   return (
@@ -28,7 +30,7 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
           Previous
         </Button>
       )}
-      
+
       {currentStep < steps.length - 1 ? (
         <Button
           type="button"
@@ -39,7 +41,8 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
         </Button>
       ) : (
         <Button
-          type="submit"
+          type="button"
+          onClick={onSubmit}
           className="bg-purple-600 hover:bg-purple-700 ml-auto"
           disabled={isSubmitting}
         >
