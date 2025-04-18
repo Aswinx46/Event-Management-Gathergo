@@ -1,4 +1,5 @@
 import { EventEntity } from "../../../domain/entities/event/eventEntity";
+import { EventUpdateEntity } from "../../../domain/entities/event/eventUpdateEntity";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
 import { eventModal } from "../../../framerwork/database/models/eventModel";
 
@@ -21,5 +22,9 @@ export class EventRepository implements IeventRepository {
         const events = await eventModal.find({ hostedBy: vendorId }).select('-__v').skip(skip).limit(limit)
         const totalPages = Math.ceil(await eventModal.countDocuments({ hostedBy: vendorId }) / limit)
         return { events, totalPages }
+    }
+    async editEvent(eventId: string, update: EventUpdateEntity): Promise<EventEntity | null> {
+        const updateEvent = await eventModal.findByIdAndUpdate(eventId, update, { new: true }).select('-__v')
+        return updateEvent
     }
 }

@@ -1,5 +1,3 @@
-import { ObjectId } from "mongoose";
-
 export interface EventUpdateEntity {
     title: string;
     description: string;
@@ -15,7 +13,7 @@ export interface EventUpdateEntity {
     totalTicket: number;
     date: Date[];
     createdAt: Date;
-    attendees: ObjectId[]
+
     ticketPurchased: number
     address?: string
     venueName?: string

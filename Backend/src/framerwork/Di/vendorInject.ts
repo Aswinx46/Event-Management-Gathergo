@@ -48,6 +48,8 @@ import { EventCreationUseCase } from "../../useCases/vendor/event/eventCreationU
 import { EventCreationController } from "../../adapters/controllers/vendor/event/eventCreationController";
 import { FindAllEventsVendorUseCase } from "../../useCases/vendor/event/findAllEventsUseCase";
 import { FindAllEventsVendorController } from "../../adapters/controllers/vendor/event/findAlllEventsVendorController";
+import { UpdateEventUseCase } from "../../useCases/vendor/event/udpateEventUseCase";
+import { UpdateEventController } from "../../adapters/controllers/vendor/event/updateEventController";
 
 
 //-----------------Register vendor-------------------//
@@ -135,3 +137,7 @@ export const injectedEventCreationController = new EventCreationController(event
 //-------------------------------Find all events in vendor side--------------------------
 const findAllEventsVendorUseCase = new FindAllEventsVendorUseCase(eventRepository)
 export const injectedFindAllEventsVendorController = new FindAllEventsVendorController(findAllEventsVendorUseCase)
+
+//-------------------------------Update Event---------------------------
+const updateEventUseCase = new UpdateEventUseCase(eventRepository)
+export const injectedUpdateEventController = new UpdateEventController(updateEventUseCase)

@@ -1,5 +1,6 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor } from "@/services/ApiServiceVendor";
 import { EventType } from "@/types/EventType";
+import { EventUpdateEntity } from "@/types/updateEventType";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -165,5 +166,11 @@ export const useFindAllEventsVendorSide = (vendorId: string, pageNo: number) => 
     return useQuery({
         queryKey: ['eventsInVendor', pageNo],
         queryFn: () => findAllEventsInVendor(vendorId, pageNo)
+    })
+}
+
+export const useUpdateEvent = () => {
+    return useMutation({
+        mutationFn: ({ eventId, update }: { eventId: string, update: EventUpdateEntity }) => updateEvent(eventId, update)
     })
 }

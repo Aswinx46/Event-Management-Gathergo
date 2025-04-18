@@ -1,6 +1,7 @@
 import { EventType } from '@/types/EventType';
 import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
+import { EventUpdateEntity } from '@/types/updateEventType';
 
 
 interface VendorData {
@@ -260,5 +261,16 @@ export const findAllEventsInVendor = async (vendorId: string, pageNo: number) =>
         console.log('error while fetching events in vendor side', error)
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error while fetching events in vendor side')
+    }
+}
+
+export const updateEvent = async (eventId: string, update: EventUpdateEntity) => {
+    try {
+        const response = await axios.put('/updateEvent', { eventId, update })
+        return response.data
+    } catch (error) {
+        console.log('error while updating event', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('Error while updating event')
     }
 }

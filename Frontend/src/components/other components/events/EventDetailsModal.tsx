@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EventEdit } from "@/components/Vendor/event/EditEvent";
+import { useUpdateEvent } from "@/hooks/VendorCustomHooks";
+import { toast } from "react-toastify";
 
 interface EventDetailModalProps {
     event: EventEntity | null;
@@ -68,7 +70,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     onEdit,
 }) => {
     const location = useLocation()
-    const navigate = useNavigate()
+    const editEvent = useUpdateEvent()
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
@@ -81,8 +83,18 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
         onClose()
         setShowEdit(true)
     }
+
     const handleOnSaveEdit = (event: EventEntity) => {
         console.log(event)
+        editEvent.mutate({ eventId: event._id, update: event }, {
+            onSuccess: (data) => {
+                toast.success(data.message)
+                setShowEdit(false)
+            },
+            onError: (err) => {
+                toast.error(err.message)
+            }
+        })
     }
     return (
         <AnimatePresence>
