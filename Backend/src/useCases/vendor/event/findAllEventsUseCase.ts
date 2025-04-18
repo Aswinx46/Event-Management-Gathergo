@@ -7,8 +7,8 @@ export class FindAllEventsVendorUseCase implements IfindAllEventsVendorUseCase {
     constructor(eventsDatabase: IeventRepository) {
         this.eventsDatabase = eventsDatabase
     }
-    async findAllEvents(pageNo: number): Promise<{ events: EventEntity[] | []; totalPages: number; }> {
-        const { events, totalPages } = await this.eventsDatabase.findAllEventsClient(pageNo)
+    async findAllEvents(vendorId: string, pageNo: number): Promise<{ events: EventEntity[] | []; totalPages: number; }> {
+        const { events, totalPages } = await this.eventsDatabase.findEventsOfAVendor(vendorId, pageNo)
         return { events, totalPages }
     }
 }

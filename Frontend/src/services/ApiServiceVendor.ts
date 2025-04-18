@@ -241,9 +241,9 @@ export const changePasswordVendor = async (userId: string, newPassword: string, 
     }
 }
 
-export const createEvent = async (event: EventType) => {
+export const createEvent = async (event: EventType, vendorId: string) => {
     try {
-        const response = await axios.post('/createEvent', { event })
+        const response = await axios.post(`/createEvent/${vendorId}`, { event })
         return response.data
     } catch (error) {
         console.log('error while creating event', error)
@@ -252,9 +252,9 @@ export const createEvent = async (event: EventType) => {
     }
 }
 
-export const findAllEventsInVendor = async (pageNo: number) => {
+export const findAllEventsInVendor = async (vendorId: string, pageNo: number) => {
     try {
-        const response = await axios.get(`/showEvents/${pageNo}`)
+        const response = await axios.get(`/showEvents/${pageNo}/${vendorId}`)
         return response.data
     } catch (error) {
         console.log('error while fetching events in vendor side', error)

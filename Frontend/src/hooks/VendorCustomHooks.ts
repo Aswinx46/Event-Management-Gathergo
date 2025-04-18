@@ -157,13 +157,13 @@ export const useVendorChangePassword = () => {
 
 export const useCreateEvent = () => {
     return useMutation({
-        mutationFn: (event: EventType) => createEvent(event)
+        mutationFn: ({ event, vendorId }: { event: EventType, vendorId: string }) => createEvent(event, vendorId)
     })
 }
 
-export const useFindAllEventsVendorSide = (pageNo: number) => {
+export const useFindAllEventsVendorSide = (vendorId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['eventsInVendor', pageNo],
-        queryFn: () => findAllEventsInVendor(pageNo)
+        queryFn: () => findAllEventsInVendor(vendorId, pageNo)
     })
 }

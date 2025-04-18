@@ -12,6 +12,8 @@ import FormNavigation from "./FormNavigation";
 import { EventType } from "@/types/EventType";
 import { useCreateEvent, useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 // Step-specific validation schemas
 const basicInfoValidation = Yup.object({
@@ -83,6 +85,7 @@ const validationSchema = Yup.object({
 });
 
 const EventCreationForm: React.FC = () => {
+    const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
     const [dates, setDates] = useState<Date[]>([new Date()]);
     const [startTime, setStartTime] = useState<string>("10:00");
     const [endTime, setEndTime] = useState<string>("18:00");
@@ -188,6 +191,11 @@ const EventCreationForm: React.FC = () => {
     const navigate = useNavigate()
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
         console.log('handleCreateEvent called with values:', values);
+        if (!vendorId) {
+            toast.error("Please Login")
+            console.log('Vendor Id not found')
+            return
+        }
         const imageUrls = []
         values.posterImage = posterImages
         if (!values.posterImage || values.posterImage.length === 0) {
@@ -208,7 +216,7 @@ const EventCreationForm: React.FC = () => {
         }
 
 
-        const eventData = {
+        const event = {
             ...values,
             date: dates,
             startTime: new Date(`2000-01-01T${startTime}`),
@@ -216,12 +224,13 @@ const EventCreationForm: React.FC = () => {
             posterImage: imageUrls,
             createdAt: new Date(),
             attendees: [],
-            ticketPurchased: 0
+            ticketPurchased: 0,
+
         };
 
 
-        console.log("Event data:", eventData);
-        createEvent.mutate(eventData, {
+        console.log("Event data:", event);
+        createEvent.mutate({ event, vendorId }, {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             onSuccess: (data) => {
                 toast("Event Created", {

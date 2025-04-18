@@ -14,4 +14,12 @@ export class EventRepository implements IeventRepository {
         const totalPages = Math.ceil(await eventModal.countDocuments() / limit)
         return { events, totalPages }
     }
+    async findEventsOfAVendor(vendorId: string, pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
+        const limit = 5
+        const page = Math.max(pageNo, 1)
+        const skip = (page - 1) * limit
+        const events = await eventModal.find({ hostedBy: vendorId }).select('-__v').skip(skip).limit(limit)
+        const totalPages = Math.ceil(await eventModal.countDocuments({ hostedBy: vendorId }) / limit)
+        return { events, totalPages }
+    }
 }

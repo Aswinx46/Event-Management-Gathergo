@@ -7,7 +7,8 @@ export class EventCreationUseCase implements IeventCreationUseCase {
     constructor(eventDatabase: IeventRepository) {
         this.eventDatabase = eventDatabase
     }
-    async createEvent(event: EventEntity): Promise<EventEntity> {
+    async createEvent(event: EventEntity, vendorId: string): Promise<EventEntity> {
+        event.hostedBy = vendorId
         const createEvent = await this.eventDatabase.createEvent(event)
         if (!createEvent) throw new Error('Error while creating event')
         return createEvent

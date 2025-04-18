@@ -1,14 +1,12 @@
 import { ObjectId } from "mongoose";
 
 export interface EventEntity {
-    _id?: ObjectId ;
     title: string;
     description: string;
-    location: {
+    location?: {
         longitude: number,
         latitude: number
     },
-    hostedBy: ObjectId | string,
     startTime: Date;
     endTime: Date;
     posterImage: string[];

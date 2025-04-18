@@ -9,8 +9,9 @@ export class FindAllEventsVendorController {
     }
     async handleFindAllEventsVendor(req: Request, res: Response): Promise<void> {
         try {
+            const vendorId = req.params.vendorId
             const pageNo = parseInt(req.params.pageNo, 10) || 1
-            const { events, totalPages } = await this.findAllEventsVendorUseCase.findAllEvents(pageNo)
+            const { events, totalPages } = await this.findAllEventsVendorUseCase.findAllEvents(vendorId, pageNo)
             res.status(HttpStatus.OK).json({ message: "Events fetched", events, totalPages })
         } catch (error) {
             console.log('error while finding all events in vendor side', error)

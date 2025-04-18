@@ -9,8 +9,9 @@ export class EventCreationController {
     }
     async handleCreateEvent(req: Request, res: Response): Promise<void> {
         try {
+            const { vendorId } = req.params
             const { event } = req.body
-            const createdEvent = await this.eventCreateUseCase.createEvent(event)
+            const createdEvent = await this.eventCreateUseCase.createEvent(event, vendorId)
             res.status(HttpStatus.CREATED).json({ message: "Event created", createdEvent })
         } catch (error) {
             console.log('error while creating event', error)
