@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateAboutAndPhoneController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
+import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateAboutAndPhoneController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
 import { injectedTokenExpiryValidationChecking, injectedVendorStatusCheckingMiddleware, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 
@@ -63,6 +63,9 @@ export class VendorRoute {
         })
         this.vendorRoute.post('/createEvent', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedEventCreationController.handleCreateEvent(req, res)
+        })
+        this.vendorRoute.get('/showEvents/:pageNo', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedFindAllEventsVendorController.handleFindAllEventsVendor(req, res)
         })
     }
 }

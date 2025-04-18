@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, Clock, MapPin, Users, Edit, Share2, ExternalLink } from "lucide-react";
 import { EventEntity } from "../../../types/EventEntity";
@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
+import { useLocation, useNavigate } from "react-router-dom";
+import { EventEdit } from "@/components/Vendor/event/EditEvent";
 
 interface EventDetailModalProps {
     event: EventEntity | null;
@@ -65,15 +67,28 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     onClose,
     onEdit,
 }) => {
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [showEdit, setShowEdit] = useState<boolean>(false)
+    const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
-
+    const verifyPathName = location.pathname.split('/')[1]
     const ticketsRemaining = event.totalTicket - event.ticketPurchased;
     const percentageSold = (event.ticketPurchased / event.totalTicket) * 100;
-
+    const handleEdit = (event: EventEntity) => {
+        console.log(event)
+        setSelectedEvent(event)
+        onClose()
+        setShowEdit(true)
+    }
+    const handleOnSaveEdit = (event: EventEntity) => {
+        console.log(event)
+    }
     return (
         <AnimatePresence>
+            {showEdit && <EventEdit event={selectedEvent!} onCancel={setShowEdit} onSave={handleOnSaveEdit} isOpen={showEdit} />}
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4  bg-black/80">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -83,7 +98,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     />
 
                     <motion.div
-                        className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl overflow-hidden max-w-3xl w-full max-h-[90vh] z-50 relative"
+                        className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl  overflow-hidden max-w-3xl w-full max-h-[90vh] z-50 relative"
                         initial={{ opacity: 0, y: 50, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -100,14 +115,14 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             </div>
 
                             <div className="flex items-center space-x-2">
-                                <Button
+                                {verifyPathName == 'vendor' && <Button
                                     variant="outline"
                                     size="icon"
-                                    onClick={() => onEdit(event)}
+                                    onClick={() => handleEdit(event)}
                                     className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
                                 >
                                     <Edit className="h-4 w-4" />
-                                </Button>
+                                </Button>}
                                 <Button
                                     variant="outline"
                                     size="icon"
@@ -120,9 +135,10 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     <X className="h-4 w-4" />
                                 </Button>
                             </div>
+
                         </div>
 
-                        <div className="overflow-y-auto max-h-[calc(90vh-130px)]">
+                        <div className="overflow-y-auto hide-scrollbar max-h-[calc(90vh-130px)]">
                             <div className="relative aspect-video">
                                 <img
                                     src={event.posterImage[0] || "https://placehold.co/600x400/171717/FFFFFF?text=Event"}

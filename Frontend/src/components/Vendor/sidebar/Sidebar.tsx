@@ -29,6 +29,7 @@ export function Sidebar() {
     { id: "workSamples", label: "Work Samples", icon: Image },
     { id: "bookings", label: "Bookings", icon: Calendar },
     { id: "addEvent", label: "Events", icon: CalendarDays },
+    { id: "showEvents", label: "ShowEvents", icon: CalendarDays },
     { id: "changePassword", label: "Change Password", icon: Lock },
     { id: "wallet", label: "Wallet", icon: Wallet },
     // { id: "logout", label: "Logout", icon: LogOut },

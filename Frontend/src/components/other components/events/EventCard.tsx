@@ -44,18 +44,18 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
     return (
         <motion.div
             onClick={onClick}
-            className="bg-zinc-900 rounded-lg border border-zinc-800 overflow-hidden cursor-pointer hover:border-zinc-700 transition-all h-full flex flex-col"
+            className="bg-zinc-900 rounded-lg border border-zinc-800 overflow-hidden  cursor-pointer hover:border-zinc-700 transition-all h-[400px] flex flex-col"
             whileHover={{ y: -5 }}
             whileTap={{ scale: 0.98 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <div className="relative aspect-video">
+            <div className="relative h-[180px]">
                 <img
                     src={event.posterImage[0] || "https://placehold.co/600x400/171717/FFFFFF?text=Event"}
                     alt={event.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover "
                 />
                 <div className="absolute top-2 right-2">
                     <span className={`text-xs font-semibold px-2 py-1 rounded-full uppercase ${getStatusColor(event.status)}`}>
@@ -64,32 +64,34 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                 </div>
             </div>
 
-            <div className="p-4 space-y-2 flex-grow">
-                <h3 className="font-semibold text-lg line-clamp-1 text-white">{event.title}</h3>
-                <p className="text-zinc-400 text-sm line-clamp-2">{event.description}</p>
+            <div className="p-4 flex flex-col flex-grow">
+                <div className="flex-grow">
+                    <h3 className="font-semibold text-lg line-clamp-1 text-white mb-2">{event.title}</h3>
+                    <p className="text-zinc-400 text-sm line-clamp-2 mb-3">{event.description}</p>
 
-                <div className="pt-2 space-y-2">
-                    <div className="flex items-center text-sm text-zinc-400">
-                        <Calendar className="h-4 w-4 mr-2 text-purple-400" />
-                        <span>{formatDate(new Date(event.startTime))}</span>
-                    </div>
-
-                    {event.venueName && (
+                    <div className="space-y-2">
                         <div className="flex items-center text-sm text-zinc-400">
-                            <MapPin className="h-4 w-4 mr-2 text-purple-400" />
-                            <span className="line-clamp-1">{event.venueName}</span>
+                            <Calendar className="h-4 w-4 mr-2 text-purple-400" />
+                            <span className="line-clamp-1">{formatDate(new Date(event.startTime))}</span>
                         </div>
-                    )}
 
-                    <div className="flex items-center justify-between mt-3">
-                        <span className="text-purple-400 font-semibold">
-                            {event.pricePerTicket > 0 ? formatCurrency(event.pricePerTicket) : "Free"}
-                        </span>
+                        {event.venueName && (
+                            <div className="flex items-center text-sm text-zinc-400">
+                                <MapPin className="h-4 w-4 mr-2 text-purple-400" />
+                                <span className="line-clamp-1">{event.venueName}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
 
-                        <div className="flex items-center text-xs text-zinc-500">
-                            <Users className="h-3 w-3 mr-1" />
-                            <span>{event.ticketPurchased} attending</span>
-                        </div>
+                <div className="flex items-center justify-between pt-3 border-t border-zinc-800 mt-3">
+                    <span className="text-purple-400 font-semibold">
+                        {event.pricePerTicket > 0 ? formatCurrency(event.pricePerTicket) : "Free"}
+                    </span>
+
+                    <div className="flex items-center text-xs text-zinc-500">
+                        <Users className="h-3 w-3 mr-1" />
+                        <span>{event.ticketPurchased} attending</span>
                     </div>
                 </div>
             </div>

@@ -251,3 +251,14 @@ export const createEvent = async (event: EventType) => {
         throw new Error('Error whilw creating event')
     }
 }
+
+export const findAllEventsInVendor = async (pageNo: number) => {
+    try {
+        const response = await axios.get(`/showEvents/${pageNo}`)
+        return response.data
+    } catch (error) {
+        console.log('error while fetching events in vendor side', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while fetching events in vendor side')
+    }
+}

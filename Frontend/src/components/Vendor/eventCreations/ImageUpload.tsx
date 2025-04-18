@@ -11,7 +11,7 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
-  onImageUploaded,
+  
   setPosterImage,
 }) => {
   const [dragging, setDragging] = useState(false);
@@ -52,7 +52,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   const handleCropComplete = (croppedBlob: File | null) => {
     console.log('crop complete', croppedBlob)
-    setPosterImage((prev) => [...(prev || []), croppedBlob!])
+    // setPosterImage((prev) => [...(prev || []), croppedBlob!])
+    setPosterImage((prev) => [...prev, croppedBlob!]);
+
   }
 
   // when cropping is done, update fileArray and preview

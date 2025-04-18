@@ -44,7 +44,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
 }) => {
   const handleImageUpload = (imageUrls: string[]) => {
     console.log(imageUrls)
-    setPosterImages([...posterImages, ...imageUrls]);
+    // setPosterImages([...posterImages, ...imageUrls]);
   };
   const [imageFiles, setImageFiles] = useState<File[] | null>([])
 

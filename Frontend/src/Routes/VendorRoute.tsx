@@ -13,6 +13,7 @@ import WorkSamples from "@/components/Vendor/workSamples/ShowWorkSamples";
 import AddWorkSample from "@/components/Vendor/workSamples/AddWorkSamples";
 import ChangePasswordVendor from "@/components/Vendor/passwordChange/ChangePasswordVendor";
 import EventCreationForm from "@/components/Vendor/eventCreations/EventCreationForm";
+import EventlistingInVendor from "@/components/Vendor/event/EventlistingInVendor";
 
 const VendorRoute = () => {
     return (
@@ -30,6 +31,8 @@ const VendorRoute = () => {
                 <Route path="addWorkSamples" element={<ProtectedRouteVendor><AddWorkSample /></ProtectedRouteVendor>}></Route>
                 <Route path="changePassword" element={<ProtectedRouteVendor><ChangePasswordVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="addEvent" element={<ProtectedRouteVendor><EventCreationForm /></ProtectedRouteVendor>}></Route>
+                <Route path="showEvents" element={<ProtectedRouteVendor><EventlistingInVendor /></ProtectedRouteVendor>}></Route>
+                {/* <Route path="editEvent" element={<ProtectedRouteVendor><Edit /></ProtectedRouteVendor>}></Route> */}
             </Route>
         </Routes>
     )

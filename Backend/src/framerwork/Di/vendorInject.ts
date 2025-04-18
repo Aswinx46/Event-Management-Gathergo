@@ -46,6 +46,8 @@ import { CreateWorkSampleController } from "../../adapters/controllers/vendor/wo
 import { EventRepository } from "../../adapters/repository/event/eventRepository";
 import { EventCreationUseCase } from "../../useCases/vendor/event/eventCreationUseCase";
 import { EventCreationController } from "../../adapters/controllers/vendor/event/eventCreationController";
+import { FindAllEventsVendorUseCase } from "../../useCases/vendor/event/findAllEventsUseCase";
+import { FindAllEventsVendorController } from "../../adapters/controllers/vendor/event/findAlllEventsVendorController";
 
 
 //-----------------Register vendor-------------------//
@@ -129,3 +131,7 @@ export const injectedCreateWorkSampleController = new CreateWorkSampleController
 const eventRepository = new EventRepository()
 const eventCreationUseCase = new EventCreationUseCase(eventRepository)
 export const injectedEventCreationController = new EventCreationController(eventCreationUseCase)
+
+//-------------------------------Find all events in vendor side--------------------------
+const findAllEventsVendorUseCase = new FindAllEventsVendorUseCase(eventRepository)
+export const injectedFindAllEventsVendorController = new FindAllEventsVendorController(findAllEventsVendorUseCase)

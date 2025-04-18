@@ -88,6 +88,7 @@ const EventCreationForm: React.FC = () => {
     const [endTime, setEndTime] = useState<string>("18:00");
     const [posterImages, setPosterImages] = useState<File[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isStepValid, setIsStepValid] = useState(true);
     const initialValues: EventType = {
         title: "",
@@ -221,6 +222,7 @@ const EventCreationForm: React.FC = () => {
 
         console.log("Event data:", eventData);
         createEvent.mutate(eventData, {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             onSuccess: (data) => {
                 toast("Event Created", {
                     description: "Your event has been created successfully!",
