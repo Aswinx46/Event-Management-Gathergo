@@ -1,4 +1,4 @@
-import { IqrServiceInterface } from "../../domain/interface/serviceInterface/!qrService";
+import { IqrServiceInterface } from "../../domain/interface/serviceInterface/IqrService";
 import QRcode from 'qrcode'
 export class QrService implements IqrServiceInterface {
     async createQrLink(ticketId: string): Promise<string> {

@@ -67,14 +67,14 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       email: email,
       phone: phone,
       eventId: event._id,
-      purchasedTicketCount: ticketCount,
-      totalAmount: event.pricePerTicket * ticketCount
+    
     }
     navigate('/ticketPayment', {
       state: {
-        amount: ticketPaymentData.totalAmount,
+        amount: event.pricePerTicket * ticketCount,
         ticketData: ticketPaymentData,
-        type: 'ticketBooking'
+        type: 'ticketBooking',
+        totalTicketCount:ticketCount
       }
     })
     setOpen(false)
