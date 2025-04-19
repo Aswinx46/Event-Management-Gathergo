@@ -1,0 +1,172 @@
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { format } from "date-fns";
+import { CalendarIcon, Clock, MapPin, Minus, Plus, Ticket } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Separator } from "../../ui/separator";
+import { Dialog, DialogContent } from "../../ui/dialog";
+import { EventType } from "@/types/EventType";
+
+type TicketPurchaseProps = {
+  event: EventType;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
+  const [ticketCount, setTicketCount] = useState(1);
+  const availableTickets = event.totalTicket - event.ticketPurchased;
+
+  const formatTime = (date: Date) => format(new Date(date), "h:mm a");
+
+  const handleIncrement = () => {
+    if (ticketCount < Math.min(event.maxTicketsPerUser, availableTickets)) {
+      setTicketCount(prev => prev + 1);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (ticketCount > 1) {
+      setTicketCount(prev => prev - 1);
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white">
+        {/* Close Button */}
+        {/* <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            className="text-gray-400 hover:text-white"
+            onClick={() => setOpen(false)}
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div> */}
+
+        <motion.div initial="hidden" animate="visible" variants={containerVariants} className="w-full">
+          <Card className="w-full bg-[#0A0A0A] border-[#2A2F3C] text-white">
+            <CardHeader className="space-y-1">
+              <motion.div variants={itemVariants}>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">
+                  {event.title}
+                </CardTitle>
+                <CardDescription className="text-gray-400 line-clamp-3 mt-2">
+                  {event.description}
+                </CardDescription>
+              </motion.div>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <motion.div variants={itemVariants} className="space-y-4">
+                <div className="flex items-center gap-3 text-gray-300">
+                  <CalendarIcon className="w-5 h-5 text-purple-400" />
+                  <span>{format(new Date(event.date[0]), "MMMM d, yyyy")}</span>
+                </div>
+
+                <div className="flex items-center gap-3 text-gray-300">
+                  <Clock className="w-5 h-5 text-purple-400" />
+                  <span>{formatTime(event.startTime)} - {formatTime(event.endTime)}</span>
+                </div>
+
+                <div className="flex items-center gap-3 text-gray-300">
+                  <MapPin className="w-5 h-5 text-purple-400" />
+                  <div>
+                    <div className="font-medium text-white">{event.venueName}</div>
+                    <div className="text-sm text-gray-400">{event.address}</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <Separator className="bg-[#2A2F3C]" />
+
+              <motion.div variants={itemVariants} className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Ticket className="w-5 h-5 text-purple-400" />
+                    <span className="font-medium">Ticket Price</span>
+                  </div>
+                  <span className="text-xl font-bold text-white">₹{event.pricePerTicket}</span>
+                </div>
+
+                <div className="flex justify-between items-center text-gray-300">
+                  <span>Available Tickets</span>
+                  <span>{availableTickets}</span>
+                </div>
+
+                <div className="flex justify-between items-center text-gray-300">
+                  <span>Max Tickets Per User</span>
+                  <span>{event.maxTicketsPerUser}</span>
+                </div>
+
+                <div className="p-4 bg-[#1A1F2C] rounded-lg border border-[#2A2F3C]">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-white">Select Tickets</span>
+                    <div className="flex items-center gap-4">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleDecrement}
+                        disabled={ticketCount <= 1}
+                        className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-8 text-center text-white">{ticketCount}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleIncrement}
+                        disabled={ticketCount >= Math.min(event.maxTicketsPerUser, availableTickets)}
+                        className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </CardContent>
+
+            <CardFooter className="flex-col space-y-4">
+              <div className="w-full flex justify-between items-center">
+                <span className="text-lg text-gray-300">Total Amount</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  ₹{event.pricePerTicket * ticketCount}
+                </span>
+              </div>
+              <Button
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold transition-all duration-300"
+                disabled={availableTickets === 0}
+              >
+                {availableTickets === 0 ? "Sold Out" : "Purchase Tickets"}
+              </Button>
+            </CardFooter>
+          </Card>
+        </motion.div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default TicketPurchase;

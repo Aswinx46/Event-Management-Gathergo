@@ -7,4 +7,4 @@ export interface IvendorModel extends Omit <VendorEntity , '_id' >,Document{
     _id:ObjectId
 }
 
-export const VendorModel=model<VendorEntity>('vendors',VendorSchema)
+export const VendorModel=model<VendorEntity>('vendors',VendorSchema) 

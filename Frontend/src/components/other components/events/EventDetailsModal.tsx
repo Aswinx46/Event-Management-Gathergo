@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Clock, MapPin, Users, Edit, Share2, ExternalLink } from "lucide-react";
+import { X, Calendar, Clock, MapPin, Edit } from "lucide-react";
 import { EventEntity } from "../../../types/EventEntity";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -54,7 +54,7 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
 
 const formatTicketAvailability = (totalTicket: number, ticketPurchased: number): string => {
     const available = totalTicket - ticketPurchased;
-    const percentLeft = Math.round((available / totalTicket) * 100);
+    // const percentLeft = Math.round((available / totalTicket) * 100);
 
     if (available <= 0) {
         return "Sold out";
@@ -69,17 +69,18 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     event,
     isOpen,
     onClose,
-    onEdit,
+
     currentPage
 }) => {
     const location = useLocation()
     const editEvent = useUpdateEvent()
     const queryClient = useQueryClient()
+    const navigate = useNavigate()
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
     const verifyPathName = location.pathname.split('/')[1]
-    const ticketsRemaining = event.totalTicket - event.ticketPurchased;
+    // const ticketsRemaining = event.totalTicket - event.ticketPurchased;
     const percentageSold = (event.ticketPurchased / event.totalTicket) * 100;
     const handleEdit = (event: EventEntity) => {
         setSelectedEvent(event)
@@ -88,7 +89,6 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     }
 
     const handleOnSaveEdit = (event: EventEntity) => {
-        console.log(event)
         editEvent.mutate({ eventId: event._id, update: event }, {
             onSuccess: (data) => {
                 toast.success(data.message)
@@ -245,7 +245,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     </div>
 
                                     <div className="mt-4 flex justify-center">
-                                        <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                                        <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                                             Get Tickets
                                         </Button>
                                     </div>

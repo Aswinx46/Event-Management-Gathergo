@@ -24,7 +24,10 @@ export class EventRepository implements IeventRepository {
         return { events, totalPages }
     }
     async editEvent(eventId: string, update: EventUpdateEntity): Promise<EventEntity | null> {
-        const updateEvent = await eventModal.findByIdAndUpdate(eventId, update, { new: true }).select('-__v')
-        return updateEvent
+        return await eventModal.findByIdAndUpdate(eventId, update, { new: true }).select('-__v')
+
+    }
+    async findEventById(eventId: string): Promise<EventEntity | null> {
+        return eventModal.findById(eventId).select('-__v')
     }
 }

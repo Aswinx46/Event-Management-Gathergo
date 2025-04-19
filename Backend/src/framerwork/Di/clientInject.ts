@@ -51,6 +51,8 @@ import { SearchCategoryController } from "../../adapters/controllers/client/cate
 import { EventRepository } from "../../adapters/repository/event/eventRepository";
 import { FindAllEventsUseCase } from "../../useCases/client/events/findAllEventsUseCase";
 import { FindAllEventsClientController } from "../../adapters/controllers/client/events/findAllEventsController";
+import { FindEventByIdUseCase } from "../../useCases/client/events/findEventByIdUseCase";
+import { FindEventByIdClientController } from "../../adapters/controllers/client/events/findEventByIdClientController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -149,3 +151,7 @@ export const injectedSearchCategoryController = new SearchCategoryController(sea
 const eventDatabase = new EventRepository()
 const findEventsClientUseCase = new FindAllEventsUseCase(eventDatabase)
 export const injectedFindEventsClientController = new FindAllEventsClientController(findEventsClientUseCase)
+
+//--------------------------------Find event by id---------------------------
+const findEventByIdUseCase = new FindEventByIdUseCase(eventDatabase)
+export const injectedFindEventByIdClientController = new FindEventByIdClientController(findEventByIdUseCase)

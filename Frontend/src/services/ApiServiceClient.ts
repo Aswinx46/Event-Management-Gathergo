@@ -285,3 +285,14 @@ export const findevents = async (pageNo: number) => {
         throw new Error('error while fetching events in client side')
     }
 }
+
+export const findEventById = async (eventId: string) => {
+    try {
+        const response = await axios.get(`/findEventById/${eventId}`)
+        return response.data
+    } catch (error) {
+        console.log('error while finding event by id', error)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
+        throw new Error('error while finding event by id')
+    }
+}

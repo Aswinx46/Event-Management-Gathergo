@@ -6,4 +6,5 @@ export interface IeventRepository {
     findAllEventsClient(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }>
     findEventsOfAVendor(vendorId: string, pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }>
     editEvent(eventId: string, update: EventUpdateEntity): Promise<EventEntity | null>
+    findEventById(eventId: string): Promise<EventEntity | null>
 }

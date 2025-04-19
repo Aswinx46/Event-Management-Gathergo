@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindCategoryForClientController, injectedFindEventsClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSearchCategoryController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedCreateBookingController, injectedFindCategoryForClientController, injectedFindEventByIdClientController, injectedFindEventsClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, injectedSearchCategoryController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
@@ -77,6 +77,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/findEvents/:pageNo', (req: Request, res: Response) => {
             injectedFindEventsClientController.handleFindAllEventsClient(req, res)
+        })
+        this.clientRoute.get('/findEventById/:eventId', (req: Request, res: Response) => {
+            injectedFindEventByIdClientController.handleFindEventById(req, res)
         })
     }
 }

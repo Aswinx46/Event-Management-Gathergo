@@ -9,10 +9,9 @@ function EventListingMain() {
     const findEvents = useFindEvents(currentPage)
     const events = findEvents.data?.events
     const totalPages = findEvents.data?.totalPages
-    console.log(findEvents.data)
     return (
         <div className='bg-black h-screen'>
-            <EventList events={events} isLoading={findEvents.isLoading} />
+            <EventList events={events} isLoading={findEvents.isLoading} currentPage={currentPage} />
             <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages}/>
         </div>
     )
