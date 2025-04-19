@@ -27,6 +27,8 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.6.1",
+    "@stripe/react-stripe-js": "^3.6.0",
+    "@stripe/stripe-js": "^7.1.0",
     "@tailwindcss/vite": "^4.0.12",
     "@tanstack/react-query": "^5.68.0",
     "@types/react-easy-crop": "^1.16.0",

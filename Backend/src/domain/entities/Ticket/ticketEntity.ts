@@ -12,4 +12,5 @@ export interface TicketEntity {
     eventId: ObjectId;
     clientId: ObjectId;
     ticketStatus: 'used' | 'refunded' | 'unused'
+    razorPayOrderId:string
 }

@@ -7,6 +7,12 @@ import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
 import { Dialog, DialogContent } from "../../ui/dialog";
 import { EventType } from "@/types/EventType";
+import { useNavigate } from "react-router-dom";
+import { TicketEntity } from "@/types/TicketPaymentType";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { Label } from "../../ui/label";
+import { Input } from "../../ui/input";
 
 type TicketPurchaseProps = {
   event: EventType;
@@ -15,9 +21,13 @@ type TicketPurchaseProps = {
 };
 
 const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
+  console.log(event)
   const [ticketCount, setTicketCount] = useState(1);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const navigate = useNavigate()
   const availableTickets = event.totalTicket - event.ticketPurchased;
-
+  const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
   const formatTime = (date: Date) => format(new Date(date), "h:mm a");
 
   const handleIncrement = () => {
@@ -50,19 +60,29 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
     }
   };
 
+  const handlePayment = () => {
+
+    const ticketPaymentData: TicketEntity = {
+      clientId: clientId!,
+      email: email,
+      phone: phone,
+      eventId: event._id,
+      purchasedTicketCount: ticketCount,
+      totalAmount: event.pricePerTicket * ticketCount
+    }
+    navigate('/ticketPayment', {
+      state: {
+        amount: ticketPaymentData.totalAmount,
+        ticketData: ticketPaymentData,
+        type: 'ticketBooking'
+      }
+    })
+    setOpen(false)
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white">
-        {/* Close Button */}
-        {/* <div className="flex justify-end">
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white"
-            onClick={() => setOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div> */}
 
         <motion.div initial="hidden" animate="visible" variants={containerVariants} className="w-full">
           <Card className="w-full bg-[#0A0A0A] border-[#2A2F3C] text-white">
@@ -101,6 +121,32 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
               <Separator className="bg-[#2A2F3C]" />
 
               <motion.div variants={itemVariants} className="space-y-4">
+                {/* Contact Information */}
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="bg-[#1A1F2C] border-[#2A2F3C] text-white placeholder:text-gray-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-gray-300">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="Enter your phone number"
+                      className="bg-[#1A1F2C] border-[#2A2F3C] text-white placeholder:text-gray-500"
+                    />
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2 text-gray-300">
                     <Ticket className="w-5 h-5 text-purple-400" />
@@ -157,7 +203,8 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
               </div>
               <Button
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold transition-all duration-300"
-                disabled={availableTickets === 0}
+                onClick={handlePayment}
+                disabled={availableTickets === 0 || !email || !phone}
               >
                 {availableTickets === 0 ? "Sold Out" : "Purchase Tickets"}
               </Button>

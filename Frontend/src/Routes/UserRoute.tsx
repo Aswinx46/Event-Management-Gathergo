@@ -15,6 +15,7 @@ import NotFound from "@/components/other components/NotFound";
 import ChangePasswordClient from "@/components/Client/profile/ChangePasswordClient";
 import EventListingMain from "@/components/Client/events/EventListingMain";
 import EventDetails from "@/components/Client/events/EventBookingDetails";
+import PaymentForm from "@/components/Client/paymentForm/PaymentFormStripe";
 const UserRoute = () => {
     return (
         <Routes>
@@ -31,7 +32,8 @@ const UserRoute = () => {
                 <Route path="/serviceBooking/:serviceId/:vendorId" element={<ServiceBooking />}></Route>
                 <Route path="/categories" element={<CategoryListing />}></Route>
                 <Route path="/events" element={<EventListingMain />}></Route>
-                <Route path="/event/:eventId" element={<EventDetails  />}></Route>
+                <Route path="/event/:eventId" element={<EventDetails />}></Route>
+                <Route path="/ticketPayment" element={<ProtectedRouteClient><PaymentForm /></ProtectedRouteClient>}></Route>
             </Route>
             <Route path="/profile/*" element={<ProtectedRouteClient><ClientLayout /> </ProtectedRouteClient>}>
                 <Route path="bookings" element={<ProtectedRouteClient><BookingListing /></ProtectedRouteClient>} ></Route>
