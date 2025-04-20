@@ -53,6 +53,12 @@ import { FindAllEventsUseCase } from "../../useCases/client/events/findAllEvents
 import { FindAllEventsClientController } from "../../adapters/controllers/client/events/findAllEventsController";
 import { FindEventByIdUseCase } from "../../useCases/client/events/findEventByIdUseCase";
 import { FindEventByIdClientController } from "../../adapters/controllers/client/events/findEventByIdClientController";
+import { CreateTicketUseCase } from "../../useCases/client/ticket/ticketCreationUseCase";
+import { TicketRepository } from "../../adapters/repository/ticket/ticketRepository";
+import { PaymentService } from "../services/payementService";
+import { QrService } from "../services/qrService";
+import { PaymentRepository } from "../../adapters/repository/payment/paymentRepository";
+import { CreateTicketController } from "../../adapters/controllers/client/ticketPayment/createTicketController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -155,3 +161,11 @@ export const injectedFindEventsClientController = new FindAllEventsClientControl
 //--------------------------------Find event by id---------------------------
 const findEventByIdUseCase = new FindEventByIdUseCase(eventDatabase)
 export const injectedFindEventByIdClientController = new FindEventByIdClientController(findEventByIdUseCase)
+
+//------------------------------Ticket payment creation-------------------------------------
+const ticketDatabase = new TicketRepository()
+const stripeService = new PaymentService()
+const generateQrService = new QrService()
+const paymentDatabase = new PaymentRepository()
+const createTicketUseCase = new CreateTicketUseCase(ticketDatabase, stripeService, generateQrService, paymentDatabase)
+export const injectedCreateTicketController = new CreateTicketController(createTicketUseCase)

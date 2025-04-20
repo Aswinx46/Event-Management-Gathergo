@@ -24,8 +24,8 @@ export const ticketSchema = new Schema<TicketEntity>({
         ref: 'event',
         required: true
     },
-    name: {
-        type: String,
+    ticketCount: {
+        type: Number,
         required: true
     },
     paymentStatus: {
@@ -33,7 +33,7 @@ export const ticketSchema = new Schema<TicketEntity>({
         enum: ["pending", "successfull", "failed", "refunded"]
     },
     phone: {
-        type: Number,
+        type: String,
         required: false
     },
     qrCodeLink: {
@@ -44,6 +44,14 @@ export const ticketSchema = new Schema<TicketEntity>({
         type: String,
         enum: ['used', 'refunded', 'unused']
     },
-
+    paymentTransactionId: {
+        type: Schema.Types.ObjectId,
+        ref: 'payment',
+        required: true
+    },
+    totalAmount: {
+        type: Number,
+        required: true
+    }
 
 })

@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios';
 import axios from '../axios/clientAxios'
 import { ClientUpdateProfileEntity } from '@/types/ClientUpdateProfileType';
+import { TicketEntity } from '@/types/TicketPaymentType';
 
 interface Login {
     email: string;
@@ -295,4 +296,15 @@ export const findEventById = async (eventId: string) => {
         if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error while finding event by id')
     }
+}
+
+export const createTicket = async (ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string) => {
+    try {
+        const response = await axios.post('/createTicket', { ticket, totalCount, totalAmount, paymentIntentId, vendorId })
+        return response.data
+    } catch (error) {
+        console.log('error while creating ticket', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while creating ticket')
+    }
+
 }

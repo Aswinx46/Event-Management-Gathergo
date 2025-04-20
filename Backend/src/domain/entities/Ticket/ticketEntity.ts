@@ -4,7 +4,8 @@ export interface TicketEntity {
     _id?: ObjectId | string
     ticketId: string;
     createdAt?: Date;
-    // name: string;
+    totalAmount: number
+    ticketCount: number
     phone: string;
     email: string;
     paymentStatus: 'pending' | 'successful' | 'failed';
@@ -12,5 +13,5 @@ export interface TicketEntity {
     eventId: ObjectId | string;
     clientId: ObjectId | string;
     ticketStatus: 'used' | 'refunded' | 'unused'
-    // razorPayOrderId:string
+    paymentTransactionId: ObjectId 
 }

@@ -18,5 +18,6 @@ export interface EventType {
     address?: string
     venueName?: string
     category: string
+    hostedBy:string
     status: "upcoming" | "completed" | "cancelled"
 }
