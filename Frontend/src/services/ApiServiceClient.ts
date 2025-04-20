@@ -308,3 +308,13 @@ export const createTicket = async (ticket: TicketEntity, totalCount: number, tot
     }
 
 }
+
+export const confirmTicketAndPayment = async (ticket: TicketEntity, paymentIntent: string, vendorId: string) => {
+    try {
+        const response = await axios.post('/confirmTicket', { ticket, paymentIntent, vendorId })
+        return response.data
+    } catch (error) {
+        console.log('error while confirming ticket and payment', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while confirming ticket and payment')
+    }
+}

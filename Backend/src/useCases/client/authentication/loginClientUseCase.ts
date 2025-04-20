@@ -2,6 +2,7 @@ import { clientEntity } from "../../../domain/entities/clientEntity";
 import { IClientDatabaseRepository } from "../../../domain/interface/repositoryInterfaces/client/clientdatabaseRepository";
 import { IClientLoginuseCase } from "../../../domain/interface/useCaseInterfaces/client/authentication/clientLoginUseCase";
 import { hashPassword } from "../../../framerwork/hashPassword/hashpassword";
+
 export class LoginClientUseCase implements IClientLoginuseCase{
     private clientDatabase:IClientDatabaseRepository
     private hashpassword:hashPassword
@@ -16,6 +17,7 @@ export class LoginClientUseCase implements IClientLoginuseCase{
         if(client.status == "block") throw new Error('client is blocked by admin')
         const isPasswordValid =await this.hashpassword.comparePassword(password,client.password)
         if(!isPasswordValid ) throw new Error ("invalid password")
+
         return client
     }
 }

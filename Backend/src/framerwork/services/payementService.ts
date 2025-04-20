@@ -33,9 +33,9 @@ export class PaymentService implements IStripeService {
     async confirmPayment(paymentIntentId: string): Promise<any> {
         try {
             const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId)
-            if (paymentIntent.status !== 'succeeded') {
-                throw new Error('Payment not successful');
-            }
+            // if (paymentIntent.status !== 'succeeded') {
+            //     throw new Error('Payment not successful');
+            // }
             return paymentIntent;
         } catch (error) {
             console.error("[StripePaymentService] Error confirming payment:", error);

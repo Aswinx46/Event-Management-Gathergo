@@ -10,8 +10,8 @@ export class CreateTicketController {
     async handleCreateUseCase(req: Request, res: Response): Promise<void> {
         try {
             const { ticket, totalCount, totalAmount, paymentIntentId, vendorId } = req.body
-            const stripeClientId = await this.createTicketUseCase.createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId)
-            res.status(HttpStatus.CREATED).json({ message: "Ticket and payment created and initiated", stripeClientId })
+            const { stripeClientId, createdTicket } = await this.createTicketUseCase.createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId)
+            res.status(HttpStatus.CREATED).json({ message: "Ticket and payment created and initiated", stripeClientId, createdTicket })
         } catch (error) {
             console.log('error while creating ticket', error)
             res.status(HttpStatus.BAD_REQUEST).json({

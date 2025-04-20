@@ -87,10 +87,13 @@
 
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Button } from "../../ui/button";
-import { useLocation } from "react-router-dom";
-import { useCreateTicket } from "@/hooks/ClientCustomHooks";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useConfirmTicketAndPayment, useCreateTicket } from "@/hooks/ClientCustomHooks";
 import { TicketEntity } from "@/types/TicketPaymentType";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { TicketConfirmationModal } from "../events/TicketConfirmation";
+import { TicketBackendEntity } from "@/types/TicketBackendType";
 
 export interface PaymentFormProps {
   amount: number;
@@ -102,15 +105,18 @@ const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const [paymentStatus, setPaymentStatus] = useState<string>(""); // Track the payment status
+  const [updatedTicket, setUpdatedTicket] = useState<TicketBackendEntity>()
   const location = useLocation();
   const data = location.state;
   const ticket: TicketEntity = data.ticketData;
   const createTicket = useCreateTicket();
-
+  const confirmTicket = useConfirmTicketAndPayment()
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    const vendorId = data.vendorId
+    console.log('vendorId in form', vendorId)
     if (!stripe || !elements) return;
 
     const cardElement = elements.getElement(CardElement);
@@ -134,11 +140,12 @@ const PaymentForm = () => {
         paymentIntentId: paymentMethod.id,
         totalAmount: data.amount,
         totalCount: data.totalTicketCount,
-        vendorId: data.hostedBy,
+        vendorId: data.vendorId,
       });
 
       const clientSecret = response.stripeClientId;
-
+      const updatedTicket = response.createdTicket
+      setUpdatedTicket(updatedTicket)
       const { error: paymentError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -149,9 +156,18 @@ const PaymentForm = () => {
         console.error("❌ Payment failed:", paymentError.message);
         setPaymentStatus("Payment Failed");
       } else if (paymentIntent?.status === "succeeded") {
-        console.log("✅ Payment successful:", paymentIntent);
-        setPaymentStatus("Payment Successful");
-        data.onSuccess?.();
+        confirmTicket.mutate({ ticket: updatedTicket, paymentIntent: paymentIntent.id, vendorId: data.vendorId }, {
+          onSuccess: () => {
+            console.log("✅ Payment successful:", paymentIntent);
+            setPaymentStatus("Payment Successful");
+            data.onSuccess?.();
+            setIsOpen(true)
+          },
+          onError: (err) => {
+            toast.error(err.message)
+          }
+        })
+
       }
     }
 
@@ -182,7 +198,7 @@ const PaymentForm = () => {
     <form onSubmit={handleSubmit} className="space-y-4 p-4 rounded-xl border shadow-lg w-full max-w-md mx-auto bg-white">
       {/* Card Element with custom styles */}
       <CardElement options={cardElementOptions} className="border p-2 rounded-md" />
-      
+      {isOpen && <TicketConfirmationModal isOpen={isOpen} ticket={updatedTicket!} setIsOpen={setIsOpen} />}
       <div className="text-lg font-medium">Total: ₹{data.amount}</div>
 
       {/* Payment status with animated UI */}
@@ -191,8 +207,8 @@ const PaymentForm = () => {
           {paymentStatus === "Processing..."
             ? "Processing payment... Please wait."
             : paymentStatus === "Payment Successful"
-            ? "Payment Successful! 🎉"
-            : "Payment Failed. Please try again."}
+              ? "Payment Successful! 🎉"
+              : "Payment Failed. Please try again."}
         </div>
       )}
 

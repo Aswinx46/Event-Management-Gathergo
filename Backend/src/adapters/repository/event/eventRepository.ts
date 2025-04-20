@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { EventEntity } from "../../../domain/entities/event/eventEntity";
 import { EventUpdateEntity } from "../../../domain/entities/event/eventUpdateEntity";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
@@ -29,5 +30,13 @@ export class EventRepository implements IeventRepository {
     }
     async findEventById(eventId: string): Promise<EventEntity | null> {
         return eventModal.findById(eventId).select('-__v')
+    }
+    async updateTicketPurchaseCount(eventId: string | ObjectId, newCount: number): Promise<EventEntity | null> {
+        return eventModal.findByIdAndUpdate(eventId, { ticketPurchased: newCount })
+    }
+    async findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number; ticketPurchased: number; }> {
+        const eventDetails = await eventModal.findById(eventId).select('ticketPurchased totalTicket')
+        if (!eventDetails) throw new Error('No event found in this ID')
+        return { totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased }
     }
 }

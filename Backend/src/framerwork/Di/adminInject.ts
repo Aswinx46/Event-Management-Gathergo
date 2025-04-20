@@ -17,6 +17,7 @@ import { AdminRepository } from "../../adapters/repository/admin/adminRepository
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
+import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
 import { AdminLoginUseCase } from "../../useCases/admin/authentication/adminLoginuseCase";
 
 import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/changeStatusOfCategoryUseCase";
@@ -39,7 +40,8 @@ import { RedisService } from "../services/redisService";
 
 //-----------------------------Admin login-----------------------
 const adminRespository = new AdminRepository()
-const adminLoginUseCase = new AdminLoginUseCase(adminRespository)
+const walletDatabase = new WalletRepository()
+const adminLoginUseCase = new AdminLoginUseCase(adminRespository, walletDatabase)
 const jwtService = new JwtService()
 const redisService = new RedisService()
 export const injectedAdminLoginController = new AdminLoginController(adminLoginUseCase, jwtService, redisService)

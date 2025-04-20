@@ -19,7 +19,7 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
         this.genQr = genQr
         this.paymentDatabase = paymentDatabase
     }
-    async createTicket(ticket: TicketFromFrontend, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string): Promise<string> {
+    async createTicket(ticket: TicketFromFrontend, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string): Promise<{ createdTicket: TicketEntity, stripeClientId: string }> {
         const ticketId = genarateRandomUuid()
         if (!ticketId) throw new Error('Error while creating ticket id')
         const qrCodeLink = await this.genQr.createQrLink(ticketId)
@@ -48,8 +48,8 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
             totalAmount: totalAmount,
             paymentTransactionId: paymentDocumentCreation._id!,
         }
-        const ticketSave = await this.ticketDatabase.createTicket(originalTicket)
-        if (!ticketSave) throw new Error('Error while creating ticket')
-        return clientStripeId
+        const createdTicket = await this.ticketDatabase.createTicket(originalTicket)
+        if (!createdTicket) throw new Error('Error while creating ticket')
+        return { createdTicket, stripeClientId: clientStripeId }
     }
 }

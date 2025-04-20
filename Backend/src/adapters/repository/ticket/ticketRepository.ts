@@ -6,4 +6,7 @@ export class TicketRepository implements IticketRepositoryInterface {
     async createTicket(ticket: TicketEntity): Promise<TicketEntity> {
         return await ticketModel.create(ticket)
     }
+    async updatePaymentstatus(ticketId: string): Promise<TicketEntity | null> {
+        return await ticketModel.findByIdAndUpdate(ticketId, { paymentStatus: 'successful' }, { new: true })
+    }
 }

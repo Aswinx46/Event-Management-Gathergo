@@ -59,15 +59,20 @@ import { PaymentService } from "../services/payementService";
 import { QrService } from "../services/qrService";
 import { PaymentRepository } from "../../adapters/repository/payment/paymentRepository";
 import { CreateTicketController } from "../../adapters/controllers/client/ticketPayment/createTicketController";
+import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
+import { ConfirmTicketAndPaymentUseCase } from "../../useCases/client/ticket/confirmTicketAndPaymentUseCase";
+import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
+import { ConfirmTicketAndPaymentController } from "../../adapters/controllers/client/ticketPayment/confirmTicketAndPaymentController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
 const ClientRepository = new clientRepository()
 const vendorDatabase = new VendorDatabase()
+const walletDatabase = new WalletRepository()
 const useExistance = new userExistance(ClientRepository, vendorDatabase)
 const SendOtpClientUseCase = new sendOtpClientUseCase(otpService, EmailService, useExistance)
-const createClientUseCase = new CreateClientUseCase(ClientRepository)
+const createClientUseCase = new CreateClientUseCase(ClientRepository, walletDatabase)
 export const clientAuthenticationController = new ClientAuthenticationController(createClientUseCase, SendOtpClientUseCase)
 
 
@@ -169,3 +174,8 @@ const generateQrService = new QrService()
 const paymentDatabase = new PaymentRepository()
 const createTicketUseCase = new CreateTicketUseCase(ticketDatabase, stripeService, generateQrService, paymentDatabase)
 export const injectedCreateTicketController = new CreateTicketController(createTicketUseCase)
+
+//------------------------------Confirm ticket and payment confirmation----------------------
+const transactionDatabase = new TransactionRepository()
+const confirmTicketAndPaymentUseCase = new ConfirmTicketAndPaymentUseCase(stripeService, eventDatabase, ticketDatabase, walletDatabase, transactionDatabase)
+export const injectedConfirmTicketAndPaymentController = new ConfirmTicketAndPaymentController(confirmTicketAndPaymentUseCase)

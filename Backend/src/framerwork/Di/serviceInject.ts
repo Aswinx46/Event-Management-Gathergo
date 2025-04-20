@@ -7,7 +7,9 @@ import { vendorStatusCheckingMiddleware } from "../../adapters/middlewares/vendo
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
+import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
 import { RefreshTokenUseCase } from "../../useCases/auth/refreshTokenuseCase";
+import { WalletCreationUseCase } from "../../useCases/wallet/walletCreationUseCase";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 import { TokenService } from "../services/tokenService";
@@ -35,3 +37,7 @@ export const injectedClientStatusCheckingMiddleware = clientStatusCheckingMiddle
 
 //-------------------------------Vendor status checking middleware-------------------
 export const injectedVendorStatusCheckingMiddleware = vendorStatusCheckingMiddleware(redisService, vendorDatabase)
+
+//--------------------------------------Wallet use case injection-------------------
+const walletDatabase = new WalletRepository()
+export const injectedWalletCreationUseCase = new WalletCreationUseCase(walletDatabase)

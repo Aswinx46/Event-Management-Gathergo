@@ -1,4 +1,4 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, createBooking, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmTicketAndPayment, createBooking, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -189,5 +189,11 @@ export const useCreateTicket=()=>{
     return useMutation({
         mutationFn:({ticket, totalCount, totalAmount, paymentIntentId, vendorId}:{ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string})=>createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId)
 
+    })
+}
+
+export const useConfirmTicketAndPayment=()=>{
+    return useMutation({
+        mutationFn:({ticket, paymentIntent, vendorId}:{ticket: TicketEntity, paymentIntent: string, vendorId: string})=>confirmTicketAndPayment(ticket, paymentIntent, vendorId)
     })
 }
