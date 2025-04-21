@@ -22,7 +22,11 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
     async createTicket(ticket: TicketFromFrontend, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string): Promise<{ createdTicket: TicketEntity, stripeClientId: string }> {
         const ticketId = genarateRandomUuid()
         if (!ticketId) throw new Error('Error while creating ticket id')
-        const qrCodeLink = await this.genQr.createQrLink(ticketId)
+        const hostName = process.env.HOSTNAME
+        if (!hostName) throw new Error("no host name found")
+        const qrLink = `${hostName}/verifyTicket/${ticketId}`
+        console.log('id for qr', qrLink)
+        const qrCodeLink = await this.genQr.createQrLink(qrLink)
         if (!qrCodeLink) throw new Error('Error while creating qr code link')
         const clientStripeId = await this.stripe.createPaymentIntent(totalAmount, 'ticket', { ticket: ticket })
         if (!clientStripeId) throw new Error("Error while creating stripe client id")

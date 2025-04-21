@@ -29,6 +29,7 @@ interface TicketConfirmationModalProps {
 
 export const TicketConfirmationModal = ({ ticket, isOpen, setIsOpen }: TicketConfirmationModalProps) => {
     const navigate = useNavigate()
+    console.log(ticket)
     return (
         <Dialog open={isOpen} onOpenChange={() => navigate('/')}>
             <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden bg-[#1A1F2C] rounded-2xl dark:border-none">
@@ -78,11 +79,11 @@ export const TicketConfirmationModal = ({ ticket, isOpen, setIsOpen }: TicketCon
                                     { label: "Amount", value: `$${ticket.totalAmount.toFixed(2)}` },
                                     { label: "Quantity", value: `${ticket.ticketCount} tickets` },
                                     {
-                                        label: "Date",
+                                        label: "BookingDate",
                                         value: ticket.createdAt ? format(new Date(ticket.createdAt), 'MMM dd, yyyy') : '-'
                                     },
                                     {
-                                        label: "Status",
+                                        label: "PaymentStatus",
                                         value: ticket.paymentStatus.charAt(0).toUpperCase() + ticket.paymentStatus.slice(1),
                                         className: ticket.paymentStatus === 'successful' ? 'text-green-500' :
                                             ticket.paymentStatus === 'failed' ? 'text-red-500' : 'text-yellow-500'

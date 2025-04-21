@@ -40,7 +40,6 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
         const updateTicketCount = await this.eventDatabase.updateTicketPurchaseCount(ticket.eventId!, newTicketPurchasedCount)
         const updatedTicket = await this.ticketDatabase.updatePaymentstatus(ticket._id!)
         if (!updatedTicket) throw new Error("No ticket found in this ID")
-
         const adminId = process.env.ADMIN_ID
         if (!adminId) throw new Error('NO admin id found')
         const adminCommision = ticket.totalAmount * 0.01

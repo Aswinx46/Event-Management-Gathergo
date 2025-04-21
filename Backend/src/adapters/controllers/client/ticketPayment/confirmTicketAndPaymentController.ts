@@ -10,8 +10,9 @@ export class ConfirmTicketAndPaymentController {
     async handleConfirmTicketAndPayment(req: Request, res: Response): Promise<void> {
         try {
             const { ticket, paymentIntent, vendorId } = req.body
-           
+
             const confirmTicketAndPayment = await this.confirmTicketAndPaymentUseCase.confirmTicketAndPayment(ticket, paymentIntent, vendorId)
+  
             res.status(HttpStatus.OK).json({ message: "Ticket confirmed", confirmTicketAndPayment })
         } catch (error) {
             console.log('error while confirming ticket and payment', error)
