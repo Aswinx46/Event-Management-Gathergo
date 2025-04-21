@@ -16,6 +16,7 @@ import ChangePasswordClient from "@/components/Client/profile/ChangePasswordClie
 import EventListingMain from "@/components/Client/events/EventListingMain";
 import EventDetails from "@/components/Client/events/EventBookingDetails";
 import PaymentForm from "@/components/Client/paymentForm/PaymentFormStripe";
+import BookedEvents from "@/components/Client/profile/eventListing/BookedEventsClient";
 const UserRoute = () => {
     return (
         <Routes>
@@ -39,6 +40,7 @@ const UserRoute = () => {
                 <Route path="bookings" element={<ProtectedRouteClient><BookingListing /></ProtectedRouteClient>} ></Route>
                 <Route path="home" element={<ProtectedRouteClient><UserProfile /></ProtectedRouteClient>} ></Route>
                 <Route path="changePassword" element={<ProtectedRouteClient><ChangePasswordClient /></ProtectedRouteClient>} ></Route>
+                <Route path="bookedEvents" element={<ProtectedRouteClient><BookedEvents /></ProtectedRouteClient>} ></Route>
                 {/* <Route path="logout" element={<LogoutConfirmation/>} ></Route> */}
             </Route>
         </Routes>

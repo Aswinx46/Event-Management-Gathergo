@@ -63,6 +63,8 @@ import { WalletRepository } from "../../adapters/repository/wallet/walletReposit
 import { ConfirmTicketAndPaymentUseCase } from "../../useCases/client/ticket/confirmTicketAndPaymentUseCase";
 import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
 import { ConfirmTicketAndPaymentController } from "../../adapters/controllers/client/ticketPayment/confirmTicketAndPaymentController";
+import { ShowTicketAndEventClientUseCase } from "../../useCases/client/ticket/showTicketAndEventClientUse";
+import { TicketAndEventDetailsClientController } from "../../adapters/controllers/client/profile/ticketAndEvent/ticketAndEventDetailsClientController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -179,3 +181,7 @@ export const injectedCreateTicketController = new CreateTicketController(createT
 const transactionDatabase = new TransactionRepository()
 const confirmTicketAndPaymentUseCase = new ConfirmTicketAndPaymentUseCase(stripeService, eventDatabase, ticketDatabase, walletDatabase, transactionDatabase)
 export const injectedConfirmTicketAndPaymentController = new ConfirmTicketAndPaymentController(confirmTicketAndPaymentUseCase)
+
+//--------------------------------find ticket and event details for profile------------------------
+const ticketAndEventDetailsUseCase = new ShowTicketAndEventClientUseCase(ticketDatabase)
+export const injectedTicketAndEventDetailsCientController = new TicketAndEventDetailsClientController(ticketAndEventDetailsUseCase)

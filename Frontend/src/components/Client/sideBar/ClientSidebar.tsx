@@ -43,7 +43,7 @@ const menuItems = [
   {
     icon: Calendar,
     label: "Booked Events",
-    path: "/events",
+    path: "/profile/bookedEvents",
   },
   {
     icon: LogOut,
@@ -101,7 +101,7 @@ export function ClientSidebar() {
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed md:static top-0 left-0 z-40 h-screen w-64 bg-white shadow-lg flex flex-col overflow-hidden"
+        className="fixed md:static top-0 left-0 z-40 h-screen w-64 bg-white shadow-lg flex flex-col overflow-hidden flex-shrink-0"
       >
         <div className="p-5 border-b">
           <h2 className="text-xl font-bold text-gray-800">Client Dashboard</h2>
@@ -115,11 +115,10 @@ export function ClientSidebar() {
                   whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleMenuItemClick(item.path)}
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors duration-300 ${
-                    isActive(item.path)
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors duration-300 ${isActive(item.path)
                       ? "bg-black text-white"
                       : "hover:bg-gray-100 text-gray-800"
-                  }`}
+                    }`}
                 >
                   <item.icon size={18} className="mr-3" />
                   <span>{item.label}</span>

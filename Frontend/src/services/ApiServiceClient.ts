@@ -318,3 +318,13 @@ export const confirmTicketAndPayment = async (ticket: TicketEntity, paymentInten
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while confirming ticket and payment')
     }
 }
+
+export const findTicketAndEventDetailsClient = async (clientId: string, pageNo: number) => {
+    try {
+        const response = await axios.get(`/getTicketAndEventDetails/${clientId}/${pageNo}`)
+        return response.data
+    } catch (error) {
+        console.log('error while fetching ticketAndEventDetails', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching ticketAndEvent details')
+    }
+}
