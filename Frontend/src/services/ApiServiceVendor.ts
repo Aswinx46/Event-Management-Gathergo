@@ -274,3 +274,13 @@ export const updateEvent = async (eventId: string, update: EventUpdateEntity) =>
         throw new Error('Error while updating event')
     }
 }
+
+export const verifyTicket = async (ticketId: string, eventId: string) => {
+    try {
+        const response = await axios.post('/verifyTicket', { ticketId, eventId })
+        return response.data
+    } catch (error) {
+        console.log('error while verifying ticket', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while verifying ticket')
+    }
+}

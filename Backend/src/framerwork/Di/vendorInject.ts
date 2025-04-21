@@ -50,6 +50,9 @@ import { FindAllEventsVendorUseCase } from "../../useCases/vendor/event/findAllE
 import { FindAllEventsVendorController } from "../../adapters/controllers/vendor/event/findAlllEventsVendorController";
 import { UpdateEventUseCase } from "../../useCases/vendor/event/udpateEventUseCase";
 import { UpdateEventController } from "../../adapters/controllers/vendor/event/updateEventController";
+import { TicketVerificationUseCase } from "../../useCases/vendor/event/ticketVerificationUseCase";
+import { TicketRepository } from "../../adapters/repository/ticket/ticketRepository";
+import { TicketVerificationController } from "../../adapters/controllers/vendor/event/ticketConfirmationController";
 
 
 //-----------------Register vendor-------------------//
@@ -141,3 +144,8 @@ export const injectedFindAllEventsVendorController = new FindAllEventsVendorCont
 //-------------------------------Update Event---------------------------
 const updateEventUseCase = new UpdateEventUseCase(eventRepository)
 export const injectedUpdateEventController = new UpdateEventController(updateEventUseCase)
+
+//-----------------------------Ticket verification---------------
+const ticketdatabase = new TicketRepository()
+const ticketVerificationUseCase = new TicketVerificationUseCase(ticketdatabase, eventRepository)
+export const injectedTicketVerificationController = new TicketVerificationController(ticketVerificationUseCase)

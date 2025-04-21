@@ -23,8 +23,9 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
         const ticketId = genarateRandomUuid()
         if (!ticketId) throw new Error('Error while creating ticket id')
         const hostName = process.env.HOSTNAME
+
         if (!hostName) throw new Error("no host name found")
-        const qrLink = `${hostName}/verifyTicket/${ticketId}`
+        const qrLink = `${hostName}/verifyTicket/${ticketId}/${ticket.eventId}`
         console.log('id for qr', qrLink)
         const qrCodeLink = await this.genQr.createQrLink(qrLink)
         if (!qrCodeLink) throw new Error('Error while creating qr code link')

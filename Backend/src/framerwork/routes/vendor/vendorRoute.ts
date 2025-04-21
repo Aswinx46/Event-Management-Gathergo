@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedUpdateAboutAndPhoneController, injectedUpdateEventController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
+import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedTicketVerificationController, injectedUpdateAboutAndPhoneController, injectedUpdateEventController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorLoginController, injectedVendorLogoutController } from "../../Di/vendorInject";
 import { injectedTokenExpiryValidationChecking, injectedVendorStatusCheckingMiddleware, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 
@@ -69,6 +69,9 @@ export class VendorRoute {
         })
         this.vendorRoute.put('/updateEvent', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedUpdateEventController.handleUpdateEvent(req, res)
+        })
+        this.vendorRoute.post('/verifyTicket', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedTicketVerificationController.handleTicketConfirmation(req, res)
         })
     }
 }

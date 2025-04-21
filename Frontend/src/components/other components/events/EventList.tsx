@@ -9,7 +9,7 @@ interface EventListProps {
     events: EventEntity[];
     isLoading?: boolean;
     onEditEvent?: (event: EventEntity) => void;
-    currentPage:number
+    currentPage: number
 }
 
 const EventList: React.FC<EventListProps> = ({
@@ -20,7 +20,7 @@ const EventList: React.FC<EventListProps> = ({
 }) => {
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
-
+   
     const handleEventClick = (event: EventEntity) => {
         setSelectedEvent(event);
         setModalOpen(true);

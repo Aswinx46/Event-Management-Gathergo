@@ -42,6 +42,7 @@
     "framer-motion": "^12.6.3",
     "gsap": "^3.12.7",
     "hamburger-react": "^2.5.2",
+    "html5-qrcode": "^2.3.8",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",

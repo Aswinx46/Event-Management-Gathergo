@@ -13,7 +13,7 @@ export class TicketRepository implements IticketRepositoryInterface {
     async findBookedTicketsOfClient(userId: string, pageNo: number): Promise<{ ticketAndEventDetails: TicketAndEventDTO[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
         const limit = 5
-        const skip = (page - 1 )* limit
+        const skip = (page - 1) * limit
         const ticketAndEvent = await ticketModel.find({ clientId: userId }).select('_id ticketId ticketCount phone email paymentStatus totalAmount ticketStatus qrCodeLink')
             .populate('eventId', '_id title description date startTime endTime status address pricePerTicket posterImage').skip(skip).limit(limit).lean()
         const totalPages = Math.ceil(await ticketModel.countDocuments() / limit)
@@ -45,5 +45,11 @@ export class TicketRepository implements IticketRepositoryInterface {
             };
         });
         return { ticketAndEventDetails: ticketAndEventDetails, totalPages }
+    }
+    async findTicketUsingTicketId(ticketId: string): Promise<TicketEntity | null> {
+        return ticketModel.findOne({ ticketId }).select('eventId ticketStatus _id')
+    }
+    async changeUsedStatus(ticketId: string): Promise<TicketEntity | null> {
+        return await ticketModel.findByIdAndUpdate(ticketId, { ticketStatus: 'used' })
     }
 }

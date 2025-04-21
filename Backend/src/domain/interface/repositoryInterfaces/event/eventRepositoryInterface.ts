@@ -10,4 +10,5 @@ export interface IeventRepository {
     findEventById(eventId: string): Promise<EventEntity | null>
     updateTicketPurchaseCount(eventId: string | ObjectId, newCount: number): Promise<EventEntity | null>
     findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number, ticketPurchased: number }>
+    findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null>
 }

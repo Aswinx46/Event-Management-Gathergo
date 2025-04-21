@@ -4,9 +4,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
-    DialogClose,
+    
   } from "@/components/ui/dialog";
-  import { X, TicketCheck } from "lucide-react";
+  import { TicketCheck } from "lucide-react";
   import { motion, AnimatePresence } from "framer-motion";
   import React from "react";
   import { TicketAndEventDTO } from "@/types/TicketAndEventDTO";
@@ -31,7 +31,6 @@ import {
   
   const TicketModal: React.FC<TicketModalProps> = ({ open, setIsOpen, ticket }) => {
     if (!ticket) return null;
-    console.log(ticket)
     return (
       <Dialog open={open} onOpenChange={(v) => !v && setIsOpen(false)}>
         {open && (
@@ -50,11 +49,7 @@ import {
                     <DialogTitle className="text-xl font-bold text-purple-800 flex items-center gap-1 pt-3 pl-6">
                       <TicketCheck className="w-5 h-5 text-purple-400" /> E-Ticket Details
                     </DialogTitle>
-                    <DialogClose asChild>
-                      <button className="m-3 focus:outline-none hover:bg-purple-100/70 rounded-full p-2">
-                        <X className="h-5 w-5" />
-                      </button>
-                    </DialogClose>
+     
                   </div>
                 </DialogHeader>
   

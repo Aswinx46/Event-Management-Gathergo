@@ -39,4 +39,7 @@ export class EventRepository implements IeventRepository {
         if (!eventDetails) throw new Error('No event found in this ID')
         return { totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased }
     }
+    async findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null> {
+        return eventModal.findById(eventId).select('hostedBy')
+    }
 }

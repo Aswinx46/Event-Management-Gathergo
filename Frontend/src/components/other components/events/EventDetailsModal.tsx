@@ -73,6 +73,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     currentPage
 }) => {
     const location = useLocation()
+
     const editEvent = useUpdateEvent()
     const queryClient = useQueryClient()
     const navigate = useNavigate()
@@ -245,9 +246,11 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     </div>
 
                                     <div className="mt-4 flex justify-center">
-                                        <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                                        {location.pathname.split('/')[1] != 'vendor' ? <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                                             Get Tickets
-                                        </Button>
+                                        </Button> : <Button onClick={() => navigate('/vendor/scanTicket')} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                                            Scan Tickets
+                                        </Button>}
                                     </div>
 
                                     <div className="mt-2 text-center text-xs text-zinc-500">
