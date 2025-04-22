@@ -1,287 +1,162 @@
 
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import React, { useEffect, useRef, useState } from "react";
-// import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
-// import { toast } from "sonner";
-// import { UseMutationResult } from "@tanstack/react-query";
+import React, { useEffect, useState } from 'react';
+import { Html5QrcodeScanner } from 'html5-qrcode';
+import { useVerifyTicket } from '@/hooks/VendorCustomHooks';
+import { toast } from 'react-toastify';
+import { TicketModal } from './TIcketConfirmationModal';
+import { TicketBackendEntity } from '@/types/TicketBackendType';
 
-// interface TicketScannerProps {
-//   scanQr: UseMutationResult<
-//     any,
-//     Error,
-//     {
-//       ticketId: string;
-//       eventId: string;
-//     },
-//     unknown
-//   >;
-// }
+function TicketScanner() {
+  const [scanResult, setScanResult] = useState<string | null>(null);
+  const [scannerInstance, setScannerInstance] = useState<Html5QrcodeScanner | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [verifiedTicket, setVerifiedTicket] = useState<TicketBackendEntity | null>(null)
+  const ticketVerify = useVerifyTicket()
+  const initializeScanner = () => {
+    const scanner = new Html5QrcodeScanner(
+      'reader',
+      {
+        fps: 5,
+        qrbox: (viewfinderWidth, viewfinderHeight) => {
+          const minEdgePercentage = 0.5;
+          const edgeLength = Math.floor(
+            Math.min(viewfinderWidth, viewfinderHeight) * minEdgePercentage
+          );
+          return { width: edgeLength, height: edgeLength };
+        },
+      },
+      false
+    );
 
-// interface QrCameraDevice {
-//   id: string;
-//   label: string;
-// }
-
-// const TicketScanner: React.FC<TicketScannerProps> = ({ scanQr }) => {
-//   const scannerRef = useRef<Html5Qrcode | null>(null);
-//   const [scannedOnce, setScannedOnce] = useState(false);
-//   const [showSuccessAnim, setShowSuccessAnim] = useState(false);
-//   const successAudio = useRef<HTMLAudioElement | null>(null);
-//   const containerRef = useRef<HTMLDivElement | null>(null);
-
-//   useEffect(() => {
-//     if (!containerRef.current) return;
-
-//     successAudio.current = new Audio("/success.mp3");
-
-//     const scanner = new Html5Qrcode("qr-reader");
-//     scannerRef.current = scanner;
-
-//     Html5Qrcode.getCameras().then((devices: QrCameraDevice[]) => {
-//       if (devices && devices.length) {
-//         const cameraId = devices[0].id;
-
-//         scanner
-//           .start(
-//             cameraId,
-//             {
-//               fps: 10,
-//               qrbox: { width: 250, height: 250 },
-//             },
-//             async (decodedText) => {
-//               if (scannedOnce) return;
-//               setScannedOnce(true);
-
-//               try {
-//                 const url = new URL(decodedText);
-//                 const pathParts = url.pathname.split("/"); // ['', 'verifyTicket', 'ticketId', 'eventId']
-//                 const ticketId = pathParts[2];
-//                 const eventId = pathParts[3];
-
-//                 scanQr.mutate(
-//                   { ticketId, eventId },
-//                   {
-//                     onSuccess: (data) => {
-//                       successAudio.current?.play().catch(() => {});
-//                       setShowSuccessAnim(true);
-//                       setTimeout(() => setShowSuccessAnim(false), 2000);
-//                       toast.success(data.message || "Ticket verified!");
-//                     },
-//                     onError: (err) => {
-//                       toast.error(err.message || "Ticket verification failed.");
-//                     },
-//                   }
-//                 );
-//               } catch (err: any) {
-//                 console.log(err);
-//                 toast.error("Invalid QR code format.");
-//               }
-
-//               setTimeout(() => setScannedOnce(false), 2500);
-//             },
-//             (() => {
-//               let lastErrorTime = 0;
-//               return (errorMessage: string) => {
-//                 const now = Date.now();
-//                 if (now - lastErrorTime > 3000) {
-//                   console.warn("QR Scan error:", errorMessage);
-//                   lastErrorTime = now;
-//                 }
-//               };
-//             })()
-//           )
-//           .catch((err) => {
-//             console.error("Failed to start scanner:", err);
-//             toast.error("Camera access failed. Please try again.");
-//           });
-//       } else {
-//         toast.error("No camera device found.");
-//       }
-//     });
-
-//     return () => {
-//       const stopScanner = async () => {
-//         try {
-//           if (
-//             scannerRef.current &&
-//             scannerRef.current.getState() === Html5QrcodeScannerState.SCANNING
-//           ) {
-//             await scannerRef.current.stop();
-//           }
-//           await scannerRef.current?.clear();
-//         } catch (error) {
-//           console.error("Failed to stop scanner:", error);
-//         }
-//       };
-//       stopScanner();
-//     };
-//   }, [scannedOnce, scanQr]);
-
-//   return (
-//     <div ref={containerRef} className="w-full max-w-md mx-auto mt-6">
-//       <h2 className="text-xl font-semibold text-center mb-4">Scan Ticket QR</h2>
-//       <div id="qr-reader" className="rounded-md overflow-hidden" />
-//       {showSuccessAnim && (
-//         <div className="text-green-600 text-2xl font-bold text-center animate-bounce mt-4">
-//           ✅ Ticket Verified!
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default TicketScanner;
-
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from "react";
-import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
-import { toast } from "sonner";
-import { UseMutationResult } from "@tanstack/react-query";
-
-interface TicketScannerProps {
-  scanQr: UseMutationResult<
-    any,
-    Error,
-    {
-      ticketId: string;
-      eventId: string;
-    },
-    unknown
-  >;
-}
-
-interface QrCameraDevice {
-  id: string;
-  label: string;
-}
-
-const TicketScanner: React.FC<TicketScannerProps> = ({ scanQr }) => {
-  const scannerRef = useRef<Html5Qrcode | null>(null);
-  const [scannedOnce, setScannedOnce] = useState(false);
-  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
-  const successAudio = useRef<HTMLAudioElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isCameraActive, setIsCameraActive] = useState(false); // New state for managing camera
+    scanner.render(onScanSuccess, onScanError);
+    setScannerInstance(scanner);
+  };
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    successAudio.current = new Audio("/success.mp3");
-
-    const scanner = new Html5Qrcode("qr-reader");
-    scannerRef.current = scanner;
-
-    Html5Qrcode.getCameras().then((devices: QrCameraDevice[]) => {
-      if (devices && devices.length) {
-        const cameraId = devices[0].id;
-
-        if (isCameraActive) {
-          scanner
-            .start(
-              cameraId,
-              {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-              },
-              async (decodedText) => {
-                if (scannedOnce) return;
-                setScannedOnce(true);
-
-                try {
-                  const url = new URL(decodedText);
-                  const pathParts = url.pathname.split("/"); // ['', 'verifyTicket', 'ticketId', 'eventId']
-                  const ticketId = pathParts[2];
-                  const eventId = pathParts[3];
-
-                  scanQr.mutate(
-                    { ticketId, eventId },
-                    {
-                      onSuccess: (data) => {
-                        successAudio.current?.play().catch(() => {});
-                        setShowSuccessAnim(true);
-                        setTimeout(() => setShowSuccessAnim(false), 2000);
-                        toast.success(data.message || "Ticket verified!");
-                      },
-                      onError: (err) => {
-                        toast.error(err.message || "Ticket verification failed.");
-                      },
-                    }
-                  );
-                } catch (err: any) {
-                  console.log(err);
-                  toast.error("Invalid QR code format.");
-                }
-
-                setTimeout(() => setScannedOnce(false), 2500);
-              },
-              (() => {
-                let lastErrorTime = 0;
-                return (errorMessage: string) => {
-                  const now = Date.now();
-                  if (now - lastErrorTime > 3000) {
-                    console.warn("QR Scan error:", errorMessage);
-                    lastErrorTime = now;
-                  }
-                };
-              })()
-            )
-            .catch((err) => {
-              console.error("Failed to start scanner:", err);
-              toast.error("Camera access failed. Please try again.");
-            });
-        } else {
-          stopScanner();
-        }
-      } else {
-        toast.error("No camera device found.");
-      }
-    });
+    initializeScanner();
 
     return () => {
-      stopScanner();
+      scannerInstance?.clear().catch(() => { });
     };
-  }, [scannedOnce, scanQr, isCameraActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const stopScanner = async () => {
+  const onScanSuccess = async (decodedText: string) => {
+    setScanResult(decodedText);
+
     try {
-      if (
-        scannerRef.current &&
-        scannerRef.current.getState() === Html5QrcodeScannerState.SCANNING
-      ) {
-        await scannerRef.current.stop();
-      }
-      await scannerRef.current?.clear();
+      const url = new URL(decodedText)
+      const pathParts = url.pathname.split("/"); // ['', 'verifyTicket', 'ticketId', 'eventId']
+      const ticketId = pathParts[2];
+      const eventId = pathParts[3];
+      ticketVerify.mutate({ ticketId, eventId }, {
+        onSuccess: (data) => {
+          toast.success(data.message)
+          setVerifiedTicket(data.verifiedTicket)
+          setIsOpen(true)
+        },
+        onError: (err) => {
+
+          toast.error(err.message)
+        },
+        onSettled: () => {
+          setTimeout(() => {
+            setScanResult(null);
+            initializeScanner(); // or set cooldown to false
+          }, 5000);
+        }
+      })
     } catch (error) {
-      console.error("Failed to stop scanner:", error);
+      console.log('error while decoding the qr', error)
     }
+    console.log('Scanner cleared');
+
+
   };
 
-  const toggleCamera = () => {
-    setIsCameraActive((prev) => !prev);
+  const onScanError = (errorMessage: string) => {
+    // Optionally handle errors
+    console.log(errorMessage)
   };
+
+  const handleScanAgain = () => {
+    setScanResult(null);
+    initializeScanner();
+  };
+
+  const handleOnCloseModal = () => {
+    handleScanAgain()
+    setIsOpen(false)
+  }
 
   return (
-    <div ref={containerRef} className="w-full max-w-md mx-auto mt-6">
-      <h2 className="text-xl font-semibold text-center mb-4">Scan Ticket QR</h2>
-      <div id="qr-reader" className="rounded-md overflow-hidden" />
-      {showSuccessAnim && (
-        <div className="text-green-600 text-2xl font-bold text-center animate-bounce mt-4">
-          ✅ Ticket Verified!
+    <div style={styles.container}>
+      <h2 style={styles.title}>QR Ticket Scanner</h2>
+      {isOpen && <TicketModal isOpen={isOpen} onClose={handleOnCloseModal} ticket={verifiedTicket!} />}
+      {scanResult ? (
+        <div style={styles.resultContainer}>
+          <p style={styles.resultText}>✅ Scanned Result:</p>
+          <div style={styles.resultBox}>{scanResult}</div>
+          <button onClick={handleScanAgain} style={styles.scanAgainBtn}>
+            Scan Again
+          </button>
         </div>
+      ) : (
+        <div id="reader" style={styles.reader}></div>
       )}
-      <div className="mt-4 text-center">
-        <button
-          onClick={toggleCamera}
-          className={`px-4 py-2 text-white rounded-md ${
-            isCameraActive ? "bg-red-500" : "bg-blue-500"
-          }`}
-        >
-          {isCameraActive ? "Stop Camera" : "Start Camera"}
-        </button>
-      </div>
     </div>
   );
+}
+
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    maxWidth: '400px',
+    margin: '50px auto',
+    padding: '20px',
+    borderRadius: '15px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    textAlign: 'center',
+    fontFamily: 'Arial, sans-serif',
+    backgroundColor: '#f9f9f9',
+  },
+  title: {
+    marginBottom: '20px',
+    fontSize: '24px',
+    fontWeight: 'bold',
+  },
+  reader: {
+    width: '100%',
+    minHeight: '300px',
+    border: '2px dashed #ccc',
+    borderRadius: '10px',
+  },
+  resultContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
+  },
+  resultText: {
+    fontSize: '18px',
+    fontWeight: 'bold',
+  },
+  resultBox: {
+    padding: '10px 15px',
+    backgroundColor: '#e6f7e6',
+    borderRadius: '10px',
+    border: '1px solid #8bc34a',
+    color: '#2e7d32',
+    fontSize: '16px',
+  },
+  scanAgainBtn: {
+    marginTop: '10px',
+    padding: '10px 20px',
+    fontSize: '16px',
+    border: 'none',
+    borderRadius: '10px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    cursor: 'pointer',
+  },
 };
 
 export default TicketScanner;

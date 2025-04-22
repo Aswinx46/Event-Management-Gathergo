@@ -47,7 +47,7 @@ export class TicketRepository implements IticketRepositoryInterface {
         return { ticketAndEventDetails: ticketAndEventDetails, totalPages }
     }
     async findTicketUsingTicketId(ticketId: string): Promise<TicketEntity | null> {
-        return ticketModel.findOne({ ticketId }).select('eventId ticketStatus _id')
+        return ticketModel.findOne({ ticketId }).select('-__v')
     }
     async changeUsedStatus(ticketId: string): Promise<TicketEntity | null> {
         return await ticketModel.findByIdAndUpdate(ticketId, { ticketStatus: 'used' })

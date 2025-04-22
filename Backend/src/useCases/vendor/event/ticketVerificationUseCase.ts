@@ -1,3 +1,4 @@
+import { TicketEntity } from "../../../domain/entities/Ticket/ticketEntity";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
 import { IticketRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/eventTicket/ticketRepositoryInterface";
 import { IticketVerificationUseCase } from "../../../domain/interface/useCaseInterfaces/vendor/event/ticketVerificationUseCaseInterface";
@@ -9,7 +10,7 @@ export class TicketVerificationUseCase implements IticketVerificationUseCase {
         this.ticketDatabase = ticketDatabase
         this.eventDatabase = eventDatabase
     }
-    async verifyTicket(ticketId: string, eventId: string, vendorId: string): Promise<boolean> {
+    async verifyTicket(ticketId: string, eventId: string, vendorId: string): Promise<TicketEntity> {
         const ticket = await this.ticketDatabase.findTicketUsingTicketId(ticketId)
         if (!ticket) throw new Error('No ticket found in this ID')
         if (ticket.ticketStatus == 'used') throw new Error('This ticket is already used')
@@ -20,6 +21,6 @@ export class TicketVerificationUseCase implements IticketVerificationUseCase {
         if (event.hostedBy.toString() !== vendorId) throw new Error("This event is not hosted by you")
         const changeStatusOfTicket = await this.ticketDatabase.changeUsedStatus(ticket._id as string)
         if (!changeStatusOfTicket) throw new Error('Error while changing the status of Ticket')
-        return true
+        return ticket
     }
 }

@@ -11,9 +11,9 @@ export class TicketVerificationController {
         try {
             const { ticketId, eventId } = req.body
             const vendorId = (req as any).user.userId
-            console.log('This is event id in controller',eventId)
-            const ticketVerify = await this.ticketConfirmationUseCase.verifyTicket(ticketId, eventId, vendorId)
-            res.status(HttpStatus.OK).json({ message: "Ticket verified" })
+            console.log('This is event id in controller', eventId)
+            const verifiedTicket = await this.ticketConfirmationUseCase.verifyTicket(ticketId, eventId, vendorId)
+            res.status(HttpStatus.OK).json({ message: "Ticket verified", verifiedTicket })
         } catch (error) {
             console.log('error while ticket confirming', error)
             res.status(HttpStatus.BAD_REQUEST).json({

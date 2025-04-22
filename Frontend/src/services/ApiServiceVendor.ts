@@ -281,6 +281,6 @@ export const verifyTicket = async (ticketId: string, eventId: string) => {
         return response.data
     } catch (error) {
         console.log('error while verifying ticket', error)
-        throw new Error(isAxiosError(error) ? error.response?.data.message : 'error while verifying ticket')
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while verifying ticket')
     }
 }
