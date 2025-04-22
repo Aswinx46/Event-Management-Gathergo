@@ -1,8 +1,8 @@
 import { WalletEntity } from "../../domain/entities/wallet/wallerEntity";
 import { IwalletRepository } from "../../domain/interface/repositoryInterfaces/wallet/walletRepositoryInterface";
-import { IfindClientWallet } from "../../domain/interface/useCaseInterfaces/client/wallet/findWalletForClientUseCase";
+import { IfindUserWalletUseCase } from "../../domain/interface/useCaseInterfaces/client/wallet/findWalletForClientUseCase";
 
-export class FindClientWalletUseCase implements IfindClientWallet {
+export class FindUserWalletUseCase implements IfindUserWalletUseCase {
     private walletDatabase: IwalletRepository
     constructor(walletDatabase: IwalletRepository) {
         this.walletDatabase = walletDatabase

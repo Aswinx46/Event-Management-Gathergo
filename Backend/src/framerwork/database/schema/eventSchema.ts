@@ -79,6 +79,10 @@ export const eventSchema = new Schema<EventEntity>({
     venueName: {
         type: String,
         required: false
+    },
+    attendeesCount:{
+        type:Number,
+        default:0
     }
 
 })

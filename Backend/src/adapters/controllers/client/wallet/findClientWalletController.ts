@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { IfindClientWallet } from "../../../../domain/interface/useCaseInterfaces/client/wallet/findWalletForClientUseCase";
+import { IfindUserWalletUseCase } from "../../../../domain/interface/useCaseInterfaces/client/wallet/findWalletForClientUseCase";
 import { HttpStatus } from "../../../../domain/entities/httpStatus";
 import { IfindTransactionsUseCase } from "../../../../domain/interface/useCaseInterfaces/transactions/findTransactionUseCaseInterface";
 
 export class FindClientWalletController {
-    private findClientWalletUseCase: IfindClientWallet
+    private findClientWalletUseCase: IfindUserWalletUseCase
     private findTransactionOfUser: IfindTransactionsUseCase
-    constructor(findClientWalletUseCase: IfindClientWallet, findTransactionOfUser: IfindTransactionsUseCase) {
+    constructor(findClientWalletUseCase: IfindUserWalletUseCase, findTransactionOfUser: IfindTransactionsUseCase) {
         this.findClientWalletUseCase = findClientWalletUseCase
         this.findTransactionOfUser = findTransactionOfUser
     }

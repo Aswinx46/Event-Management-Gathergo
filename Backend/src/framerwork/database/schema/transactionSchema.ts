@@ -22,7 +22,11 @@ export const transactionSchema = new Schema<TransactionsEntity>({
         type: String,
         enum: ["refund", "ticketBooking", "top-up", "bookingPayment", "adminCommission"]
     },
-
+    walletId: {
+        type: Schema.Types.ObjectId,
+        ref: 'wallet',
+        required: true
+    }
 }, {
     timestamps: true
 })

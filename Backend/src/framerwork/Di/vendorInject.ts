@@ -53,6 +53,11 @@ import { UpdateEventController } from "../../adapters/controllers/vendor/event/u
 import { TicketVerificationUseCase } from "../../useCases/vendor/event/ticketVerificationUseCase";
 import { TicketRepository } from "../../adapters/repository/ticket/ticketRepository";
 import { TicketVerificationController } from "../../adapters/controllers/vendor/event/ticketConfirmationController";
+import { FindUserWalletUseCase } from "../../useCases/wallet/findWalletOfClientUseCase";
+import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
+import { FindWalletDetailsVendorController } from "../../adapters/controllers/vendor/wallet/showWalletDetailsAndTransactions";
+import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
+import { FindTransactionsUseCase } from "../../useCases/transactions/findTransactionsUseCase";
 
 
 //-----------------Register vendor-------------------//
@@ -149,3 +154,10 @@ export const injectedUpdateEventController = new UpdateEventController(updateEve
 const ticketdatabase = new TicketRepository()
 const ticketVerificationUseCase = new TicketVerificationUseCase(ticketdatabase, eventRepository)
 export const injectedTicketVerificationController = new TicketVerificationController(ticketVerificationUseCase)
+
+//--------------------------Vendor wallet details---------------------
+const walletDatabase = new WalletRepository()
+const transactionDatabase = new TransactionRepository()
+const walletDetailsUseCase = new FindUserWalletUseCase(walletDatabase)
+const findTransactionUseCase = new FindTransactionsUseCase(transactionDatabase)
+export const injectedWalletDetailsVendorController = new FindWalletDetailsVendorController(walletDetailsUseCase, findTransactionUseCase)

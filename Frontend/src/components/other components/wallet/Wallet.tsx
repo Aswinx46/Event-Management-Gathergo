@@ -13,7 +13,7 @@ interface WalletEntity {
 
 interface TransactionItemProps {
   amount: number;
-  paymentStatus:"debit" | "credit"
+  paymentStatus: "debit" | "credit"
   paymentType: string;
   date: string;
   currency: string
@@ -82,13 +82,14 @@ export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {transactions?.map((transaction)=>(
-                <TransactionItem 
-                amount={transaction.amount}
-                paymentStatus={transaction.paymentStatus}
-                currency={transaction.currency}
-                date={transaction.date}
-                paymentType={transaction.paymentType}/>
+              {transactions?.map((transaction, index) => (
+                <TransactionItem
+                  key={index}
+                  amount={transaction.amount}
+                  paymentStatus={transaction.paymentStatus}
+                  currency={transaction.currency}
+                  date={transaction.date}
+                  paymentType={transaction.paymentType} />
               ))}
             </div>
           </CardContent>
@@ -121,7 +122,7 @@ const TransactionItem = ({ amount, paymentStatus, paymentType, date, currency }:
         </div>
       </div>
       <p className={`font-semibold ${paymentStatus === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
-        {type === 'credit' ? '+' : '-'}${amount.toFixed(2)}
+        {paymentType === 'credit' ? '+' : '-'}${amount.toFixed(2)}
       </p>
     </motion.div>
   );

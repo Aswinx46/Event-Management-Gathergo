@@ -1,4 +1,4 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -178,5 +178,12 @@ export const useUpdateEvent = () => {
 export const useVerifyTicket = () => {
     return useMutation({
         mutationFn: ({ ticketId, eventId }: { ticketId: string, eventId: string }) => verifyTicket(ticketId, eventId)
+    })
+}
+
+export const useFindWalletDetailsVendor = (userId: string, pageNo: number) => {
+    return useQuery({
+        queryKey: ['walletVendor', pageNo],
+        queryFn: () => findWalletDetailsVendor(userId, pageNo)
     })
 }

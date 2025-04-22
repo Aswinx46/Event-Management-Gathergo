@@ -284,3 +284,13 @@ export const verifyTicket = async (ticketId: string, eventId: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while verifying ticket')
     }
 }
+
+export const findWalletDetailsVendor = async (userId: string, pageNo: number) => {
+    try {
+        const response = await axios.get(`/walletDetails/${userId}/${pageNo}`)
+        return response.data
+    } catch (error) {
+        console.log('error while finding the wallet details', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding wallet details')
+    }
+}
