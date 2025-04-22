@@ -192,3 +192,13 @@ export const updateCategory = async (categoryId: string, updates: CategoryUpdate
         throw new Error('error while changning titlle and image of category')
     }
 }
+
+export const findWalletAdmin = async (userId: string, pageNo: number) => {
+    try {
+        const response = await axios.get(`/wallet/${userId}/${pageNo}`)
+        return response.data
+    } catch (error) {
+        console.log('error while finding admin wallet details', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding admin wallet')
+    }
+}

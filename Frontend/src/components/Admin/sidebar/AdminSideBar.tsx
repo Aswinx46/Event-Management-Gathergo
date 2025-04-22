@@ -54,7 +54,7 @@ const Sidebar: React.FC = () => {
     { name: 'User Management', icon: <FaUsers />, path: '/admin/userManagement' },
     { name: 'Booking Management', icon: <FaCalendarCheck />, path: '/booking-management' },
     { name: 'Category Management', icon: <FaList />, path: '/admin/categoryManagement' },
-    { name: 'Wallet', icon: <FaWallet />, path: '/wallet' },
+    { name: 'Wallet', icon: <FaWallet />, path: '/admin/wallet' },
     { name: 'Event Providers', icon: <FaUserFriends />, path: '/admin/eventProviders' },
     { name: 'Event Management', icon: <FaCalendarAlt />, path: '/event-management' },
   ];
@@ -111,7 +111,7 @@ const Sidebar: React.FC = () => {
                   <FaTimes size={20} />
                 </motion.button>
               </div>
-              
+
               <nav className="space-y-2">
                 {menuItems.map((item, index) => (
                   <motion.div

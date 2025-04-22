@@ -9,6 +9,7 @@ import RejectedVendors from "@/components/Admin/vendorManagement/RejectedVendors
 import CategoryManagement from "@/components/Admin/categoryManagement/CategoryManagement"
 import AdminProtectedRoute from "@/components/Admin/ProtectedRoute/ProtectedRoute"
 import NotFound from "@/components/other components/NotFound"
+import AdminWallet from "@/components/Admin/wallet/AdminWallett"
 const AdminRoute = () => {
     return (
         <Routes>
@@ -21,6 +22,7 @@ const AdminRoute = () => {
                 <Route path="pendingVendors" element={<AdminProtectedRoute><PendingVendors /></AdminProtectedRoute>}></Route>
                 <Route path="rejectedVendors" element={<AdminProtectedRoute><RejectedVendors /></AdminProtectedRoute>}></Route>
                 <Route path="categoryManagement" element={<AdminProtectedRoute><CategoryManagement /></AdminProtectedRoute>}></Route>
+                <Route path="wallet" element={<AdminProtectedRoute><AdminWallet /></AdminProtectedRoute>}></Route>
             </Route>
         </Routes>
     )

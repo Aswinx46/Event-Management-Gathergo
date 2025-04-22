@@ -1,4 +1,4 @@
-import { adminLogin, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, findWalletAdmin, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
 import { CategoryUpdate } from "@/types/CategoryUpdate";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
@@ -131,5 +131,12 @@ export const useUnblockVendor = () => {
 export const useUpdateCategory = () => {
     return useMutation({
         mutationFn: ({ categoryId, updates }: { categoryId: string, updates: CategoryUpdate }) => updateCategory(categoryId, updates)
+    })
+}
+
+export const useFindAdminWallet = (userId: string, pageNo: number) => {
+    return useQuery({
+        queryKey: ['adminWallet', pageNo],
+        queryFn: () => findWalletAdmin(userId, pageNo)
     })
 }

@@ -13,9 +13,11 @@ import { FindAllVendorController } from "../../adapters/controllers/admin/findAl
 import { RejectVendorControllerAdmin } from "../../adapters/controllers/admin/rejectVendorController";
 import { VendorBlockController } from "../../adapters/controllers/admin/vendorManagement/vendorBlockController";
 import { VendorUnblockController } from "../../adapters/controllers/admin/vendorManagement/vendorUnblockController";
+import { FindAdminWalletDetailsController } from "../../adapters/controllers/admin/wallet/findWalletDetailsOfAdminController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
+import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
 import { AdminLoginUseCase } from "../../useCases/admin/authentication/adminLoginuseCase";
@@ -35,6 +37,8 @@ import { FindAllVendorUsecase } from "../../useCases/admin/vendorManagement/find
 import { RejectVendorUseCase } from "../../useCases/admin/vendorManagement/rejectVendorUseCase";
 import { VendorBlockUseCase } from "../../useCases/admin/vendorManagement/vendorBlockUseCase";
 import { VendorUnblockUseCase } from "../../useCases/admin/vendorManagement/vendorUnblockUseCase";
+import { FindTransactionsUseCase } from "../../useCases/transactions/findTransactionsUseCase";
+import { FindUserWalletUseCase } from "../../useCases/wallet/findWalletOfClientUseCase";
 import { JwtService } from "../services/jwtService";
 import { RedisService } from "../services/redisService";
 
@@ -104,3 +108,9 @@ export const injectedVendorUnblockController = new VendorUnblockController(unblo
 //---------------------------Category title and image change----------------------------
 const changeTitleAndImageUseCase = new ChangeTitleAndImageUseCase(categoryDatabase)
 export const injectedChangeTitleAndImageController = new ChangeTitleAndImageCategoryController(changeTitleAndImageUseCase)
+
+//------------------------- admin wallet details---------------------------
+const findAdminWalletUseCase = new FindUserWalletUseCase(walletDatabase)
+const transactionDatabase = new TransactionRepository()
+const findTransactionsUseCase = new FindTransactionsUseCase(transactionDatabase)
+export const injectedFindAdminWalletDetailsController = new FindAdminWalletDetailsController(findAdminWalletUseCase, findTransactionsUseCase)
