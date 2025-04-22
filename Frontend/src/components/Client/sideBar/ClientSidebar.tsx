@@ -33,7 +33,7 @@ const menuItems = [
   {
     icon: Wallet,
     label: "Wallet",
-    path: "/wallet",
+    path: "/profile/wallet",
   },
   {
     icon: Lock,
@@ -116,8 +116,8 @@ export function ClientSidebar() {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleMenuItemClick(item.path)}
                   className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition-colors duration-300 ${isActive(item.path)
-                      ? "bg-black text-white"
-                      : "hover:bg-gray-100 text-gray-800"
+                    ? "bg-black text-white"
+                    : "hover:bg-gray-100 text-gray-800"
                     }`}
                 >
                   <item.icon size={18} className="mr-3" />

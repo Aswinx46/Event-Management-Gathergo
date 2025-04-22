@@ -65,6 +65,9 @@ import { TransactionRepository } from "../../adapters/repository/transaction/tra
 import { ConfirmTicketAndPaymentController } from "../../adapters/controllers/client/ticketPayment/confirmTicketAndPaymentController";
 import { ShowTicketAndEventClientUseCase } from "../../useCases/client/ticket/showTicketAndEventClientUse";
 import { TicketAndEventDetailsClientController } from "../../adapters/controllers/client/profile/ticketAndEvent/ticketAndEventDetailsClientController";
+import { FindClientWalletUseCase } from "../../useCases/wallet/findWalletOfClientUseCase";
+import { FindClientWalletController } from "../../adapters/controllers/client/wallet/findClientWalletController";
+import { FindTransactionsUseCase } from "../../useCases/transactions/findTransactionsUseCase";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -185,3 +188,8 @@ export const injectedConfirmTicketAndPaymentController = new ConfirmTicketAndPay
 //--------------------------------find ticket and event details for profile------------------------
 const ticketAndEventDetailsUseCase = new ShowTicketAndEventClientUseCase(ticketDatabase)
 export const injectedTicketAndEventDetailsCientController = new TicketAndEventDetailsClientController(ticketAndEventDetailsUseCase)
+
+//---------------------------------find client wallet-----------------
+const findClientWallet = new FindClientWalletUseCase(walletDatabase)
+const findTransactionUseCase = new FindTransactionsUseCase(transactionDatabase)
+export const injectedFindClientWalletController = new FindClientWalletController(findClientWallet, findTransactionUseCase)

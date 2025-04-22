@@ -1,4 +1,4 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmTicketAndPayment, createBooking, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findTicketAndEventDetailsClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmTicketAndPayment, createBooking, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -202,5 +202,12 @@ export const useFindTicketAndEventsDetails = (clientId: string, pageNo: number) 
     return useQuery({
         queryKey: ['ticketAndEventDetaills', pageNo],
         queryFn: () => findTicketAndEventDetailsClient(clientId, pageNo)
+    })
+}
+
+export const useFindWalletClient = (clientId: string, pageNo: number) => {
+    return useQuery({
+        queryKey: ['walletClient', pageNo],
+        queryFn: () => findWalletOfClient(clientId, pageNo)
     })
 }
