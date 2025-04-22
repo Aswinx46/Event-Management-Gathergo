@@ -58,6 +58,9 @@ import { WalletRepository } from "../../adapters/repository/wallet/walletReposit
 import { FindWalletDetailsVendorController } from "../../adapters/controllers/vendor/wallet/showWalletDetailsAndTransactions";
 import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
 import { FindTransactionsUseCase } from "../../useCases/transactions/findTransactionsUseCase";
+import { UpdateBookingAsCompleteUseCase } from "../../useCases/vendor/bookings/updateBookingAsCompleteUseCase";
+import { UpdateBookingAsCompleteController } from "../../adapters/controllers/vendor/bookings/updateBookingStatusController";
+
 
 
 //-----------------Register vendor-------------------//
@@ -161,3 +164,8 @@ const transactionDatabase = new TransactionRepository()
 const walletDetailsUseCase = new FindUserWalletUseCase(walletDatabase)
 const findTransactionUseCase = new FindTransactionsUseCase(transactionDatabase)
 export const injectedWalletDetailsVendorController = new FindWalletDetailsVendorController(walletDetailsUseCase, findTransactionUseCase)
+
+
+//-----------------------Vendor service completion update-------------------------
+const updateBookingAsCompleteUseCase = new UpdateBookingAsCompleteUseCase(bookingsDatabase)
+export const injectedUpdateBookingAsCompleteController = new UpdateBookingAsCompleteController(updateBookingAsCompleteUseCase)

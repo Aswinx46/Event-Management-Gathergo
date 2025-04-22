@@ -294,3 +294,13 @@ export const findWalletDetailsVendor = async (userId: string, pageNo: number) =>
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding wallet details')
     }
 }
+
+export const updateBookingAsComplete = async (bookingId: string, status: boolean) => {
+    try {
+        const response = await axios.patch('/completeBooking', { bookingId, status })
+        return response.data
+    } catch (error) {
+        console.log('error while updating booking as complete', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while updating booking as complete')
+    }
+}

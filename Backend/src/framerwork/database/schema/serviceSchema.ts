@@ -36,7 +36,7 @@ export const serviceSchema = new Schema<ServiceEntity>({
     },
     vendorId: {
         type: Schema.Types.ObjectId,
-        ref:'vendors',
+        ref: 'vendors',
         required: true
     },
     yearsOfExperience: {
@@ -47,7 +47,8 @@ export const serviceSchema = new Schema<ServiceEntity>({
         type: String,
         enum: ['active', 'blocked'],
         default: 'active'
-    }
+    },
+   
 },
     {
         timestamps: true

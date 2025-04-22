@@ -42,4 +42,5 @@ export class EventRepository implements IeventRepository {
     async findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null> {
         return eventModal.findById(eventId).select('hostedBy')
     }
+   
 }

@@ -12,5 +12,5 @@ export interface BookingListingEntityVendor {
     status: "Pending" | "Rejected" | "Completed",
     rejectionReason?:string
     client: ClientDTO,
-    service: ServiceBookingDTO
+    service: ServiceBookingDTO,
 }

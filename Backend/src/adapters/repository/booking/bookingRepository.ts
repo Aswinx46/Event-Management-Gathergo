@@ -27,7 +27,7 @@ export class BookingRepository implements IbookingRepository {
         ).populate({
             path: 'serviceId',
             select: '_id serviceDescription servicePrice serviceTitle serviceDuration'
-        }).lean<PopulatedBooking[] | []>().skip(skip).limit(limit).sort({createdAt:-1})
+        }).lean<PopulatedBooking[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
         const Bookings = bookings.map((booking): BookingsInClientEntity => ({
             _id: booking._id,
@@ -56,7 +56,7 @@ export class BookingRepository implements IbookingRepository {
         }).populate({
             path: 'serviceId',
             select: '_id serviceDescription servicePrice serviceTitle serviceDuration'
-        }).lean<PopulatedBookingEntityVendor[] | []>().skip(skip).limit(limit).sort({createdAt:-1})
+        }).lean<PopulatedBookingEntityVendor[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
         const Bookings = bookings.map((booking): BookingListingEntityVendor => ({
             _id: booking._id,
@@ -77,5 +77,8 @@ export class BookingRepository implements IbookingRepository {
     }
     async rejectBooking(bookingId: string, rejectionReason: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { vendorApproval: "Rejected", rejectionReason: rejectionReason })
+    }
+    async changeStatus(bookingId: string, status: string): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate(bookingId, { status: status }, { new: true })
     }
 }

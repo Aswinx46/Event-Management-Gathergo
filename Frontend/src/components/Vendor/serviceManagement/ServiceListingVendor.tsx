@@ -156,7 +156,7 @@ const ServiceListingVendor: React.FC = () => {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setIsOpen(true)}
+                        onClick={() =>{ setIsOpen(true); setSelectedService(null)}}
                         className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-900 transition-colors"
                     >
                         Add New Service

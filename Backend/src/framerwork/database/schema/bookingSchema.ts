@@ -50,6 +50,10 @@ export const bookingSchema = new Schema<BookingEntity>({
     createdAt: {
         type: Date,
         default: Date.now()
+    },
+    isComplete:{
+        type:Boolean,
+        default:false
     }
 }, {
     timestamps: true
