@@ -60,7 +60,7 @@
 
 //       const clientSecret = response.stripeClientId;
 //       const updatedTicket = response.createdTicket
-     
+
 //       const { error: paymentError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
 //         payment_method: {
 //           card: cardElement,
@@ -255,8 +255,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           {paymentStatus === "Processing..."
             ? "Processing payment... Please wait."
             : paymentStatus === "Payment Successful"
-            ? "Payment Successful! 🎉"
-            : "Payment Failed. Please try again."}
+              ? "Payment Successful! 🎉"
+              : "Payment Failed. Please try again."}
         </div>
       )}
 
