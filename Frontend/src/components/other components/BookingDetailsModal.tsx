@@ -161,6 +161,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     const handleDecline = (bookindId: string) => {
         setRejectingBookingId(bookindId)
         setRejectionModal(true)
+        // setIsOpen(false)
     }
 
     const handleReject = () => {
@@ -320,35 +321,35 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                                 <Button onClick={() => handleDecline(booking._id)} className="bg-red-600">DECLINE</Button>
                             </motion.div>}
 
-                        {booking?.client?.email &&
-                            <motion.div variants={itemVariants} className="text-center pt-2 border-t flex justify-center gap-3 border-gray-800">
-                                <Button onClick={() => handleChangeBookingStatus(booking)} className={booking.status == 'Pending' ? 'bg-green-500' : 'bg-red-600'}>{booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}</Button>
-                            </motion.div>}
-                    </motion.div>
-
-                    {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
-                        <h3 className="text-sm font-medium text-gray-400">'Rejection Reason</h3>
-                        <div className="grid grid-cols-1 gap-3">
-                            <div className="flex items-center gap-3">
-                                <p className="text-white">{booking.rejectionReason}</p>
-                            </div>
-                        </div>
+                        {booking?.client?.email && booking.vendorApproval == 'Approved' && booking.paymentStatus !== 'Successfull' &&
+                            < motion.div variants={itemVariants} className="text-center pt-2 border-t flex justify-center gap-3 border-gray-800">
+                        <Button onClick={() => handleChangeBookingStatus(booking)} className={booking.status == 'Pending' ? 'bg-green-500' : 'bg-red-600'}>{booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}</Button>
                     </motion.div>}
-                    <div className="flex justify-center">
-                        {booking.status == 'Completed' && booking.paymentStatus !=='Successfull' && booking.paymentStatus !=='Refunded'  && !booking?.client?.email && < Button onClick={() => handleBookingPayment(booking)} className=" bg-green-500">Pay now</Button>}
+                </motion.div>
+
+                {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
+                    <h3 className="text-sm font-medium text-gray-400">'Rejection Reason</h3>
+                    <div className="grid grid-cols-1 gap-3">
+                        <div className="flex items-center gap-3">
+                            <p className="text-white">{booking.rejectionReason}</p>
+                        </div>
                     </div>
-                    <DialogFooter className="bg-gray-900 p-4  border-t border-gray-800">
-                        <Button
-                            onClick={() => setIsOpen(false)}
-                            className="w-full bg-black hover:bg-gray-800 text-white border border-gray-800"
-                        >
-                            Close
-                        </Button>
-
-                    </DialogFooter>
-
+                </motion.div>}
+                <div className="flex justify-center">
+                    {booking.status == 'Completed' && booking.paymentStatus !== 'Successfull' && booking.paymentStatus !== 'Refunded' && !booking?.client?.email && < Button onClick={() => handleBookingPayment(booking)} className=" bg-green-500">Pay now</Button>}
                 </div>
-            </DialogContent>
+                <DialogFooter className="bg-gray-900 p-4  border-t border-gray-800">
+                    <Button
+                        onClick={() => setIsOpen(false)}
+                        className="w-full bg-black hover:bg-gray-800 text-white border border-gray-800"
+                    >
+                        Close
+                    </Button>
+
+                </DialogFooter>
+
+            </div>
+        </DialogContent>
         </Dialog >
     );
 };

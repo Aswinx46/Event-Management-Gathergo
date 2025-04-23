@@ -165,15 +165,7 @@ const VendorBookingCard = () => {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   />
-                  {/* <motion.div
-                    className="absolute -bottom-2 -right-2 bg-white text-black rounded-full px-2 py-1 text-xs font-medium flex items-center gap-1"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.6, type: "spring" }}
-                  >
-                    <Star className="h-3 w-3 fill-black stroke-black" />
-                    <span>{vendor.rating}</span>
-                  </motion.div> */}
+                
                 </div>
                 <motion.h2 className="text-2xl font-bold mt-4">{Service?.vendor.name}</motion.h2>
                 {/* <motion.p className="text-gray-400">{vendor.profession}</motion.p>
@@ -245,37 +237,7 @@ const VendorBookingCard = () => {
               <motion.div className="space-y-4">
                 <div className="grid gap-3">
                   <Label htmlFor="date" className="text-white">Select Date</Label>
-                  {/* <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal bg-black border-white/30 text-white",
-                          !date && "text-gray-500"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-black border-white/30">
 
-                      <Calendar
-                        mode="multiple"
-                        selected={selectedDates}
-                        onSelect={(dates) => {
-                          const validDates = dates?.filter(
-                            (date) => !isBefore(startOfDay(date), startOfDay(new Date()))
-                          ) || [];
-                          setSelectedDates(validDates);
-                          formik.setFieldValue('date', validDates.map(date => format(date, 'yyyy-MM-dd')));
-                        }}
-                        disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
-                        initialFocus
-                        className="bg-black text-white"
-                      />
-                    </PopoverContent>
-                  </Popover> */}
                   <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button
@@ -312,6 +274,12 @@ const VendorBookingCard = () => {
                         }
                         initialFocus
                         className="bg-black text-white"
+                        modifiersStyles={{
+                          selected: {
+                            backgroundColor: 'rgb(147, 51, 234)',
+                            color: 'white'
+                          }
+                        }}
                       />
                       <Button
                         variant="secondary"

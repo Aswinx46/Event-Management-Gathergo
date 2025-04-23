@@ -27,7 +27,6 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
         if (!dateAndServicePrice) {
             throw new Error("Booking not found or service unavailable");
         }
-        console.log('date and servicePrice from backend', dateAndServicePrice)
         const { date, servicePrice } = dateAndServicePrice
         const paymentTransaction = await this.paymentDatabase.findTransactionOfAUser(booking.clientId, booking.vendorId, booking._id!)
         if (!paymentTransaction) throw new Error("No transaction found in these users")
@@ -73,3 +72,4 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
         return true
     }
 }
+

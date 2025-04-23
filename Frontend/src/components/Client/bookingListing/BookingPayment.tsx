@@ -3,6 +3,7 @@ import { useConfirmBookingPayment, useCreateBookingPayment } from '@/hooks/Clien
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { BookingType } from '@/types/BookingType'
+import { useQueryClient } from '@tanstack/react-query'
 
 function BookingPayment() {
     const location = useLocation()
@@ -22,12 +23,14 @@ function BookingPayment() {
             payload: response.booking,
         };
     }
-
+    const queryClient = useQueryClient()
     const confirmBookingPayment = async (booking: BookingType, paymentIntentId: string) => {
         confirmBookingPaymentHook.mutate({ booking: booking, paymentIntentId: paymentIntentId }, {
             onSuccess: (data) => {
                 toast.success(data.message)
+                queryClient.invalidateQueries({ queryKey: ['Bookings in client'] })
                 navigate('/profile/bookings')
+
             },
             onError: (err) => {
                 toast.error(err.message)
