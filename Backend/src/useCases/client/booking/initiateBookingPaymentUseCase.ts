@@ -14,7 +14,7 @@ export class InitiateBookingPaymentUseCase implements IinititateBookingPaymentUs
         this.paymentService = paymentService
         this.paymentDatabase = paymentDatabase
     }
-    async inititateBookingPayment(bookingId: string, paymentIntentId: string):Promise<{booking:BookingPaymentEntity , clientStripeId:string}> {
+    async inititateBookingPayment(bookingId: string, paymentIntentId: string): Promise<{ booking: BookingPaymentEntity, clientStripeId: string }> {
         const booking = await this.bookingDatabase.findBookingByIdForPayment(bookingId)
         console.log(booking)
         if (!booking) throw new Error('No booking found in this ID')
@@ -28,13 +28,13 @@ export class InitiateBookingPaymentUseCase implements IinititateBookingPaymentUs
             currency: 'inr',
             paymentId: paymentIntentId,
             receiverId: booking.vendorId,
-            purpose: 'ticketBooking',
+            purpose: 'serviceBooking',
             status: "pending",
             userId: booking.clientId,
             bookingId: booking._id
         }
         const createPayment = await this.paymentDatabase.createPayment(paymentDetails)
         if (!createPayment) throw new Error('Error while creating payment document')
-       return  {booking , clientStripeId}
+        return { booking, clientStripeId }
     }
 }

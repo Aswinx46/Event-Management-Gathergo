@@ -53,7 +53,7 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
             paymentType: "adminCommission",
             walletId: adminWallet._id!,
         }
-      
+
         const transaction = await this.transactionDatabase.createTransaction(adminTransaction)
         const adminWalletMoneyAdding = await this.walletDatabase.addMoney(adminId, adminCommision)
         const vendorWallet = await this.walletDatabase.findWalletByUserId(vendorId)
