@@ -9,7 +9,7 @@ export class PaymentService implements IStripeService {
             apiVersion: "2025-03-31.basil"
         })
     }
-    async createPaymentIntent(amount: number, purpose: "ticket" | "service", metadata: Record<string, TicketFromFrontend>): Promise<string> {
+    async createPaymentIntent(amount: number, purpose: "ticket" | "service", metadata: Record<string, any>): Promise<string> {
 
         try {
             const paymentIntent = await this.stripe.paymentIntents.create({

@@ -18,6 +18,7 @@ import EventDetails from "@/components/Client/events/EventBookingDetails";
 import BookedEvents from "@/components/Client/profile/eventListing/BookedEventsClient";
 import ClientWallet from "@/components/Client/profile/wallet/ClientWallet";
 import TicketPaymentForm from "@/components/Client/paymentForm/TicketPaymentForm";
+import BookingPayment from "@/components/Client/bookingListing/BookingPayment";
 const UserRoute = () => {
     return (
         <Routes>
@@ -43,6 +44,7 @@ const UserRoute = () => {
                 <Route path="changePassword" element={<ProtectedRouteClient><ChangePasswordClient /></ProtectedRouteClient>} ></Route>
                 <Route path="bookedEvents" element={<ProtectedRouteClient><BookedEvents /></ProtectedRouteClient>} ></Route>
                 <Route path="wallet" element={<ProtectedRouteClient><ClientWallet /></ProtectedRouteClient>} ></Route>
+                <Route path="confirmBookingPayment" element={<ProtectedRouteClient><BookingPayment /></ProtectedRouteClient>} ></Route>
                 {/* <Route path="logout" element={<LogoutConfirmation/>} ></Route> */}
             </Route>
         </Routes>

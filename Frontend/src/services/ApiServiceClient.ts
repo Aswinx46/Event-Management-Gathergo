@@ -2,6 +2,7 @@ import { isAxiosError } from 'axios';
 import axios from '../axios/clientAxios'
 import { ClientUpdateProfileEntity } from '@/types/ClientUpdateProfileType';
 import { TicketEntity } from '@/types/TicketPaymentType';
+import { BookingType } from '@/types/BookingType';
 
 interface Login {
     email: string;
@@ -336,5 +337,25 @@ export const findWalletOfClient = async (clientId: string, pageNo: number) => {
     } catch (error) {
         console.log('error while finding wallet of client', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding wallet of client')
+    }
+}
+
+export const createBookingPayment = async (bookingId: string, paymentIntentId: string) => {
+    try {
+        const response = await axios.post('/createBookingPayment', { bookingId, paymentIntentId })
+        return response.data
+    } catch (error) {
+        console.log('error while inititating booking payment', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while initiating booking payment')
+    }
+}
+
+export const confirmBookingPayment = async (booking: BookingType, paymentIntentId: string) => {
+    try {
+        const response = await axios.post('/confirmBookingPayment', { booking, paymentIntentId })
+        return response.data
+    } catch (error) {
+        console.log('error while confirming booking payment', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while confirming booking payment')
     }
 }

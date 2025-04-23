@@ -15,4 +15,5 @@ export class TransactionRepository implements ItransactionRepository {
         const totalPages = Math.ceil(await transactionModel.countDocuments({ _id: walletId }) / limit)
         return { transactions, totalPages }
     }
+
 }

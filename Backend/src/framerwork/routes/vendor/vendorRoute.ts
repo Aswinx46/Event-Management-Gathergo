@@ -79,6 +79,6 @@ export class VendorRoute {
         this.vendorRoute.patch('/completeBooking', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedUpdateBookingAsCompleteController.handleUpdateBookingComplete(req, res)
         })
-
+       
     }
 }

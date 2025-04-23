@@ -1,4 +1,5 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmTicketAndPayment, createBooking, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
+import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -209,5 +210,17 @@ export const useFindWalletClient = (clientId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['walletClient', pageNo],
         queryFn: () => findWalletOfClient(clientId, pageNo)
+    })
+}
+
+export const useCreateBookingPayment = () => {
+    return useMutation({
+        mutationFn: ({ bookingId, paymentIntentId }: { bookingId: string, paymentIntentId: string }) => createBookingPayment(bookingId, paymentIntentId)
+    })
+}
+
+export const useConfirmBookingPayment = () => {
+    return useMutation({
+        mutationFn: ({ booking, paymentIntentId }: { booking: BookingType, paymentIntentId: string }) => confirmBookingPayment(booking, paymentIntentId)
     })
 }

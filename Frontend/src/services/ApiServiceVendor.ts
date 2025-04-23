@@ -295,7 +295,7 @@ export const findWalletDetailsVendor = async (userId: string, pageNo: number) =>
     }
 }
 
-export const updateBookingAsComplete = async (bookingId: string, status: boolean) => {
+export const updateBookingAsComplete = async (bookingId: string, status: string) => {
     try {
         const response = await axios.patch('/completeBooking', { bookingId, status })
         return response.data

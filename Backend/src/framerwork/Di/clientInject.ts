@@ -68,6 +68,10 @@ import { TicketAndEventDetailsClientController } from "../../adapters/controller
 import { FindUserWalletUseCase } from "../../useCases/wallet/findWalletOfClientUseCase";
 import { FindClientWalletController } from "../../adapters/controllers/client/wallet/findClientWalletController";
 import { FindTransactionsUseCase } from "../../useCases/transactions/findTransactionsUseCase";
+import { InitiateBookingPaymentUseCase } from "../../useCases/client/booking/initiateBookingPaymentUseCase";
+import { CreateBookingPaymentController } from "../../adapters/controllers/client/booking/createBookingPaymentController";
+import { ConfirmBookingPaymentUseCase } from "../../useCases/client/booking/confirmBookingPaymentUseCase";
+import { ConfirmBookingPaymentController } from "../../adapters/controllers/client/booking/confirmBookingPaymentController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -193,3 +197,12 @@ export const injectedTicketAndEventDetailsCientController = new TicketAndEventDe
 const findClientWallet = new FindUserWalletUseCase(walletDatabase)
 const findTransactionUseCase = new FindTransactionsUseCase(transactionDatabase)
 export const injectedFindClientWalletController = new FindClientWalletController(findClientWallet, findTransactionUseCase)
+
+//---------------------------------Client booking payment inititation----------------
+const bookingPaymentInititaionUseCase = new InitiateBookingPaymentUseCase(bookingDatabase, stripeService, paymentDatabase)
+export const InjectedInititateBookingPaymentController = new CreateBookingPaymentController(bookingPaymentInititaionUseCase)
+
+
+//-----------------------------------Confirm booking payment-----------------------------------
+const confirmBookingPaymentUseCase = new ConfirmBookingPaymentUseCase(bookingDatabase, paymentDatabase, walletDatabase, transactionDatabase, stripeService)
+export const injectedConfirmBookingPaymentController = new ConfirmBookingPaymentController(confirmBookingPaymentUseCase)

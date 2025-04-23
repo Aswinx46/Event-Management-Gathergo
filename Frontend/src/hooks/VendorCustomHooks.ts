@@ -190,6 +190,6 @@ export const useFindWalletDetailsVendor = (userId: string, pageNo: number) => {
 
 export const useUpdateBookingAsComplete = () => {
     return useMutation({
-        mutationFn: ({ bookingId, status }: { bookingId: string, status: boolean }) => updateBookingAsComplete(bookingId, status)
+        mutationFn: ({ bookingId, status }: { bookingId: string, status: string }) => updateBookingAsComplete(bookingId, status)
     })
 }

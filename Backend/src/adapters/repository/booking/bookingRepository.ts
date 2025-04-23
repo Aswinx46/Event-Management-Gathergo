@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import { BookingEntity } from "../../../domain/entities/bookingEntity";
 import { BookingsInClientEntity } from "../../../domain/entities/bookingListingInClientEntity";
 import { PopulatedBooking } from "../../../domain/entities/populatedBookingInClient";
@@ -7,6 +7,7 @@ import { IbookingRepository } from "../../../domain/interface/repositoryInterfac
 import { bookingModel } from "../../../framerwork/database/models/bookingModel";
 import { BookingListingEntityVendor } from "../../../domain/entities/vendor/BookingListingEntityVendor";
 import { PopulatedBookingEntityVendor } from "../../../domain/entities/vendor/populatedBookingEntity";
+import { BookingPaymentEntity } from "../../../domain/entities/bookingPayment/bookingPaymentEntity";
 
 export class BookingRepository implements IbookingRepository {
     async createBooking(booking: BookingEntity): Promise<BookingEntity> {
@@ -80,5 +81,49 @@ export class BookingRepository implements IbookingRepository {
     }
     async changeStatus(bookingId: string, status: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { status: status }, { new: true })
+    }
+    async findBookingByIdForPayment(bookingId: string | ObjectId): Promise<BookingPaymentEntity | null> {
+        const booking = await bookingModel
+            .findById(bookingId)
+            .select("-__v -createdAt -updatedAt")
+            .populate({
+                path: "serviceId",
+                select: "servicePrice",
+                model: "service",
+            })
+            .lean();
+        if (!booking) return null;
+
+        const result: BookingPaymentEntity = {
+            _id: booking._id,
+            clientId: booking.clientId,
+            vendorId: booking.vendorId,
+            date: booking.date,
+            email: booking.email,
+            phone: booking.phone,
+            vendorApproval: booking.vendorApproval,
+            paymentStatus: booking.paymentStatus,
+            rejectionReason: booking.rejectionReason,
+            status: booking.status,
+            createdAt: booking.createdAt,
+            isComplete: booking.isComplete,
+            serviceId: (booking.serviceId as any)._id ?? booking.serviceId, // keep ObjectId here
+            service: {
+                servicePrice: (booking.serviceId as any).servicePrice || 0,
+            },
+        };
+
+        return result;
+    }
+    async updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate(bookingId, { paymentStatus: status }, { new: true }).select('-__v -createdAt')
+    }
+    async findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ date: Date[]; servicePrice: number; } | null> {
+        const bookingDetails = await bookingModel.findById(bookingId).select('date').populate('serviceId', 'servicePrice').lean<{
+            date: Date[];
+            serviceId: { servicePrice: number };
+        }>();
+        if(!bookingDetails) return null
+        return { date: bookingDetails?.date, servicePrice: bookingDetails?.serviceId.servicePrice }
     }
 }

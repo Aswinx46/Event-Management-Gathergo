@@ -17,12 +17,13 @@ import {
     CreditCard,
 
 } from "lucide-react";
-import { useApproveBooking, useRejectBooking } from "@/hooks/VendorCustomHooks";
+import { useApproveBooking, useRejectBooking, useUpdateBookingAsComplete } from "@/hooks/VendorCustomHooks";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import RejectionReasonModal from "./RejectionReasonModal";
+import { useNavigate } from "react-router-dom";
 
 
 interface Service {
@@ -102,6 +103,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     setIsOpen,
     booking
 }) => {
+    const navigate = useNavigate()
+
+    const updateBookingStatus = useUpdateBookingAsComplete()
     const approveBooking = useApproveBooking()
     const rejectBooking = useRejectBooking()
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
@@ -137,6 +141,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
 
     const handleApproveBooking = (bookingId: string) => {
+
         if (vendorId && bookingId) {
 
             approveBooking.mutate(bookingId, {
@@ -173,6 +178,33 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
         })
     }
 
+    const handleChangeBookingStatus = (booking: BookingDetails) => {
+        const newStatus = booking.status === "Pending" ? "Completed" : "Pending";
+
+        updateBookingStatus.mutate(
+            { bookingId: booking._id, status: newStatus },
+            {
+                onSuccess: ({ message }) => {
+                    toast.success(message)
+                    queryClient.invalidateQueries({ queryKey: ['Bookings-in-vendor', vendorId] })
+                    setIsOpen(false)
+                },
+                onError: (err) => {
+                    console.error(err);
+                    toast.error(err.message);
+                },
+            }
+        );
+    };
+    const handleBookingPayment = (booking: BookingDetails) => {
+
+        navigate('/profile/confirmBookingPayment', {
+            state: {
+                booking
+            }
+        })
+
+    }
     return (
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
             <DialogContent className="max-w-md max-h-[80vh] bg-gray-900 border border-gray-800 text-white p-0 rounded-xl overflow-hidden">
@@ -287,6 +319,11 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                                 <Button onClick={() => handleApproveBooking(booking._id)} className="bg-green-500">{approveBooking.isPending ? 'Approving' : 'Approve'}</Button>
                                 <Button onClick={() => handleDecline(booking._id)} className="bg-red-600">DECLINE</Button>
                             </motion.div>}
+
+                        {booking?.client?.email &&
+                            <motion.div variants={itemVariants} className="text-center pt-2 border-t flex justify-center gap-3 border-gray-800">
+                                <Button onClick={() => handleChangeBookingStatus(booking)} className={booking.status == 'Pending' ? 'bg-green-500' : 'bg-red-600'}>{booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}</Button>
+                            </motion.div>}
                     </motion.div>
 
                     {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
@@ -297,18 +334,22 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                             </div>
                         </div>
                     </motion.div>}
-
-                    <DialogFooter className="bg-gray-900 p-4 border-t border-gray-800">
+                    <div className="flex justify-center">
+                        {booking.status == 'Completed' && booking.paymentStatus !=='Successfull' && booking.paymentStatus !=='Refunded'  && !booking?.client?.email && < Button onClick={() => handleBookingPayment(booking)} className=" bg-green-500">Pay now</Button>}
+                    </div>
+                    <DialogFooter className="bg-gray-900 p-4  border-t border-gray-800">
                         <Button
                             onClick={() => setIsOpen(false)}
                             className="w-full bg-black hover:bg-gray-800 text-white border border-gray-800"
                         >
                             Close
                         </Button>
+
                     </DialogFooter>
+
                 </div>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };
 
