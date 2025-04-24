@@ -181,7 +181,7 @@ const ticketDatabase = new TicketRepository()
 const stripeService = new PaymentService()
 const generateQrService = new QrService()
 const paymentDatabase = new PaymentRepository()
-const createTicketUseCase = new CreateTicketUseCase(ticketDatabase, stripeService, generateQrService, paymentDatabase)
+const createTicketUseCase = new CreateTicketUseCase(eventDatabase, ticketDatabase, stripeService, generateQrService, paymentDatabase)
 export const injectedCreateTicketController = new CreateTicketController(createTicketUseCase)
 
 //------------------------------Confirm ticket and payment confirmation----------------------

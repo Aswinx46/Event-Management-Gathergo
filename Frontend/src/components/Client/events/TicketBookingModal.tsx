@@ -20,11 +20,17 @@ type TicketPurchaseProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+type Errors = {
+  email?: string;
+  phone?: string;
+};
+
 const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   console.log(event)
   const [ticketCount, setTicketCount] = useState(1);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [errors, setErrors] = useState<Errors>({});
   const navigate = useNavigate()
   const availableTickets = event.totalTicket - event.ticketPurchased;
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
@@ -60,8 +66,30 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
     }
   };
 
-  const handlePayment = () => {
 
+  const validateContactInfo = (email: string, phone: string) => {
+    const errors: Errors = {};
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      errors.email = 'Please enter a valid email address.';
+    }
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      errors.phone = 'Phone number must be 10 digits, start with 6, 7, 8, or 9, and contain no special characters.';
+    }
+
+    return errors;
+  };
+
+
+  const handlePayment = () => {
+    const validationErrors = validateContactInfo(email, phone);
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      return; // ❌ Stop if there are validation errors
+    }
     const ticketPaymentData: TicketEntity = {
       clientId: clientId!,
       email: email,
@@ -134,6 +162,8 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
                       placeholder="Enter your email"
                       className="bg-[#1A1F2C] border-[#2A2F3C] text-white placeholder:text-gray-500"
                     />
+                    {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-gray-300">Phone Number</Label>
@@ -145,6 +175,8 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
                       placeholder="Enter your phone number"
                       className="bg-[#1A1F2C] border-[#2A2F3C] text-white placeholder:text-gray-500"
                     />
+                    {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
+
                   </div>
                 </div>
 

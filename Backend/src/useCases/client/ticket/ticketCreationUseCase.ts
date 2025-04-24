@@ -1,6 +1,7 @@
 import { PaymentEntity } from "../../../domain/entities/payment/paymentEntity";
 import { TicketEntity } from "../../../domain/entities/Ticket/ticketEntity";
 import { TicketFromFrontend } from "../../../domain/entities/Ticket/ticketFromFrotendType";
+import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
 import { IticketRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/eventTicket/ticketRepositoryInterface";
 import { IpaymentRepository } from "../../../domain/interface/repositoryInterfaces/payment/paymentRepositoryInterface";
 import { IStripeService } from "../../../domain/interface/serviceInterface/IpaymentService";
@@ -9,24 +10,29 @@ import { IcreateTicketUseCase } from "../../../domain/interface/useCaseInterface
 import { genarateRandomUuid } from "../../../framerwork/services/randomUuid";
 
 export class CreateTicketUseCase implements IcreateTicketUseCase {
+    private eventDatabase: IeventRepository
     private ticketDatabase: IticketRepositoryInterface
     private stripe: IStripeService
     private genQr: IqrServiceInterface
     private paymentDatabase: IpaymentRepository
-    constructor(ticketDatabase: IticketRepositoryInterface, stripe: IStripeService, genQr: IqrServiceInterface, paymentDatabase: IpaymentRepository) {
+    constructor(eventDatabase: IeventRepository, ticketDatabase: IticketRepositoryInterface, stripe: IStripeService, genQr: IqrServiceInterface, paymentDatabase: IpaymentRepository) {
         this.ticketDatabase = ticketDatabase
         this.stripe = stripe
         this.genQr = genQr
         this.paymentDatabase = paymentDatabase
+        this.eventDatabase = eventDatabase
     }
     async createTicket(ticket: TicketFromFrontend, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string): Promise<{ createdTicket: TicketEntity, stripeClientId: string }> {
+        const eventDetails = await this.eventDatabase.findTotalTicketAndBookedTicket(ticket.eventId)
+        if (!eventDetails) throw new Error('Tickets are sold out for this event.')
+        if (eventDetails.ticketPurchased > eventDetails.totalTicket) throw new Error('Ticket sold out')
+        if (eventDetails.ticketPurchased + totalCount > eventDetails.totalTicket) throw new Error(`Only ${eventDetails.totalTicket - eventDetails.ticketPurchased} tickets are available. Please reduce the quantity.`)
         const ticketId = genarateRandomUuid()
         if (!ticketId) throw new Error('Error while creating ticket id')
         const hostName = process.env.HOSTNAME
-
+        console.log(ticket)
         if (!hostName) throw new Error("no host name found")
         const qrLink = `${hostName}/verifyTicket/${ticketId}/${ticket.eventId}`
-        console.log('id for qr', qrLink)
         const qrCodeLink = await this.genQr.createQrLink(qrLink)
         if (!qrCodeLink) throw new Error('Error while creating qr code link')
         const clientStripeId = await this.stripe.createPaymentIntent(totalAmount, 'ticket', { ticket: ticket })
