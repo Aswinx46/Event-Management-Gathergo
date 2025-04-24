@@ -3,7 +3,7 @@ import { useFindCategoryClient, useFindVendorForCarousal } from '@/hooks/ClientC
 const LazyHeroSection = lazy(() => import('./HeroSection'))
 const CategoryCarousal = lazy(() => import('./CarousalForCategory'))
 const QuoteForService = lazy(() => import('./QuoteForService'))
-const VendorCarousal = lazy(() => import('./CarousalForVendorListing'))
+// const VendorCarousal = lazy(() => import('./CarousalForVendorListing'))
 function Home() {
 
   const findCategory = useFindCategoryClient()
@@ -22,7 +22,7 @@ function Home() {
         <LazyHeroSection />
         {categories && <CategoryCarousal items={categories} />}
         <QuoteForService />
-        <VendorCarousal vendors={vendors} />
+        {/* <VendorCarousal vendors={vendors} /> */}
       </Suspense>
     </div>
   )

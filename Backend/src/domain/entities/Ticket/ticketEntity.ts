@@ -3,7 +3,7 @@ import { ObjectId } from "mongoose";
 export interface TicketEntity {
     _id?: ObjectId | string
     ticketId: string;
-    createdAt?: Date;
+    // createdAt?: Date;
     totalAmount: number
     ticketCount: number
     phone: string;

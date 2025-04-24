@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 import { store } from '../store/store'
-import { addToken } from '@/store/slices/user/userTokenSlice';
+import { addToken, removeToken } from '@/store/slices/user/userTokenSlice';
 import authAxios from './authAxios'
+import { removeClient } from '@/store/slices/user/userSlice';
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_BASEURL,
     withCredentials: true
@@ -32,8 +33,11 @@ instance.interceptors.response.use(
     async (error: AxiosError) => {
         const originalRequest = error.config as CustomAxiosRequestConfig
         const data = error.response?.data as CustomErrorResponse;
-        console.log('this is error',error.response)
+        console.log('this is error', error.response)
         if (error.response?.status === 403 && data?.code === "USER_BLOCKED") {
+            store.dispatch(removeClient(null))
+            store.dispatch(removeToken(null))
+            localStorage.removeItem('id')
             window.location.href = '/userBlockNotice';
             return Promise.reject(error);
         }

@@ -73,8 +73,8 @@ interface BookingDetailsModalProps {
 
 // Helper function to format phone number
 const formatPhoneNumber = (phone: number): string => {
-    const phoneString = phone.toString();
-    if (phoneString.length === 10) {
+    const phoneString = phone?.toString();
+    if (phoneString?.length === 10) {
         return `(${phoneString.slice(0, 3)}) ${phoneString.slice(3, 6)}-${phoneString.slice(6)}`;
     }
     return phoneString;
@@ -268,7 +268,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                             {(booking?.vendor?.profileImage || booking.client?.profileImage) &&
                                 <img
                                     src={booking.vendor?.profileImage || booking.client?.profileImage}
-                                    alt={booking.vendor?.name || booking.client?.name}
+                                    // alt={booking.vendor?.name || booking.client?.name}
                                     className="w-12 h-12 rounded-full object-cover"
                                 />
                             }

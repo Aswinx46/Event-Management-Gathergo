@@ -11,10 +11,7 @@ export const ticketSchema = new Schema<TicketEntity>({
         ref: "client",
         required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
+
     email: {
         type: String,
         required: true
@@ -54,4 +51,6 @@ export const ticketSchema = new Schema<TicketEntity>({
         required: true
     }
 
+}, {
+    timestamps: true
 })
