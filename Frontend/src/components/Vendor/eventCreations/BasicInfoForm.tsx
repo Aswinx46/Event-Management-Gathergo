@@ -46,6 +46,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
     console.log(imageUrls)
     // setPosterImages([...posterImages, ...imageUrls]);
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageFiles, setImageFiles] = useState<File[] | null>([])
 
   console.log('image files',imageFiles)

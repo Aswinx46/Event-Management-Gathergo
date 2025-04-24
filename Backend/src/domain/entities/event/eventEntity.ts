@@ -1,12 +1,12 @@
 import { ObjectId } from "mongoose";
 
 export interface EventEntity {
-    _id?: ObjectId ;
+    _id?: ObjectId;
     title: string;
     description: string;
     location: {
-        longitude: number,
-        latitude: number
+        type: string,
+        coordinates: [number, number];
     },
     hostedBy: ObjectId | string,
     startTime: Date;
@@ -23,5 +23,5 @@ export interface EventEntity {
     venueName?: string
     category: string
     status: "upcoming" | "completed" | "cancelled"
-    attendeesCount:number
+    attendeesCount: number
 }

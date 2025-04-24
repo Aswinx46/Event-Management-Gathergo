@@ -31,12 +31,14 @@ export const eventSchema = new Schema<EventEntity>({
         ref: 'vendors'
     },
     location: {
-        latitude: {
-            type: Number,
-            required: true
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+            default: 'Point'
         },
-        longitude: {
-            type: Number,
+        coordinates: {
+            type: [Number],
             required: true
         }
     },
@@ -80,9 +82,11 @@ export const eventSchema = new Schema<EventEntity>({
         type: String,
         required: false
     },
-    attendeesCount:{
-        type:Number,
-        default:0
+    attendeesCount: {
+        type: Number,
+        default: 0
     }
 
 })
+
+eventSchema.index({ location: '2dsphere' });

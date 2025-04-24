@@ -1,10 +1,10 @@
 export interface EventType {
-    _id:string
+    _id?: string
     title: string;
     description: string;
     location: {
-        longitude: number,
-        latitude: number
+        type: string,
+        coordinates: [number, number];
     },
     startTime: Date;
     endTime: Date;
@@ -18,6 +18,7 @@ export interface EventType {
     address?: string
     venueName?: string
     category: string
-    hostedBy:string
+    hostedBy?: string
     status: "upcoming" | "completed" | "cancelled"
 }
+

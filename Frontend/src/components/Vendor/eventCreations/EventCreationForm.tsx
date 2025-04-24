@@ -52,13 +52,42 @@ const scheduleValidation = Yup.object({
 });
 
 
+// const locationValidation = Yup.object({
+//     location: Yup.object({
+//         latitude: Yup.number().required("Location is required"),
+//         longitude: Yup.number().required("Location is required"),
+//     }),
+//     address: Yup.string().required("Address is required"),
+//     venueName: Yup.string().required("Venue name is required"),
+// });
+
 const locationValidation = Yup.object({
     location: Yup.object({
-        latitude: Yup.number().required("Location is required"),
-        longitude: Yup.number().required("Location is required"),
-    }),
+        type: Yup.string()
+            .oneOf(["Point"], "Invalid location type")
+            .required("Location type is required"),
+        coordinates: Yup.array()
+            .of(Yup.number().required("Both coordinates are required"))
+            .length(2, "Coordinates must include [longitude, latitude]")
+            .test(
+                "is-valid-coords",
+                "Coordinates must be valid longitude and latitude",
+                (value) => {
+                    if (!value) return false;
+                    const [lng, lat] = value;
+                    return (
+                        typeof lng === "number" &&
+                        typeof lat === "number" &&
+                        lng >= -180 &&
+                        lng <= 180 &&
+                        lat >= -90 &&
+                        lat <= 90
+                    );
+                }
+            )
+    }).required("Location is required"),
     address: Yup.string().required("Address is required"),
-    venueName: Yup.string().required("Venue name is required"),
+    venueName: Yup.string().required("Venue name is required")
 });
 
 const ticketValidation = Yup.object({
@@ -97,8 +126,8 @@ const EventCreationForm: React.FC = () => {
         title: "",
         description: "",
         location: {
-            latitude: 0,
-            longitude: 0
+            type: "Point",
+            coordinates: [0, 0]
         },
         startTime: new Date(),
         endTime: new Date(),
@@ -190,7 +219,7 @@ const EventCreationForm: React.FC = () => {
     const createEvent = useCreateEvent()
     const navigate = useNavigate()
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
-        console.log('handleCreateEvent called with values:', values);
+        // console.log('handleCreateEvent called with values:', values);
         if (!vendorId) {
             toast.error("Please Login")
             console.log('Vendor Id not found')
@@ -232,7 +261,7 @@ const EventCreationForm: React.FC = () => {
         console.log("Event data:", event);
         createEvent.mutate({ event, vendorId }, {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            onSuccess: (data) => {
+            onSuccess: () => {
                 toast("Event Created", {
                     description: "Your event has been created successfully!",
                 });
@@ -264,9 +293,7 @@ const EventCreationForm: React.FC = () => {
                 onSubmit={handleCreateEvent}
             >
                 {({ values, setFieldValue, handleSubmit, isSubmitting }) => {
-                    // Check validation on every render
-                    // const currentStepValid = checkStepValidation(values, currentStep);
-                    // Promise.resolve(currentStepValid).then(setIsStepValid);
+
 
                     return (
                         <Form>

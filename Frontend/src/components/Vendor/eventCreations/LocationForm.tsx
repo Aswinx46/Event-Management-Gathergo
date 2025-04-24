@@ -34,8 +34,8 @@ const itemVariants = {
 const LocationForm: React.FC<LocationFormProps> = ({ values }) => {
   const [latitude, setLatitude] = useState<number>(0)
   const [longitude, setLongitude] = useState<number>(0)
-  values.location.latitude = latitude
-  values.location.longitude = longitude
+  values.location.coordinates[0] = longitude
+  values.location.coordinates[1] = latitude
   // console.log(values)
   return (
     <motion.div
