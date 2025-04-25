@@ -227,7 +227,8 @@ export const useConfirmBookingPayment = () => {
 
 export const useFindEventsBasedOnCategory = (category: string, pageNo: number, sortBy: string) => {
     return useQuery({
-        queryKey: ['eventsBasedOnCategory', pageNo],
-        queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy)
+        queryKey: ['eventsBasedOnCategory', category, pageNo, sortBy],
+        queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy),
+        enabled: !!category && !!sortBy,
     })
 }

@@ -3,18 +3,16 @@ import EventList from '../../other components/events/EventList'
 import { useFindEvents, useFindEventsBasedOnCategory } from '@/hooks/ClientCustomHooks'
 import Pagination from '@/components/other components/Pagination'
 import FilterComponent from '@/components/other components/Filter'
-import SortComponent from '@/components/other components/SortComponent'
 
 function EventListingMain() {
     const [currentPage, setCurrentPage] = useState<number>(1)
+    const [selelctedSort, setSelectedSort] = useState<string>('a-z')
 
     const findEvents = useFindEvents(currentPage)
     const events = findEvents.data?.events
     const totalPages = findEvents.data?.totalPages
     const [selectedCategory, setSelectedCategory] = useState<string>('')
-    interface categoryType {
-        title: string
-    }
+   
     const categories = [
         { title: "Conference" },
         { title: "Workshop" },
@@ -26,6 +24,16 @@ function EventListingMain() {
         { title: "Other" },
 
     ];
+    const filterFields = [
+        {
+            key: "category",
+            label: "Category",
+            options: categories.map((item) => ({
+                value: item.title.toLowerCase(),  // safe for filtering/query
+                label: item.title
+            }))
+        }
+    ]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sortOptions = [
         { key: "a-z", label: "A - Z" },
@@ -35,25 +43,29 @@ function EventListingMain() {
         { key: "newest", label: "Newest" },
         { key: "oldest", label: "Oldest" }
     ]
-    const handleClearItem = () => {
+    const findEventsBasedOnCategory = useFindEventsBasedOnCategory(selectedCategory, currentPage, selelctedSort)
+    const filteredEvents = findEventsBasedOnCategory.data?.events
+    const filteredTotalPages = findEventsBasedOnCategory.data?.totalPages
+    const handleClearField = () => {
         setSelectedCategory('')
     }
-
+    const handleClearSort = () => {
+        setSelectedSort('')
+    }
     const handleSortSelect = (key: string) => {
         console.log(key)
+        setSelectedSort(key)
     }
 
-    // const findEventsBasedOnCategory=useFindEventsBasedOnCategory(selectedCategory,currentPage,)
-
-    const handleSelectCategory = (category: categoryType) => {
-        console.log(category)
-        setSelectedCategory(category.title)
+    const handleFilterChange = (filters: Record<string, string>) => {
+        console.log(filters)
+        setSelectedCategory(filters.category)
     }
+
     return (
         <div className='bg-black h-screen'>
-            <FilterComponent handleClearAll={handleClearItem} items={categories} onSelect={handleSelectCategory} />
-            <SortComponent onSortSelect={handleSortSelect} options={sortOptions} />
-            <EventList events={events} isLoading={findEvents.isLoading} currentPage={currentPage} />
+            <FilterComponent filterFields={filterFields} onFilterChange={handleFilterChange} onSortChange={handleSortSelect} sortOptions={sortOptions} onClearFilter={handleClearField} onClearSort={handleClearSort} />
+            <EventList events={filteredEvents || events} isLoading={findEvents.isLoading} currentPage={currentPage} />
             <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
         </div>
     )
