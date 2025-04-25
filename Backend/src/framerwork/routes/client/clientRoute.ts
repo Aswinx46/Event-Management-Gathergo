@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedConfirmBookingPaymentController, injectedConfirmTicketAndPaymentController, injectedCreateBookingController, injectedCreateTicketController, injectedFindCategoryForClientController, injectedFindClientWalletController, injectedFindEventByIdClientController, injectedFindEventsClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, InjectedInititateBookingPaymentController, injectedSearchCategoryController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedTicketAndEventDetailsCientController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedConfirmBookingPaymentController, injectedConfirmTicketAndPaymentController, injectedCreateBookingController, injectedCreateTicketController, injectedFindCategoryForClientController, injectedFindClientWalletController, injectedFindEventByIdClientController, injectedFindEventsBasedOnCategoryController, injectedFindEventsClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, InjectedInititateBookingPaymentController, injectedSearchCategoryController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedTicketAndEventDetailsCientController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
@@ -98,6 +98,9 @@ export class clientRoute {
         })
         this.clientRoute.post('/confirmBookingPayment', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedConfirmBookingPaymentController.handleConfirmBookingPaymentUseCase(req, res)
+        })
+        this.clientRoute.get('/events/:category/:pageNo/:sortBy', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedFindEventsBasedOnCategoryController.handleFindEventsBasedOnCategory(req, res)
         })
     }
 }

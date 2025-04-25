@@ -7,9 +7,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FilterComponent from '@/components/other components/Filter';
 
 interface FilterItem {
-    _id: string
+    _id?: string
     title: string
-    profileImage: string
+    profileImage?: string
 }
 interface Service {
     _id?: string;
@@ -81,7 +81,7 @@ const ServicesList: React.FC = () => {
     }
 
     const handleSelectItem = (item: FilterItem) => {
-        setSelectedCategoryId(item._id)
+        if (item._id) setSelectedCategoryId(item._id)
         setSelectedCategoryTitle(item.title)
     }
 

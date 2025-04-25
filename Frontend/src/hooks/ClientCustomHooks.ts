@@ -1,4 +1,4 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
@@ -222,5 +222,12 @@ export const useCreateBookingPayment = () => {
 export const useConfirmBookingPayment = () => {
     return useMutation({
         mutationFn: ({ booking, paymentIntentId }: { booking: BookingType, paymentIntentId: string }) => confirmBookingPayment(booking, paymentIntentId)
+    })
+}
+
+export const useFindEventsBasedOnCategory = (category: string, pageNo: number, sortBy: string) => {
+    return useQuery({
+        queryKey: ['eventsBasedOnCategory', pageNo],
+        queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy)
     })
 }

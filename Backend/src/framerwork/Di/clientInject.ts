@@ -72,6 +72,8 @@ import { InitiateBookingPaymentUseCase } from "../../useCases/client/booking/ini
 import { CreateBookingPaymentController } from "../../adapters/controllers/client/booking/createBookingPaymentController";
 import { ConfirmBookingPaymentUseCase } from "../../useCases/client/booking/confirmBookingPaymentUseCase";
 import { ConfirmBookingPaymentController } from "../../adapters/controllers/client/booking/confirmBookingPaymentController";
+import { FindEventsBasedOnCategoryUseCase } from "../../useCases/client/events/findEventsBasedOnCategoryUseCase";
+import { FindEventBasedOnCategoryController } from "../../adapters/controllers/client/events/findEventsBasedOnCategoryController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -206,3 +208,7 @@ export const InjectedInititateBookingPaymentController = new CreateBookingPaymen
 //-----------------------------------Confirm booking payment-----------------------------------
 const confirmBookingPaymentUseCase = new ConfirmBookingPaymentUseCase(bookingDatabase, paymentDatabase, walletDatabase, transactionDatabase, stripeService)
 export const injectedConfirmBookingPaymentController = new ConfirmBookingPaymentController(confirmBookingPaymentUseCase)
+
+//-------------------------------------Find events based on category and sort----------------------
+const findEventsBasedOnCategoryUseCase = new FindEventsBasedOnCategoryUseCase(eventDatabase)
+export const injectedFindEventsBasedOnCategoryController = new FindEventBasedOnCategoryController(findEventsBasedOnCategoryUseCase)

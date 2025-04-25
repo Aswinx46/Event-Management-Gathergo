@@ -211,7 +211,7 @@ export default function EventDetails() {
                     {/* Map */}
                     <motion.div variants={fadeIn} className="lg:col-span-2 z-10">
   
-                        <MapComponent lat={event?.location?.latitude} lng={event?.location?.longitude} />
+                        <MapComponent lat={event?.location?.coordinates[1]} lng={event?.location?.coordinates[0]} />
                     </motion.div>
                 </div>
 

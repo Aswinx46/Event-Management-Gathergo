@@ -359,3 +359,13 @@ export const confirmBookingPayment = async (booking: BookingType, paymentIntentI
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while confirming booking payment')
     }
 }
+
+export const findEventsBasedOnCategory = async (category: string, pageNo: number, sortBy: string) => {
+    try {
+        const response = await axios.get(`/events/${category}/${pageNo}/${sortBy}`)
+        return response.data
+    } catch (error) {
+        console.log('error while fetching events based on category', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching events based on category')
+    }
+}

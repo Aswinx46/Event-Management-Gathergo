@@ -4,6 +4,8 @@ import { EventUpdateEntity } from "../../../domain/entities/event/eventUpdateEnt
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
 import { eventModal } from "../../../framerwork/database/models/eventModel";
 
+
+
 export class EventRepository implements IeventRepository {
     async createEvent(event: EventEntity): Promise<EventEntity> {
         return await eventModal.create(event)
@@ -44,6 +46,23 @@ export class EventRepository implements IeventRepository {
     }
     async findTotalTicketAndBookedTicket(eventId: string): Promise<EventEntity | null> {
         return eventModal.findById(eventId).select('totalTicket ticketPurchased')
+    }
+    async findEventsBaseOnCategory(category: string, pageNo: number, sortBy: string): Promise<{ events: EventEntity[] | []; totalPages: number; }> {
+        const sortOptions: Record<string, any> = {
+            "a-z": { title: 1 },
+            "z-a": { title: -1 },
+            "price-low-high": { pricePerTicket: 1 },
+            "price-high-low": { pricePerTicket: -1 },
+            "newest": { createdAt: -1 },
+            "oldest": { createdAt: 1 }
+        }
+        const sort = sortOptions[sortBy] || { createdAt: -1 }
+        const limit = 5
+        const page = Math.max(pageNo, 1)
+        const skip = (page - 1) * limit
+        const events = await eventModal.find({ category }).select('-__v').skip(skip).limit(limit).sort(sort)
+        const totalPages = Math.ceil(await eventModal.countDocuments({ category }) / limit)
+        return { events, totalPages }
     }
 
 }

@@ -1,14 +1,15 @@
+
+
 "use client"
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Filter, X } from "lucide-react"
 
-// Define the types for our props
 interface FilterItem {
-  _id: string
+  _id?: string
   title: string
-  profileImage: string
+  profileImage?: string
 }
 
 interface FilterComponentProps {
@@ -19,7 +20,7 @@ interface FilterComponentProps {
 }
 
 export default function FilterComponent({
-  items = dummyFilterItems, // Default to dummy data
+  items = dummyFilterItems,
   onSelect,
   title = "Filter Options",
   handleClearAll
@@ -27,29 +28,25 @@ export default function FilterComponent({
   const [isOpen, setIsOpen] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
 
-  const toggleFilter = () => {
-    setIsOpen(!isOpen)
-  }
+  const getItemKey = (item: FilterItem) => item._id ?? item.title
+
+  const toggleFilter = () => setIsOpen(!isOpen)
 
   const handleSelect = (item: FilterItem) => {
-    setSelectedItems((prev) => {
-      if (prev.includes(item._id)) {
-        return prev.filter((id) => id !== item._id)
-      } else {
-        return [...prev, item._id]
-      }
-    })
+    const key = getItemKey(item)
+    setSelectedItems((prev) =>
+      prev.includes(key) ? prev.filter((id) => id !== key) : [...prev, key]
+    )
     onSelect(item)
   }
 
-  const handleClear=()=>{
+  const handleClear = () => {
     setSelectedItems([])
     handleClearAll()
   }
 
   return (
-    <div className="relative font-sans">
-      {/* Filter Button */}
+    <div className="relative font-sans z-50">
       <button
         onClick={toggleFilter}
         className="flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-white shadow-lg transition-all hover:bg-gray-800"
@@ -58,7 +55,6 @@ export default function FilterComponent({
         <span>Filter</span>
       </button>
 
-      {/* Filter Panel */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -79,24 +75,30 @@ export default function FilterComponent({
             </div>
 
             <div className="space-y-2">
-              {items.map((item) => (
-                <motion.div key={item._id} whileHover={{ x: 5 }} className="group">
-                  <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-gray-800">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(item._id)}
-                      onChange={() => handleSelect(item)}
-                      className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0"
-                    />
-                    <span
-                      className={`text-sm ${selectedItems.includes(item._id) ? "font-medium text-purple-400" : "text-gray-300"
+              {items.map((item) => {
+                const key = getItemKey(item)
+                return (
+                  <motion.div key={key} whileHover={{ x: 5 }} className="group">
+                    <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-gray-800">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.includes(key)}
+                        onChange={() => handleSelect(item)}
+                        className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0"
+                      />
+                      <span
+                        className={`text-sm ${
+                          selectedItems.includes(key)
+                            ? "font-medium text-purple-400"
+                            : "text-gray-300"
                         }`}
-                    >
-                      {item.title}
-                    </span>
-                  </label>
-                </motion.div>
-              ))}
+                      >
+                        {item.title}
+                      </span>
+                    </label>
+                  </motion.div>
+                )
+              })}
             </div>
 
             {selectedItems.length > 0 && (
@@ -114,11 +116,8 @@ export default function FilterComponent({
   )
 }
 
-// Dummy data for demonstration
 const dummyFilterItems: FilterItem[] = [
-  { _id: "1", title: "Price: Low to High", profileImage: "price_asc" },
-  { _id: "2", title: "Price: High to Low", profileImage: "price_desc" },
-  { _id: "3", title: "Newest First", profileImage: "newest" },
-  { _id: "4", title: "Popularity", profileImage: "popularity" },
-  { _id: "5", title: "Best Rated", profileImage: "rating" },
+  { _id: "1", title: "Price: Low to High" },
+  { title: "Popularity" }, // No ID here
+  { _id: "3", title: "Newest First" }
 ]
