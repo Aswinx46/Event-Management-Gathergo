@@ -73,14 +73,29 @@ export class ServiceRepository implements IserviceRepository {
         // console.log('service',serviceWithVendor)
         return serviceWithVendor
     }
-    async findServiceByCategory(categoryId: string, pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }> {
+    async findServiceByCategory(categoryId: string | null, pageNo: number, sortBy: string): Promise<{ Services: ServiceEntity[] | [], totalPages: number }> {
+
         const page = Math.max(pageNo, 1)
         const limit = 5
         const skip = (page - 1) * limit
-        const Services = await serviceModal.find({ categoryId: categoryId, status: 'active' }).select('-createdAt -updatedAt').skip(skip).limit(limit)
+        const sortOptions: Record<string, any> = {
+            "a-z": { title: 1 },
+            "z-a": { title: -1 },
+            "price-low-high": { pricePerTicket: 1 },
+            "price-high-low": { pricePerTicket: -1 },
+            "newest": { createdAt: -1 },
+            "oldest": { createdAt: 1 }
+        }
+        const sort = sortOptions[sortBy] || { createdAt: -1 }
+        console.log('this is sort', sort)
+        console.log('this is cat id', categoryId)
+        const Services = await serviceModal.find({ categoryId: categoryId, status: 'active' }).select('-createdAt -updatedAt').skip(skip).limit(limit).sort(sort)
         const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
         return { Services, totalPages }
     }
-
+    async searchService(query: string): Promise<ServiceEntity[] | []> {
+        const regex = new RegExp(query || '', 'i');
+        return await serviceModal.find({ serviceTitle: { $regex: regex }, status: 'active' }).select('_id title ')
+    }
 }
 

@@ -222,9 +222,9 @@ export const clientLogout = async () => {
     }
 }
 
-export const clientFindServiceOnCategoryBasis = async (categoryId: string, pageNo: number) => {
+export const clientFindServiceOnCategoryBasis = async (categoryId: string, pageNo: number, sortBy: string) => {
     try {
-        const response = await axios.get(`/services/${categoryId}/${pageNo}`)
+        const response = await axios.get(`/servicesFiltering`, { params: { categoryId, pageNo, sortBy } })
         return response.data
     } catch (error) {
         console.log('error while fetching services on the basis of category', error)
@@ -367,5 +367,15 @@ export const findEventsBasedOnCategory = async (category: string, pageNo: number
     } catch (error) {
         console.log('error while fetching events based on category', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching events based on category')
+    }
+}
+
+export const searchService = async (query: string) => {
+    try {
+        const response = await axios.get('/service/search', { params: { query } })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching service based on query', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching service based on query')
     }
 }

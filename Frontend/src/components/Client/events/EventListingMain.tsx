@@ -12,7 +12,7 @@ function EventListingMain() {
     const events = findEvents.data?.events
     const totalPages = findEvents.data?.totalPages
     const [selectedCategory, setSelectedCategory] = useState<string>('')
-   
+
     const categories = [
         { title: "Conference" },
         { title: "Workshop" },
@@ -66,7 +66,7 @@ function EventListingMain() {
         <div className='bg-black h-screen'>
             <FilterComponent filterFields={filterFields} onFilterChange={handleFilterChange} onSortChange={handleSortSelect} sortOptions={sortOptions} onClearFilter={handleClearField} onClearSort={handleClearSort} />
             <EventList events={filteredEvents || events} isLoading={findEvents.isLoading} currentPage={currentPage} />
-            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
+            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages || filteredTotalPages} />
         </div>
     )
 }

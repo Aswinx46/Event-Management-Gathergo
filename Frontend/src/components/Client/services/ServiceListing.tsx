@@ -5,6 +5,16 @@ import { useFindAllCategoryForListing, useFindServiceForclient, useFindServiceOn
 import Pagination from '@/components/other components/Pagination';
 import { useNavigate, useParams } from 'react-router-dom';
 import FilterComponent from '@/components/other components/Filter';
+// import SearchModal from '@/components/other components/search/SearchContainer';
+// import { Button } from '@/components/ui/button';
+// import { toast } from 'react-toastify';
+
+// interface SearchResult {
+//     _id: string
+//     title: string
+//     image: string
+//     category?: string
+// }
 
 interface FilterItem {
     _id?: string
@@ -28,16 +38,32 @@ interface Service {
 
 const ServicesList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
+    // const [searchOpen, setSearchOpen] = useState<boolean>(false)
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [selectedSort, setSelectedSort] = useState<string>('a-z')
+    // const [query, setQuery] = useState<string>('')
+    // const [searchedService, setSearchedService] = useState<SearchResult[] | []>([])
     const { data: fetchedData, error: errorAll } = useFindServiceForclient(currentPage);
-
     const findCategory = useFindAllCategoryForListing(1)
     const { categoryId, title } = useParams()
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId ?? null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selecteCategoryTitle, setSelectedCategoryTitle] = useState<string | null>(title ?? null)
-    const { data: servicesWithCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, { enabled: !!selectedCategoryId })
-
+    const { data: servicesWithCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, selectedSort, { enabled: !!selectedCategoryId && selectedSort !== '' })
+    // const searchService = useFindServiceUsingSearch()
     const categories = findCategory.data?.categories
+    // console.log('this is categories', categories)
+
+    const filterFields = categories ? [
+        {
+            key: "category",
+            label: "Category",
+            options: categories.map((cat: FilterItem) => ({
+                value: cat._id || '',
+                label: cat.title
+            }))
+        }
+    ] : [];
 
     useEffect(() => {
         if (fetchedData?.totalPages) {
@@ -57,14 +83,6 @@ const ServicesList: React.FC = () => {
 
     const navigate = useNavigate()
 
-    // if (isLoadingAll || isLoadingCategory) {
-    //     return (
-    //         <div className="min-h-screen flex items-center justify-center">
-    //             <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
-    //         </div>
-    //     );
-    // }
-
     if (errorAll || errorCategory) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -74,24 +92,61 @@ const ServicesList: React.FC = () => {
     }
 
 
+    const categorySortOptions = [
+        { key: 'a-z', label: 'Title: A to Z' },
+        { key: 'z-a', label: 'Title: Z to A' },
+        { key: 'newest', label: 'Newest First' },       // based on createdAt
+        { key: 'oldest', label: 'Oldest First' },       // based on createdAt
+        { key: 'recently-updated', label: 'Recently Updated' }, // based on updatedAt
+    ];
     const services: Service[] = selectedCategoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || [];
     const handleServiceBooking = (serviceId: string, vendorId: string) => {
-
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }
 
-    const handleSelectItem = (item: FilterItem) => {
-        if (item._id) setSelectedCategoryId(item._id)
-        setSelectedCategoryTitle(item.title)
+    const handleSelectSort = (sort: string) => {
+        setSelectedSort(sort)
+        console.log(sort)
     }
 
-    const handleClearAll = () => {
+    const handleSelectItem = (filters: Record<string, string>) => {
+        setSelectedCategoryId(filters.category)
+        // setSelectedCategoryTitle(filters.category)
+        // console.log(filters)
+        // console.log(filters)
+    }
+
+    const handleClearField = () => {
         setSelectedCategoryId(null)
     }
+    const handleClearSort = () => {
+        setSelectedSort('a-z')
+    }
+    // const handleSearchOnClick = (id: string, title: string) => {
+    //     console.log(id)
+    //     console.log(title)
+    // }
+    // const handleOnSubmit = () => {
+    //     console.log(query)
 
+    //     const services = searchService.mutate(query, {
+    //         onSuccess: (data) => {
+    //             setSearchedService(data.searchedService)
+    //         },
+    //         onError: (err) => {
+    //             toast.error(err.message)
+    //             console.log('error while performin search service', err)
+    //         }
+    //     })
+    //     return searchedService
+    // }
     return (
         <div className='w-full min-h-screen bg-black'>
-            {!categoryId && <FilterComponent items={categories} onSelect={handleSelectItem} handleClearAll={handleClearAll} />}
+            <div className='flex justify-end pt-5 items-center px-0 md:px-[10%] gap-1 md:gap-4'>
+                {/* <Button onClick={() => setSearchOpen(true)}>SEARCH</Button> */}
+                {/* {<SearchModal handleOnClick={handleSearchOnClick} onSubmit={handleOnSubmit} setIsOpen={setSearchOpen} setText={setQuery} text={query} isOpen={searchOpen} />} */}
+                {!categoryId && <FilterComponent filterFields={filterFields} onSortChange={handleSelectSort} onClearFilter={handleClearField} onClearSort={handleClearSort} onFilterChange={handleSelectItem} sortOptions={categorySortOptions} />}
+            </div>
             <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}

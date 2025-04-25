@@ -9,9 +9,17 @@ export class FindServiceBasedOnCategoryController {
     }
     async handleFindServiceOnCategorybasis(req: Request, res: Response): Promise<void> {
         try {
-            const { categoryId, pageNo } = req.params
-            const page = parseInt(pageNo, 10) || 1
-            const { Services, totalPages } = await this.findServiceOnCategoryBasisUseCase.findServiceBasedOnCatagory(categoryId, page)
+
+            const { pageNo = 1, sortBy } = req.query;
+            const page = parseInt(pageNo as string, 10) || 1
+            const rawCategoryId = req.query.categoryId;
+            const catId = (typeof rawCategoryId === 'string'
+                ? rawCategoryId
+                : Array.isArray(rawCategoryId)
+                    ? rawCategoryId[0]
+                    : null) as string | null;
+            const sort = typeof sortBy === 'string' ? sortBy : 'a-z';
+            const { Services, totalPages } = await this.findServiceOnCategoryBasisUseCase.findServiceBasedOnCatagory(catId, page, sort)
             res.status(HttpStatus.OK).json({ message: 'Service fetched on cateogory basis', Services, totalPages })
         } catch (error) {
             console.log('error while finding services on basis of cateogry', error)

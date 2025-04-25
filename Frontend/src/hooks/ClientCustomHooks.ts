@@ -1,4 +1,4 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, searchService, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
@@ -136,11 +136,10 @@ export const useClientLogout = () => {
         mutationFn: () => clientLogout(),
     })
 }
-
-export const useFindServiceOnCategoryBasis = (categoryId: string, pageNo: number, options?: { enabled?: boolean }) => {
+export const useFindServiceOnCategoryBasis = (categoryId: string, pageNo: number, sortBy: string, options?: { enabled?: boolean }) => {
     return useQuery({
-        queryKey: ['servicesOnCategoryBasis', categoryId, pageNo],
-        queryFn: () => clientFindServiceOnCategoryBasis(categoryId, pageNo),
+        queryKey: ['servicesOnCategoryBasis', categoryId, pageNo, sortBy],
+        queryFn: () => clientFindServiceOnCategoryBasis(categoryId, pageNo, sortBy),
         enabled: options?.enabled,
         staleTime: 5 * 60 * 1000
     })
@@ -230,5 +229,11 @@ export const useFindEventsBasedOnCategory = (category: string, pageNo: number, s
         queryKey: ['eventsBasedOnCategory', category, pageNo, sortBy],
         queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy),
         enabled: !!category && !!sortBy,
+    })
+}
+
+export const useFindServiceUsingSearch = () => {
+    return useMutation({
+        mutationFn: (query: string) => searchService(query)
     })
 }

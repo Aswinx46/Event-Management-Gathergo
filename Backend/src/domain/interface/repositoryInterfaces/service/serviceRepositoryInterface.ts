@@ -9,6 +9,6 @@ export interface IserviceRepository {
     changeStatus(serviceId: string): Promise<ServiceEntity | null>
     findServiceForClient(pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }>
     showServiceDataInBookingPage(serviceId: string): Promise<ServiceWithVendorEntity | null>
-    findServiceByCategory(categoryId: string, pageNo: number): Promise<{ Services: ServiceEntity[] | [], totalPages: number }>
-    
+    findServiceByCategory(categoryId: string | null, pageNo: number, sortBy: string): Promise<{ Services: ServiceEntity[] | [], totalPages: number }>
+    searchService(query: string): Promise<ServiceEntity[] | []>
 }

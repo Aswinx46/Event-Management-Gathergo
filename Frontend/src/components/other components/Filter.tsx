@@ -27,6 +27,7 @@ interface FilterComponentProps {
   onSortChange: (key: string) => void
   onClearFilter: (key: string) => void
   onClearSort: () => void
+  
 }
 
 const FilterComponent = ({
@@ -58,11 +59,11 @@ const FilterComponent = ({
   }
 
   return (
-    <div className="w-full px-[10%] pt-3">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+    <div className=" ">
+      <div className="flex flex-col md:flex-row justify-between items-center ">
         {/* Search input - Left side */}
         <div className="w-full md:w-1/3">
-          <div className="relative">
+          {/* <div className="relative">
             <Input
               type="text"
               placeholder="Search..."
@@ -71,7 +72,7 @@ const FilterComponent = ({
               className="pl-10 bg-gray-900 text-white border-gray-700 placeholder:text-gray-400 focus:border-purple-500"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          </div>
+          </div> */}
         </div>
 
         {/* Filters and Sort - Right side */}

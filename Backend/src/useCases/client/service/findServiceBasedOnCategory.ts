@@ -7,8 +7,8 @@ export class FindServiceOnCategorybasisUseCase implements IfindServiceOnCategory
     constructor(serviceDatabase: IserviceRepository) {
         this.serviceDatabase = serviceDatabase
     }
-    async findServiceBasedOnCatagory(categoryId: string, pageNo: number): Promise<{ Services: ServiceEntity[] | []; totalPages: number; }> {
-        const { Services, totalPages } = await this.serviceDatabase.findServiceByCategory(categoryId, pageNo)
+    async findServiceBasedOnCatagory(categoryId: string | null, pageNo: number, sortBy: string ): Promise<{ Services: ServiceEntity[] | []; totalPages: number; }> {
+        const { Services, totalPages } = await this.serviceDatabase.findServiceByCategory(categoryId, pageNo, sortBy, )
         return { Services, totalPages }
     }
 }

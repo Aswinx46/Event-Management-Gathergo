@@ -74,6 +74,8 @@ import { ConfirmBookingPaymentUseCase } from "../../useCases/client/booking/conf
 import { ConfirmBookingPaymentController } from "../../adapters/controllers/client/booking/confirmBookingPaymentController";
 import { FindEventsBasedOnCategoryUseCase } from "../../useCases/client/events/findEventsBasedOnCategoryUseCase";
 import { FindEventBasedOnCategoryController } from "../../adapters/controllers/client/events/findEventsBasedOnCategoryController";
+import { SearchServiceUseCase } from "../../useCases/client/service/searchServiceUseCase";
+import { SearchServiceController } from "../../adapters/controllers/client/service/searchServiceController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -212,3 +214,7 @@ export const injectedConfirmBookingPaymentController = new ConfirmBookingPayment
 //-------------------------------------Find events based on category and sort----------------------
 const findEventsBasedOnCategoryUseCase = new FindEventsBasedOnCategoryUseCase(eventDatabase)
 export const injectedFindEventsBasedOnCategoryController = new FindEventBasedOnCategoryController(findEventsBasedOnCategoryUseCase)
+
+//------------------------------------search service----------------------------------
+const searchServiceUseCase = new SearchServiceUseCase(serviceDatabase)
+export const injectedSearchServiceController = new SearchServiceController(searchServiceUseCase)
