@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
-import { useFindAllCategoryForListing, useFindServiceForclient, useFindServiceOnCategoryBasis } from '@/hooks/ClientCustomHooks';
+import { useFindAllCategoryForListing, useFindServiceForclient, useFindServiceOnCategoryBasis, useFindServiceUsingSearch } from '@/hooks/ClientCustomHooks';
 import Pagination from '@/components/other components/Pagination';
 import { useNavigate, useParams } from 'react-router-dom';
 import FilterComponent from '@/components/other components/Filter';
-// import SearchModal from '@/components/other components/search/SearchContainer';
-// import { Button } from '@/components/ui/button';
+import SearchModal from '@/components/other components/search/SearchContainer';
+import { Button } from '@/components/ui/button';
 // import { toast } from 'react-toastify';
 
 // interface SearchResult {
@@ -38,10 +38,10 @@ interface Service {
 
 const ServicesList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
-    // const [searchOpen, setSearchOpen] = useState<boolean>(false)
+    const [searchOpen, setSearchOpen] = useState<boolean>(false)
     const [totalPages, setTotalPages] = useState<number>(1);
     const [selectedSort, setSelectedSort] = useState<string>('a-z')
-    // const [query, setQuery] = useState<string>('')
+    const [query, setQuery] = useState<string>('')
     // const [searchedService, setSearchedService] = useState<SearchResult[] | []>([])
     const { data: fetchedData, error: errorAll } = useFindServiceForclient(currentPage);
     const findCategory = useFindAllCategoryForListing(1)
@@ -49,8 +49,8 @@ const ServicesList: React.FC = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId ?? null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selecteCategoryTitle, setSelectedCategoryTitle] = useState<string | null>(title ?? null)
-    const { data: servicesWithCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, selectedSort, { enabled: !!selectedCategoryId && selectedSort !== '' })
-    // const searchService = useFindServiceUsingSearch()
+    const { data: servicesWithCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, selectedSort, { enabled: !!selectedCategoryId || selectedSort !== '' })
+    const searchService = useFindServiceUsingSearch()
     const categories = findCategory.data?.categories
     // console.log('this is categories', categories)
 
@@ -99,7 +99,8 @@ const ServicesList: React.FC = () => {
         { key: 'oldest', label: 'Oldest First' },       // based on createdAt
         { key: 'recently-updated', label: 'Recently Updated' }, // based on updatedAt
     ];
-    const services: Service[] = selectedCategoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || [];
+    // const services: Service[] = selectedCategoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || [];
+    const services: Service[] = servicesWithCategory?.Services || fetchedData?.Services || [];
     const handleServiceBooking = (serviceId: string, vendorId: string) => {
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }
@@ -122,29 +123,22 @@ const ServicesList: React.FC = () => {
     const handleClearSort = () => {
         setSelectedSort('a-z')
     }
-    // const handleSearchOnClick = (id: string, title: string) => {
-    //     console.log(id)
-    //     console.log(title)
-    // }
-    // const handleOnSubmit = () => {
-    //     console.log(query)
+    const handleSearchOnClick = (id: string, title: string) => {
+        console.log(id)
+        console.log(title)
+    }
+    const handleOnSubmit = async () => {
+        console.log(query)
 
-    //     const services = searchService.mutate(query, {
-    //         onSuccess: (data) => {
-    //             setSearchedService(data.searchedService)
-    //         },
-    //         onError: (err) => {
-    //             toast.error(err.message)
-    //             console.log('error while performin search service', err)
-    //         }
-    //     })
-    //     return searchedService
-    // }
+        const service = await searchService.mutateAsync(query)
+        console.log(service)
+        return service.searchedService
+    }
     return (
         <div className='w-full min-h-screen bg-black'>
             <div className='flex justify-end pt-5 items-center px-0 md:px-[10%] gap-1 md:gap-4'>
-                {/* <Button onClick={() => setSearchOpen(true)}>SEARCH</Button> */}
-                {/* {<SearchModal handleOnClick={handleSearchOnClick} onSubmit={handleOnSubmit} setIsOpen={setSearchOpen} setText={setQuery} text={query} isOpen={searchOpen} />} */}
+                <Button onClick={() => setSearchOpen(true)}>SEARCH</Button>
+                {<SearchModal handleOnClick={handleSearchOnClick} onSubmit={handleOnSubmit} setIsOpen={setSearchOpen} setText={setQuery} text={query} isOpen={searchOpen} />}
                 {!categoryId && <FilterComponent filterFields={filterFields} onSortChange={handleSelectSort} onClearFilter={handleClearField} onClearSort={handleClearSort} onFilterChange={handleSelectItem} sortOptions={categorySortOptions} />}
             </div>
             <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto">

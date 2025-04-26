@@ -3,6 +3,11 @@ import { ServiceWithVendorEntity } from "../../../domain/entities/serviceWithVen
 import { IserviceRepository } from "../../../domain/interface/repositoryInterfaces/service/serviceRepositoryInterface";
 import { serviceModal } from "../../../framerwork/database/models/serviceModel";
 import { VendorDTO } from "../../../domain/entities/vendorDTO";
+
+interface Filter {
+    status: string
+    categoryId?: string
+}
 export class ServiceRepository implements IserviceRepository {
     async createService(service: ServiceEntity): Promise<ServiceEntity> {
         return await serviceModal.create(service)
@@ -79,23 +84,26 @@ export class ServiceRepository implements IserviceRepository {
         const limit = 5
         const skip = (page - 1) * limit
         const sortOptions: Record<string, any> = {
-            "a-z": { title: 1 },
-            "z-a": { title: -1 },
-            "price-low-high": { pricePerTicket: 1 },
-            "price-high-low": { pricePerTicket: -1 },
+            "a-z": { serviceTitle: 1 },
+            "z-a": { serviceTitle: -1 },
+            "price-low-high": { servicePrice: 1 },
+            "price-high-low": { servicePrice: -1 },
             "newest": { createdAt: -1 },
             "oldest": { createdAt: 1 }
         }
         const sort = sortOptions[sortBy] || { createdAt: -1 }
         console.log('this is sort', sort)
         console.log('this is cat id', categoryId)
-        const Services = await serviceModal.find({ categoryId: categoryId, status: 'active' }).select('-createdAt -updatedAt').skip(skip).limit(limit).sort(sort)
+        const filter: Filter = { status: 'active' }
+        if (categoryId) filter.categoryId = categoryId
+        const Services = await serviceModal.find(filter).collation({ locale: 'en', strength: 2 }).select('-createdAt -updatedAt').skip(skip).limit(limit).sort(sort)
         const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
         return { Services, totalPages }
     }
     async searchService(query: string): Promise<ServiceEntity[] | []> {
+        console.log(query)
         const regex = new RegExp(query || '', 'i');
-        return await serviceModal.find({ serviceTitle: { $regex: regex }, status: 'active' }).select('_id title ')
+        return await serviceModal.find({ serviceTitle: { $regex: regex }, status: 'active' }).select('_id serviceTitle ')
     }
 }
 

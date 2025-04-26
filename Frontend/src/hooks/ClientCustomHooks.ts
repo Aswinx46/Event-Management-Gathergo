@@ -141,7 +141,7 @@ export const useFindServiceOnCategoryBasis = (categoryId: string, pageNo: number
         queryKey: ['servicesOnCategoryBasis', categoryId, pageNo, sortBy],
         queryFn: () => clientFindServiceOnCategoryBasis(categoryId, pageNo, sortBy),
         enabled: options?.enabled,
-        staleTime: 5 * 60 * 1000
+        // staleTime: 5 * 60 * 1000
     })
 }
 
