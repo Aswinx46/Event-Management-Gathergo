@@ -76,6 +76,8 @@ import { FindEventsBasedOnCategoryUseCase } from "../../useCases/client/events/f
 import { FindEventBasedOnCategoryController } from "../../adapters/controllers/client/events/findEventsBasedOnCategoryController";
 import { SearchServiceUseCase } from "../../useCases/client/service/searchServiceUseCase";
 import { SearchServiceController } from "../../adapters/controllers/client/service/searchServiceController";
+import { searchEventsUseCase } from "../../useCases/client/events/searchEventsUseCase";
+import { SearchEventsOnQueryController } from "../../adapters/controllers/client/events/searchEventsOnQueryController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -218,3 +220,7 @@ export const injectedFindEventsBasedOnCategoryController = new FindEventBasedOnC
 //------------------------------------search service----------------------------------
 const searchServiceUseCase = new SearchServiceUseCase(serviceDatabase)
 export const injectedSearchServiceController = new SearchServiceController(searchServiceUseCase)
+
+//-------------------------------------- search events--------------------------
+const SearchEventsUseCase = new searchEventsUseCase(eventDatabase)
+export const injectedSearchEventsController = new SearchEventsOnQueryController(SearchEventsUseCase)

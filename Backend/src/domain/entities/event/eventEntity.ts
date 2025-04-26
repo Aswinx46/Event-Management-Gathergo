@@ -24,4 +24,5 @@ export interface EventEntity {
     category: string
     status: "upcoming" | "completed" | "cancelled"
     attendeesCount: number
+    isActive:boolean
 }

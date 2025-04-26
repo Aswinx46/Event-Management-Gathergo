@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedConfirmBookingPaymentController, injectedConfirmTicketAndPaymentController, injectedCreateBookingController, injectedCreateTicketController, injectedFindCategoryForClientController, injectedFindClientWalletController, injectedFindEventByIdClientController, injectedFindEventsBasedOnCategoryController, injectedFindEventsClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, InjectedInititateBookingPaymentController, injectedSearchCategoryController, injectedSearchServiceController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedTicketAndEventDetailsCientController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
+import { clientAuthenticationController, injectedChangeClientPasswordController, injectedChangeProfileImageClientController, injectedClientLoginController, injectedClientLogoutController, injectedConfirmBookingPaymentController, injectedConfirmTicketAndPaymentController, injectedCreateBookingController, injectedCreateTicketController, injectedFindCategoryForClientController, injectedFindClientWalletController, injectedFindEventByIdClientController, injectedFindEventsBasedOnCategoryController, injectedFindEventsClientController, injectedFindServiceForClientController, injectedFindServiceOncategoryBasis, injectedFindVendosForClientCarousalController, injectedForgetPasswordClientController, injectedGoogleLogincontroller, InjectedInititateBookingPaymentController, injectedSearchCategoryController, injectedSearchEventsController, injectedSearchServiceController, injectedSendOtpForgetPasswordController, injectedShowBookingInClientController, injectedShowServiceWithVendorCController, injectedTicketAndEventDetailsCientController, injectedUpdateProfileClientController, injectedVerifyingForgetOtpClientController } from "../../Di/clientInject";
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
@@ -107,6 +107,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/service/search', (req: Request, res: Response) => {
             injectedSearchServiceController.handleSearchService(req, res)
+        })
+        this.clientRoute.get('/events/search', (req: Request, res: Response) => {
+            injectedSearchEventsController.handleSearchEvents(req, res)
         })
     }
 }

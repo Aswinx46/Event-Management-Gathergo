@@ -85,6 +85,10 @@ export const eventSchema = new Schema<EventEntity>({
     attendeesCount: {
         type: Number,
         default: 0
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 
 })

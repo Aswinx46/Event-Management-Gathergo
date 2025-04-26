@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
 import EventList from '../../other components/events/EventList'
-import { useFindEvents, useFindEventsBasedOnCategory } from '@/hooks/ClientCustomHooks'
+import { useFindEvents, useFindEventsBasedOnCategory, useFindEventsOnQuery } from '@/hooks/ClientCustomHooks'
 import Pagination from '@/components/other components/Pagination'
 import FilterComponent from '@/components/other components/Filter'
+import SearchModal from '@/components/other components/search/SearchContainer'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router-dom'
 
 function EventListingMain() {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [selelctedSort, setSelectedSort] = useState<string>('a-z')
-
+    const [isOpen, setIsOpen] = useState(false)
+    const [query, setQuery] = useState<string>('')
+    const navigate = useNavigate()
+    const findEventsBasedOnQuery = useFindEventsOnQuery()
     const findEvents = useFindEvents(currentPage)
     const events = findEvents.data?.events
     const totalPages = findEvents.data?.totalPages
@@ -46,6 +52,7 @@ function EventListingMain() {
     const findEventsBasedOnCategory = useFindEventsBasedOnCategory(selectedCategory, currentPage, selelctedSort)
     const filteredEvents = findEventsBasedOnCategory.data?.events
     const filteredTotalPages = findEventsBasedOnCategory.data?.totalPages
+
     const handleClearField = () => {
         setSelectedCategory('')
     }
@@ -53,17 +60,35 @@ function EventListingMain() {
         setSelectedSort('')
     }
     const handleSortSelect = (key: string) => {
-        console.log(key)
         setSelectedSort(key)
     }
 
     const handleFilterChange = (filters: Record<string, string>) => {
-        console.log(filters)
         setSelectedCategory(filters.category)
+    }
+
+    const handleOnSubmit = async (query: string) => {
+        console.log(query)
+        const response = await findEventsBasedOnQuery.mutateAsync(query)
+        console.log(response)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const events = response.searchEvents.map((event: any) => ({
+            _id: event._id,
+            title: event.title,
+            image: event.posterImage?.[0]
+        }))
+        return events
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const handleOnClick = (id: string, title: string) => {
+        navigate(`/event/${id}`)
     }
 
     return (
         <div className='bg-black h-screen'>
+            <Button onClick={() => setIsOpen(true)}>SEARCH</Button>
+            <SearchModal handleOnClick={handleOnClick} onSubmit={handleOnSubmit} setIsOpen={setIsOpen} setText={setQuery} text={query} isOpen={isOpen} />
             <FilterComponent filterFields={filterFields} onFilterChange={handleFilterChange} onSortChange={handleSortSelect} sortOptions={sortOptions} onClearFilter={handleClearField} onClearSort={handleClearSort} />
             <EventList events={filteredEvents || events} isLoading={findEvents.isLoading} currentPage={currentPage} />
             <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages || filteredTotalPages} />

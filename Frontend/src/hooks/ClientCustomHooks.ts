@@ -1,4 +1,4 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, searchService, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, searchEvents, searchService, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
@@ -229,11 +229,18 @@ export const useFindEventsBasedOnCategory = (category: string, pageNo: number, s
         queryKey: ['eventsBasedOnCategory', category, pageNo, sortBy],
         queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy),
         enabled: !!category && !!sortBy,
+        
     })
 }
 
 export const useFindServiceUsingSearch = () => {
     return useMutation({
         mutationFn: (query: string) => searchService(query)
+    })
+}
+
+export const useFindEventsOnQuery = () => {
+    return useMutation({
+        mutationFn: (query: string) => searchEvents(query)
     })
 }

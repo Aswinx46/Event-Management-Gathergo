@@ -64,5 +64,9 @@ export class EventRepository implements IeventRepository {
         const totalPages = Math.ceil(await eventModal.countDocuments({ category }) / limit)
         return { events, totalPages }
     }
+    async findEventsBasedOnQuery(query: string): Promise<EventEntity[] | []> {
+        const regex = new RegExp(query || '', 'i');
+        return await eventModal.find({ title: { $regex: regex }, isActive: true }).select('_id title posterImage')
+    }
 
 }

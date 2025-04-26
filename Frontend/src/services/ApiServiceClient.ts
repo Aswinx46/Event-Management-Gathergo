@@ -379,3 +379,13 @@ export const searchService = async (query: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching service based on query')
     }
 }
+
+export const searchEvents = async (query: string) => {
+    try {
+        const response = await axios.get('/events/search', { params: { query } })
+        return response.data
+    } catch (error) {
+        console.log('error while finding events based on query', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding events based on query')
+    }
+}
