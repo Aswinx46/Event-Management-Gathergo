@@ -389,3 +389,13 @@ export const searchEvents = async (query: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding events based on query')
     }
 }
+
+export const findEventsNearToUser = async (latitude: number, longitude: number, pageNo: number, range: number) => {
+    try {
+        const response = await axios.get(`/eventsNearToUse/${latitude}/${longitude}/${pageNo}/${range}`)
+        return response.data
+    } catch (error) {
+        console.log('error while finding events near to user', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding events near to user')
+    }
+}

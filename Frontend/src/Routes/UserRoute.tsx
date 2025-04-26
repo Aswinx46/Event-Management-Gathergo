@@ -19,6 +19,7 @@ import BookedEvents from "@/components/Client/profile/eventListing/BookedEventsC
 import ClientWallet from "@/components/Client/profile/wallet/ClientWallet";
 import TicketPaymentForm from "@/components/Client/paymentForm/TicketPaymentForm";
 import BookingPayment from "@/components/Client/bookingListing/BookingPayment";
+import ShowEventsNearYou from "@/components/Client/events/ShowEventsNearYou";
 const UserRoute = () => {
     return (
         <Routes>
@@ -37,6 +38,7 @@ const UserRoute = () => {
                 <Route path="/events" element={<EventListingMain />}></Route>
                 <Route path="/event/:eventId" element={<EventDetails />}></Route>
                 <Route path="/ticketPayment" element={<ProtectedRouteClient><TicketPaymentForm /></ProtectedRouteClient>}></Route>
+                <Route path="/eventsNearToYou" element={<ShowEventsNearYou />}></Route>
             </Route>
             <Route path="/profile/*" element={<ProtectedRouteClient><ClientLayout /> </ProtectedRouteClient>}>
                 <Route path="bookings" element={<ProtectedRouteClient><BookingListing /></ProtectedRouteClient>} ></Route>

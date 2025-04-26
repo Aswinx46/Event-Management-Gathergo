@@ -78,6 +78,8 @@ import { SearchServiceUseCase } from "../../useCases/client/service/searchServic
 import { SearchServiceController } from "../../adapters/controllers/client/service/searchServiceController";
 import { searchEventsUseCase } from "../../useCases/client/events/searchEventsUseCase";
 import { SearchEventsOnQueryController } from "../../adapters/controllers/client/events/searchEventsOnQueryController";
+import { FindEventsNearToUserUseCase } from "../../useCases/client/events/findEVentsNearToUserUseCase";
+import { FindEventsNearToUserController } from "../../adapters/controllers/client/events/findEventsNearToUserController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -224,3 +226,7 @@ export const injectedSearchServiceController = new SearchServiceController(searc
 //-------------------------------------- search events--------------------------
 const SearchEventsUseCase = new searchEventsUseCase(eventDatabase)
 export const injectedSearchEventsController = new SearchEventsOnQueryController(SearchEventsUseCase)
+
+//------------------------------------find events near to user--------------------
+const findEventsNearToUserUseCase = new FindEventsNearToUserUseCase(eventDatabase)
+export const injectedFindEventsNearToUserController = new FindEventsNearToUserController(findEventsNearToUserUseCase)

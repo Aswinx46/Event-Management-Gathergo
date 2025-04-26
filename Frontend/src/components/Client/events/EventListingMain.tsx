@@ -52,7 +52,7 @@ function EventListingMain() {
     const findEventsBasedOnCategory = useFindEventsBasedOnCategory(selectedCategory, currentPage, selelctedSort)
     const filteredEvents = findEventsBasedOnCategory.data?.events
     const filteredTotalPages = findEventsBasedOnCategory.data?.totalPages
-
+    
     const handleClearField = () => {
         setSelectedCategory('')
     }
@@ -87,9 +87,13 @@ function EventListingMain() {
 
     return (
         <div className='bg-black h-screen'>
-            <Button onClick={() => setIsOpen(true)}>SEARCH</Button>
-            <SearchModal handleOnClick={handleOnClick} onSubmit={handleOnSubmit} setIsOpen={setIsOpen} setText={setQuery} text={query} isOpen={isOpen} />
-            <FilterComponent filterFields={filterFields} onFilterChange={handleFilterChange} onSortChange={handleSortSelect} sortOptions={sortOptions} onClearFilter={handleClearField} onClearSort={handleClearSort} />
+            <div className='flex justify-end items-center gap-5 pt-3 pe-3 md:gap-4 md:pe-10'>
+
+                <Button className='bg-purple-600 text-white px-4 py-2 rounded-lg hover:shadow-[0_0_50px_rgba(147,51,234,0.8),0_0_5px_rgba(256,256,256,0.9)]
+ hover:bg-purple-700 transition duration-200' onClick={() => setIsOpen(true)}>SEARCH</Button>
+                <SearchModal handleOnClick={handleOnClick} onSubmit={handleOnSubmit} setIsOpen={setIsOpen} setText={setQuery} text={query} isOpen={isOpen} />
+                <FilterComponent filterFields={filterFields} onFilterChange={handleFilterChange} onSortChange={handleSortSelect} sortOptions={sortOptions} onClearFilter={handleClearField} onClearSort={handleClearSort} />
+            </div>
             <EventList events={filteredEvents || events} isLoading={findEvents.isLoading} currentPage={currentPage} />
             <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages || filteredTotalPages} />
         </div>

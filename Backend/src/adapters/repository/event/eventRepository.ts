@@ -68,5 +68,27 @@ export class EventRepository implements IeventRepository {
         const regex = new RegExp(query || '', 'i');
         return await eventModal.find({ title: { $regex: regex }, isActive: true }).select('_id title posterImage')
     }
+    async findEventsNearToYou(latitude: number, longitude: number, pageNo: number,range:number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
+        const page = Math.max(pageNo, 1)
+        const limit = 5
+        const skip = (page - 1) * limit
+
+
+        const locationQuery = {
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: [longitude, latitude],
+                    },
+                    $maxDistance: range,
+                },
+            },
+        };
+
+        const events = await eventModal.find({ ...locationQuery, isActive: true }).skip(skip).limit(limit).sort({ createdAt: -1 })
+        const totalPages = Math.ceil(await eventModal.countDocuments({ locationQuery, isActive: true }) / limit)
+        return { events, totalPages }
+    }
 
 }
