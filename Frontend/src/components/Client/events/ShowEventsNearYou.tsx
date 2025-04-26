@@ -32,7 +32,7 @@ function ShowEventsNearYou() {
             <div className='flex justify-end pe-3  md:pe-6'>
                 <KmRangeSelect value={range / 1000} onSelect={handleUpdateRange} />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-center text-white pt-8 mb-6 tracking-wide">
+            <h1 className="text-3xl md:text-4xl font-bold text-center text-white mt-8 mb-6 tracking-wide drop-shadow-[0_0_15px_rgba(147,51,234,0.6)]">
                 Events Near To You
             </h1>
 
