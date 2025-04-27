@@ -12,8 +12,9 @@ import { EventType } from "@/types/EventType";
 
 interface BasicInfoFormProps {
   values: EventType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFieldValue: (field: string, value: any) => void;
-  posterImages: File[];
+  posterImages: File[] 
   setPosterImages: (images: File[]) => void;
 }
 
