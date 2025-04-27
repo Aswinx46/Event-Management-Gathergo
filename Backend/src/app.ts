@@ -9,13 +9,18 @@ import redisService from './framerwork/services/redisService'
 import { VendorRoute } from './framerwork/routes/vendor/vendorRoute'
 import { AdminRoute } from './framerwork/routes/admin/adminRoute'
 import { AuthRoute } from './framerwork/routes/auth/authRoute'
+import http from 'http'
+import { SocketIoService } from './framerwork/services/socketIoService'
 export class App {
     private app: Express
     private database: connectMongo
+    private server: http.Server
+    private socketIoServer?: SocketIoService
     constructor() {
         dotenv.config()
         this.app = express()
         this.database = new connectMongo()
+        this.server = http.createServer(this.app)
         this.database.connectDb()
         this.setMiddlewares()
         this.setClientRoute()
@@ -23,6 +28,7 @@ export class App {
         this.setAdminRoute()
         this.setAuthRoute()
         this.connectRedis()
+        this.setSocketIo()
     }
     private setMiddlewares() {
         this.app.use(cors({
@@ -42,7 +48,7 @@ export class App {
     }
     public listen() {
         const port = process.env.PORT || 3000
-        this.app.listen(port, () => console.log(`server running on ${port}`))
+        this.server.listen(port, () => console.log(`server running on ${port}`))
     }
     private setVendorRoute() {
         this.app.use('/vendor', new VendorRoute().vendorRoute)
@@ -52,6 +58,9 @@ export class App {
     }
     private setAuthRoute() {
         this.app.use('/auth', new AuthRoute().AuthRouter)
+    }
+    private setSocketIo() {
+        this.socketIoServer = new SocketIoService(this.server)
     }
 }
 
