@@ -7,6 +7,7 @@ export default function ClientHeaderLayout() {
             <div className="grow">
                 <Outlet />
             </div>
+            
         </div>
     )
 }

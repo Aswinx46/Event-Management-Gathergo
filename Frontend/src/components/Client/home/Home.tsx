@@ -7,11 +7,10 @@ const QuoteForService = lazy(() => import('./QuoteForService'))
 function Home() {
 
   const findCategory = useFindCategoryClient()
-  const findVendor = useFindVendorForCarousal()
+  // const findVendor = useFindVendorForCarousal()
 
   const categories = findCategory.data?.categories
-  const vendors = findVendor.data?.vendors
-  console.log(vendors)
+  // const vendors = findVendor.data?.vendors
   useEffect(() => {
 
   }, [])
