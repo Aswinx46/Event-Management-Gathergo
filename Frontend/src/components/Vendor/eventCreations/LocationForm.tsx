@@ -32,6 +32,7 @@ const itemVariants = {
 };
 
 const LocationForm: React.FC<LocationFormProps> = ({ values }) => {
+  console.log('this is the values in the location form',values)
   const [latitude, setLatitude] = useState<number>(0)
   const [longitude, setLongitude] = useState<number>(0)
   values.location.coordinates[0] = longitude

@@ -20,6 +20,7 @@ interface ScheduleFormProps {
   endTime: string;
   setEndTime: (time: string) => void;
   values: EventType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFieldValue: (field: string, value: any) => void;
 }
 
