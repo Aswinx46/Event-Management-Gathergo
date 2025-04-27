@@ -19,7 +19,7 @@ export class TicketRepository implements IticketRepositoryInterface {
         const totalPages = Math.ceil(await ticketModel.countDocuments() / limit)
         const ticketAndEventDetails: TicketAndEventDTO[] = ticketAndEvent.map(ticket => {
             const event = ticket.eventId as any; // TypeScript doesn't know it's populated
-
+            
             return {
                 _id: ticket._id,
                 ticketId: ticket.ticketId,

@@ -322,6 +322,7 @@ export const confirmTicketAndPayment = async (ticket: TicketEntity, paymentInten
 
 export const findTicketAndEventDetailsClient = async (clientId: string, pageNo: number) => {
     try {
+        console.log(clientId)
         const response = await axios.get(`/getTicketAndEventDetails/${clientId}/${pageNo}`)
         return response.data
     } catch (error) {
