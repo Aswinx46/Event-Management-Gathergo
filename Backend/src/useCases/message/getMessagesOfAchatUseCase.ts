@@ -7,7 +7,8 @@ export class GetMessagesOfAChatUseCase implements IgetMessagesOfAChatUseCase {
     constructor(messageDatabase: ImessageRepostiory) {
         this.messageDatabase = messageDatabase
     }
-    async getMessages(chatId: string): Promise<MessageEntity[] | []> {
-        return await this.messageDatabase.getMessagesOfAChat(chatId)
+    async getMessages(chatId: string, pageNo: number): Promise<{ messages: MessageEntity[], hasMore: boolean }> {
+        const { hasMore, messages } = await this.messageDatabase.getMessagesOfAChat(chatId, pageNo)
+        return { messages, hasMore }
     }
 }
