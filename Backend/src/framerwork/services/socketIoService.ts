@@ -17,12 +17,15 @@ export class SocketIoService {
         this.io.on('connect', (socket) => {
             console.log(`socket connected ${socket.id}`)
 
-            socket.on('register', (userId: string) => {
-
+            socket.on('register', (data) => {
+                console.log('cliend id for register', data.userId)
+                this.users.set(data.userId, socket.id)
+                console.log(this.users)
             })
 
             socket.on('sendMessage', (data) => {
                 console.log('Received message', data)
+                socket.to(data.roomId).emit('receiveMessage',data.message)
             })
 
             socket.on('disconnect', () => {
@@ -31,6 +34,7 @@ export class SocketIoService {
 
             socket.on('joinRoom', (data) => {
                 console.log(`data from join room`, data)
+                if (!data) throw new Error('No room id available')
                 socket.join(data.roomId)
             })
         })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -15,10 +16,11 @@ import { Socket } from 'socket.io-client';
 interface ChatProps {
     socket: Socket,
     messages: string[]
+    sendMessage: (message: any) => void
 }
 
 
-const Chat = ({ socket,messages }: ChatProps) => {
+const Chat = ({ socket, messages, sendMessage }: ChatProps) => {
     // const [messages, setMessages] = useState<string[]>([
     //     {
     //         id: 1,
@@ -103,7 +105,8 @@ const Chat = ({ socket,messages }: ChatProps) => {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        type="submit"
+                        type="button"
+                        onClick={() => sendMessage(message)}
                         className="bg-purple-600 text-white p-3 rounded-full hover:bg-purple-700 transition-colors"
                     >
                         <Send size={20} />

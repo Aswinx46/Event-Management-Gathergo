@@ -16,6 +16,7 @@ import EventCreationForm from "@/components/Vendor/eventCreations/EventCreationF
 import EventlistingInVendor from "@/components/Vendor/event/EventlistingInVendor";
 import TicketVerification from "@/components/Vendor/event/ticketVerification/TicketVerification";
 import VendorWallet from "@/components/Vendor/wallet/VendorWallet";
+import VendorChat from "@/components/Vendor/vendorChat/VendorChat";
 
 const VendorRoute = () => {
     return (
@@ -35,7 +36,8 @@ const VendorRoute = () => {
                 <Route path="addEvent" element={<ProtectedRouteVendor><EventCreationForm /></ProtectedRouteVendor>}></Route>
                 <Route path="showEvents" element={<ProtectedRouteVendor><EventlistingInVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="scanTicket" element={<ProtectedRouteVendor><TicketVerification /></ProtectedRouteVendor>}></Route>
-                <Route path="wallet" element={<ProtectedRouteVendor><VendorWallet/></ProtectedRouteVendor>}></Route>
+                <Route path="wallet" element={<ProtectedRouteVendor><VendorWallet /></ProtectedRouteVendor>}></Route>
+                <Route path="char" element={<ProtectedRouteVendor><VendorChat /></ProtectedRouteVendor>}></Route>
                 {/* <Route path="editEvent" element={<ProtectedRouteVendor><Edit /></ProtectedRouteVendor>}></Route> */}
             </Route>
         </Routes>
