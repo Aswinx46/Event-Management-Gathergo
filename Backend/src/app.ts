@@ -10,12 +10,12 @@ import { VendorRoute } from './framerwork/routes/vendor/vendorRoute'
 import { AdminRoute } from './framerwork/routes/admin/adminRoute'
 import { AuthRoute } from './framerwork/routes/auth/authRoute'
 import http from 'http'
-import { SocketIoService } from './framerwork/services/socketIoService'
+import { SocketIoController } from './adapters/controllers/chat/socketIoService'
 export class App {
     private app: Express
     private database: connectMongo
     private server: http.Server
-    private socketIoServer?: SocketIoService
+    private socketIoServer?: SocketIoController
     constructor() {
         dotenv.config()
         this.app = express()
@@ -60,7 +60,7 @@ export class App {
         this.app.use('/auth', new AuthRoute().AuthRouter)
     }
     private setSocketIo() {
-        this.socketIoServer = new SocketIoService(this.server)
+        this.socketIoServer = new SocketIoController(this.server)
     }
 }
 

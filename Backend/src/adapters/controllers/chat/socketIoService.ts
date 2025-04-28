@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { Server as httpServer } from "http";
-export class SocketIoService {
+export class SocketIoController {
     private io: Server
     private users: Map<string, string>
     constructor(server: httpServer) {

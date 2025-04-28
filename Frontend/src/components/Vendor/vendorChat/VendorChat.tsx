@@ -42,6 +42,7 @@ function VendorChat() {
 
 
     }, [])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sendMessage = (message: any) => {
         socket.emit('sendMessage', {message,roomId})
     }
