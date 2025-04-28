@@ -5,13 +5,15 @@ import { IcreateChatUseCase } from "../../../domain/interface/useCaseInterfaces/
 import { ChatEntity } from "../../../domain/entities/chat/ChatEntity";
 import { MessageEntity } from "../../../domain/entities/chat/MessageEntity";
 import { IcreateMessageUseCase } from "../../../domain/interface/useCaseInterfaces/message/createMessageUseCaseInterface";
+import { IupdateLastMessageOfChatUseCase } from "../../../domain/interface/useCaseInterfaces/chat/updateLastMessageOfChatUseCaseInterface";
 export class SocketIoController {
     private io: Server
     private users: Map<string, string>
     private createChatUseCase: IcreateChatUseCase
     private findChatsBetweenClientAndVendorUseCase: IfindChatsBetweenClientAndVendorUseCase
     private createMessageUseCase: IcreateMessageUseCase
-    constructor(server: httpServer, FindChatsBetweenClientAndVendor: IfindChatsBetweenClientAndVendorUseCase, createChatUseCase: IcreateChatUseCase, createMessageUseCase: IcreateMessageUseCase) {
+    private updateLastMessageUseCase: IupdateLastMessageOfChatUseCase
+    constructor(server: httpServer, FindChatsBetweenClientAndVendor: IfindChatsBetweenClientAndVendorUseCase, createChatUseCase: IcreateChatUseCase, createMessageUseCase: IcreateMessageUseCase, updateLastMessageUseCase: IupdateLastMessageOfChatUseCase) {
         this.io = new Server(server, {
             cors: {
                 origin: process.env.ORIGIN,
@@ -22,6 +24,7 @@ export class SocketIoController {
         this.findChatsBetweenClientAndVendorUseCase = FindChatsBetweenClientAndVendor
         this.createChatUseCase = createChatUseCase
         this.createMessageUseCase = createMessageUseCase
+        this.updateLastMessageUseCase = updateLastMessageUseCase
         this.setUpListeners()
     }
     private setUpListeners() {
@@ -59,6 +62,7 @@ export class SocketIoController {
                     senderModel: data.sendMessage.senderModel,
                 }
                 const createdMessage = await this.createMessageUseCase.createMessage(message)
+                const updateLastMessage = await this.updateLastMessageUseCase.udpateLastMessage(createdMessage)
                 response(createdMessage)
                 socket.to(data.roomId).emit('receiveMessage', createdMessage)
             })

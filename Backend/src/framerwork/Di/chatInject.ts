@@ -2,6 +2,7 @@ import { ChatRepository } from "../../adapters/repository/chat/chatRepository";
 import { MessageRepository } from "../../adapters/repository/message/messageRepository";
 import { CreateChatUseCase } from "../../useCases/chat/createChatUseCase";
 import { FindChatBetweenClientAndVendorUseCase } from "../../useCases/chat/findChatBetweenClientAndVendorUseCase";
+import { UpdateLastMessageUseCase } from "../../useCases/chat/updateLastMessageOfChatUseCase";
 import { CreateMessageUseCase } from "../../useCases/message/createMessageUseCase";
 import { GetMessagesOfAChatUseCase } from "../../useCases/message/getMessagesOfAchatUseCase";
 
@@ -23,3 +24,6 @@ export const injectedCreateMessageUseCase = new CreateMessageUseCase(messageData
 
 //-------------------------------------Find messages------------------------
 export const injectedFindMessagesOfChatUseCase = new GetMessagesOfAChatUseCase(messageDatabase)
+
+//------------------------------update Last message--------------------------
+export const injectedUpdateLastMessageUseCase = new UpdateLastMessageUseCase(chatRepository)
