@@ -1,9 +1,17 @@
 import { Server } from "socket.io";
 import { Server as httpServer } from "http";
+import { IfindChatsBetweenClientAndVendorUseCase } from "../../../domain/interface/useCaseInterfaces/chat/findChatBetweenClientAndVendorUseCaseInterface";
+import { IcreateChatUseCase } from "../../../domain/interface/useCaseInterfaces/chat/createChatUseCaseInterface";
+import { ChatEntity } from "../../../domain/entities/chat/ChatEntity";
+import { MessageEntity } from "../../../domain/entities/chat/MessageEntity";
+import { IcreateMessageUseCase } from "../../../domain/interface/useCaseInterfaces/message/createMessageUseCaseInterface";
 export class SocketIoController {
     private io: Server
     private users: Map<string, string>
-    constructor(server: httpServer) {
+    private createChatUseCase: IcreateChatUseCase
+    private findChatsBetweenClientAndVendorUseCase: IfindChatsBetweenClientAndVendorUseCase
+    private createMessageUseCase: IcreateMessageUseCase
+    constructor(server: httpServer, FindChatsBetweenClientAndVendor: IfindChatsBetweenClientAndVendorUseCase, createChatUseCase: IcreateChatUseCase, createMessageUseCase: IcreateMessageUseCase) {
         this.io = new Server(server, {
             cors: {
                 origin: process.env.ORIGIN,
@@ -11,6 +19,9 @@ export class SocketIoController {
             }
         })
         this.users = new Map()
+        this.findChatsBetweenClientAndVendorUseCase = FindChatsBetweenClientAndVendor
+        this.createChatUseCase = createChatUseCase
+        this.createMessageUseCase = createMessageUseCase
         this.setUpListeners()
     }
     private setUpListeners() {
@@ -23,13 +34,38 @@ export class SocketIoController {
                 console.log(this.users)
             })
 
-            socket.on('sendMessage', (data) => {
+            socket.on('sendMessage', async (data, response) => {
                 console.log('Received message', data)
-                socket.to(data.roomId).emit('receiveMessage',data.message)
+                if (data.sendMessage.messageContent.trim().length <= 0) throw new Error("Empty messages are not allowed");
+                let chat = await this.findChatsBetweenClientAndVendorUseCase.findChatBetweenClientAndVendor(data.sendMessage.senderId, data.receiverId)
+                if (!chat) {
+                    const chatData: ChatEntity = {
+                        lastMessage: data.sendMessage.messageContent,
+                        lastMessageAt: new Date().toString(),
+                        receiverId: data.receiverId,
+                        senderId: data.sendMessage.senderId,
+                        receiverModel: data.receiverModel,
+                        senderModel: data.sendMessage.senderModel,
+                    }
+                    chat = await this.createChatUseCase.createChat(chatData)
+                }
+
+                const message: MessageEntity = {
+                    chatId: chat._id!,
+                    messageContent: data.sendMessage.messageContent.trim(),
+                    seen: false,
+                    sendedTime: new Date(),
+                    senderId: data.sendMessage.senderId,
+                    senderModel: data.sendMessage.senderModel,
+                }
+                const createdMessage = await this.createMessageUseCase.createMessage(message)
+                response(createdMessage)
+                socket.to(data.roomId).emit('receiveMessage', createdMessage)
             })
 
             socket.on('disconnect', () => {
                 console.log(`Socket disconnected ${socket.id}`)
+
             })
 
             socket.on('joinRoom', (data) => {

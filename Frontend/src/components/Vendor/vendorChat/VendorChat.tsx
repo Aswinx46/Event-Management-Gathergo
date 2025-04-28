@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react'
 import socket from '../../../hooks/ConnectSocketIo'
 import { useLocation } from 'react-router-dom'
 import Chat from '@/components/other components/chat/SingleChat'
+import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/types/MessageTypeFromBackend'
+import { MessageEntity } from '@/types/messageEntity'
 function VendorChat() {
     const location = useLocation()
     const data = location.state
     const vendorId = data.vendorId
     const clientId = data.clientId
     const roomId = clientId + vendorId
-    console.log('client id',clientId)
-    console.log('vendor id',vendorId)
-    console.log('room id',roomId)
-    const [chats, setChats] = useState<string[]>([])
+
+    const [chats, setChats] = useState<Message[]>([])
 
     socket.connect()
     useEffect(() => {
@@ -42,13 +42,25 @@ function VendorChat() {
 
 
     }, [])
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sendMessage = (message: any) => {
-        socket.emit('sendMessage', {message,roomId})
+        const sendMessage: MessageEntity = {
+            messageContent: message,
+            senderId: vendorId,
+            senderModel: 'vendors',
+        }
+        socket.emit('sendMessage', { sendMessage, roomId, receiverId: clientId, receiverModel: 'client' }, (newChat: MessageTypeFromBackend) => {
+            setChats((prev) => [...prev, newChat])
+
+        })
     }
+    // socket.emit('sendMessage', { sendMessage, roomId, receiverId: vendorId, receiverModel: 'vendors' })
+
+
     return (
         <div>
-            <Chat messages={chats} sendMessage={sendMessage} socket={socket} />
+            <Chat messages={chats} sendMessage={sendMessage} currentUserId={vendorId} />
         </div>
     )
 }
