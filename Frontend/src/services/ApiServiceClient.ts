@@ -410,3 +410,13 @@ export const loadPreviousChat = async (chatId: string, pageNo: number) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while loading previous messages')
     }
 }
+
+export const loadChats = async (userId: string, pageNo: number) => {
+    try {
+        const response = await axios.get('/chats', { params: { userId, pageNo } })
+        return response.data
+    } catch (error) {
+        console.log('error while finding the chats of user', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while findng the chats of user')
+    }
+}

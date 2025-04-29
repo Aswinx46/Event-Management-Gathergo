@@ -21,6 +21,7 @@ import TicketPaymentForm from "@/components/Client/paymentForm/TicketPaymentForm
 import BookingPayment from "@/components/Client/bookingListing/BookingPayment";
 import ShowEventsNearYou from "@/components/Client/events/ShowEventsNearYou";
 import ClientChat from "@/components/Client/ClientChat/ClientChat";
+import ChatListingClient from "@/components/Client/chatListing/ChatListingClient";
 const UserRoute = () => {
     return (
         <Routes>
@@ -39,7 +40,7 @@ const UserRoute = () => {
                 <Route path="/events" element={<EventListingMain />}></Route>
                 <Route path="/event/:eventId" element={<EventDetails />}></Route>
                 <Route path="/ticketPayment" element={<ProtectedRouteClient><TicketPaymentForm /></ProtectedRouteClient>}></Route>
-                <Route path="/chat" element={<ProtectedRouteClient><ClientChat/></ProtectedRouteClient>}></Route>
+                <Route path="/chat" element={<ProtectedRouteClient><ClientChat /></ProtectedRouteClient>}></Route>
                 <Route path="/eventsNearToYou" element={<ShowEventsNearYou />}></Route>
             </Route>
             <Route path="/profile/*" element={<ProtectedRouteClient><ClientLayout /> </ProtectedRouteClient>}>
@@ -49,6 +50,7 @@ const UserRoute = () => {
                 <Route path="bookedEvents" element={<ProtectedRouteClient><BookedEvents /></ProtectedRouteClient>} ></Route>
                 <Route path="wallet" element={<ProtectedRouteClient><ClientWallet /></ProtectedRouteClient>} ></Route>
                 <Route path="confirmBookingPayment" element={<ProtectedRouteClient><BookingPayment /></ProtectedRouteClient>} ></Route>
+                <Route path="chats" element={<ProtectedRouteClient><ChatListingClient /></ProtectedRouteClient>} ></Route>
                 {/* <Route path="logout" element={<LogoutConfirmation/>} ></Route> */}
             </Route>
         </Routes>

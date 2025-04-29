@@ -6,11 +6,11 @@ import {
   Wallet,
   Lock,
   Calendar,
-  LogOut,
   Menu,
   X,
   ChevronRight,
   Home,
+  MessageCircle
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -46,9 +46,9 @@ const menuItems = [
     path: "/profile/bookedEvents",
   },
   {
-    icon: LogOut,
-    label: "Logout",
-    path: "/profile/logout",
+    icon: MessageCircle,
+    label: "Chats",
+    path: "/profile/chats",
   },
 ];
 

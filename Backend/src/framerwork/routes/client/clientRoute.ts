@@ -3,7 +3,7 @@ import { clientAuthenticationController, injectedChangeClientPasswordController,
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
-import { injectedLoadPreviousChatController } from "../../Di/chatInject";
+import { injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -117,6 +117,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/loadPreviousChat', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedLoadPreviousChatController.handleLoadPreviousMessage(req, res)
+        })
+        this.clientRoute.get('/chats', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedFindChatsOfUserController.handleFindChatOfUser(req, res)
         })
     }
 }
