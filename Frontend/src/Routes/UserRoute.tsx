@@ -40,10 +40,10 @@ const UserRoute = () => {
                 <Route path="/events" element={<EventListingMain />}></Route>
                 <Route path="/event/:eventId" element={<EventDetails />}></Route>
                 <Route path="/ticketPayment" element={<ProtectedRouteClient><TicketPaymentForm /></ProtectedRouteClient>}></Route>
-                <Route path="/chat" element={<ProtectedRouteClient><ClientChat /></ProtectedRouteClient>}></Route>
                 <Route path="/eventsNearToYou" element={<ShowEventsNearYou />}></Route>
             </Route>
             <Route path="/profile/*" element={<ProtectedRouteClient><ClientLayout /> </ProtectedRouteClient>}>
+                <Route path="chat/messages" element={<ProtectedRouteClient><ClientChat /></ProtectedRouteClient>}></Route>
                 <Route path="bookings" element={<ProtectedRouteClient><BookingListing /></ProtectedRouteClient>} ></Route>
                 <Route path="home" element={<ProtectedRouteClient><UserProfile /></ProtectedRouteClient>} ></Route>
                 <Route path="changePassword" element={<ProtectedRouteClient><ChangePasswordClient /></ProtectedRouteClient>} ></Route>

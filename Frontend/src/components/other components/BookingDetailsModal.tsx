@@ -161,14 +161,14 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     const handleChatNavigate = () => {
         if (booking.client?.email) {
-            navigate('/vendor/char', {
+            navigate('/vendor/chats/messages', {
                 state: {
                     clientId: booking.client._id,
                     vendorId: vendorId
                 }
             })
         } else {
-            navigate('/chat', {
+            navigate('/profile/chat/messages', {
                 state: {
                     clientId: clientId,
                     vendorId: booking.vendor._id

@@ -1,17 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import socket from '../../../hooks/ConnectSocketIo'
 import Chat from '@/components/other components/chat/SingleChat'
 import { useLocation } from 'react-router-dom'
 import { MessageEntity } from '@/types/messageEntity'
 import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/types/MessageTypeFromBackend'
+import { useLoadMessageInfinite } from '@/hooks/ClientCustomHooks'
+import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
 function ClientChat() {
     const location = useLocation()
-    const data = location.state
-    const clientId = data.clientId
-    const vendorId = data.vendorId
+    const stateData = location.state
+    const clientId = stateData.clientId
+    const vendorId = stateData.vendorId
     const roomId = clientId + vendorId
-    socket.connect()
+    const chatIdFromState = location.state?.chatId || null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [chatId, setChatId] = useState(chatIdFromState);
+
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfinite(chatId, { enabled: !!chatId })
     const [chats, setChats] = useState<Message[]>([])
+
+    useEffect(() => {
+        if (data?.pages) {
+            const allMessages = data.pages.flatMap(page => page.messages)
+            setChats(allMessages.reverse())
+        }
+    }, [data])
+
+    const loaderRef = useInfiniteScrollObserver()
+
+    socket.connect()
     useEffect(() => {
         socket.on('connect', () => {
             console.log('Connected with socket id', socket.id)
@@ -37,6 +54,7 @@ function ClientChat() {
             socket.off('disconnect')
             socket.off('receiveMessage')
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,7 +73,7 @@ function ClientChat() {
 
     return (
         <div>
-            <Chat messages={chats} sendMessage={sendMessage} currentUserId={clientId} />
+            <Chat messages={chats} sendMessage={sendMessage} currentUserId={clientId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
         </div>
     )
 }

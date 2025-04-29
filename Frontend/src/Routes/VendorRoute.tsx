@@ -38,7 +38,7 @@ const VendorRoute = () => {
                 <Route path="showEvents" element={<ProtectedRouteVendor><EventlistingInVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="scanTicket" element={<ProtectedRouteVendor><TicketVerification /></ProtectedRouteVendor>}></Route>
                 <Route path="wallet" element={<ProtectedRouteVendor><VendorWallet /></ProtectedRouteVendor>}></Route>
-                <Route path="char" element={<ProtectedRouteVendor><VendorChat /></ProtectedRouteVendor>}></Route>
+                <Route path="chats/messages" element={<ProtectedRouteVendor><VendorChat /></ProtectedRouteVendor>}></Route>
                 <Route path="chats" element={<ProtectedRouteVendor><ChatListingVendor /></ProtectedRouteVendor>}></Route>
                 {/* <Route path="editEvent" element={<ProtectedRouteVendor><Edit /></ProtectedRouteVendor>}></Route> */}
             </Route>

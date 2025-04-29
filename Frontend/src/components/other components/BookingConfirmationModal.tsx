@@ -17,7 +17,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   const handleViewBookings = () => {
     setIsOpen(false)
     handleBooking()
-    console.log("Navigating to bookings page");
+    // console.log("Navigating to bookings page");
 
   };
 

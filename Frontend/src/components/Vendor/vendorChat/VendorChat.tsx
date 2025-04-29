@@ -1,18 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import socket from '../../../hooks/ConnectSocketIo'
 import { useLocation } from 'react-router-dom'
 import Chat from '@/components/other components/chat/SingleChat'
 import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/types/MessageTypeFromBackend'
 import { MessageEntity } from '@/types/messageEntity'
+import { useLoadMessageInfiniteVendor } from '@/hooks/VendorCustomHooks'
+import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
 function VendorChat() {
     const location = useLocation()
-    const data = location.state
-    const vendorId = data.vendorId
-    const clientId = data.clientId
+    const stateData = location.state
+    const vendorId = stateData.vendorId
+    const clientId = stateData.clientId
     const roomId = clientId + vendorId
+    const chatIdFromState = location.state?.chatId || null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [chatId, setChatId] = useState(chatIdFromState);
 
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfiniteVendor(chatId, { enabled: !!chatId })
+    const loaderRef = useInfiniteScrollObserver()
     const [chats, setChats] = useState<Message[]>([])
-
+    useEffect(() => {
+        if (data?.pages) {
+            const allMessages = data.pages.flatMap(page => page.messages);
+            setChats(allMessages.reverse()); // reverse if you want older ones first
+        }
+    }, [data]);
     socket.connect()
     useEffect(() => {
         socket.on('connect', () => {
@@ -41,6 +53,7 @@ function VendorChat() {
         })
 
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,12 +68,12 @@ function VendorChat() {
 
         })
     }
-    // socket.emit('sendMessage', { sendMessage, roomId, receiverId: vendorId, receiverModel: 'vendors' })
 
 
     return (
         <div>
-            <Chat messages={chats} sendMessage={sendMessage} currentUserId={vendorId} />
+            <Chat messages={chats} sendMessage={sendMessage} currentUserId={vendorId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
+
         </div>
     )
 }

@@ -251,7 +251,7 @@ export const useFindEventsNearToUser = () => {
     })
 }
 
-export const useLoadMessageInfinite = (chatId: string) => {
+export const useLoadMessageInfinite = (chatId: string, options?: { enabled?: boolean }) => {
     return useInfiniteQuery({
         queryKey: ['chatMessages', chatId],
         queryFn: ({ pageParam: Pageno }) => loadPreviousChat(chatId, Pageno),
@@ -261,7 +261,8 @@ export const useLoadMessageInfinite = (chatId: string) => {
             }
             return undefined
         },
-        initialPageParam: 1
+        initialPageParam: 1,
+        enabled: options?.enabled
     })
 }
 

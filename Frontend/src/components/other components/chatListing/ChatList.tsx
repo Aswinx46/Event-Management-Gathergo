@@ -9,7 +9,7 @@ interface ChatListProps {
     chats: ChatEntityDTO[];
     userId: string;
     userModel: 'client' | 'vendors';
-    onChatSelect: (chatId: string) => void;
+    onChatSelect: (chat: FormattedChat) => void;
     selectedChatId?: string;
 }
 
@@ -84,7 +84,7 @@ const ChatList = ({ chats, userId, userModel, onChatSelect, selectedChatId }: Ch
                                 key={chat._id}
                                 chat={chat}
                                 isSelected={selectedChatId === chat._id}
-                                onClick={() => chat._id && onChatSelect(chat._id)}
+                                onClick={() => chat._id && onChatSelect(chat)}
                             />
                         ))
                     ) : (

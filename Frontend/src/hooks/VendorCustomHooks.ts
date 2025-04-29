@@ -194,7 +194,7 @@ export const useUpdateBookingAsComplete = () => {
     })
 }
 
-export const useLoadMessageInfiniteVendor = (chatId: string) => {
+export const useLoadMessageInfiniteVendor = (chatId: string, options?: { enabled?: boolean }) => {
     return useInfiniteQuery({
         queryKey: ['chatMessages', chatId],
         queryFn: ({ pageParam: Pageno }) => loadPreviousChatVendor(chatId, Pageno),
@@ -204,7 +204,8 @@ export const useLoadMessageInfiniteVendor = (chatId: string) => {
             }
             return undefined
         },
-        initialPageParam: 1
+        initialPageParam: 1,
+        enabled: options?.enabled
     })
 }
 
