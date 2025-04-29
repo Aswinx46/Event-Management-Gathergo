@@ -32,13 +32,13 @@ export class SocketIoController {
             console.log(`socket connected ${socket.id}`)
 
             socket.on('register', (data) => {
-                console.log('cliend id for register', data.userId)
+                // console.log('cliend id for register', data.userId)
                 this.users.set(data.userId, socket.id)
-                console.log(this.users)
+                // console.log(this.users)
             })
 
             socket.on('sendMessage', async (data, response) => {
-                console.log('Received message', data)
+                // console.log('Received message', data)
                 if (data.sendMessage.messageContent.trim().length <= 0) throw new Error("Empty messages are not allowed");
                 let chat = await this.findChatsBetweenClientAndVendorUseCase.findChatBetweenClientAndVendor(data.sendMessage.senderId, data.receiverId)
                 if (!chat) {
@@ -73,7 +73,7 @@ export class SocketIoController {
             })
 
             socket.on('joinRoom', (data) => {
-                console.log(`data from join room`, data)
+                // console.log(`data from join room`, data)
                 if (!data) throw new Error('No room id available')
                 socket.join(data.roomId)
             })

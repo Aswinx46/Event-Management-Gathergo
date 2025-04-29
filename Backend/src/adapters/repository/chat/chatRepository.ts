@@ -54,4 +54,12 @@ export class ChatRepository implements IchatRepository {
     async updateLastMessage(message: MessageEntity): Promise<ChatEntity | null> {
         return await chatModel.findByIdAndUpdate(message.chatId, { lastMessage: message.messageContent, lastMessageAt: message.sendedTime }, { new: true })
     }
+    async getChatId(senderId: string, receiverId: string): Promise<ChatEntity | null> {
+        return await chatModel.findOne({
+            $or: [
+                { senderId: senderId, receiverId: receiverId },
+                { senderId: receiverId, receiverId: senderId }
+            ]
+        }).select('_id chatId')
+    }
 }

@@ -400,3 +400,13 @@ export const findEventsNearToUser = async (latitude: number, longitude: number, 
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding events near to user')
     }
 }
+
+export const loadPreviousChat = async (chatId: string, pageNo: number) => {
+    try {
+        const response = await axios.get('/loadPreviousChat', { params: { chatId, pageNo } })
+        return response.data
+    } catch (error) {
+        console.log('error while loading previous chat', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while loading previous messages')
+    }
+}

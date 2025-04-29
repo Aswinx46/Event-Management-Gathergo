@@ -3,6 +3,7 @@ import { clientAuthenticationController, injectedChangeClientPasswordController,
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
+import { injectedLoadPreviousChatController } from "../../Di/chatInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -113,6 +114,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/eventsNearToUse/:latitude/:longitude/:pageNo/:range', (req: Request, res: Response) => {
             injectedFindEventsNearToUserController.handleEventsNearToUse(req, res)
+        })
+        this.clientRoute.get('/loadPreviousChat', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedLoadPreviousChatController.handleLoadPreviousMessage(req, res)
         })
     }
 }

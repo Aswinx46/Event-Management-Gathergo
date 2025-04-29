@@ -1,3 +1,4 @@
+import { LoadPreviousMessageController } from "../../adapters/controllers/messages/loadPreviousMessageController";
 import { ChatRepository } from "../../adapters/repository/chat/chatRepository";
 import { MessageRepository } from "../../adapters/repository/message/messageRepository";
 import { CreateChatUseCase } from "../../useCases/chat/createChatUseCase";
@@ -5,6 +6,7 @@ import { FindChatBetweenClientAndVendorUseCase } from "../../useCases/chat/findC
 import { UpdateLastMessageUseCase } from "../../useCases/chat/updateLastMessageOfChatUseCase";
 import { CreateMessageUseCase } from "../../useCases/message/createMessageUseCase";
 import { GetMessagesOfAChatUseCase } from "../../useCases/message/getMessagesOfAchatUseCase";
+import { LoadPreviousChatUseCase } from "../../useCases/message/loadPreviousChatUseCase";
 
 //-------------------------------- create chat --------------------------
 const chatRepository = new ChatRepository()
@@ -27,3 +29,7 @@ export const injectedFindMessagesOfChatUseCase = new GetMessagesOfAChatUseCase(m
 
 //------------------------------update Last message--------------------------
 export const injectedUpdateLastMessageUseCase = new UpdateLastMessageUseCase(chatRepository)
+
+//------------------------------------- load previous chat----------------------
+const loadPreviousChatUseCase = new LoadPreviousChatUseCase(messageDatabase)
+export const injectedLoadPreviousChatController = new LoadPreviousMessageController(loadPreviousChatUseCase)

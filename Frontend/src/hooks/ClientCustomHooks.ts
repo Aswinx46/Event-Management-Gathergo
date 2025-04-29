@@ -1,8 +1,8 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, searchCategory, searchEvents, searchService, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadPreviousChat, searchCategory, searchEvents, searchService, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
     email: string;
     password: string;
@@ -247,6 +247,20 @@ export const useFindEventsOnQuery = () => {
 
 export const useFindEventsNearToUser = () => {
     return useMutation({
-        mutationFn: ({ latitude, longitude, pageNo,range }: { latitude: number, longitude: number, pageNo: number, range: number }) => findEventsNearToUser(latitude, longitude, pageNo, range)
+        mutationFn: ({ latitude, longitude, pageNo, range }: { latitude: number, longitude: number, pageNo: number, range: number }) => findEventsNearToUser(latitude, longitude, pageNo, range)
+    })
+}
+
+export const useLoadMessageInfinite = (chatId: string) => {
+    return useInfiniteQuery({
+        queryKey: ['chatMessages', chatId],
+        queryFn: ({ pageParam: Pageno }) => loadPreviousChat(chatId, Pageno),
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.hasMore) {
+                return allPages.length + 1
+            }
+            return undefined
+        },
+        initialPageParam: 1
     })
 }
