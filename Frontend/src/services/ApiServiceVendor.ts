@@ -305,7 +305,7 @@ export const updateBookingAsComplete = async (bookingId: string, status: string)
     }
 }
 
-export const loadPreviousChat = async (chatId: string, pageNo: number) => {
+export const loadPreviousChatVendor = async (chatId: string, pageNo: number) => {
     try {
         const response = await axios.get('/loadPreviousChat', { params: { chatId, pageNo } })
         return response.data
@@ -316,7 +316,7 @@ export const loadPreviousChat = async (chatId: string, pageNo: number) => {
 }
 
 
-export const loadChats = async (userId: string, pageNo: number) => {
+export const loadChatsVendor = async (userId: string, pageNo: number) => {
     try {
         const response = await axios.get('/chats', { params: { userId, pageNo } })
         return response.data

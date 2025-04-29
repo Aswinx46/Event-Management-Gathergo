@@ -1,7 +1,7 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, loadChatsVendor, loadPreviousChatVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
     name: string;
@@ -191,5 +191,33 @@ export const useFindWalletDetailsVendor = (userId: string, pageNo: number) => {
 export const useUpdateBookingAsComplete = () => {
     return useMutation({
         mutationFn: ({ bookingId, status }: { bookingId: string, status: string }) => updateBookingAsComplete(bookingId, status)
+    })
+}
+
+export const useLoadMessageInfiniteVendor = (chatId: string) => {
+    return useInfiniteQuery({
+        queryKey: ['chatMessages', chatId],
+        queryFn: ({ pageParam: Pageno }) => loadPreviousChatVendor(chatId, Pageno),
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.hasMore) {
+                return allPages.length + 1
+            }
+            return undefined
+        },
+        initialPageParam: 1
+    })
+}
+
+export const useLoadChatsInfiniteVendor = (userId: string) => {
+    return useInfiniteQuery({
+        queryKey: ['chats', userId],
+        queryFn: ({ pageParam: pageNo }) => loadChatsVendor(userId, pageNo),
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.hasMore) {
+                return allPages.length + 1
+            }
+            return undefined
+        },
+        initialPageParam: 1
     })
 }

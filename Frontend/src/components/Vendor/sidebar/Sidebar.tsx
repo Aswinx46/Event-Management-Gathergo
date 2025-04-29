@@ -12,6 +12,7 @@ import {
   Lock,
   Wallet,
   // LogOut,
+  MessageCircle,
   Menu,
   X,
   ChevronRight,
@@ -32,6 +33,7 @@ export function Sidebar() {
     { id: "showEvents", label: "ShowEvents", icon: CalendarDays },
     { id: "changePassword", label: "Change Password", icon: Lock },
     { id: "wallet", label: "Wallet", icon: Wallet },
+    { id: "chats", label: "Chats", icon: MessageCircle },
     // { id: "logout", label: "Logout", icon: LogOut },
   ]
 
