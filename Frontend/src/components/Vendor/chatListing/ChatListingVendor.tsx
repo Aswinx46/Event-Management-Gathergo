@@ -22,7 +22,6 @@ function ChatListingVendor() {
                 chatId: chat._id
             }
         })
-        console.log('Selected chat:', chat)
     }
     return (
         <div>

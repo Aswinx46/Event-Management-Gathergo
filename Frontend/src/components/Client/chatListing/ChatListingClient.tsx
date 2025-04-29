@@ -23,7 +23,6 @@ function ChatListingClient() {
         chatId: chat._id
       }
     })
-    console.log('Selected chat:', chat)
   }
 
   return (

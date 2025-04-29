@@ -102,7 +102,7 @@ export const injectedClientLoginController = new ClientLoginController(loginClie
 
 
 //-----------------------------google login-------------------------
-const googleLoginClientUseCase = new GoogleLoginClientUseCase(ClientRepository)
+const googleLoginClientUseCase = new GoogleLoginClientUseCase(ClientRepository, walletDatabase)
 export const injectedGoogleLogincontroller = new GoogleLoginClient(googleLoginClientUseCase, jwtService, redisService)
 
 //------------------------------send otp for forget password-------------------

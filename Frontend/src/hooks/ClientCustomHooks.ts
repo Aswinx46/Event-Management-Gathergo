@@ -126,7 +126,7 @@ export const useFetchBookingsInClient = (clientId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['Bookings in client'],
         queryFn: () => fetchBookingInClient(clientId, pageNo),
-        staleTime: 5 * 60 * 1000,
+        
         refetchOnWindowFocus: false
     })
 }
