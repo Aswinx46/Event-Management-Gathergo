@@ -130,7 +130,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               <Button
                 variant="outline"
                 onClick={onCancel}
-                className="bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+                className="bg-white text-black hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
                 Cancel
               </Button>

@@ -82,6 +82,8 @@ import { FindEventsNearToUserUseCase } from "../../useCases/client/events/findEV
 import { FindEventsNearToUserController } from "../../adapters/controllers/client/events/findEventsNearToUserController";
 import { TicketCancellationUseCase } from "../../useCases/client/ticket/ticketCancellationUseCase";
 import { TicketCancellationController } from "../../adapters/controllers/client/ticketCancellation/ticketCancellationController";
+import { BookingCancellationUseCase } from "../../useCases/client/booking/bookingCancellationUseCase";
+import { CancelBookingController } from "../../adapters/controllers/client/booking/cancelBookingController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -236,3 +238,7 @@ export const injectedFindEventsNearToUserController = new FindEventsNearToUserCo
 //-----------------------------------Ticket cancellation--------------------
 const ticketCancellationUseCase = new TicketCancellationUseCase(ticketDatabase, walletDatabase, transactionDatabase)
 export const injectedTicketCancellationController = new TicketCancellationController(ticketCancellationUseCase)
+
+//----------------------------------booking cancel------------------------
+const bookingCancelUseCase = new BookingCancellationUseCase(bookingDatabase)
+export const injectedBookingCancellationController = new CancelBookingController(bookingCancelUseCase)

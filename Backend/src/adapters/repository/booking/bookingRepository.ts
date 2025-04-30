@@ -123,7 +123,10 @@ export class BookingRepository implements IbookingRepository {
             date: Date[];
             serviceId: { servicePrice: number };
         }>();
-        if(!bookingDetails) return null
+        if (!bookingDetails) return null
         return { date: bookingDetails?.date, servicePrice: bookingDetails?.serviceId.servicePrice }
+    }
+    async cancelBooking(bookingId: string): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate(bookingId, { status: 'Cancelled' }, { new: true })
     }
 }

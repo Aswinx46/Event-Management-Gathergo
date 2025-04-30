@@ -136,7 +136,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                     key={booking._id}
                     variants={itemVariants}
                     onClick={() => handleDetailedView(booking._id)}
-                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100 transition-colors duration-150`}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"}  hover:bg-gray-100 transition-colors duration-150 ${booking.status == 'Cancelled' ? 'bg-red-300' : 'bg-white'}`}
                   >
                     <TableCell>
                       <div className="space-y-1">

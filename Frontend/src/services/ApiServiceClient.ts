@@ -430,3 +430,13 @@ export const ticketCancellation = async (ticketId: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'erro while ticket cancellation')
     }
 }
+
+export const cancelBooking = async (bookingId: string) => {
+    try {
+        const response = await axios.patch('/cancelBooking', { bookingId })
+        return response.data
+    } catch (error) {
+        console.log('error while cancelling booking', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while cancelling booking')
+    }
+}

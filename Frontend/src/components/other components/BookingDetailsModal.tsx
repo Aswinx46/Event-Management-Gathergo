@@ -24,6 +24,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import RejectionReasonModal from "./RejectionReasonModal";
 import { useNavigate } from "react-router-dom";
+import { useCancelBooking } from "@/hooks/ClientCustomHooks";
+import ConfirmModal from "./ConfirmationModal";
 
 
 interface Service {
@@ -103,8 +105,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     setIsOpen,
     booking
 }) => {
+    const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false)
     const navigate = useNavigate()
-
+    const cancelBooking = useCancelBooking()
     const updateBookingStatus = useUpdateBookingAsComplete()
     const approveBooking = useApproveBooking()
     const rejectBooking = useRejectBooking()
@@ -114,6 +117,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     const [rejectionModal, setRejectionModal] = useState<boolean>(false)
     const [rejectionReason, setRejectionReason] = useState<string>('')
     const [rejectingBookingId, setRejectingBookingId] = useState<string>('')
+    const [cancelBookingId, setCancelBookingId] = useState<string>('')
     if (!booking) return null;
 
     // Animation variants
@@ -138,8 +142,21 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     // const bookingDate = new Date(booking.date);
     // const timeAgo = formatDistanceToNow(bookingDate, { addSuffix: true });
+    const cancelMessage = 'This action cannot be undone, and the service will no longer be available for booking.'
+    const handleCancelBooking = () => {
+        cancelBooking.mutate(cancelBookingId, {
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['Bookings in client'] })
+                toast.success('Booking cancelled')
+                setShowConfirmModal(false)
+                setIsOpen(false)
 
-
+            },
+            onError: (err) => {
+                toast.error(err.message)
+            }
+        })
+    }
 
     const handleApproveBooking = (bookingId: string) => {
 
@@ -228,6 +245,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
             <DialogContent className="max-w-md max-h-[80vh] bg-gray-900 border border-gray-800 text-white p-0 rounded-xl overflow-hidden">
                 <div className="custom-scrollbar overflow-y-auto max-h-[calc(80vh-4rem)]">
+                    {showConfirmModal && <ConfirmModal content={cancelMessage} isOpen={showConfirmModal} onCancel={() => setShowConfirmModal(false)} onConfirm={handleCancelBooking} />}
                     {rejectionModal && <RejectionReasonModal isOpen={rejectionModal} onClose={handleOnClose} onSubmit={handleReject} rejectionReason={rejectionReason} setRejectionReason={setRejectionReason} />}
                     <DialogHeader className="bg-black py-6 px-5">
                         <DialogTitle className="text-xl font-bold flex items-center justify-between">
@@ -356,6 +374,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                     <div className="flex justify-center">
                         {booking.status == 'Completed' && booking.paymentStatus !== 'Successfull' && booking.paymentStatus !== 'Refunded' && !booking?.client?.email && < Button onClick={() => handleBookingPayment(booking)} className=" bg-green-500">Pay now</Button>}
                         {booking.vendorApproval == 'Approved' && <Button onClick={handleChatNavigate} className="bg-purple-400">CHAT NOW</Button>}
+                        {booking.paymentStatus == 'Pending' && booking.status == 'Pending' && <Button onClick={() => { setCancelBookingId(booking._id); setShowConfirmModal(true) }} className="bg-purple-400">CANCEL BOOKING</Button>}
                     </div>
                     <DialogFooter className="bg-gray-900 p-4  border-t border-gray-800">
                         <Button

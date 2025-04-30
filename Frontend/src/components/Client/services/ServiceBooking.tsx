@@ -273,7 +273,7 @@ const VendorBookingCard = () => {
                           isBefore(startOfDay(date), startOfDay(new Date()))
                         }
                         initialFocus
-                        className="bg-black text-white"
+                        className="bg-white text-black"
                         modifiersStyles={{
                           selected: {
                             backgroundColor: 'rgb(147, 51, 234)',

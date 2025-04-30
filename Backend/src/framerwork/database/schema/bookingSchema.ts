@@ -44,16 +44,16 @@ export const bookingSchema = new Schema<BookingEntity>({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Rejected', 'Completed'],
+        enum: ['Pending', 'Rejected', 'Completed', 'Cancelled'],
         default: "Pending"
     },
     createdAt: {
         type: Date,
         default: Date.now()
     },
-    isComplete:{
-        type:Boolean,
-        default:false
+    isComplete: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
