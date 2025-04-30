@@ -131,12 +131,13 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                 </TableRow>
               </TableHeader>
               <TableBody>
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 {bookings.map((booking, index) => (
                   <motion.tr
                     key={booking._id}
                     variants={itemVariants}
                     onClick={() => handleDetailedView(booking._id)}
-                    className={`hover:bg-red-100 transition-colors duration-150 ${booking.status == 'Cancelled' ? 'bg-red-300' : 'bg-white'}`}
+                    className={`hover:bg-gray-100 transition-colors duration-150 ${booking.status == 'Cancelled' ? 'bg-red-300' : 'bg-white'}`}
                   >
                     <TableCell>
                       <div className="space-y-1">
