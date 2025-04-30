@@ -24,7 +24,7 @@ export const useInfiniteScrollObserver = () => {
       })
 
       if (node) observerRef.current.observe(node)
-    },
+    },  
     []
   )
 
