@@ -52,11 +52,12 @@ const Sidebar: React.FC = () => {
   const menuItems = [
     { name: 'Dashboard', icon: <FaTachometerAlt />, path: '/admin/dashboard' },
     { name: 'User Management', icon: <FaUsers />, path: '/admin/userManagement' },
-    { name: 'Booking Management', icon: <FaCalendarCheck />, path: '/booking-management' },
+    { name: 'Bookings', icon: <FaCalendarCheck />, path: '/admin/bookings' },
     { name: 'Category Management', icon: <FaList />, path: '/admin/categoryManagement' },
     { name: 'Wallet', icon: <FaWallet />, path: '/admin/wallet' },
     { name: 'Event Providers', icon: <FaUserFriends />, path: '/admin/eventProviders' },
     { name: 'Event Management', icon: <FaCalendarAlt />, path: '/event-management' },
+    // { name: 'Bookings', icon: <FaBook />, path: '/bookings' },
   ];
 
   const toggleMobileMenu = () => {

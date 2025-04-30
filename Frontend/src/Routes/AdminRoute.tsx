@@ -10,11 +10,12 @@ import CategoryManagement from "@/components/Admin/categoryManagement/CategoryMa
 import AdminProtectedRoute from "@/components/Admin/ProtectedRoute/ProtectedRoute"
 import NotFound from "@/components/other components/NotFound"
 import AdminWallet from "@/components/Admin/wallet/AdminWallett"
+import BookingsListAdmin from "@/components/Admin/bookingListing/BookingListingAdmin"
 const AdminRoute = () => {
     return (
         <Routes>
             <Route path="login" element={<Adminlogin />}></Route>
-            <Route path="*" element={<NotFound/>} />
+            <Route path="*" element={<NotFound />} />
             <Route path="/" element={<AdminLayout />}>
                 <Route path="dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>}></Route>
                 <Route path="userManagement" element={<AdminProtectedRoute><UserManagement /></AdminProtectedRoute>}></Route>
@@ -23,6 +24,7 @@ const AdminRoute = () => {
                 <Route path="rejectedVendors" element={<AdminProtectedRoute><RejectedVendors /></AdminProtectedRoute>}></Route>
                 <Route path="categoryManagement" element={<AdminProtectedRoute><CategoryManagement /></AdminProtectedRoute>}></Route>
                 <Route path="wallet" element={<AdminProtectedRoute><AdminWallet /></AdminProtectedRoute>}></Route>
+                <Route path="bookings" element={<AdminProtectedRoute><BookingsListAdmin /></AdminProtectedRoute>}></Route>
             </Route>
         </Routes>
     )

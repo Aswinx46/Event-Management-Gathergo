@@ -1,10 +1,18 @@
 import { ObjectId } from "mongoose";
 
-export interface BookingEntity {
+export interface BookingDetailsInAdminEntity {
     _id?: ObjectId;
     serviceId: ObjectId;
-    clientId: ObjectId;
-    vendorId: ObjectId;
+    clientId: {
+        _id: ObjectId,
+        name: string,
+        profileImage: string
+    };
+    vendorId: {
+        _id: ObjectId,
+        name: string,
+        profileImage: string
+    };
     date: Date[];
     email: string;
     phone: number;
@@ -15,5 +23,3 @@ export interface BookingEntity {
     createdAt: Date
     isComplete: boolean
 }
-
-
