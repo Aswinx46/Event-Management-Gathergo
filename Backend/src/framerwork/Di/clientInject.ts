@@ -80,6 +80,8 @@ import { searchEventsUseCase } from "../../useCases/client/events/searchEventsUs
 import { SearchEventsOnQueryController } from "../../adapters/controllers/client/events/searchEventsOnQueryController";
 import { FindEventsNearToUserUseCase } from "../../useCases/client/events/findEVentsNearToUserUseCase";
 import { FindEventsNearToUserController } from "../../adapters/controllers/client/events/findEventsNearToUserController";
+import { TicketCancellationUseCase } from "../../useCases/client/ticket/ticketCancellationUseCase";
+import { TicketCancellationController } from "../../adapters/controllers/client/ticketCancellation/ticketCancellationController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -230,3 +232,7 @@ export const injectedSearchEventsController = new SearchEventsOnQueryController(
 //------------------------------------find events near to user--------------------
 const findEventsNearToUserUseCase = new FindEventsNearToUserUseCase(eventDatabase)
 export const injectedFindEventsNearToUserController = new FindEventsNearToUserController(findEventsNearToUserUseCase)
+
+//-----------------------------------Ticket cancellation--------------------
+const ticketCancellationUseCase = new TicketCancellationUseCase(ticketDatabase, walletDatabase, transactionDatabase)
+export const injectedTicketCancellationController = new TicketCancellationController(ticketCancellationUseCase)

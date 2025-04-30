@@ -9,10 +9,11 @@ export class TransactionRepository implements ItransactionRepository {
     }
     async findTransactionsOfAWallet(walletId: string | ObjectId, pageNo: number): Promise<{ transactions: TransactionsEntity[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
+        console.log(walletId)
         const limit = 5
         const skip = (page - 1) * limit
         const transactions = await transactionModel.find({ walletId }).select('-__v -createdAt -updatedAt').sort({ createdAt: -1 }).skip(skip).limit(limit)
-        const totalPages = Math.ceil(await transactionModel.countDocuments({ _id: walletId }) / limit)
+        const totalPages = Math.ceil(await transactionModel.countDocuments({ walletId }) / limit)
         return { transactions, totalPages }
     }
 

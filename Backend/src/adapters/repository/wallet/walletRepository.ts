@@ -13,4 +13,7 @@ export class WalletRepository implements IwalletRepository {
     async addMoney(userId: string | ObjectId, amount: number): Promise<WalletEntity | null> {
         return walletModel.findOneAndUpdate({ userId }, { $inc: { balance: amount } }, { new: true })
     }
+    async reduceMoney(userId: string | ObjectId, amount: number): Promise<WalletEntity | null> {
+        return walletModel.findOneAndUpdate({ userId }, { $inc: { balance: -amount } }, { new: true })
+    }
 }

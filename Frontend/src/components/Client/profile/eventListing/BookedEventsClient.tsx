@@ -3,21 +3,49 @@ import { Calendar, Clock, MapPin, Ticket } from "lucide-react";
 import { format } from "date-fns";
 import { TicketAndEventDTO } from "@/types/TicketAndEventDTO";
 import { useState } from "react";
-import { useFindTicketAndEventsDetails } from "@/hooks/ClientCustomHooks";
+import { useFindTicketAndEventsDetails, useTicketCancellation } from "@/hooks/ClientCustomHooks";
 import Pagination from "@/components/other components/Pagination";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import TicketModal from "./TicketDetailsModal";
+import { toast } from "react-toastify";
+import ConfirmModal from "@/components/other components/ConfirmationModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BookedEvents = () => {
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const ticketCancellationHook = useTicketCancellation()
+  const [showCancelAlert, setShowCancelAlert] = useState<boolean>(false)
   const ticketAndEvent = useFindTicketAndEventsDetails(clientId!, currentPage)
   const ticketAndEvents: TicketAndEventDTO[] = ticketAndEvent.data?.ticketAndEventDetails
   const totalPages = ticketAndEvent.data?.totalPages
   const [selectedEvent, setSelectedEvent] = useState<TicketAndEventDTO>()
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [selectedTicketId, setSelectedTicketId] = useState<string>('')
 
+  const queryClient = useQueryClient()
+
+  const handleTicketCancel = () => {
+    ticketCancellationHook.mutate(selectedTicketId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['ticketAndEventDetaills', currentPage] })
+        setShowCancelAlert(false)
+        setIsOpen(false)
+        toast.success('Ticket Cancelled')
+      },
+      onError: (err) => {
+        toast.error(err.message)
+      }
+    })
+  }
+
+  const ticketCancellationNotice = `
+⚠️ Important Notice  
+Upon cancellation, only 70% of the total ticket amount will be refunded to your wallet.  
+The remaining 30% is non-refundable as per our cancellation policy.  
+This action is irreversible. Are you sure you want to proceed?
+`;
   if (!ticketAndEvents || ticketAndEvents.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
@@ -35,10 +63,17 @@ const BookedEvents = () => {
     setIsOpen(true)
   }
 
+
+  const handleOnClickTicketCancel = (ticketId: string) => {
+    setSelectedTicketId(ticketId)
+    setShowCancelAlert(true)
+  }
+
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {isOpen && <TicketModal open={isOpen} setIsOpen={setIsOpen} ticket={selectedEvent!} />}
-      
+      {showCancelAlert && <ConfirmModal content={ticketCancellationNotice} isOpen={showCancelAlert} onCancel={() => setShowCancelAlert(false)} onConfirm={handleTicketCancel} />}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Your Booked Events
@@ -88,13 +123,12 @@ const BookedEvents = () => {
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">{ticketAndEvent.event.title}</h3>
-                    <span className={`rounded-full px-3 py-1 text-xs font-medium transform transition-transform duration-300 hover:scale-105 ${
-                      ticketAndEvent.event.status === "cancelled"
-                        ? "bg-red-100 text-red-800"
-                        : ticketAndEvent.event.status === "completed"
-                          ? "bg-gray-100 text-gray-800"
-                          : "bg-purple-100 text-purple-800"
-                    }`}>
+                    <span className={`rounded-full px-3 py-1 text-xs font-medium transform transition-transform duration-300 hover:scale-105 ${ticketAndEvent.event.status === "cancelled"
+                      ? "bg-red-100 text-red-800"
+                      : ticketAndEvent.event.status === "completed"
+                        ? "bg-gray-100 text-gray-800"
+                        : "bg-purple-100 text-purple-800"
+                      }`}>
                       {ticketAndEvent.event.status.charAt(0).toUpperCase() + ticketAndEvent.event.status.slice(1)}
                     </span>
                   </div>
@@ -118,14 +152,16 @@ const BookedEvents = () => {
                       <MapPin className="h-4 w-4 text-purple-500" />
                       <span className="truncate">{ticketAndEvent.event.address || 'Location not specified'}</span>
                     </div>
+                    <span className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      ₹{ticketAndEvent.event.pricePerTicket.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
 
               <div className="mt-4 flex items-center justify-between pt-4 border-t border-gray-100">
-                <span className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  ₹{ticketAndEvent.event.pricePerTicket.toFixed(2)}
-                </span>
+
+
 
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -135,6 +171,15 @@ const BookedEvents = () => {
                 >
                   View Ticket Details
                 </motion.button>
+
+                {ticketAndEvent.ticketStatus == 'unused' && <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleOnClickTicketCancel(ticketAndEvent._id!)}
+                  className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:shadow-purple-300/50"
+                >
+                  Cancel Ticket
+                </motion.button>}
               </div>
             </div>
           </motion.div>

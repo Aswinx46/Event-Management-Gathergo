@@ -1,4 +1,4 @@
-import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, updateProfileClient } from "@/services/ApiServiceClient";
+import { changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { TicketEntity } from "@/types/TicketPaymentType";
@@ -126,7 +126,7 @@ export const useFetchBookingsInClient = (clientId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['Bookings in client'],
         queryFn: () => fetchBookingInClient(clientId, pageNo),
-        
+
         refetchOnWindowFocus: false
     })
 }
@@ -277,5 +277,11 @@ export const useLoadChatsInfinite = (userId: string) => {
             return undefined
         },
         initialPageParam: 1
+    })
+}
+
+export const useTicketCancellation = () => {
+    return useMutation({
+        mutationFn: (ticketId: string) => ticketCancellation(ticketId)
     })
 }

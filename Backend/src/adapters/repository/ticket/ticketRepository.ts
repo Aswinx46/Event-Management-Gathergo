@@ -1,5 +1,6 @@
 import { TicketAndEventDTO } from "../../../domain/entities/Ticket/ticketAndEventDTO";
 import { TicketEntity } from "../../../domain/entities/Ticket/ticketEntity";
+import { TicketAndVendorDTO } from "../../../domain/entities/TicketAndVendorDTO";
 import { IticketRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/eventTicket/ticketRepositoryInterface";
 import { ticketModel } from "../../../framerwork/database/models/ticketModel";
 
@@ -19,7 +20,7 @@ export class TicketRepository implements IticketRepositoryInterface {
         const totalPages = Math.ceil(await ticketModel.countDocuments() / limit)
         const ticketAndEventDetails: TicketAndEventDTO[] = ticketAndEvent.map(ticket => {
             const event = ticket.eventId as any; // TypeScript doesn't know it's populated
-            
+
             return {
                 _id: ticket._id,
                 ticketId: ticket.ticketId,
@@ -51,5 +52,28 @@ export class TicketRepository implements IticketRepositoryInterface {
     }
     async changeUsedStatus(ticketId: string): Promise<TicketEntity | null> {
         return await ticketModel.findByIdAndUpdate(ticketId, { ticketStatus: 'used' })
+    }
+    async ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO | null> {
+        const ticket = await ticketModel.findByIdAndUpdate(ticketId, { ticketStatus: 'refunded' }, { new: true }).populate('eventId', 'hostedBy').lean()
+        if (!ticket) return null;
+        console.log('ticket in the repo', ticket)
+        const result: TicketAndVendorDTO = {
+            _id: ticket._id,
+            ticketId: ticket.ticketId,
+            totalAmount: ticket.totalAmount,
+            ticketCount: ticket.ticketCount,
+            phone: ticket.phone,
+            email: ticket.email,
+            paymentStatus: ticket.paymentStatus,
+            qrCodeLink: ticket.qrCodeLink,
+            eventId: {
+                _id: (ticket.eventId as any)._id,
+                hostedBy: (ticket.eventId as any).hostedBy,
+            },
+            clientId: ticket.clientId,
+            ticketStatus: ticket.ticketStatus,
+            paymentTransactionId: ticket.paymentTransactionId,
+        };
+        return result
     }
 }

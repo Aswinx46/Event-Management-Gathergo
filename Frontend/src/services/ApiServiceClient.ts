@@ -420,3 +420,13 @@ export const loadChats = async (userId: string, pageNo: number) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while findng the chats of user')
     }
 }
+
+export const ticketCancellation = async (ticketId: string) => {
+    try {
+        const response = await axios.patch('/ticketCancel', { ticketId })
+        return response.data
+    } catch (error) {
+        console.log('error while ticket cancellation', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'erro while ticket cancellation')
+    }
+}
