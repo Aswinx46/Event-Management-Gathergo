@@ -56,7 +56,7 @@ const Sidebar: React.FC = () => {
     { name: 'Category Management', icon: <FaList />, path: '/admin/categoryManagement' },
     { name: 'Wallet', icon: <FaWallet />, path: '/admin/wallet' },
     { name: 'Event Providers', icon: <FaUserFriends />, path: '/admin/eventProviders' },
-    { name: 'Event Management', icon: <FaCalendarAlt />, path: '/event-management' },
+    { name: 'Events', icon: <FaCalendarAlt />, path: '/admin/events' },
     // { name: 'Bookings', icon: <FaBook />, path: '/bookings' },
   ];
 

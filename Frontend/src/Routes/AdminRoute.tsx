@@ -11,6 +11,7 @@ import AdminProtectedRoute from "@/components/Admin/ProtectedRoute/ProtectedRout
 import NotFound from "@/components/other components/NotFound"
 import AdminWallet from "@/components/Admin/wallet/AdminWallett"
 import BookingsListAdmin from "@/components/Admin/bookingListing/BookingListingAdmin"
+import { EventsListingAdmin } from "@/components/Admin/eventListing/EventListingInAdmin"
 const AdminRoute = () => {
     return (
         <Routes>
@@ -25,6 +26,7 @@ const AdminRoute = () => {
                 <Route path="categoryManagement" element={<AdminProtectedRoute><CategoryManagement /></AdminProtectedRoute>}></Route>
                 <Route path="wallet" element={<AdminProtectedRoute><AdminWallet /></AdminProtectedRoute>}></Route>
                 <Route path="bookings" element={<AdminProtectedRoute><BookingsListAdmin /></AdminProtectedRoute>}></Route>
+                <Route path="events" element={<AdminProtectedRoute><EventsListingAdmin /></AdminProtectedRoute>}></Route>
             </Route>
         </Routes>
     )

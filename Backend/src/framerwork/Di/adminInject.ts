@@ -7,6 +7,7 @@ import { CreateCategoryController } from "../../adapters/controllers/admin/categ
 import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
 import { BlockClientController } from "../../adapters/controllers/admin/client/blockClientController";
 import { ClientUnblockController } from "../../adapters/controllers/admin/client/unblockClientController";
+import { FindEventsInAdminSideController } from "../../adapters/controllers/admin/eventManagementt/findEventsInAdminSideController";
 import { FindAllClientsController } from "../../adapters/controllers/admin/findAllClientsController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
 import { FindAllRejectedController } from "../../adapters/controllers/admin/findAllRejectedVendorController";
@@ -19,6 +20,7 @@ import { AdminRepository } from "../../adapters/repository/admin/adminRepository
 import { BookingRepository } from "../../adapters/repository/booking/bookingRepository";
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
+import { EventRepository } from "../../adapters/repository/event/eventRepository";
 import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
@@ -29,6 +31,7 @@ import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/
 import { ChangeTitleAndImageUseCase } from "../../useCases/admin/categoryManagement/changeTitleAndImageUseCase";
 import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
+import { FindEventsInAdminSideUseCase } from "../../useCases/admin/eventManagement/findEventsInAdminSideUseCase";
 import { BlockClientUseCase } from "../../useCases/admin/userManagement/clientBlockUseCase";
 import { ClientUnblockUseCase } from "../../useCases/admin/userManagement/clientUnblockUseCase";
 
@@ -123,3 +126,8 @@ export const injectedFindAdminWalletDetailsController = new FindAdminWalletDetai
 const bookingDatabase = new BookingRepository()
 const showBookingsInAdminSideUseCase = new ShowBookingsInAdminUseCase(bookingDatabase)
 export const injectedShowBookingsInAdminController = new ShowBookingInAdminController(showBookingsInAdminSideUseCase)
+
+//----------------------------List events in the admin side----------------------
+const eventDatabase = new EventRepository()
+const findEventsInAdminSideUseCase = new FindEventsInAdminSideUseCase(eventDatabase)
+export const injectedFindEventsInAdminSideController = new FindEventsInAdminSideController(findEventsInAdminSideUseCase)

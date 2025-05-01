@@ -11,10 +11,10 @@ export class EventRepository implements IeventRepository {
         return await eventModal.create(event)
     }
     async findAllEventsClient(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
-        const limit = 2
+        const limit = 5
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
-        const events = await eventModal.find().select('-__v').skip(skip).limit(limit)
+        const events = await eventModal.find({ isActive: true }).select('-__v').skip(skip).limit(limit)
         const totalPages = Math.ceil(await eventModal.countDocuments() / limit)
         return { events, totalPages }
     }
@@ -68,7 +68,7 @@ export class EventRepository implements IeventRepository {
         const regex = new RegExp(query || '', 'i');
         return await eventModal.find({ title: { $regex: regex }, isActive: true }).select('_id title posterImage')
     }
-    async findEventsNearToYou(latitude: number, longitude: number, pageNo: number,range:number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
+    async findEventsNearToYou(latitude: number, longitude: number, pageNo: number, range: number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
         const limit = 5
         const skip = (page - 1) * limit
@@ -90,5 +90,14 @@ export class EventRepository implements IeventRepository {
         const totalPages = Math.ceil(await eventModal.countDocuments({ locationQuery, isActive: true }) / limit)
         return { events, totalPages }
     }
+    async listingEventsInAdminSide(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
+        const limit = 4
+        const page = Math.max(pageNo, 1)
+        const skip = (page - 1) * limit
+        const events = await eventModal.find().select('-__v').skip(skip).limit(limit).lean()
+        const totalPages = Math.ceil(await eventModal.countDocuments() / limit)
+        return { events, totalPages }
+    }
+     
 
 }
