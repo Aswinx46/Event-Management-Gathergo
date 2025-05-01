@@ -34,7 +34,6 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   event,
   isOpen,
   onClose,
-  onEdit,
 }) => {
   if (!event) return null;
   
