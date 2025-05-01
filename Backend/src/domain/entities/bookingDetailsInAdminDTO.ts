@@ -2,16 +2,24 @@ import { ObjectId } from "mongoose";
 
 export interface BookingDetailsInAdminEntity {
     _id?: ObjectId;
-    serviceId: ObjectId;
+    serviceId: {
+        _id: ObjectId,
+        serviceTitle: string,
+        servicePrice: number,
+        categoryId: {
+            _id: ObjectId,
+            title: string
+        }
+    };
     clientId: {
         _id: ObjectId,
         name: string,
-        profileImage: string
+        profileImage?: string
     };
     vendorId: {
         _id: ObjectId,
         name: string,
-        profileImage: string
+        profileImage?: string
     };
     date: Date[];
     email: string;
@@ -23,3 +31,26 @@ export interface BookingDetailsInAdminEntity {
     createdAt: Date
     isComplete: boolean
 }
+
+export interface PopulatedBookingForAdmin extends Omit<BookingDetailsInAdminEntity, 'serviceId' | 'clientId' | 'vendorId'> {
+    serviceId: {
+      _id: ObjectId;
+      serviceTitle: string;
+      servicePrice: number;
+      categoryId: {
+        _id: ObjectId;
+        name: string;
+      };
+    };
+    clientId: {
+      _id: ObjectId;
+      name: string;
+      profileImage?: string;
+    };
+    vendorId: {
+      _id: ObjectId;
+      name: string;
+      profileImage?: string;
+    };
+  }
+  

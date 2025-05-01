@@ -202,3 +202,12 @@ export const findWalletAdmin = async (userId: string, pageNo: number) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding admin wallet')
     }
 }
+export const findBookingsInAdmin = async (pageNo: number) => {
+    try {
+        const response = await axios.get('/bookingDetails', { params: { pageNo } })
+        return response.data
+    } catch (error) {
+        console.log('error while finding bookings in admin', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error whiel finding bookings in admin')
+    }
+}

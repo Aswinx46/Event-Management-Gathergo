@@ -1,10 +1,11 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CalendarDays, Clock, User, Phone, Mail, CreditCard } from "lucide-react";
+import { X, CalendarDays,  User, Phone, Mail, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { BookingDetailsInAdminEntity as Booking } from "@/types/BookingDetailsAdmin";
+import { FaRupeeSign, FaTag } from "react-icons/fa";
 
 interface BookingDetailsModalProps {
   isOpen: boolean;
@@ -52,12 +53,12 @@ const formatDate = (date: Date) => {
   });
 };
 
-const formatTime = (date: Date) => {
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+// const formatTime = (date: Date) => {
+//   return date.toLocaleTimeString("en-US", {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//   });
+// };
 
 const getStatusColor = (status: Booking["status"] | Booking["vendorApproval"] | Booking["paymentStatus"]) => {
   switch (status) {
@@ -109,17 +110,7 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // Calculate booking duration
-  const getDuration = () => {
-    if (booking.date.length >= 2) {
-      const start = booking.date[0];
-      const end = booking.date[1];
-      const durationMs = end.getTime() - start.getTime();
-      const durationMinutes = Math.round(durationMs / (1000 * 60));
-      return `${durationMinutes} minutes`;
-    }
-    return "Not specified";
-  };
+
 
   return (
     <AnimatePresence>
@@ -192,17 +183,28 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Date</p>
                     <p className="text-gray-900 dark:text-white">
-                      {formatDate(booking.date[0])}
+                      {formatDate(new Date(booking.date[0]))}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <Clock className="w-5 h-5 mt-0.5 mr-3 text-indigo-500 dark:text-indigo-400" />
+                <FaTag className="w-5 h-5 mt-0.5 mr-3 text-indigo-500 dark:text-indigo-400" />
+
                   <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Time</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Service Title</p>
                     <p className="text-gray-900 dark:text-white">
-                      {formatTime(booking.date[0])} - {formatTime(booking.date[1])} ({getDuration()})
+                      {booking.serviceId.serviceTitle}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <FaRupeeSign className="w-5 h-5 mt-0.5 mr-3 text-indigo-500 dark:text-indigo-400" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Service Price</p>
+                    <p className="text-gray-900 dark:text-white">
+                      {booking.serviceId.servicePrice}
                     </p>
                   </div>
                 </div>
@@ -256,7 +258,7 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
 
                 <div className="pt-2">
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Booking Created</p>
-                  <p className="text-gray-700 dark:text-gray-300">{formatDate(booking.createdAt)}</p>
+                  <p className="text-gray-700 dark:text-gray-300">{formatDate(new Date(booking.createdAt))}</p>
                 </div>
               </div>
             </motion.div>
@@ -286,6 +288,7 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
           </motion.div>
         </motion.div>
       )}
+      
     </AnimatePresence>
   );
 };

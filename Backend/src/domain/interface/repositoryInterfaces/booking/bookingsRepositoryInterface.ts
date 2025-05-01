@@ -4,6 +4,7 @@ import { BookingsInClientEntity } from "../../../entities/bookingListingInClient
 import { BookingPaymentEntity } from "../../../entities/bookingPayment/bookingPaymentEntity";
 import { ClientBookingDTO } from "../../../entities/clientBookingDTO";
 import { BookingListingEntityVendor } from "../../../entities/vendor/BookingListingEntityVendor";
+import {  PopulatedBookingForAdmin } from "../../../entities/bookingDetailsInAdminDTO";
 
 export interface IbookingRepository {
     createBooking(booking: BookingEntity): Promise<BookingEntity>
@@ -16,4 +17,5 @@ export interface IbookingRepository {
     updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null>
     findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ date: Date[], servicePrice: number } | null>
     cancelBooking(bookingId: string): Promise<BookingEntity | null>
+    showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: PopulatedBookingForAdmin[] | [], totalPages: number }>
 }

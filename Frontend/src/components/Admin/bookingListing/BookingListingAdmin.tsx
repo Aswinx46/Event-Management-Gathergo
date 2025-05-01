@@ -8,122 +8,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { BookingDetailsInAdminEntity as Booking } from "@/types/BookingDetailsAdmin";
-// Define the Booking type to match the provided interface
+import { useFindBookingsInAdmin } from "@/hooks/AdminCustomHooks";
+import Pagination from "@/components/other components/Pagination";
 
-// Sample data - in a real app this would come from an API or props
-const sampleBookings: Booking[] = [
-  {
-    _id: "1",
-    serviceId: "service123",
-    clientId: {
-      _id: "client1",
-      name: "Alex Smith",
-      profileImage: "https://i.pravatar.cc/150?img=1"
-    },
-    vendorId: {
-      _id: "vendor1",
-      name: "Service Provider Inc.",
-      profileImage: "https://i.pravatar.cc/150?img=10"
-    },
-    date: [new Date("2025-05-01T10:00:00"), new Date("2025-05-01T11:00:00")],
-    email: "alex@example.com",
-    phone: 1234567890,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Pending",
-    createdAt: new Date("2025-04-25"),
-    isComplete: false
-  },
-  {
-    _id: "2",
-    serviceId: "service456",
-    clientId: {
-      _id: "client2",
-      name: "Jamie Lee",
-      profileImage: "https://i.pravatar.cc/150?img=2"
-    },
-    vendorId: {
-      _id: "vendor1",
-      name: "Service Provider Inc.",
-      profileImage: "https://i.pravatar.cc/150?img=10"
-    },
-    date: [new Date("2025-05-03T14:30:00"), new Date("2025-05-03T16:00:00")],
-    email: "jamie@example.com",
-    phone: 2345678901,
-    vendorApproval: "Pending",
-    paymentStatus: "Pending",
-    status: "Pending",
-    createdAt: new Date("2025-04-26"),
-    isComplete: false
-  },
-  {
-    _id: "3",
-    serviceId: "service789",
-    clientId: {
-      _id: "client3",
-      name: "Sam Johnson",
-      profileImage: "https://i.pravatar.cc/150?img=3"
-    },
-    vendorId: {
-      _id: "vendor2",
-      name: "Expert Services LLC",
-      profileImage: "https://i.pravatar.cc/150?img=11"
-    },
-    date: [new Date("2025-05-05T11:00:00"), new Date("2025-05-05T11:45:00")],
-    email: "sam@example.com",
-    phone: 3456789012,
-    vendorApproval: "Rejected",
-    paymentStatus: "Refunded",
-    rejectionReason: "Provider unavailable at requested time",
-    status: "Rejected",
-    createdAt: new Date("2025-04-27"),
-    isComplete: false
-  },
-  {
-    _id: "4",
-    serviceId: "service101",
-    clientId: {
-      _id: "client4",
-      name: "Taylor Morgan",
-      profileImage: "https://i.pravatar.cc/150?img=4"
-    },
-    vendorId: {
-      _id: "vendor2",
-      name: "Expert Services LLC",
-      profileImage: "https://i.pravatar.cc/150?img=11"
-    },
-    date: [new Date("2025-05-07T09:00:00"), new Date("2025-05-07T11:00:00")],
-    email: "taylor@example.com",
-    phone: 4567890123,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Completed",
-    createdAt: new Date("2025-04-28"),
-    isComplete: true
-  },
-  {
-    _id: "5",
-    serviceId: "service202",
-    clientId: {
-      _id: "client5",
-      name: "Jordan Riley",
-      profileImage: "https://i.pravatar.cc/150?img=5"
-    },
-    vendorId: {
-      _id: "vendor3",
-      name: "Premium Services Co.",
-      profileImage: "https://i.pravatar.cc/150?img=12"
-    },
-    date: [new Date("2025-05-10T13:00:00"), new Date("2025-05-10T16:00:00")],
-    email: "jordan@example.com",
-    phone: 5678901234,
-    vendorApproval: "Approved",
-    paymentStatus: "Failed",
-    status: "Cancelled",
-    createdAt: new Date("2025-04-29"),
-    isComplete: false
-  },
-];
 
 const getStatusColor = (status: Booking["status"] | Booking["vendorApproval"] | Booking["paymentStatus"]) => {
   switch (status) {
@@ -152,17 +39,16 @@ const formatDate = (date: Date) => {
   });
 };
 
-const formatTime = (date: Date) => {
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+
 
 const BookingsListAdmin: React.FC = () => {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const findBookings = useFindBookingsInAdmin(currentPage)
+  const bookings: Booking[] = findBookings?.data?.bookings
+  const totalPages = findBookings?.data?.totalPages
+  console.log(findBookings.data?.bookings)
   const handleBookingClick = (booking: Booking) => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
@@ -184,7 +70,7 @@ const BookingsListAdmin: React.FC = () => {
       </header>
 
       <div className="grid gap-4">
-        {sampleBookings.map((booking, index) => (
+        {bookings?.map((booking, index) => (
           <motion.div
             key={booking._id}
             initial={{ opacity: 0, y: 20 }}
@@ -222,10 +108,10 @@ const BookingsListAdmin: React.FC = () => {
                     <div className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                       <div className="flex items-center">
                         <CalendarDays className="h-4 w-4 mr-1 text-gray-500" />
-                        <span className="font-medium">{formatDate(booking.date[0])}</span>
+                        <span className="font-medium">{formatDate(new Date(booking.date[0]))}</span>
                         <span className="mx-2 text-gray-400">•</span>
-                        <Clock className="h-4 w-4 mr-1 text-gray-500" />
-                        <span>{formatTime(booking.date[0])}</span>
+                        {/* <Clock className="h-4 w-4 mr-1 text-gray-500" />
+                        <span>{formatTime(new Date(booking.date[0]))}</span> */}
                       </div>
                       <div className="mt-1 flex items-center">
                         <User className="h-4 w-4 mr-1 text-gray-500" />
@@ -255,6 +141,7 @@ const BookingsListAdmin: React.FC = () => {
             </Card>
           </motion.div>
         ))}
+        {bookings?.length > 0 && < Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
       </div>
 
       {selectedBooking && (

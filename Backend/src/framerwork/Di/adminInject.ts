@@ -1,5 +1,6 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
+import { ShowBookingInAdminController } from "../../adapters/controllers/admin/bookingManagement/showBookingsInAdminController";
 import { ChangeStatusCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeStatusCategoryController";
 import { ChangeTitleAndImageCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeTitleAndImageController";
 import { CreateCategoryController } from "../../adapters/controllers/admin/categoryManagement/createCategoryController";
@@ -15,12 +16,14 @@ import { VendorBlockController } from "../../adapters/controllers/admin/vendorMa
 import { VendorUnblockController } from "../../adapters/controllers/admin/vendorManagement/vendorUnblockController";
 import { FindAdminWalletDetailsController } from "../../adapters/controllers/admin/wallet/findWalletDetailsOfAdminController";
 import { AdminRepository } from "../../adapters/repository/admin/adminRepository";
+import { BookingRepository } from "../../adapters/repository/booking/bookingRepository";
 import { CategoryDatabaseRepository } from "../../adapters/repository/category/categoryRepository";
 import { clientRepository } from "../../adapters/repository/client/clientRepository";
 import { TransactionRepository } from "../../adapters/repository/transaction/transactionRepository";
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
 import { AdminLoginUseCase } from "../../useCases/admin/authentication/adminLoginuseCase";
+import { ShowBookingsInAdminUseCase } from "../../useCases/admin/bookingManagement/showBookingsInAdminUseCase";
 
 import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/changeStatusOfCategoryUseCase";
 import { ChangeTitleAndImageUseCase } from "../../useCases/admin/categoryManagement/changeTitleAndImageUseCase";
@@ -114,3 +117,9 @@ const findAdminWalletUseCase = new FindUserWalletUseCase(walletDatabase)
 const transactionDatabase = new TransactionRepository()
 const findTransactionsUseCase = new FindTransactionsUseCase(transactionDatabase)
 export const injectedFindAdminWalletDetailsController = new FindAdminWalletDetailsController(findAdminWalletUseCase, findTransactionsUseCase)
+
+
+//--------------------------------show bookings in admin side------------------------
+const bookingDatabase = new BookingRepository()
+const showBookingsInAdminSideUseCase = new ShowBookingsInAdminUseCase(bookingDatabase)
+export const injectedShowBookingsInAdminController = new ShowBookingInAdminController(showBookingsInAdminSideUseCase)

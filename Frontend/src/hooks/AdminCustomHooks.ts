@@ -1,4 +1,4 @@
-import { adminLogin, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, findWalletAdmin, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
+import { adminLogin, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, findBookingsInAdmin, findWalletAdmin, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
 import { CategoryUpdate } from "@/types/CategoryUpdate";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
@@ -138,5 +138,12 @@ export const useFindAdminWallet = (userId: string, pageNo: number) => {
     return useQuery({
         queryKey: ['adminWallet', pageNo],
         queryFn: () => findWalletAdmin(userId, pageNo)
+    })
+}
+
+export const useFindBookingsInAdmin = (pageNo: number) => {
+    return useQuery({
+        queryKey: ['bookingInAdmin', pageNo],
+        queryFn: () => findBookingsInAdmin(pageNo)
     })
 }
