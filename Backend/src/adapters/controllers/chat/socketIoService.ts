@@ -68,8 +68,7 @@ export class SocketIoController {
                 const createdMessage = await this.createMessageUseCase.createMessage(message)
                 const updateLastMessage = await this.updateLastMessageUseCase.udpateLastMessage(createdMessage)
                 response(createdMessage)
-                console.log('online users', this.users)
-                console.log("room id", data.roomId)
+              
                 socket.to(data.roomId).emit('receiveMessage', createdMessage)
                 const userData = this.users.get(message.senderId.toString())
               
@@ -88,7 +87,6 @@ export class SocketIoController {
             socket.on('joinRoom', (data) => {
                 // console.log(`data from join room`, data)
                 if (!data) throw new Error('No room id available')
-                console.log(socket.id, data.roomId)
                 socket.join(data.roomId)
             })
         })
