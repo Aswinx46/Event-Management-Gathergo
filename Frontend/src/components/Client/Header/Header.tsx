@@ -80,7 +80,7 @@ const Header = () => {
 
   const navItems: NavItem[] = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
+    // { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
     { name: 'Profile', path: '/profile/home' },
     { name: 'Categories', path: '/categories' },
