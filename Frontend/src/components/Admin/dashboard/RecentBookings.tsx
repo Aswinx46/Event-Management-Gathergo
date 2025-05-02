@@ -16,6 +16,7 @@ import {
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { useNavigate } from "react-router-dom"
 
 export interface BookingEntity {
   _id?: string
@@ -57,6 +58,8 @@ export default function RecentBookings({ bookings, onViewDetails }: RecentBookin
     hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1 },
   }
+
+  const navigate = useNavigate()
 
   return (
     <div className="w-full bg-white rounded-xl px-7 shadow-md overflow-hidden">
@@ -115,16 +118,16 @@ export default function RecentBookings({ bookings, onViewDetails }: RecentBookin
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <motion.button
+                  {/* <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-md hover:bg-indigo-100"
                     onClick={() => onViewDetails?.(booking)}
                   >
                     View Details
-                  </motion.button>
+                  </motion.button> */}
 
-                  <DropdownMenu>
+                  {/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <motion.button
                         whileHover={{ scale: 1.1 }}
@@ -139,7 +142,7 @@ export default function RecentBookings({ bookings, onViewDetails }: RecentBookin
                       <DropdownMenuItem>Update Status</DropdownMenuItem>
                       <DropdownMenuItem className="text-red-600">Cancel Booking</DropdownMenuItem>
                     </DropdownMenuContent>
-                  </DropdownMenu>
+                  </DropdownMenu> */}
                 </div>
               </div>
             </motion.div>
@@ -153,7 +156,7 @@ export default function RecentBookings({ bookings, onViewDetails }: RecentBookin
         transition={{ delay: 0.5 }}
         className="p-4 bg-gray-50 border-t border-gray-100 text-center"
       >
-        <button className="text-sm font-medium text-indigo-600 hover:text-indigo-800">View All Bookings</button>
+        <button onClick={()=>navigate('/admin/bookings')} className="text-sm font-medium text-indigo-600 hover:text-indigo-800">View All Bookings</button>
       </motion.div>
     </div>
   )

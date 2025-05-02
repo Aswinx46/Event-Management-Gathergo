@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { EventEntity } from '@/types/EventEntity';
 import { formatDate, formatTimeAgo, formatCurrency } from '@/utils/dateUtils';
 import { Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface RecentEventsProps {
   events: EventEntity[];
@@ -23,6 +24,8 @@ const RecentEvents = ({ events }: RecentEventsProps) => {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
   };
+
+  const navigate = useNavigate()
 
   return (
     <div className="bg-white rounded-lg border  border-gray-200 p-6 shadow-sm">
@@ -76,7 +79,7 @@ const RecentEvents = ({ events }: RecentEventsProps) => {
         ))}
       </motion.div>
       <div className="mt-4">
-        <button className="w-full py-2 text-admin-purple font-medium rounded-md border border-admin-purple hover:bg-admin-purple hover:text-white transition-colors">
+        <button onClick={()=>navigate('/admin/events')} className="w-full py-2 text-admin-purple font-medium rounded-md border border-admin-purple hover:bg-admin-purple hover:text-white transition-colors">
           View All Events
         </button>
       </div>
