@@ -205,8 +205,9 @@ export const useLoadMessageInfiniteVendor = (chatId: string, options?: { enabled
             return undefined
         },
         initialPageParam: 1,
-        enabled: options?.enabled
-    })
+        enabled: options?.enabled,
+        staleTime: 1000 * 60 * 5,
+        })
 }
 
 export const useLoadChatsInfiniteVendor = (userId: string) => {

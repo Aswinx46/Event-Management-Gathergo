@@ -38,11 +38,12 @@ function ClientChat() {
 
         // socket.emit('register', { userId: clientId })
 
+        console.log("room id", roomId)
         if (!roomId) return
         socket.emit('joinRoom', { roomId })
 
         socket.on('receiveMessage', (data) => {
-            // console.log('message from backend', data)
+            console.log('message from backend', data)
             setChats((prev) => [...prev, data])
         })
 

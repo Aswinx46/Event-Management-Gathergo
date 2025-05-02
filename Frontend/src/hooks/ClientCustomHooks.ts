@@ -262,7 +262,8 @@ export const useLoadMessageInfinite = (chatId: string, options?: { enabled?: boo
             return undefined
         },
         initialPageParam: 1,
-        enabled: options?.enabled
+        enabled: options?.enabled,
+        staleTime: 1000 * 60 * 5,
     })
 }
 
@@ -276,7 +277,8 @@ export const useLoadChatsInfinite = (userId: string) => {
             }
             return undefined
         },
-        initialPageParam: 1
+        initialPageParam: 1,
+
     })
 }
 

@@ -39,13 +39,14 @@ export class CreateClientUseCase implements IclientUsecase {
             googleVerified
 
         })
+        if (!newClient) throw new Error('Error while creating user')
         const walletId = genarateRandomUuid()
 
         const walletDetails: WalletEntity = {
             balance: 0,
             walletId,
             userModel: "client",
-            userId: client._id!,
+            userId: newClient._id!,
 
         }
         const createWallet = await this.walletDatabase.createWallet(walletDetails)

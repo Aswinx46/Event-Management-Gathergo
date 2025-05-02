@@ -28,29 +28,31 @@ function VendorChat() {
     useEffect(() => {
         if (!socket.connected) socket.connect(); // optional safety check
 
-        socket.on('connect', () => {
-            // console.log('Connected with socket id', socket.id)
+        // socket.on('connect', () => {
+        //     // console.log('Connected with socket id', socket.id)
 
-            // socket.emit('register', { userId: vendorId })
-
-            if (!roomId) return
-            socket.emit('joinRoom', { roomId })
-
-            socket.on('receiveMessage', (data) => {
-                // console.log('message from backend', data)
-                setChats((prev) => [...prev, data])
-            })
+        //     // socket.emit('register', { userId: vendorId })
 
 
-            socket.on('disconnect', () => {
-                console.log('socket disconneced with', socket.id)
-            })
 
-            return (() => {
-                socket.off('connect')
-                socket.off('disconnect')
-                socket.off('receiveMessage')
-            })
+        // })
+        console.log("room id", roomId)
+        if (!roomId) return
+        socket.emit('joinRoom', { roomId })
+
+        socket.on('receiveMessage', (data) => {
+            // console.log('message from backend', data)
+            setChats((prev) => [...prev, data])
+        })
+
+
+        socket.on('disconnect', () => {
+            console.log('socket disconneced with', socket.id)
+        })
+        return (() => {
+            socket.off('connect')
+            socket.off('disconnect')
+            socket.off('receiveMessage')
         })
 
 

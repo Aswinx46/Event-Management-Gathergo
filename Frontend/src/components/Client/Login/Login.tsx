@@ -74,7 +74,6 @@ export default function LoginComponent() {
         const { email, password } = values
         loginMutation.mutate({ email, password }, {
             onSuccess: (data) => {
-                console.log(data)
                 toast.success('user logged')
                 localStorage.setItem('id', data.client._id)
                 dispatch(addToken(data?.accessToken))
