@@ -28,8 +28,10 @@ function ClientChat() {
 
     const loaderRef = useInfiniteScrollObserver()
 
-    socket.connect()
+    // socket.connect()
     useEffect(() => {
+        if (!socket.connected) socket.connect(); // optional safety check
+
         socket.on('connect', () => {
             // console.log('Connected with socket id', socket.id)
         })

@@ -25,12 +25,13 @@ function VendorChat() {
             setChats(allMessages.reverse()); // reverse if you want older ones first
         }
     }, [data]);
-    socket.connect()
     useEffect(() => {
+        if (!socket.connected) socket.connect(); // optional safety check
+
         socket.on('connect', () => {
             // console.log('Connected with socket id', socket.id)
 
-            socket.emit('register', { userId: vendorId })
+            // socket.emit('register', { userId: vendorId })
 
             if (!roomId) return
             socket.emit('joinRoom', { roomId })

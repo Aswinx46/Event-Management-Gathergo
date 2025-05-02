@@ -8,7 +8,7 @@ import { IcreateMessageUseCase } from "../../../domain/interface/useCaseInterfac
 import { IupdateLastMessageOfChatUseCase } from "../../../domain/interface/useCaseInterfaces/chat/updateLastMessageOfChatUseCaseInterface";
 export class SocketIoController {
     private io: Server
-    private users: Map<string, string>
+    private users: Map<string, { socketId: string, name: string }>
     private createChatUseCase: IcreateChatUseCase
     private findChatsBetweenClientAndVendorUseCase: IfindChatsBetweenClientAndVendorUseCase
     private createMessageUseCase: IcreateMessageUseCase
@@ -33,9 +33,12 @@ export class SocketIoController {
 
             socket.on('register', (data) => {
                 // console.log('cliend id for register', data.userId)
-                this.users.set(data.userId, socket.id)
+                this.users.set(data.userId, { socketId: socket.id, name: data.name });
+                socket.data.userId = data.userId
+                console.log(data.name, data.userId)
                 // console.log(this.users)
             })
+
 
             socket.on('sendMessage', async (data, response) => {
                 // console.log('Received message', data)
@@ -52,7 +55,7 @@ export class SocketIoController {
                     }
                     chat = await this.createChatUseCase.createChat(chatData)
                 }
-
+                const receiverId = chat.receiverId
                 const message: MessageEntity = {
                     chatId: chat._id!,
                     messageContent: data.sendMessage.messageContent.trim(),
@@ -65,11 +68,23 @@ export class SocketIoController {
                 const updateLastMessage = await this.updateLastMessageUseCase.udpateLastMessage(createdMessage)
                 response(createdMessage)
                 socket.to(data.roomId).emit('receiveMessage', createdMessage)
+                console.log("online users", this.users)
+                const userData = this.users.get(message.senderId.toString())
+                const receiverData = this.users.get(data.receiverId)
+                console.log(data)
+                console.log("user data", userData)
+                const notificationMessage = `You have a message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
+                console.log("notification", notificationMessage)
+                if (receiverData) {
+                    console.log(receiverData)
+                    socket.to(receiverData?.socketId).emit('notification', notificationMessage)
+                    console.log('inside notification')
+                }
             })
 
             socket.on('disconnect', () => {
                 console.log(`Socket disconnected ${socket.id}`)
-
+                this.users.delete(socket.data.userId)
             })
 
             socket.on('joinRoom', (data) => {
