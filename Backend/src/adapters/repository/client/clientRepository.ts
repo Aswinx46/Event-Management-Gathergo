@@ -55,4 +55,7 @@ export class clientRepository implements IClientDatabaseRepository {
         const unblockUser = await ClientModel.findByIdAndUpdate(clientId, { status: 'active' }, { new: true }).select('status')
         return unblockUser?.status || null
     }
+    async totalClient(): Promise<number> {
+        return ClientModel.countDocuments()
+    }
 }

@@ -18,4 +18,5 @@ export interface IvendorDatabaseRepositoryInterface {
     updateAboutAndPhone(vendorId: string, about: string, phone: string, name: string): Promise<VendorEntity | null>
     changePassword(vendorId: string, newPassword: string): Promise<boolean>
     findPassword(vendorId: string): Promise<string | null>
+    findTotalVendor(): Promise<number>
 }

@@ -19,7 +19,7 @@ export class ApproveVendorController {
                 res.status(HttpStatus.BAD_REQUEST).json({ message: 'error while  approving or rejecting of vendor' })
                 return
             }
-            res.status(HttpStatus.OK).json({message:`Vendor ${newStatus}`,updatedVendor})
+            res.status(HttpStatus.OK).json({ message: `Vendor ${newStatus}`, updatedVendor })
 
         } catch (error) {
             console.log('error while changing approving or rejecting vendor controller', error)

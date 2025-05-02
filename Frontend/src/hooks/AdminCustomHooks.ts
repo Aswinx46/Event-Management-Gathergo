@@ -1,4 +1,4 @@
-import { adminLogin, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, findBookingsInAdmin, findEventsInAdminSide, findWalletAdmin, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
+import { adminDashBoardDetatils, adminLogin, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, findBookingsInAdmin, findEventsInAdminSide, findWalletAdmin, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
 import { CategoryUpdate } from "@/types/CategoryUpdate";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
@@ -152,5 +152,12 @@ export const useFindEventsInAdmin = (pageNo: number) => {
     return useQuery({
         queryKey: ['eventsInAdmin', pageNo],
         queryFn: () => findEventsInAdminSide(pageNo)
+    })
+}
+
+export const useFindAdminDashboardDetails = (adminId: string) => {
+    return useQuery({
+        queryKey: ['adminDashboardDetails', adminId],
+        queryFn: () => adminDashBoardDetatils(adminId)
     })
 }

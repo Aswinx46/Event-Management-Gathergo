@@ -221,3 +221,13 @@ export const findEventsInAdminSide = async (pageNo: number) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error whiel finding events in admin')
     }
 }
+
+export const adminDashBoardDetatils = async (adminId: string) => {
+    try {
+        const response = await axios.get('/dashboardDetails', { params: { adminId } })
+        return response.data
+    } catch (error) {
+        console.log('error while finding admin dashboard details', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding amdin dashboard details')
+    }
+}

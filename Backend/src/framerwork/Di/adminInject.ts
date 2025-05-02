@@ -7,6 +7,7 @@ import { CreateCategoryController } from "../../adapters/controllers/admin/categ
 import { FindCategoryController } from "../../adapters/controllers/admin/categoryManagement/findCategoryController";
 import { BlockClientController } from "../../adapters/controllers/admin/client/blockClientController";
 import { ClientUnblockController } from "../../adapters/controllers/admin/client/unblockClientController";
+import { DashboardAdminController } from "../../adapters/controllers/admin/dashBoardManagement/dashboardAdminController";
 import { FindEventsInAdminSideController } from "../../adapters/controllers/admin/eventManagementt/findEventsInAdminSideController";
 import { FindAllClientsController } from "../../adapters/controllers/admin/findAllClientsController";
 import { FindAllPendingVendorController } from "../../adapters/controllers/admin/findAllPendingVendor";
@@ -31,6 +32,7 @@ import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/
 import { ChangeTitleAndImageUseCase } from "../../useCases/admin/categoryManagement/changeTitleAndImageUseCase";
 import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
+import { DashBoardDetailsUseCase } from "../../useCases/admin/dashboard/dashboardDatasUseCase";
 import { FindEventsInAdminSideUseCase } from "../../useCases/admin/eventManagement/findEventsInAdminSideUseCase";
 import { BlockClientUseCase } from "../../useCases/admin/userManagement/clientBlockUseCase";
 import { ClientUnblockUseCase } from "../../useCases/admin/userManagement/clientUnblockUseCase";
@@ -131,3 +133,7 @@ export const injectedShowBookingsInAdminController = new ShowBookingInAdminContr
 const eventDatabase = new EventRepository()
 const findEventsInAdminSideUseCase = new FindEventsInAdminSideUseCase(eventDatabase)
 export const injectedFindEventsInAdminSideController = new FindEventsInAdminSideController(findEventsInAdminSideUseCase)
+
+//------------------------fetch admin dashboard details -------------------
+const adminDashboardUseCase = new DashBoardDetailsUseCase(walletDatabase, vendorDataBase, ClientRepository, bookingDatabase, eventDatabase)
+export const injectedAdminDashboardController = new DashboardAdminController(adminDashboardUseCase)

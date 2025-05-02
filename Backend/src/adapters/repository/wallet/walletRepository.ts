@@ -16,4 +16,8 @@ export class WalletRepository implements IwalletRepository {
     async reduceMoney(userId: string | ObjectId, amount: number): Promise<WalletEntity | null> {
         return walletModel.findOneAndUpdate({ userId }, { $inc: { balance: -amount } }, { new: true })
     }
+    async findTotalAmount(userId: string): Promise<number | null> {
+        const wallet = await walletModel.findOne({ userId: userId }).select('balance').lean()
+        return wallet?.balance ?? null;
+    }
 }

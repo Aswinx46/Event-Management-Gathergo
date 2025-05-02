@@ -6,4 +6,5 @@ export interface IwalletRepository {
     findWalletByUserId(userId: string | ObjectId): Promise<WalletEntity | null>
     addMoney(userId: string | ObjectId, amount: number): Promise<WalletEntity | null>
     reduceMoney(userId: string | ObjectId, amount: number): Promise<WalletEntity | null>
+    findTotalAmount(userId:string):Promise<number | null>
 }

@@ -15,4 +15,5 @@ export interface IClientDatabaseRepository {
     findStatusForMiddleware(clientId: string): Promise<string>
     blockUser(clientId: string): Promise<string | null>
     unblockUser(clientId: string): Promise<string | null>
+    totalClient(): Promise<number>
 }

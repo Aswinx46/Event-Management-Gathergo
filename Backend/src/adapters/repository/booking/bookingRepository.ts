@@ -182,7 +182,10 @@ export class BookingRepository implements IbookingRepository {
             createdAt: b.createdAt,
             isComplete: b.isComplete,
         }));
-        
+
         return { bookings, totalPages }
+    }
+    async findTotalBookings(): Promise<number> {
+        return bookingModel.countDocuments({ status: 'Completed'})
     }
 }
