@@ -6,7 +6,6 @@ import { HttpStatus } from "../../../domain/entities/httpStatus"
 export const vendorStatusCheckingMiddleware = (redisService: IredisService, vendorDatabse: IvendorDatabaseRepositoryInterface) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         const user = (req as any).user
-        console.log('this is the user in the middleware', user)
         const status = await redisService.get(`user:${user.role}:${user.userId}`)
 
         if (status) {
@@ -36,7 +35,6 @@ export const vendorStatusCheckingMiddleware = (redisService: IredisService, vend
             }
             await redisService.set(`user:vendor:${user.userId}`, 15 * 60, JSON.stringify({ status: vendorStatusFromDb.status, vendorStatus: vendorStatusFromDb.vendorStatus }))
         }
-        console.log('this is the status from redis', status)
         next()
     }
 }
