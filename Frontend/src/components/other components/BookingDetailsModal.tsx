@@ -373,8 +373,8 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                     </motion.div>}
                     <div className="flex justify-center">
                         {booking.status == 'Completed' && booking.paymentStatus !== 'Successfull' && booking.paymentStatus !== 'Refunded' && !booking?.client?.email && < Button onClick={() => handleBookingPayment(booking)} className=" bg-green-500">Pay now</Button>}
-                        {booking.vendorApproval == 'Approved' && <Button onClick={handleChatNavigate} className="bg-purple-400">CHAT NOW</Button>}
-                        {booking.paymentStatus == 'Pending' && booking.status == 'Pending' && <Button onClick={() => { setCancelBookingId(booking._id); setShowConfirmModal(true) }} className="bg-purple-400">CANCEL BOOKING</Button>}
+                        {booking.vendorApproval == 'Approved' && <Button onClick={handleChatNavigate} className="bg-purple-400 ">CHAT NOW</Button>}
+                        {booking.paymentStatus == 'Pending' && !booking?.client?.email && booking.status == 'Pending' && <Button onClick={() => { setCancelBookingId(booking._id); setShowConfirmModal(true) }} className="bg-purple-400 ps-3">CANCEL BOOKING</Button>}
                     </div>
                     <DialogFooter className="bg-gray-900 p-4  border-t border-gray-800">
                         <Button

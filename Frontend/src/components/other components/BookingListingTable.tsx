@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -131,7 +132,6 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                 </TableRow>
               </TableHeader>
               <TableBody>
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 {bookings.map((booking, index) => (
                   <motion.tr
                     key={booking._id}
