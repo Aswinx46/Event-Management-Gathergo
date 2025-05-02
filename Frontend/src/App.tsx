@@ -26,11 +26,17 @@ function App() {
   useEffect(() => {
     if (!user) return
     socket.connect()
-    socket.emit('register', { userId: user._id, name: user.name });
+    // socket.emit('register', { userId: user._id, name: user.name });
 
     socket.on('notification', (data) => {
-      toast.info(data)
-      console.log('notification console ', data)
+      // toast.info(data)
+      toast.info(
+        <div>
+          <strong>{`New Message from ${data.from}`}</strong>
+          <div style={{ fontSize: '14px' }}>{data.message}</div>
+        </div>
+      );
+      // console.log('notification console ', data)
     });
 
     return () => {

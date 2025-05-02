@@ -33,6 +33,7 @@ export class SocketIoController {
 
             socket.on('register', (data) => {
                 // console.log('cliend id for register', data.userId)
+                console.log('data in the backend', data)
                 this.users.set(data.userId, { socketId: socket.id, name: data.name });
                 socket.data.userId = data.userId
                 console.log(data.name, data.userId)
@@ -55,7 +56,6 @@ export class SocketIoController {
                     }
                     chat = await this.createChatUseCase.createChat(chatData)
                 }
-                const receiverId = chat.receiverId
                 const message: MessageEntity = {
                     chatId: chat._id!,
                     messageContent: data.sendMessage.messageContent.trim(),
@@ -68,17 +68,13 @@ export class SocketIoController {
                 const updateLastMessage = await this.updateLastMessageUseCase.udpateLastMessage(createdMessage)
                 response(createdMessage)
                 socket.to(data.roomId).emit('receiveMessage', createdMessage)
-                console.log("online users", this.users)
                 const userData = this.users.get(message.senderId.toString())
+                console.log(message.senderId)
+                console.log('users', this.users)
                 const receiverData = this.users.get(data.receiverId)
-                console.log(data)
-                console.log("user data", userData)
-                const notificationMessage = `You have a message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
-                console.log("notification", notificationMessage)
+                const notificationMessage = `Message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
                 if (receiverData) {
-                    console.log(receiverData)
-                    socket.to(receiverData?.socketId).emit('notification', notificationMessage)
-                    console.log('inside notification')
+                    socket.to(receiverData?.socketId).emit('notification', { from: userData?.name, message: data.sendMessage.messageContent.trim() })
                 }
             })
 
