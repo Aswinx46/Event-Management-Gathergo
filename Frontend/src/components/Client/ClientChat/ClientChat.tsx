@@ -36,7 +36,7 @@ function ClientChat() {
             // console.log('Connected with socket id', socket.id)
         })
 
-        socket.emit('register', { userId: clientId })
+        // socket.emit('register', { userId: clientId })
 
         if (!roomId) return
         socket.emit('joinRoom', { roomId })

@@ -26,7 +26,7 @@ function App() {
   useEffect(() => {
     if (!user) return
     socket.connect()
-    // socket.emit('register', { userId: user._id, name: user.name });
+    socket.emit('register', { userId: user._id, name: user.name });
 
     socket.on('notification', (data) => {
       // toast.info(data)

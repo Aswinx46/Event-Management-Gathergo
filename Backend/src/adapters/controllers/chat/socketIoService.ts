@@ -24,6 +24,7 @@ export class SocketIoController {
         this.findChatsBetweenClientAndVendorUseCase = FindChatsBetweenClientAndVendor
         this.createChatUseCase = createChatUseCase
         this.createMessageUseCase = createMessageUseCase
+      
         this.updateLastMessageUseCase = updateLastMessageUseCase
         this.setUpListeners()
     }
@@ -33,10 +34,10 @@ export class SocketIoController {
 
             socket.on('register', (data) => {
                 // console.log('cliend id for register', data.userId)
-                console.log('data in the backend', data)
+                // console.log('data in the backend', data)
                 this.users.set(data.userId, { socketId: socket.id, name: data.name });
                 socket.data.userId = data.userId
-                console.log(data.name, data.userId)
+                // console.log(data.name, data.userId)
                 // console.log(this.users)
             })
 
@@ -69,8 +70,7 @@ export class SocketIoController {
                 response(createdMessage)
                 socket.to(data.roomId).emit('receiveMessage', createdMessage)
                 const userData = this.users.get(message.senderId.toString())
-                console.log(message.senderId)
-                console.log('users', this.users)
+              
                 const receiverData = this.users.get(data.receiverId)
                 const notificationMessage = `Message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
                 if (receiverData) {
