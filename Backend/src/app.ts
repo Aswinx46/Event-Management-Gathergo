@@ -61,7 +61,7 @@ export class App {
         this.app.use('/auth', new AuthRoute().AuthRouter)
     }
     private setSocketIo() {
-        this.socketIoServer = new SocketIoController(this.server, injectedFindChatBetweenClientAndVendorUseCase, injectedCreateChatUseCase, injectedCreateMessageUseCase, injectedUpdateLastMessageUseCase)
+        this.socketIoServer = new SocketIoController(this.server, injectedFindChatBetweenClientAndVendorUseCase, injectedCreateChatUseCase, injectedCreateMessageUseCase, injectedUpdateLastMessageUseCase,redisService)
     }
 }
 

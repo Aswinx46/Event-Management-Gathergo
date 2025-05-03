@@ -6,4 +6,5 @@ export interface MessageTypeFromBackend {
     sendedTime: string; // or Date, depending on backend
     senderId: string;
     senderModel: 'client' | 'vendors';
+   
 }

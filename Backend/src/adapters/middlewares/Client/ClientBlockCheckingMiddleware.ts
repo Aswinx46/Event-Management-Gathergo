@@ -7,11 +7,12 @@ export const clientStatusCheckingMiddleware = (redisService: IredisService, clie
     return async (req: Request, res: Response, next: NextFunction) => {
         const user = (req as any).user
         let status = await redisService.get(`user:${user.userId}:${user.role}`)
+        console.log('status of user',status)
         if (!status) {
             status = await clientDatabase.findStatusForMiddleware(user.userId)
             await redisService.set(`user:${user.userId}:${user.role}`, 15 * 60, JSON.stringify(status))
         }
-        if (status === 'block') {
+        if (status === '"block"') {
             res.status(HttpStatus.FORBIDDEN).json({ message: "User blocked by admin", code: "USER_BLOCKED" })
             return
         }

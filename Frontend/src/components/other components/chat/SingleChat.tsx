@@ -11,7 +11,6 @@ interface ChatProps {
     sendMessage: (message: string) => void;
     currentUserId: string; // to know if the message is sent by this user
     topMessageRef?: (node: HTMLDivElement | null) => void
-
 }
 
 const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps) => {
@@ -42,7 +41,7 @@ const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps
             className="max-w-2xl mx-auto p-6 rounded-xl shadow-lg bg-white"
         >
             <div className="mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">Chat</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Chat </h2>
             </div>
 
             <div className="h-[500px] overflow-y-auto mb-4 p-4 bg-gray-50 rounded-lg">
@@ -73,7 +72,7 @@ const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps
                         </motion.div>
                     );
                 })}
-            <div ref={bottomRef} /> {/* 👈 Add this */}
+                <div ref={bottomRef} /> {/* 👈 Add this */}
             </div>
 
             <form className="mt-4" onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>

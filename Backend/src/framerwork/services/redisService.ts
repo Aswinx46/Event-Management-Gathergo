@@ -35,6 +35,7 @@ export class RedisService implements IredisService {
         if (!this.client.isOpen) {
             await this.connect();
         }
+        if (!key) return null
         try {
             return await this.client.get(key);
         } catch (err) {
@@ -59,6 +60,7 @@ export class RedisService implements IredisService {
         if (!this.client.isOpen) {
             await this.connect();
         }
+        if(!key) return
         try {
             await this.client.del(key);
         } catch (err) {
@@ -66,7 +68,17 @@ export class RedisService implements IredisService {
             throw err;
         }
     }
-
+    public async setPermenant(key: string, value: string): Promise<void> {
+        if (!this.client.isOpen) {
+            await this.connect()
+        }
+        try {
+            await this.client.set(key, value)
+        } catch (err) {
+            console.error(`Error setting Permenentkey ${key}:`, err);
+            throw err;
+        }
+    }
     public getClient(): RedisClientType {
         return this.client;
     }
