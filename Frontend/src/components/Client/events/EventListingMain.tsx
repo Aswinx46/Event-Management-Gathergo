@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 
 function EventListingMain() {
     const [currentPage, setCurrentPage] = useState<number>(1)
-    const [selelctedSort, setSelectedSort] = useState<string>('a-z')
+    const [selectedSort, setSelectedSort] = useState<string>('a-z')
     const [isOpen, setIsOpen] = useState(false)
     const [query, setQuery] = useState<string>('')
     const navigate = useNavigate()
@@ -49,7 +49,7 @@ function EventListingMain() {
         { key: "newest", label: "Newest" },
         { key: "oldest", label: "Oldest" }
     ]
-    const findEventsBasedOnCategory = useFindEventsBasedOnCategory(selectedCategory, currentPage, selelctedSort)
+    const findEventsBasedOnCategory = useFindEventsBasedOnCategory(selectedCategory, currentPage, selectedSort)
     const filteredEvents = findEventsBasedOnCategory.data?.events
     const filteredTotalPages = findEventsBasedOnCategory.data?.totalPages
 
@@ -86,7 +86,7 @@ function EventListingMain() {
     }
 
     return (
-        <div className='bg-black h-screen'>
+        <div className='bg-black min-h-screen'>
             <div className='flex justify-end items-center gap-5 pt-3 pe-3 md:gap-4 md:pe-10'>
                 <Button className='hover:cursor-pointer' onClick={() => navigate('/eventsNearToYou')}>Find Events Near To You</Button>
                 <Button className='bg-purple-600 hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:shadow-[0_0_50px_rgba(147,51,234,0.8),0_0_5px_rgba(256,256,256,0.9)]

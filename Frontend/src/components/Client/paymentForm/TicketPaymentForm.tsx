@@ -47,7 +47,7 @@ function TicketPaymentForm() {
     };
 
     return (
-        <div>
+        <div className='h-screen'>
             {isOpen && <TicketConfirmationModal isOpen={isOpen} setIsOpen={setIsOpen} ticket={updatedTicket!} />}
             <PaymentForm amount={data.amount} onConfirmSuccess={handleConfirmSuccess} onCreatePaymentIntent={handleCreatePaymentIntent} />
         </div>

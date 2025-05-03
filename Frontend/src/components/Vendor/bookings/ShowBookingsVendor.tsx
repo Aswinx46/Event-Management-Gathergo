@@ -9,7 +9,7 @@ function ShowBookingsVendor() {
     const [currentPage, setCurrentPage] = useState<number>(1)
 
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
-    const fetchBookings = useFetchBookingsInVendor(vendorId!,currentPage)
+    const fetchBookings = useFetchBookingsInVendor(vendorId!, currentPage)
     const total = fetchBookings.data?.totalPages
     const bookings = fetchBookings.data?.Bookings
     return (

@@ -228,8 +228,8 @@ export const useFindEventsBasedOnCategory = (category: string, pageNo: number, s
     return useQuery({
         queryKey: ['eventsBasedOnCategory', category, pageNo, sortBy],
         queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy),
-        enabled: !!category && !!sortBy,
-
+        enabled: !!category || !!sortBy,
+        
     })
 }
 

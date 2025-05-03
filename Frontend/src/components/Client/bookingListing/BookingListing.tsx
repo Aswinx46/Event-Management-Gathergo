@@ -49,6 +49,7 @@ function BookingListing() {
   const fetchBookings = useFetchBookingsInClient(clientId!, currentPage)
   const originalBookings = fetchBookings?.data?.Bookings
   const bookings: Booking[] = originalBookings
+  console.log(bookings)
   const total=fetchBookings?.data?.totalPages
   
   return (

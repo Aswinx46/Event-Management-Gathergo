@@ -96,7 +96,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
   const handleDetailedView = (bookingId: string) => {
 
     const selectedOne = bookings.find((booking) => booking._id == bookingId)
-    console.log(selectedOne)
+    // console.log(selectedOne)
     setSelectedBooking(selectedOne)
     setIsOpen(true)
   }

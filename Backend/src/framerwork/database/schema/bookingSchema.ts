@@ -47,10 +47,6 @@ export const bookingSchema = new Schema<BookingEntity>({
         enum: ['Pending', 'Rejected', 'Completed', 'Cancelled'],
         default: "Pending"
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
     isComplete: {
         type: Boolean,
         default: false
