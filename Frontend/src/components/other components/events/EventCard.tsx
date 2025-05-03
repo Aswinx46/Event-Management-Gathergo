@@ -42,7 +42,6 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
-    console.log(event)
     return (
         <motion.div
             onClick={onClick}

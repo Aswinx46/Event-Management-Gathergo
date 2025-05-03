@@ -103,7 +103,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     }
     return (
         <AnimatePresence>
-            {showEdit && <EventEdit event={selectedEvent!} onCancel={setShowEdit} onSave={handleOnSaveEdit} isOpen={showEdit} />}
+            {showEdit && <EventEdit event={selectedEvent!} onClose={() => setShowEdit(false)} onSave={handleOnSaveEdit} isOpen={showEdit} />}
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4  bg-black/80">
                     <motion.div
