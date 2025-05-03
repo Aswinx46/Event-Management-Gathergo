@@ -1,7 +1,7 @@
 
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { MessageTypeFromBackend as Message } from '@/types/MessageTypeFromBackend';
@@ -16,6 +16,16 @@ interface ChatProps {
 
 const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps) => {
     const [message, setMessage] = useState('');
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+        }, 0); // delay ensures the DOM is rendered before scrolling
+
+        return () => clearTimeout(timeout); // cleanup just in case
+    }, [messages]);
+
 
     const handleSendMessage = () => {
         if (message.trim().length > 0) {
@@ -63,6 +73,7 @@ const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps
                         </motion.div>
                     );
                 })}
+            <div ref={bottomRef} /> {/* 👈 Add this */}
             </div>
 
             <form className="mt-4" onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
@@ -85,6 +96,7 @@ const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps
                     </motion.button>
                 </div>
             </form>
+
         </motion.div>
     );
 };

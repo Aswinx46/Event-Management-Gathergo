@@ -263,7 +263,8 @@ export const useLoadMessageInfinite = (chatId: string, options?: { enabled?: boo
         },
         initialPageParam: 1,
         enabled: options?.enabled,
-        staleTime: 1000 * 60 * 5,
+        // staleTime: 1000 * 60 * 5,
+        // refetchOnWindowFocus:true
     })
 }
 
