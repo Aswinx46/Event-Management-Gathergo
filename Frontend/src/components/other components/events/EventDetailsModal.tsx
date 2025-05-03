@@ -89,6 +89,8 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
         setShowEdit(true)
     }
 
+    
+
     const handleOnSaveEdit = (event: EventEntity) => {
         editEvent.mutate({ eventId: event._id, update: event }, {
             onSuccess: (data) => {

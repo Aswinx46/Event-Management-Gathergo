@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { EventEntity } from "@/types/EventEntity";
 import { Badge } from "@/components/ui/badge";
 import { date } from "yup";
+import { toast } from "react-toastify";
 
 interface EventEditModalProps {
   isOpen: boolean;
@@ -46,15 +47,15 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
   onSave,
 }) => {
   const [formData, setFormData] = useState<EventEntity | null>(event);
-  
+
   // If no event is provided, close the modal
   if (!event) return null;
-  
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => 
+    setFormData((prev) =>
       prev ? { ...prev, [name]: value } : null
     );
   };
@@ -63,7 +64,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => 
+    setFormData((prev) =>
       prev ? { ...prev, [name]: parseFloat(value) } : null
     );
   };
@@ -71,11 +72,11 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
   const handleDateSelect = (date: Date | Date[] | undefined) => {
     if (!date) return;
     if (Array.isArray(date)) {
-      setFormData((prev) => 
+      setFormData((prev) =>
         prev ? { ...prev, date } : null
       );
     } else {
-      setFormData((prev) => 
+      setFormData((prev) =>
         prev ? { ...prev, date: [date] } : null
       );
     }
@@ -84,11 +85,11 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
   const handleRemoveDate = (dateToRemove: Date) => {
     if (!formData) return;
     console.log(typeof dateToRemove)
-    const updatedDates = formData.date.filter(date =>{ 
+    const updatedDates = formData.date.filter(date => {
       return date !== dateToRemove
     }
     );
-    
+
     setFormData({
       ...formData,
       date: updatedDates
@@ -97,32 +98,55 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
 
   const handleTimeChange = (field: "startTime" | "endTime", value: string) => {
     if (!formData) return;
-    
+
     const [hour, minute] = value.split(":").map(Number);
     const newDate = new Date(formData[field]);
     newDate.setHours(hour);
     newDate.setMinutes(minute);
-    
+
     setFormData({ ...formData, [field]: newDate });
   };
 
   const handleCategoryChange = (value: string) => {
-    setFormData((prev) => 
+    setFormData((prev) =>
       prev ? { ...prev, category: value } : null
     );
   };
 
   const handleStatusChange = (value: string) => {
-    setFormData((prev) => 
+    setFormData((prev) =>
       prev ? { ...prev, status: value as "upcoming" | "completed" | "cancelled" } : null
     );
   };
 
   const handleSubmit = () => {
-    if (formData) {
-      onSave(formData);
-      onClose();
+    // if (formData) {
+    //   onSave(formData);
+    //   onClose();
+    // }
+    if (!formData) return;
+
+    const errors: string[] = [];
+
+    if (!formData.date || formData.date.length === 0) {
+      errors.push("Please select at least one event date.");
     }
+
+    if (formData.pricePerTicket <= 0) {
+      errors.push("Price per ticket must be greater than 0.");
+    }
+
+    if (formData.totalTicket <= 0) {
+      errors.push("Total tickets must be greater than 0.");
+    }
+
+    if (errors.length > 0) {
+      toast.error(errors.join("\n"));
+      return;
+    }
+
+    onSave(formData);
+    onClose();
   };
 
   const formatTime = (date: Date) => {
@@ -160,10 +184,10 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   className="space-y-4"
                 >
                   <h3 className="font-medium">Basic Information</h3>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Event Title</label>
-                    <Input 
+                    <Input
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
@@ -173,7 +197,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Description</label>
-                    <Textarea 
+                    <Textarea
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
@@ -185,7 +209,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Venue Name</label>
-                      <Input 
+                      <Input
                         name="venueName"
                         value={formData.venueName || ""}
                         onChange={handleInputChange}
@@ -194,7 +218,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Address</label>
-                      <Input 
+                      <Input
                         name="address"
                         value={formData.address || ""}
                         onChange={handleInputChange}
@@ -206,8 +230,8 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Category</label>
-                      <Select 
-                        value={formData.category} 
+                      <Select
+                        value={formData.category}
                         onValueChange={handleCategoryChange}
                       >
                         <SelectTrigger>
@@ -225,8 +249,8 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Status</label>
-                      <Select 
-                        value={formData.status} 
+                      <Select
+                        value={formData.status}
                         onValueChange={handleStatusChange}
                       >
                         <SelectTrigger>
@@ -276,9 +300,9 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                             showOutsideDays={false}
                             className={cn("p-3 pointer-events-auto")}
                             classNames={{
-                                day_selected:
-                                  "bg-purple-600 text-white hover:bg-purple-700 rounded-full",
-                              }}
+                              day_selected:
+                                "bg-purple-600 text-white hover:bg-purple-700 rounded-full",
+                            }}
                           />
                         </PopoverContent>
                       </Popover>
@@ -304,11 +328,11 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                             exit={{ scale: 0.8, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <Badge 
+                            <Badge
                               className="pl-3 pr-2 py-1.5 bg-primary text-primary-foreground flex items-center gap-1 group hover:bg-primary/90"
                             >
                               <span>{format(date, "MMM d, yyyy")}</span>
-                              <button 
+                              <button
                                 type="button"
                                 onClick={() => handleRemoveDate(date)}
                                 className="ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5"
@@ -326,7 +350,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Start Time</label>
-                      <Input 
+                      <Input
                         type="time"
                         value={formatTime(new Date(formData.startTime))}
                         onChange={(e) => handleTimeChange("startTime", e.target.value)}
@@ -334,7 +358,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">End Time</label>
-                      <Input 
+                      <Input
                         type="time"
                         value={formatTime(new Date(formData.endTime))}
                         onChange={(e) => handleTimeChange("endTime", e.target.value)}
@@ -350,11 +374,11 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   className="space-y-4"
                 >
                   <h3 className="font-medium">Ticket Information</h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Price per Ticket</label>
-                      <Input 
+                      <Input
                         type="number"
                         name="pricePerTicket"
                         value={formData.pricePerTicket}
@@ -365,8 +389,8 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Max Tickets per User</label>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         name="maxTicketsPerUser"
                         value={formData.maxTicketsPerUser}
                         onChange={handleNumberChange}
@@ -375,7 +399,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Total Tickets</label>
-                      <Input 
+                      <Input
                         type="number"
                         name="totalTicket"
                         value={formData.totalTicket}
@@ -384,10 +408,10 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Tickets Purchased</label>
-                    <Input 
+                    <Input
                       type="number"
                       name="ticketPurchased"
                       value={formData.ticketPurchased}
@@ -401,7 +425,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
               </div>
 
               <DialogFooter className="px-6 py-4 border-t bg-gray-50">
-                <motion.div 
+                <motion.div
                   className="flex gap-2 w-full justify-end"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
