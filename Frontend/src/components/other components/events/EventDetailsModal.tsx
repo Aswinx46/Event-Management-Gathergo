@@ -182,7 +182,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                 >
                                     <div className="flex items-center text-zinc-300">
                                         <Calendar className="h-5 w-5 mr-2 text-purple-400" />
-                                        <span>{formatDate(new Date(event.startTime))}</span>
+                                        <span>{formatDate(new Date(event.date[0]))}</span>
                                     </div>
 
                                     <div className="flex items-center text-zinc-300">

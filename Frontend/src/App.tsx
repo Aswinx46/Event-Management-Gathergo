@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from './store/store'
 import { toast } from 'react-toastify'
+import ScrollToTop from './components/other components/ScrollToTop'
 function App() {
   const location = window.location
   const path = location.pathname.split('/')[1]
@@ -47,6 +48,7 @@ function App() {
   }, [user])
   return (
     <BrowserRouter>
+    <ScrollToTop />
       <Toaster position="top-right" />
       <Routes>
         <Route path='/*' element={<UserRoute />}></Route>

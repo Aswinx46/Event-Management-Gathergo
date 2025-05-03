@@ -10,6 +10,7 @@ interface EventCardProps {
 }
 
 const formatDate = (date: Date): string => {
+    console.log(date)
     if (isToday(date)) {
         return `Today at ${format(date, "h:mm a")}`;
     } else if (isTomorrow(date)) {
@@ -41,6 +42,7 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
+    console.log(event)
     return (
         <motion.div
             onClick={onClick}
@@ -72,7 +74,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                     <div className="space-y-2">
                         <div className="flex items-center text-sm text-zinc-400">
                             <Calendar className="h-4 w-4 mr-2 text-purple-400" />
-                            <span className="line-clamp-1">{formatDate(new Date(event.startTime))}</span>
+                            <span className="line-clamp-1">{formatDate(new Date(event.date[0]))}</span>
                         </div>
 
                         {event.venueName && (

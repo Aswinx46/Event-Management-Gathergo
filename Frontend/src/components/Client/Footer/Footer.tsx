@@ -89,7 +89,7 @@ const Footer = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="px-6 py-12 mx-auto max-w-7xl">
+      <div className="px-6 py-12 mx-8 ">
         <motion.div
           className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4"
           variants={containerVariants}
