@@ -12,7 +12,7 @@ import { isAxiosError } from "axios"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { removeVendorToken } from "@/store/slices/vendor/vendorTokenSlice"
-export default function VendorDashboard() {
+export default function VendorProfile() {
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [isPending, setIsPending] = useState(false)
   const [rejected, setRejected] = useState(false)

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import VendorSignup from '../components/Vendor/signup/vendorSignup'
 import ImageCarousel from "@/components/other components/ImageCarousal";
-import VendorDashboard from "@/components/Vendor/home/VendorHome";
+import VendorDashboard from "@/components/Vendor/dashboard/VendorDashBoard";
 import VendorLogin from "@/components/Vendor/login/VendorLogin";
 import VendorLayout from "@/components/Vendor/sidebar/VendorLayout";
 import ServiceListingVendor from "@/components/Vendor/serviceManagement/ServiceListingVendor";
@@ -18,6 +18,7 @@ import TicketVerification from "@/components/Vendor/event/ticketVerification/Tic
 import VendorWallet from "@/components/Vendor/wallet/VendorWallet";
 import VendorChat from "@/components/Vendor/vendorChat/VendorChat";
 import ChatListingVendor from "@/components/Vendor/chatListing/ChatListingVendor";
+import VendorProfile from "@/components/Vendor/home/VendorHome";
 
 const VendorRoute = () => {
     return (
@@ -28,7 +29,7 @@ const VendorRoute = () => {
             <Route path="/userBlockNotice" element={<BlockedScreen />}></Route>
             <Route path="/" element={<VendorLayout />}>
                 <Route path="carousal" element={<ProtectedRouteVendor><ImageCarousel /></ProtectedRouteVendor>}></Route>
-                <Route path="home" element={<ProtectedRouteVendor><VendorDashboard /></ProtectedRouteVendor>}></Route>
+                <Route path="home" element={<ProtectedRouteVendor><VendorProfile /></ProtectedRouteVendor>}></Route>
                 <Route path="services" element={<ProtectedRouteVendor><ServiceListingVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="bookings" element={<ProtectedRouteVendor><ShowBookingsVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="workSamples" element={<ProtectedRouteVendor><WorkSamples /></ProtectedRouteVendor>}></Route>
@@ -40,6 +41,7 @@ const VendorRoute = () => {
                 <Route path="wallet" element={<ProtectedRouteVendor><VendorWallet /></ProtectedRouteVendor>}></Route>
                 <Route path="chats/messages" element={<ProtectedRouteVendor><VendorChat /></ProtectedRouteVendor>}></Route>
                 <Route path="chats" element={<ProtectedRouteVendor><ChatListingVendor /></ProtectedRouteVendor>}></Route>
+                <Route path="dashboard" element={<ProtectedRouteVendor><VendorDashboard /></ProtectedRouteVendor>}></Route>
                 {/* <Route path="editEvent" element={<ProtectedRouteVendor><Edit /></ProtectedRouteVendor>}></Route> */}
             </Route>
         </Routes>

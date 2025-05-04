@@ -16,6 +16,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  LayoutDashboardIcon
 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 
@@ -25,6 +26,7 @@ export function Sidebar() {
 
   const menuItems = [
     { id: "home", label: "Profile", icon: User },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
     { id: "checkStatus", label: "Check Status", icon: CheckCircle },
     { id: "services", label: "Service", icon: Briefcase },
     { id: "workSamples", label: "Work Samples", icon: Image },
