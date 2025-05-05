@@ -7,10 +7,11 @@ import vendorTokenSlice from './slices/vendor/vendorTokenSlice'
 import vendorSlice from './slices/vendor/vendorSlice'
 import adminTokenSlice from './slices/admin/adminToken'
 import clientSlice from './slices/user/userSlice'
+import notificationSlice from './slices/notification/notificationSlice'
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['token','vendorToken','adminToken']
+    blacklist: ['token', 'vendorToken', 'adminToken']
 }
 
 const rootReducer = combineReducers({
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
     vendorToken: vendorTokenSlice,
     vendorSlice: vendorSlice,
     adminToken: adminTokenSlice,
-    clientSlice: clientSlice
+    clientSlice: clientSlice,
+    notificationSlice: notificationSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
