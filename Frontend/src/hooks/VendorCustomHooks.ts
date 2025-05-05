@@ -1,4 +1,5 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, loadChatsVendor, loadPreviousChatVendor, rejectBooking, resendOtpVendor, showBookingsInVendor, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, rejectBooking, resendOtpVendor, showBookingsInVendor, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { Period } from "@/types/DatePeriodType";
 import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
@@ -207,7 +208,7 @@ export const useLoadMessageInfiniteVendor = (chatId: string, options?: { enabled
         initialPageParam: 1,
         enabled: options?.enabled,
         // staleTime: 1000 * 60 * 5,
-        })
+    })
 }
 
 export const useLoadChatsInfiniteVendor = (userId: string) => {
@@ -221,5 +222,12 @@ export const useLoadChatsInfiniteVendor = (userId: string) => {
             return undefined
         },
         initialPageParam: 1
+    })
+}
+
+export const useVendorDashboardDetails = (vendorId: string, datePeriod: Period) => {
+    return useQuery({
+        queryKey: ['vendorDashboard', datePeriod],
+        queryFn: () => loadVendorDashboard(vendorId, datePeriod)
     })
 }

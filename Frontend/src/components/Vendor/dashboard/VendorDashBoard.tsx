@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Calendar, DollarSign, TicketCheck, CalendarDays, ChevronDown } from "lucide-react"
+import { Calendar, DollarSign, TicketCheck, CalendarDays } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { BookingType } from "@/types/BookingType"
 import { EventEntity as EventType } from "@/types/EventEntity"
@@ -14,8 +15,12 @@ import { RevenueChart } from "./RevenueChart"
 import { BookingStatusChart } from "./BookingStatusChart"
 import { TicketSalesChart } from "./TicketSalesChart"
 import { EventCategoryChart } from "./EventCategoryChart"
-import { RecentBookings } from "./RecentBookings"
 import { UpcomingEvents } from "./UpcomingEvents"
+import { useVendorDashboardDetails } from "@/hooks/VendorCustomHooks"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
+import { Period } from "@/types/DatePeriodType"
+
 
 // Mock data for demonstration
 const mockEvents: EventType[] = [
@@ -253,13 +258,20 @@ const mockBookings: BookingType[] = [
 ]
 
 export default function VendorDashboard() {
-  const [timeRange, setTimeRange] = useState("all")
+  const [timeRange, setTimeRange] = useState<Period>('allTime')
+  const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
 
+  const fetchVendorDashboard = useVendorDashboardDetails(vendorId!, timeRange)
+  console.log(fetchVendorDashboard.data)
   // Calculate metrics
-  const totalBookings = mockBookings.length
-  const totalRevenue = mockEvents.reduce((sum, event) => sum + event.pricePerTicket * event.ticketPurchased, 0)
-  const totalTicketsSold = mockEvents.reduce((sum, event) => sum + event.ticketPurchased, 0)
-  const totalEventsHosted = mockEvents.length
+  const totalBookings = fetchVendorDashboard.data?.totalBookings
+  const totalRevenue = fetchVendorDashboard.data?.revenueChart?.reduce((acc:number, cur:any) => acc += cur.revenue,0)
+  const totalTicketsSold = fetchVendorDashboard.data?.totalTickets
+  const totalEventsHosted = fetchVendorDashboard.data?.totalEvents
+  const revenueDetails = fetchVendorDashboard.data?.revenueChart
+  const recentEvents = fetchVendorDashboard.data?.recentEvents
+
+  const recentBookings = fetchVendorDashboard.data?.recentBookings
 
   // Calculate completion rate
   const completedBookings = mockBookings.filter((booking) => booking.status === "Completed").length
@@ -267,6 +279,8 @@ export default function VendorDashboard() {
 
   // Calculate average ticket price
   const avgTicketPrice = totalRevenue / totalTicketsSold
+
+
 
   // Calculate most popular category
   const categoryCount = mockEvents.reduce(
@@ -311,7 +325,7 @@ export default function VendorDashboard() {
         </motion.div>
 
         <motion.div variants={item} className="flex items-center gap-2">
-          <Select value={timeRange} onValueChange={setTimeRange}>
+          <Select value={timeRange} onValueChange={(value) => setTimeRange(value as Period)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select time range" />
             </SelectTrigger>
@@ -320,7 +334,7 @@ export default function VendorDashboard() {
               <SelectItem value="week">This Week</SelectItem>
               <SelectItem value="month">This Month</SelectItem>
               <SelectItem value="year">This Year</SelectItem>
-              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="allTime">All Time</SelectItem>
             </SelectContent>
           </Select>
         </motion.div>
@@ -337,23 +351,23 @@ export default function VendorDashboard() {
           variants={item}
         />
 
-        <MetricCard
+        {totalRevenue>=0 && <MetricCard
           title="Total Revenue"
           value={`$${totalRevenue.toLocaleString()}`}
           description={`$${avgTicketPrice.toFixed(2)} avg. ticket price`}
           icon={<DollarSign className="h-5 w-5 text-green-600" />}
           trend={+12}
           variants={item}
-        />
+        />}
 
-        <MetricCard
+        {totalTicketsSold >= 0 && <MetricCard
           title="Tickets Sold"
           value={totalTicketsSold.toLocaleString()}
           description={`Across ${totalEventsHosted} events`}
           icon={<TicketCheck className="h-5 w-5 text-blue-600" />}
           trend={+5}
           variants={item}
-        />
+        />}
 
         <MetricCard
           title="Events Hosted"
@@ -367,7 +381,7 @@ export default function VendorDashboard() {
 
       {/* Charts */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <motion.div variants={item} className="flex justify-between items-center">
+        {/* <motion.div variants={item} className="flex justify-between items-center">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
@@ -379,7 +393,7 @@ export default function VendorDashboard() {
             <span>View Reports</span>
             <ChevronDown className="ml-1 h-4 w-4" />
           </button>
-        </motion.div>
+        </motion.div> */}
 
         <TabsContent value="overview" className="space-y-6">
           <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-6" variants={container}>
@@ -390,61 +404,62 @@ export default function VendorDashboard() {
                   <CardDescription>Monthly revenue from all events</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RevenueChart events={mockEvents} />
+                  <RevenueChart events={revenueDetails} />
                 </CardContent>
               </Card>
             </motion.div>
 
-            <motion.div variants={item}>
+            {recentBookings && <motion.div variants={item}>
               <Card>
                 <CardHeader>
                   <CardTitle>Booking Status</CardTitle>
                   <CardDescription>Distribution of booking statuses</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <BookingStatusChart bookings={mockBookings} />
+                  <BookingStatusChart bookings={recentBookings} />
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.div>}
 
-            <motion.div variants={item}>
+            {recentEvents && <motion.div variants={item}>
               <Card>
                 <CardHeader>
                   <CardTitle>Ticket Sales by Event</CardTitle>
                   <CardDescription>Top 5 events by ticket sales</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <TicketSalesChart events={mockEvents} />
+                  <TicketSalesChart events={recentEvents} />
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.div>}
 
-            <motion.div variants={item}>
+            {recentEvents && <motion.div variants={item}>
               <Card>
                 <CardHeader>
                   <CardTitle>Events by Category</CardTitle>
                   <CardDescription>Distribution of event categories</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <EventCategoryChart events={mockEvents} />
+                  <EventCategoryChart events={recentEvents} />
                 </CardContent>
               </Card>
             </motion.div>
+            }
           </motion.div>
 
-          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-6" variants={container}>
-            <motion.div variants={item}>
-              <Card>
+          {recentBookings && recentEvents && <motion.div variants={item}>
+            <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-6" variants={container}>
+
+              {/* <Card>
                 <CardHeader>
                   <CardTitle>Recent Bookings</CardTitle>
                   <CardDescription>Latest booking activity</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RecentBookings bookings={mockBookings} events={mockEvents} />
+                  <RecentBookings bookings={recentBookings} events={recentEvents} />
                 </CardContent>
-              </Card>
+              </Card> */}
             </motion.div>
-
             <motion.div variants={item}>
               <Card>
                 <CardHeader>
@@ -452,11 +467,12 @@ export default function VendorDashboard() {
                   <CardDescription>Events scheduled in the near future</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <UpcomingEvents events={mockEvents} />
+                  <UpcomingEvents events={recentEvents} />
                 </CardContent>
               </Card>
             </motion.div>
           </motion.div>
+          }
         </TabsContent>
 
         <TabsContent value="bookings">

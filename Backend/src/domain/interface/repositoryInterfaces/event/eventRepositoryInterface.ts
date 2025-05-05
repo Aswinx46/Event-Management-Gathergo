@@ -16,4 +16,7 @@ export interface IeventRepository {
     findEventsBasedOnQuery(query: string): Promise<EventEntity[] | []>
     findEventsNearToYou(latitude: number, longitude: number, totalPages: number, range: number): Promise<{ events: EventEntity[] | [], totalPages: number }>
     listingEventsInAdminSide(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }>
+    findTotalEvents(vendorId: string, datePeriod: Date | null): Promise<number>
+    findRecentEvents(vendorId: string): Promise<EventEntity[] | []>
+    findTotalticketsSold(vendorId: string,datePeriod:Date | null): Promise<number>
 }

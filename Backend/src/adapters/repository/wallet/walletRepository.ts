@@ -20,4 +20,35 @@ export class WalletRepository implements IwalletRepository {
         const wallet = await walletModel.findOne({ userId: userId }).select('balance').lean()
         return wallet?.balance ?? null;
     }
+    async findWalletId(userId: string): Promise<string | null> {
+        const wallet = await walletModel.findOne({ userId }).select('_id').lean()
+        return wallet?._id.toString() ?? null
+    }
+    // async revenueChart(): Promise<{ month: string; revenue: number; }[]> {
+    //     const revenueData = await walletModel.aggregate([
+    //         {
+    //             $group: {
+    //                 _id: {
+    //                     month: { $month: '$createdAt' },
+    //                     year: { $year: "$createdAt" },
+    //                 },
+    //                 totalRevenue: { $sum: "$balance" },
+    //             }
+    //         },
+    //         {
+    //             $sort: {
+    //                 "_id.year": 1,
+    //                 "_id.month": 1
+    //             }
+    //         }
+    //     ])
+
+    //     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    //     const formatted = revenueData.map((entry) => ({
+    //         month: monthNames[entry._id.month - 1],
+    //         revenue: entry.totalRevenue,
+    //     }))
+
+    //     return formatted
+    // }
 }

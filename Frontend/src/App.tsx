@@ -14,7 +14,7 @@ import ScrollToTop from './components/other components/ScrollToTop'
 function App() {
   const location = window.location
   const path = location.pathname.split('/')[1]
-  console.log(path)
+  // console.log(path)
   const client = useSelector((state: RootState) => state.clientSlice.client)
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   let user = null
@@ -48,7 +48,7 @@ function App() {
   }, [user])
   return (
     <BrowserRouter>
-    <ScrollToTop />
+      <ScrollToTop />
       <Toaster position="top-right" />
       <Routes>
         <Route path='/*' element={<UserRoute />}></Route>

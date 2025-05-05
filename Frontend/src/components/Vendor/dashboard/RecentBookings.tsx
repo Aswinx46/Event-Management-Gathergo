@@ -55,7 +55,7 @@ export function RecentBookings({ bookings, events }: RecentBookingsProps) {
           className="flex items-center justify-between p-3 rounded-lg border hover:bg-gray-50 transition-colors"
         >
           <div className="flex flex-col">
-            <span className="font-medium">{event?.title || "Unknown Event"}</span>
+            <span className="font-medium">{booking?.title || "Unknown Event"}</span>
             <span className="text-sm text-muted-foreground">{booking.email}</span>
             <span className="text-xs text-muted-foreground">{new Date(booking.createdAt).toLocaleDateString()}</span>
           </div>

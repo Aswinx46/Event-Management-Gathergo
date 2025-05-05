@@ -15,30 +15,30 @@ export function RevenueChart({ events }: RevenueChartProps) {
 
   useEffect(() => {
     // Process events to get monthly revenue data
-    const monthlyRevenue: Record<string, number> = {}
+    // const monthlyRevenue: Record<string, number> = {}
 
-    events.forEach((event) => {
-      const month = new Date(event.startTime).toLocaleString("default", { month: "short" })
-      const revenue = event.pricePerTicket * event.ticketPurchased
+    // events.forEach((event) => {
+    //   const month = new Date(event.startTime).toLocaleString("default", { month: "short" })
+    //   const revenue = event.pricePerTicket * event.ticketPurchased
 
-      if (monthlyRevenue[month]) {
-        monthlyRevenue[month] += revenue
-      } else {
-        monthlyRevenue[month] = revenue
-      }
-    })
+    //   if (monthlyRevenue[month]) {
+    //     monthlyRevenue[month] += revenue
+    //   } else {
+    //     monthlyRevenue[month] = revenue
+    //   }
+    // })
 
-    // Convert to array format for Recharts
-    const data = Object.entries(monthlyRevenue).map(([month, revenue]) => ({
-      month,
-      revenue,
-    }))
+    // // Convert to array format for Recharts
+    // const data = Object.entries(monthlyRevenue).map(([month, revenue]) => ({
+    //   month,
+    //   revenue,
+    // }))
 
-    // Sort by month
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    data.sort((a, b) => months.indexOf(a.month) - months.indexOf(b.month))
+    // // Sort by month
+    // const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    // data.sort((a, b) => months.indexOf(a.month) - months.indexOf(b.month))
 
-    setChartData(data)
+    setChartData(events)
   }, [events])
 
   return (

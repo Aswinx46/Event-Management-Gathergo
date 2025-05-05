@@ -2,6 +2,7 @@ import { EventType } from '@/types/EventType';
 import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
 import { EventUpdateEntity } from '@/types/updateEventType';
+import { Period } from '@/types/DatePeriodType';
 
 
 interface VendorData {
@@ -323,5 +324,15 @@ export const loadChatsVendor = async (userId: string, pageNo: number) => {
     } catch (error) {
         console.log('error while finding the chats of user', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while findng the chats of user')
+    }
+}
+
+export const loadVendorDashboard = async (vendorId: string, datePeriod: Period) => {
+    try {
+        const response = await axios.get('/vendorDashboard', { params: { vendorId, datePeriod } })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching vendor dashboard details', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching vendor dashboard details')
     }
 }

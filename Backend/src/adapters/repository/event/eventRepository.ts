@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import { EventEntity } from "../../../domain/entities/event/eventEntity";
 import { EventUpdateEntity } from "../../../domain/entities/event/eventUpdateEntity";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
@@ -98,6 +98,31 @@ export class EventRepository implements IeventRepository {
         const totalPages = Math.ceil(await eventModal.countDocuments() / limit)
         return { events, totalPages }
     }
-     
+    async findTotalEvents(vendorId: string, datePeriod: Date | null): Promise<number> {
+        const query: Record<string, any> = { hostedBy: vendorId }
+        if (datePeriod) {
+            query.createdAt = { $gte: datePeriod }
+        }
+        return eventModal.countDocuments(query)
+    }
+    async findRecentEvents(vendorId: string): Promise<EventEntity[] | []> {
+        return await eventModal.find({ hostedBy: vendorId })
+    }
+    async findTotalticketsSold(vendorId: string, datePeriod: Date | null): Promise<number> {
+        const query: Record<string, any> = { hostedBy: new Types.ObjectId(vendorId) }
+        if (datePeriod) {
+            query.createdAt = { $gte: datePeriod }
+        }
+        const result = await eventModal.aggregate([
+            { $match: query },
+            {
+                $group: {
+                    _id: null,
+                    totalTickets: { $sum: "$ticketPurchased" }
+                }
+            }
+        ])
+        return result[0]?.totalTickets || 0
 
+    }
 }

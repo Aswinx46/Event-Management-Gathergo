@@ -19,4 +19,6 @@ export interface IbookingRepository {
     cancelBooking(bookingId: string): Promise<BookingEntity | null>
     showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: PopulatedBookingForAdmin[] | [], totalPages: number }>
     findTotalBookings(): Promise<number>
+    findTotalCountOfBookings(vendorId: string, datePeriod: Date | null): Promise<number>
+    findRecentsBooking(vendorId: string): Promise<BookingListingEntityVendor[] | []>
 }

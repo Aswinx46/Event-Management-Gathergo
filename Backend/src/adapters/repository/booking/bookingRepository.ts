@@ -186,6 +186,18 @@ export class BookingRepository implements IbookingRepository {
         return { bookings, totalPages }
     }
     async findTotalBookings(): Promise<number> {
-        return bookingModel.countDocuments({ status: 'Completed'})
+        return bookingModel.countDocuments({ status: 'Completed' })
+    }
+    async findTotalCountOfBookings(vendorId: string, datePeriod: Date | null): Promise<number> {
+        const query: Record<string, any> = { vendorId }
+
+        if (datePeriod) {
+            query.createdAt = { $gte: datePeriod }
+        }
+
+        return bookingModel.countDocuments(query)
+    }
+    async findRecentsBooking(vendorId: string): Promise<BookingListingEntityVendor[] | []> {
+        return await bookingModel.find({ vendorId }).select('-__v -updatedAt')
     }
 }
