@@ -12,6 +12,8 @@ import { AuthRoute } from './framerwork/routes/auth/authRoute'
 import http from 'http'
 import { SocketIoController } from './adapters/controllers/chat/socketIoService'
 import { injectedCreateChatUseCase, injectedCreateMessageUseCase, injectedFindChatBetweenClientAndVendorUseCase, injectedUpdateLastMessageUseCase } from './framerwork/Di/chatInject'
+import { NotificationRepository } from './adapters/repository/notification/notificationRepository'
+
 export class App {
     private app: Express
     private database: connectMongo
@@ -61,7 +63,7 @@ export class App {
         this.app.use('/auth', new AuthRoute().AuthRouter)
     }
     private setSocketIo() {
-        this.socketIoServer = new SocketIoController(this.server, injectedFindChatBetweenClientAndVendorUseCase, injectedCreateChatUseCase, injectedCreateMessageUseCase, injectedUpdateLastMessageUseCase,redisService)
+        this.socketIoServer = new SocketIoController(this.server, injectedFindChatBetweenClientAndVendorUseCase, injectedCreateChatUseCase, injectedCreateMessageUseCase, injectedUpdateLastMessageUseCase, redisService, new NotificationRepository())
     }
 }
 

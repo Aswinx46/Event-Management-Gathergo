@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { useFindCategoryClient, useFindVendorForCarousal } from '@/hooks/ClientCustomHooks'
+import { useFindCategoryClient } from '@/hooks/ClientCustomHooks'
 const LazyHeroSection = lazy(() => import('./HeroSection'))
 const CategoryCarousal = lazy(() => import('./CarousalForCategory'))
 const QuoteForService = lazy(() => import('./QuoteForService'))

@@ -7,6 +7,8 @@ import { MessageEntity } from "../../../domain/entities/chat/MessageEntity";
 import { IcreateMessageUseCase } from "../../../domain/interface/useCaseInterfaces/message/createMessageUseCaseInterface";
 import { IupdateLastMessageOfChatUseCase } from "../../../domain/interface/useCaseInterfaces/chat/updateLastMessageOfChatUseCaseInterface";
 import { IredisService } from "../../../domain/interface/serviceInterface/IredisService";
+import { InotificationRepository } from "../../../domain/interface/repositoryInterfaces/notification/InotificationRepositoryInterface";
+import { NotificationEntity } from "../../../domain/entities/NotificationEntity";
 export class SocketIoController {
     private io: Server
     private users: Map<string, { socketId: string, name: string }>
@@ -15,7 +17,8 @@ export class SocketIoController {
     private createMessageUseCase: IcreateMessageUseCase
     private updateLastMessageUseCase: IupdateLastMessageOfChatUseCase
     private redisService: IredisService
-    constructor(server: httpServer, FindChatsBetweenClientAndVendor: IfindChatsBetweenClientAndVendorUseCase, createChatUseCase: IcreateChatUseCase, createMessageUseCase: IcreateMessageUseCase, updateLastMessageUseCase: IupdateLastMessageOfChatUseCase, redisService: IredisService) {
+    private notificationDatabase: InotificationRepository
+    constructor(server: httpServer, FindChatsBetweenClientAndVendor: IfindChatsBetweenClientAndVendorUseCase, createChatUseCase: IcreateChatUseCase, createMessageUseCase: IcreateMessageUseCase, updateLastMessageUseCase: IupdateLastMessageOfChatUseCase, redisService: IredisService, notificationDatabase: InotificationRepository) {
         this.io = new Server(server, {
             cors: {
                 origin: process.env.ORIGIN,
@@ -28,20 +31,21 @@ export class SocketIoController {
         this.createMessageUseCase = createMessageUseCase
         this.redisService = redisService
         this.updateLastMessageUseCase = updateLastMessageUseCase
+        this.notificationDatabase = notificationDatabase
         this.setUpListeners()
     }
     private setUpListeners() {
         this.io.on('connect', (socket) => {
             console.log(`socket connected ${socket.id}`)
 
-            socket.on('register', async(data) => {
+            socket.on('register', async (data) => {
                 // console.log('cliend id for register', data.userId)
                 console.log('data in the backend', data)
                 this.redisService.setPermenant(data.userId, JSON.stringify({ socketId: socket.id, name: data.name }))
                 this.users.set(data.userId, { socketId: socket.id, name: data.name });
                 socket.data.userId = data.userId
                 const checkOnline = await this.redisService.get(data.receiverId)
-                let senderOnlineStatus=await this.redisService.get(data.senderId)
+                let senderOnlineStatus = await this.redisService.get(data.senderId)
 
                 // console.log(data.name, data.userId)
                 // console.log(this.users)
@@ -54,7 +58,7 @@ export class SocketIoController {
                 let chat = await this.findChatsBetweenClientAndVendorUseCase.findChatBetweenClientAndVendor(data.sendMessage.senderId, data.receiverId)
                 if (!chat) {
                     const chatData: ChatEntity = {
-                        lastMessage: data.sendMessage.messageContent,
+                        lastMessage: data.sendMessage.messageContent.trim(),
                         lastMessageAt: new Date().toString(),
                         receiverId: data.receiverId,
                         senderId: data.sendMessage.senderId,
@@ -73,7 +77,7 @@ export class SocketIoController {
                 }
                 const createdMessage = await this.createMessageUseCase.createMessage(message)
                 const updateLastMessage = await this.updateLastMessageUseCase.udpateLastMessage(createdMessage)
-          
+
                 response(createdMessage)
                 socket.to(data.roomId).emit('receiveMessage', createdMessage)
                 const userData = this.users.get(message.senderId.toString())
@@ -82,6 +86,18 @@ export class SocketIoController {
                 const notificationMessage = `Message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
                 if (receiverData) {
                     socket.to(receiverData?.socketId).emit('notification', { from: userData?.name, message: data.sendMessage.messageContent.trim() })
+                } else {
+                    console.log('inside notification else case')
+                    const notification: NotificationEntity = {
+                        from: data.sendMessage.senderId,
+                        senderModel: data.sendMessage.senderModel,
+                        message: data.sendMessage.messageContent.trim(),
+                        to: data.receiverId,
+                        receiverModel: data.receiverModel,
+                        read: false
+                    }
+                    const saveNotification = await this.notificationDatabase.createNotification(notification)
+                    if(!saveNotification) throw new Error('error while saving the notification into DB')
                 }
             })
 
