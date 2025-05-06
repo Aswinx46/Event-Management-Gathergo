@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BellRing, Trash2, X } from "lucide-react";
+import { BellRing, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,7 +32,7 @@ interface NotificationsDropdownProps {
 
 export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     onMarkAsRead,
-    onMarkAllAsRead,
+    // onMarkAllAsRead,
     onClearNotification,
     // onClearAllNotifications,
 }) => {

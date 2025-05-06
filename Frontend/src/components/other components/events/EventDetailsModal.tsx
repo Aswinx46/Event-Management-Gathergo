@@ -89,7 +89,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
         setShowEdit(true)
     }
 
-    
+
 
     const handleOnSaveEdit = (event: EventEntity) => {
         editEvent.mutate({ eventId: event._id, update: event }, {
@@ -248,11 +248,34 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     </div>
 
                                     <div className="mt-4 flex justify-center">
-                                        {location.pathname.split('/')[1] != 'vendor' ? <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                                        {/* {location.pathname.split('/')[1] != 'vendor' ? <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                                             Get Tickets
                                         </Button> : <Button onClick={() => navigate('/vendor/scanTicket')} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                                             Scan Tickets
-                                        </Button>}
+                                        </Button>} */}
+                                        {event.status === "completed" ? (
+                                            <Button disabled className="w-full bg-gray-400 text-white cursor-not-allowed">
+                                                Event Completed
+                                            </Button>
+                                        ) : event.status === "cancelled" ? (
+                                            <Button disabled className="w-full bg-red-400 text-white cursor-not-allowed">
+                                                Event Cancelled
+                                            </Button>
+                                        ) : location.pathname.split('/')[1] !== 'vendor' && event.totalTicket - event.ticketPurchased > 0 ? (
+                                            <Button
+                                                onClick={() => navigate(`/event/${event._id}`)}
+                                                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                                            >
+                                                Get Tickets
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                onClick={() => navigate('/vendor/scanTicket')}
+                                                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                                            >
+                                                Scan Tickets
+                                            </Button>
+                                        )}
                                     </div>
 
                                     <div className="mt-2 text-center text-xs text-zinc-500">

@@ -200,4 +200,14 @@ export class BookingRepository implements IbookingRepository {
     async findRecentsBooking(vendorId: string): Promise<BookingListingEntityVendor[] | []> {
         return await bookingModel.find({ vendorId }).select('-__v -updatedAt')
     }
+    async findBookingInSameDate(clientId: string, serviceId: string, dates: Date[]): Promise<boolean> {
+        const conflictingBooking = await bookingModel.findOne({
+            clientId,
+            serviceId,
+            status: { $nin: ["Rejected", "Cancelled"] },
+            date: { $in: dates },
+        }).select('_id');
+
+        return !!conflictingBooking;
+    }
 }

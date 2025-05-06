@@ -24,6 +24,9 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
     }
     async createTicket(ticket: TicketFromFrontend, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string): Promise<{ createdTicket: TicketEntity, stripeClientId: string }> {
         const eventDetails = await this.eventDatabase.findTotalTicketAndBookedTicket(ticket.eventId)
+        console.log(eventDetails)
+        if (eventDetails?.status == "completed") throw new Error("This event is already completed")
+        if (eventDetails?.status == 'cancelled') throw new Error("This event is already cancelled")
         if (!eventDetails) throw new Error('Tickets are sold out for this event.')
         if (eventDetails.ticketPurchased > eventDetails.totalTicket) throw new Error('Ticket sold out')
         if (eventDetails.ticketPurchased + totalCount > eventDetails.totalTicket) throw new Error(`Only ${eventDetails.totalTicket - eventDetails.ticketPurchased} tickets are available. Please reduce the quantity.`)

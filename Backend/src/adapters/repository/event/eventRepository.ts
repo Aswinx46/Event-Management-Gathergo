@@ -45,7 +45,7 @@ export class EventRepository implements IeventRepository {
         return eventModal.findById(eventId).select('hostedBy')
     }
     async findTotalTicketAndBookedTicket(eventId: string): Promise<EventEntity | null> {
-        return eventModal.findById(eventId).select('totalTicket ticketPurchased')
+        return eventModal.findById(eventId).select('totalTicket ticketPurchased status')
     }
     async findEventsBaseOnCategory(category: string, pageNo: number, sortBy: string): Promise<{ events: EventEntity[] | []; totalPages: number; }> {
         const sortOptions: Record<string, any> = {

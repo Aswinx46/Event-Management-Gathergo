@@ -67,7 +67,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       } catch (err) {
         console.error("Error during payment:", err);
         setPaymentStatus("Payment Failed");
-        toast.error("Something went wrong during payment.");
+        toast.error(err instanceof Error ? err.message : "Something went wrong during payment.");
       }
     }
 
