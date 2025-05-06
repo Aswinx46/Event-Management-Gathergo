@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BellRing, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { clearAllNotifications } from "@/store/slices/notification/notificationSlice";
 
 export interface NotificationDTO {
     _id?: string;
@@ -26,21 +27,25 @@ interface NotificationsDropdownProps {
     onMarkAsRead?: (id: string) => void;
     onMarkAllAsRead?: () => void;
     onClearNotification?: (id: string) => void;
-    onClearAllNotifications?: () => void;
+    // onClearAllNotifications?: () => void;
 }
 
 export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     onMarkAsRead,
     onMarkAllAsRead,
     onClearNotification,
-    onClearAllNotifications,
+    // onClearAllNotifications,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const notifications = useSelector((state: RootState) => state.notificationSlice.notification)
+    const notifications = useSelector((state: RootState) => state.notificationSlice.notification).flat()
     console.log(notifications)
     const unreadNotifications = notifications.filter((notif) => !notif.read);
     const hasUnread = unreadNotifications.length > 0;
     const hasNotifications = notifications.length > 0;
+    const dispatch = useDispatch()
+    const onClearAllNotifications = () => {
+        dispatch(clearAllNotifications([]))
+    }
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -93,24 +98,36 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        <BellRing className="h-6 w-6" />
+                        {/* <BellRing className="h-6 w-6" /> */}
                         {hasUnread && (
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full"
-                                layoutId="notification-dot"
-                            >
-                                <motion.div
-                                    className="absolute inset-0 rounded-full bg-red-500"
-                                    animate={{ scale: [1, 1.2, 1] }}
-                                    transition={{
-                                        repeat: Infinity,
-                                        duration: 2,
-                                        repeatType: "loop",
-                                    }}
-                                />
-                            </motion.div>
+                          <motion.button
+                          onClick={toggleDropdown}
+                          className="relative p-2  rounded-full hover:bg-gray-100 transition-colors focus:outline-none text-white hover:text-black"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                      >
+                          <BellRing className="h-6 w-6 " />
+                          {hasUnread && (
+                              <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+                                  layoutId="notification-dot"
+                              >
+                                  <motion.div
+                                      className="absolute inset-0 rounded-full bg-red-500"
+                                      animate={{ scale: [1, 1.2, 1] }}
+                                      transition={{
+                                          repeat: Infinity,
+                                          duration: 2,
+                                          repeatType: "loop",
+                                      }}
+                                  />
+                                  <span className="relative z-10">{unreadNotifications.length}</span>
+                              </motion.div>
+                          )}
+                      </motion.button>
+                      
                         )}
                     </motion.button>
 
@@ -122,7 +139,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                 transition={{ duration: 0.2, ease: "easeInOut" }}
-                                className="absolute right-0 mt-2 w-80 max-h-[70vh] overflow-y-auto bg-white rounded-lg shadow-xl border border-gray-200"
+                                className="absolute -left-25  mt-2 w-80 max-h-[70vh] overflow-y-auto bg-white rounded-lg shadow-xl border border-gray-200"
                                 style={{
                                     transformOrigin: "top right",
                                     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
@@ -142,7 +159,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                             </motion.div>
                                         )}
                                     </div>
-                                    <div className="flex gap-2">
+                                    {/* <div className="flex gap-2">
                                         {hasUnread && (
                                             <button
                                                 onClick={handleMarkAllAsRead}
@@ -157,7 +174,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                         >
                                             <X size={18} />
                                         </button>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 {/* Body */}

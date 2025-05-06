@@ -153,42 +153,49 @@ const Header = () => {
                   )}
                 </motion.div>
               ))}
-              {client && <NotificationsDropdown />}
+        {client && <NotificationsDropdown />}
+
             </nav>
           )}
 
           {/* Hamburger Menu Button for Mobile */}
           {isMobile && (
-            <motion.button
-              className="md:hidden flex flex-col justify-center items-center w-10 h-10 relative focus:outline-none"
-              onClick={toggleMenu}
-              initial="closed"
-              animate={isOpen ? "open" : "closed"}
-              aria-label="Toggle menu"
-            >
-              <motion.span
-                className="w-6 h-0.5 bg-white rounded-full absolute"
-                variants={topBarVariants}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="w-6 h-0.5 bg-white rounded-full absolute"
-                variants={middleBarVariants}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="w-6 h-0.5 bg-white rounded-full absolute"
-                variants={bottomBarVariants}
-                transition={{ duration: 0.3 }}
-                style={{ marginTop: "8px" }}
-              />
-            </motion.button>
+            <div className='flex items-center'>
+              {client && <NotificationsDropdown />}
+
+              <motion.button
+                className="md:hidden flex flex-col justify-center items-center w-10 h-10 relative focus:outline-none"
+                onClick={toggleMenu}
+                initial="closed"
+                animate={isOpen ? "open" : "closed"}
+                aria-label="Toggle menu"
+              >
+                <motion.span
+                  className="w-6 h-0.5 bg-white rounded-full absolute"
+                  variants={topBarVariants}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="w-6 h-0.5 bg-white rounded-full absolute"
+                  variants={middleBarVariants}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="w-6 h-0.5 bg-white rounded-full absolute"
+                  variants={bottomBarVariants}
+                  transition={{ duration: 0.3 }}
+                  style={{ marginTop: "8px" }}
+                />
+              </motion.button>
+            </div>
           )}
         </div>
 
         {/* Mobile Menu */}
         <AnimatePresence>
           {isMobile && isOpen && (
+
+
             <motion.div
               initial="closed"
               animate="open"
@@ -196,6 +203,7 @@ const Header = () => {
               variants={menuVariants}
               className="md:hidden overflow-hidden backdrop-blur-sm"
             >
+
               <nav className="py-4 flex flex-col space-y-3 border-t border-gray-800">
                 {navItems.map((item) => (
                   <motion.div
@@ -203,6 +211,7 @@ const Header = () => {
                     variants={itemVariants}
                     className="px-4"
                   >
+                    
                     {item.path ? (
                       <Link
                         to={item.path}
@@ -220,7 +229,9 @@ const Header = () => {
                     )}
                   </motion.div>
                 ))}
+
               </nav>
+
             </motion.div>
           )}
         </AnimatePresence>

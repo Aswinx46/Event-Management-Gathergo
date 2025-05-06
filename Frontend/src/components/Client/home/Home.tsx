@@ -15,8 +15,8 @@ function Home() {
 
   }, [])
   return (
-    <div className='bg-black  w-full'>
-      <Suspense fallback={<div className="text-white text-center mt-10">Loading...</div>}>
+    <div className='bg-black  w-full overflow-x-hidden'>
+      <Suspense fallback={<div className="text-white text-center mt-10 ">Loading...</div>}>
         {/* <BlackHero /> */}
         <LazyHeroSection />
         {categories && <CategoryCarousal items={categories} />}

@@ -1,7 +1,7 @@
 
-
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown"
 import {
   User,
   CheckCircle,
@@ -90,8 +90,9 @@ export function Sidebar() {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="fixed md:static top-0 left-0 z-40 h-screen w-64 bg-white shadow-lg flex flex-col"
       >
-        <div className="p-5 border-b">
+        <div className="p-5 border-b flex gap-3">
           <h2 className="text-xl font-bold text-gray-800">Vendor Dashboard</h2>
+          <NotificationsDropdown />
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4">

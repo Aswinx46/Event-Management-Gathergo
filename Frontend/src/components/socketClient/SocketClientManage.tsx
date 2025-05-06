@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
 import LiveNotification from '../other components/LiveNotification'
 import { Notification } from '@/types/NotificationType'
-import { addNotifications } from '@/store/slices/notification/notificationSlice'
+import { addNotifications, addSingleNotification } from '@/store/slices/notification/notificationSlice'
 import { NotificationDTO } from '@/types/notificationEntity'
 
 
@@ -31,7 +31,6 @@ const SocketManager = () => {
 
         socket.connect()
         socket.emit('register', { userId: user._id, name: user.name }, (data: NotificationDTO[]) => {
-            console.log(data)
             dispatch(addNotifications(data))
         })
 
@@ -42,6 +41,7 @@ const SocketManager = () => {
                 type: 'info'
             }
             setData(notification)
+            dispatch(addSingleNotification(data.notification))
             setNotification(true)
         })
 

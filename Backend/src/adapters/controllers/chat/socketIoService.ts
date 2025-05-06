@@ -47,7 +47,7 @@ export class SocketIoController {
                 await this.redisService.set(data.userId, 86400, JSON.stringify({ socketId: socket.id, name: data.name }))
                 this.users.set(data.userId, { socketId: socket.id, name: data.name });
                 socket.data.userId = data.userId
-              
+
             })
 
 
@@ -82,11 +82,23 @@ export class SocketIoController {
                 const userData = this.users.get(message.senderId.toString())
 
                 const receiverData = this.users.get(data.receiverId)
-                const notificationMessage = `Message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
+                // const notificationMessage = `Message from ${userData?.name} ${data.sendMessage.messageContent.trim()} `
+
+
                 if (receiverData) {
-                    socket.to(receiverData?.socketId).emit('notification', { from: userData?.name, message: data.sendMessage.messageContent.trim() })
+                    const notification = {
+                        from: {
+                            _id: data.sendMessage.senderId,
+                            name: userData?.name
+                        },
+                        senderModel: data.sendMessage.senderModel,
+                        message: data.sendMessage.messageContent.trim(),
+                        to: data.receiverId,
+                        receiverModel: data.receiverModel,
+                        read: false
+                    }
+                    socket.to(receiverData?.socketId).emit('notification', { from: userData?.name, message: data.sendMessage.messageContent.trim(), notification })
                 } else {
-                    console.log('inside notification else case')
                     const notification: NotificationEntity = {
                         from: data.sendMessage.senderId,
                         senderModel: data.sendMessage.senderModel,
@@ -95,6 +107,8 @@ export class SocketIoController {
                         receiverModel: data.receiverModel,
                         read: false
                     }
+                    console.log('inside notification else case')
+
                     const saveNotification = await this.notificationDatabase.createNotification(notification)
                     if (!saveNotification) throw new Error('error while saving the notification into DB')
                 }

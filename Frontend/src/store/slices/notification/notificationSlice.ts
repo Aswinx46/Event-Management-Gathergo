@@ -24,9 +24,12 @@ export const notificationSlice = createSlice({
         },
         addSingleNotification: (state, action: PayloadAction<NotificationDTO>) => {
             state.notification.push(action.payload)
+        },
+        clearAllNotifications: (state, action) => {
+            state.notification = action.payload
         }
     }
 })
 
-export const { addNotifications, removeNotification } = notificationSlice.actions
+export const { addNotifications, removeNotification, addSingleNotification, clearAllNotifications } = notificationSlice.actions
 export default notificationSlice.reducer
