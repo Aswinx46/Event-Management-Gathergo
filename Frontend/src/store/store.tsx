@@ -11,7 +11,7 @@ import notificationSlice from './slices/notification/notificationSlice'
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['token', 'vendorToken', 'adminToken']
+    blacklist: ['token', 'vendorToken', 'adminToken','notificationSlice']
 }
 
 const rootReducer = combineReducers({

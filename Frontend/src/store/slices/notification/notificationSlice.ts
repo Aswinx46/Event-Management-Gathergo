@@ -1,10 +1,10 @@
-import { NotificationEntity } from "@/types/notificationEntity";
+import { NotificationDTO } from "@/types/notificationEntity";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 
 interface NotificationState {
-    notification: NotificationEntity[];
+    notification: NotificationDTO[];
 }
 
 
@@ -16,11 +16,14 @@ export const notificationSlice = createSlice({
     name: 'notifications',
     initialState,
     reducers: {
-        addNotifications: (state, action: PayloadAction<NotificationEntity>) => {
-            state.notification.push(action.payload)
+        addNotifications: (state, action: PayloadAction<NotificationDTO[]>) => {
+            state.notification = action.payload
         },
         removeNotification: (state, action: PayloadAction<string>) => {
             state.notification.filter((notification) => notification._id !== action.payload)
+        },
+        addSingleNotification: (state, action: PayloadAction<NotificationDTO>) => {
+            state.notification.push(action.payload)
         }
     }
 })

@@ -8,7 +8,7 @@ import { RootState } from '@/store/store';
 import { useClientLogout } from '@/hooks/ClientCustomHooks';
 import { removeClient } from '@/store/slices/user/userSlice';
 import { removeToken } from '@/store/slices/user/userTokenSlice';
-import NotificationContainer from '@/components/notifications/NotificationContainer';
+import { NotificationsDropdown } from '@/components/notifications/NotificationsDropdown';
 type NavItem =
   | { name: string; path: string; onClick?: never }
   | { name: string; onClick: () => void; path?: never };
@@ -87,15 +87,6 @@ const Header = () => {
 
   ];
 
-  const notification = [{
-    from: 'Info Notification',
-    message: 'This is an informational notification.',
-    type: 'info'
-  }]
-
-  const handleDelete = (id: number) => {
-    console.log(id)
-  }
 
   if (client) {
     navItems.push({
@@ -162,7 +153,7 @@ const Header = () => {
                   )}
                 </motion.div>
               ))}
-              {/* <NotificationContainer notifications={notification} onClose={(id) => handleDelete(id)} /> */}
+              {client && <NotificationsDropdown />}
             </nav>
           )}
 

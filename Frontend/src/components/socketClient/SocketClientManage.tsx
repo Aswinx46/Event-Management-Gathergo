@@ -1,10 +1,12 @@
 // components/socket/SocketManager.tsx
 import { useEffect, useState } from 'react'
 import socket from '../../hooks/ConnectSocketIo'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
 import LiveNotification from '../other components/LiveNotification'
 import { Notification } from '@/types/NotificationType'
+import { addNotifications } from '@/store/slices/notification/notificationSlice'
+import { NotificationDTO } from '@/types/notificationEntity'
 
 
 const SocketManager = () => {
@@ -15,7 +17,7 @@ const SocketManager = () => {
     const path = location.pathname.split('/')[1]
     const client = useSelector((state: RootState) => state.clientSlice.client)
     const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
-
+    const dispatch = useDispatch()
     // let user = path === 'vendor' ? vendor : client
 
     let user = null
@@ -28,13 +30,16 @@ const SocketManager = () => {
         if (!user) return
 
         socket.connect()
-        socket.emit('register', { userId: user._id, name: user.name })
+        socket.emit('register', { userId: user._id, name: user.name }, (data: NotificationDTO[]) => {
+            console.log(data)
+            dispatch(addNotifications(data))
+        })
 
         socket.on('notification', (data) => {
-            const notification:Notification={
-                from:data.from,
-                message:data.message,
-                type:'info'
+            const notification: Notification = {
+                from: data.from,
+                message: data.message,
+                type: 'info'
             }
             setData(notification)
             setNotification(true)

@@ -9,6 +9,7 @@ import { IupdateLastMessageOfChatUseCase } from "../../../domain/interface/useCa
 import { IredisService } from "../../../domain/interface/serviceInterface/IredisService";
 import { InotificationRepository } from "../../../domain/interface/repositoryInterfaces/notification/InotificationRepositoryInterface";
 import { NotificationEntity } from "../../../domain/entities/NotificationEntity";
+
 export class SocketIoController {
     private io: Server
     private users: Map<string, { socketId: string, name: string }>
@@ -38,17 +39,15 @@ export class SocketIoController {
         this.io.on('connect', (socket) => {
             console.log(`socket connected ${socket.id}`)
 
-            socket.on('register', async (data) => {
-                // console.log('cliend id for register', data.userId)
+            socket.on('register', async (data, response) => {
+                const notificationOfTheUser = await this.notificationDatabase.findNotifications(data.userId)
+                response(notificationOfTheUser)
+                //  await this.notificationDatabase.deleteNotifications(data.userId)
                 console.log('data in the backend', data)
-                this.redisService.setPermenant(data.userId, JSON.stringify({ socketId: socket.id, name: data.name }))
+                await this.redisService.set(data.userId, 86400, JSON.stringify({ socketId: socket.id, name: data.name }))
                 this.users.set(data.userId, { socketId: socket.id, name: data.name });
                 socket.data.userId = data.userId
-                const checkOnline = await this.redisService.get(data.receiverId)
-                let senderOnlineStatus = await this.redisService.get(data.senderId)
-
-                // console.log(data.name, data.userId)
-                // console.log(this.users)
+              
             })
 
 
@@ -97,7 +96,7 @@ export class SocketIoController {
                         read: false
                     }
                     const saveNotification = await this.notificationDatabase.createNotification(notification)
-                    if(!saveNotification) throw new Error('error while saving the notification into DB')
+                    if (!saveNotification) throw new Error('error while saving the notification into DB')
                 }
             })
 

@@ -6,7 +6,7 @@ export interface NotificationDTO {
         name: string,
         profileImage?: string
     };
-    to: string;
+    to:string;
     message: string;
     read: boolean;
     senderModel: 'client' | 'vendors'
