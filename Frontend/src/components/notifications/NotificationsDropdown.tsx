@@ -57,11 +57,11 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
         }
     };
 
-    const handleMarkAllAsRead = () => {
-        if (onMarkAllAsRead) {
-            onMarkAllAsRead();
-        }
-    };
+    // const handleMarkAllAsRead = () => {
+    //     if (onMarkAllAsRead) {
+    //         onMarkAllAsRead();
+    //     }
+    // };
 
     const handleClearNotification = (id: string, event: React.MouseEvent) => {
         event.stopPropagation();
@@ -73,6 +73,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     const handleClearAllNotifications = () => {
         if (onClearAllNotifications) {
             onClearAllNotifications();
+            setIsOpen(false)
         }
     };
 
@@ -98,15 +99,15 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        {/* <BellRing className="h-6 w-6" /> */}
+                        { !hasUnread && <BellRing className="h-6 w-6" />}
                         {hasUnread && (
-                          <motion.button
-                          onClick={toggleDropdown}
-                          className="relative p-2  rounded-full hover:bg-gray-100 transition-colors focus:outline-none text-white hover:text-black"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                      >
-                          <BellRing className="h-6 w-6 " />
+                            <motion.button
+                            onClick={toggleDropdown}
+                            className="relative p-2  rounded-full hover:bg-gray-100 transition-colors focus:outline-none text-white hover:text-black"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            >
+                            <BellRing className="h-6 w-6 " />
                           {hasUnread && (
                               <motion.div
                                   initial={{ scale: 0 }}
@@ -139,7 +140,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                 transition={{ duration: 0.2, ease: "easeInOut" }}
-                                className="absolute -left-25  mt-2 w-80 max-h-[70vh] overflow-y-auto bg-white rounded-lg shadow-xl border border-gray-200"
+                                className="absolute -left-25  mt-2 w-80 max-h-[70vh] overflow-y-auto bg-white rounded-lg shadow-xl border text-white border-gray-200"
                                 style={{
                                     transformOrigin: "top right",
                                     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
