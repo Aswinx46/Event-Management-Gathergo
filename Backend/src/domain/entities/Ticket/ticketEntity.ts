@@ -14,4 +14,5 @@ export interface TicketEntity {
     clientId: ObjectId | string;
     ticketStatus: 'used' | 'refunded' | 'unused'
     paymentTransactionId: ObjectId
+    checkInHistory?: Date[]
 }

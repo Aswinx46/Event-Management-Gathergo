@@ -12,4 +12,5 @@ export interface IticketRepositoryInterface {
     changeUsedStatus(ticketId: string): Promise<TicketEntity | null>
     ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO | null>
     ticketAndUserDetails(eventId: string, vendorId: string, pageNo: number): Promise<{ticketAndEventDetails:TicketAndUserDTO[] | [] , totalPages:number}>
+    updateCheckInHistory(ticketId:string,date:Date):Promise<boolean>
 }

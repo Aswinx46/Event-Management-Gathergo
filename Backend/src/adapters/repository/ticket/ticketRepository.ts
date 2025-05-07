@@ -82,6 +82,10 @@ export class TicketRepository implements IticketRepositoryInterface {
         const page = Math.max(pageNo, 1)
         const limit = 6
         const skip = (page - 1) * limit
+        const matchStage: any = {
+            'event._id': new Types.ObjectId(eventId),
+            'event.hostedBy': new Types.ObjectId(vendorId)
+        };
         const tickets = await ticketModel.aggregate([
             {
                 $lookup: {
@@ -94,8 +98,7 @@ export class TicketRepository implements IticketRepositoryInterface {
             { $unwind: '$event' },
             {
                 $match: {
-                    'event._id': new Types.ObjectId(eventId),
-                    'event.hostedBy': new Types.ObjectId(vendorId)
+                    ...matchStage
                 }
             },
             {
@@ -149,5 +152,13 @@ export class TicketRepository implements IticketRepositoryInterface {
         const totalPages = Math.ceil(totalCount / limit);
 
         return { ticketAndEventDetails: tickets, totalPages }
+    }
+    async updateCheckInHistory(ticketId: string, date: Date): Promise<boolean> {
+        const result = await ticketModel.updateOne(
+            { _id: ticketId },
+            { $addToSet: { checkInHistory: date } }
+        );
+
+        return result.modifiedCount > 0;
     }
 }

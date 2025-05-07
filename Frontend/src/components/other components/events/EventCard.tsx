@@ -10,13 +10,20 @@ interface EventCardProps {
 }
 
 const formatDate = (date: Date): string => {
-    console.log(date)
+    // console.log(date)
+    // if (isToday(date)) {
+    //     return `Today at ${format(date, "h:mm a")}`;
+    // } else if (isTomorrow(date)) {
+    //     return `Tomorrow at ${format(date, "h:mm a")}`;
+    // } else {
+    //     return format(date, "EEE, MMM d, yyyy 'at' h:mm a");
+    // }
     if (isToday(date)) {
-        return `Today at ${format(date, "h:mm a")}`;
+        return "Today";
     } else if (isTomorrow(date)) {
-        return `Tomorrow at ${format(date, "h:mm a")}`;
+        return "Tomorrow";
     } else {
-        return format(date, "EEE, MMM d, yyyy 'at' h:mm a");
+        return format(date, "EEE, MMM d, yyyy"); // Example: "Fri, May 2, 2025"
     }
 };
 
@@ -73,7 +80,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                     <div className="space-y-2">
                         <div className="flex items-center text-sm text-zinc-400">
                             <Calendar className="h-4 w-4 mr-2 text-purple-400" />
-                            <span className="line-clamp-1">{formatDate(new Date(event.date[0]))}</span>
+                            <span>{event.date.length > 1 ? ` ${formatDate(new Date(event.date[0]))} to ${formatDate(new Date(event.date[event.date.length - 1]))}` : formatDate(new Date(event.date[0]))}</span>
                         </div>
 
                         {event.venueName && (

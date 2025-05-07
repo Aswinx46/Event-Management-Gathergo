@@ -22,7 +22,8 @@ interface EventDetailModalProps {
 }
 
 const formatDate = (date: Date): string => {
-    return format(date, "EEE, MMM d, yyyy 'at' h:mm a");
+    // return format(date, "EEE, MMM d, yyyy 'at' h:mm a");
+    return format(date, "MMM d, yyyy");
 };
 
 const formatEventDuration = (startTime: Date, endTime: Date): string => {
@@ -184,7 +185,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                 >
                                     <div className="flex items-center text-zinc-300">
                                         <Calendar className="h-5 w-5 mr-2 text-purple-400" />
-                                        <span>{formatDate(new Date(event.date[0]))}</span>
+                                        <span>{event.date.length > 1 ? ` ${formatDate(new Date(event.date[0]))} to ${formatDate(new Date(event.date[event.date.length - 1]))}` : formatDate(new Date(event.date[0]))}</span>
                                     </div>
 
                                     <div className="flex items-center text-zinc-300">

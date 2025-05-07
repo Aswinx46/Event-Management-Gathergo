@@ -49,7 +49,11 @@ export const ticketSchema = new Schema<TicketEntity>({
     totalAmount: {
         type: Number,
         required: true
-    }
+    },
+    checkInHistory: {
+        type: [Date],
+        default: []
+      }
 
 }, {
     timestamps: true
