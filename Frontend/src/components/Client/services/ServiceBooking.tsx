@@ -18,6 +18,8 @@ import BookingConfirmation from '@/components/other components/BookingConfirmati
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import AddReviewModal from '@/components/other components/review/AddReview';
+import { ReviewEntity } from '@/types/ReviewType';
 export interface Booking {
   date: Date[];
   email: string;
@@ -78,7 +80,7 @@ const VendorBookingCard = () => {
   const { serviceId, vendorId } = useParams()
   const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!)
   const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor
-
+  const [showReviewModal, setShowReviewModal] = useState<boolean>(false)
   const bookingApi = useCreateBooking()
   const navigate = useNavigate()
   const handleNavigate = () => {
@@ -136,11 +138,18 @@ const VendorBookingCard = () => {
     }
   });
 
+  const handleReviewOnClick = () => {
+    setShowReviewModal(true)
+  }
 
+  const handleReviewSubmit = (review:ReviewEntity) => {
+    console.log(review)
+  }
 
   return (
     <div className='bg-black h-screen'>
       {isOpen && <BookingConfirmation isOpen={isOpen} setIsOpen={setIsOpen} handleBooking={handleNavigate} />}
+      {showReviewModal && <AddReviewModal isOpen={showReviewModal} onClose={()=>setShowReviewModal(false)}  reviewerId={clientId!} targetId={serviceId!} targetType='service' onSubmit={handleReviewSubmit} />}
       <div className="container mx-auto  px-4 py-8 max-w-6xl">
         <motion.div
           initial="hidden"
@@ -165,7 +174,7 @@ const VendorBookingCard = () => {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   />
-                
+
                 </div>
                 <motion.h2 className="text-2xl font-bold mt-4">{Service?.vendor.name}</motion.h2>
                 {/* <motion.p className="text-gray-400">{vendor.profession}</motion.p>
@@ -217,6 +226,14 @@ const VendorBookingCard = () => {
                     </li>
                   </ul>
                 </motion.div>
+                <Button
+                  className="w-full mt-4 bg-yellow-300 text-black hover:bg-gray-300"
+                  size="lg"
+                  onClick={handleReviewOnClick}
+                  
+                >
+                  Add Review For This Service
+                </Button>
               </motion.div>
             </Card>
           </motion.div>
@@ -421,18 +438,3 @@ const VendorBookingCard = () => {
 };
 
 export default VendorBookingCard;
-
-{/* <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={(newDate) => {
-                          if (newDate && !isBefore(startOfDay(newDate), startOfDay(new Date()))) {
-                            setDate(newDate);
-                            formik.setFieldValue('date', format(newDate, 'yyyy-MM-dd'));
-                            setIsCalendarOpen(false);
-                          }
-                        }}
-                        disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
-                        initialFocus
-                        className="bg-black text-white"
-                      /> */}
