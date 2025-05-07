@@ -62,6 +62,8 @@ import { UpdateBookingAsCompleteUseCase } from "../../useCases/vendor/bookings/u
 import { UpdateBookingAsCompleteController } from "../../adapters/controllers/vendor/bookings/updateBookingStatusController";
 import { VendorDashboardUseCase } from "../../useCases/vendor/dashboard/vendorDashboardUseCase";
 import { VendorDashboardController } from "../../adapters/controllers/vendor/dashboard/vendorDashboardController";
+import { TicketAndUserDetailsOfEventUseCase } from "../../useCases/vendor/ticket/ticketAndUserDetailsOfEventUseCase";
+import { TicketAndUserDetailsController } from "../../adapters/controllers/vendor/ticket/ticketAndUserDetailsController";
 
 
 
@@ -175,3 +177,7 @@ export const injectedUpdateBookingAsCompleteController = new UpdateBookingAsComp
 //-------------------------vendor dashboard details--------------
 const vendorDashboardUseCase = new VendorDashboardUseCase(walletDatabase, transactionDatabase, eventRepository, bookingsDatabase)
 export const injectedVendorDashboardController = new VendorDashboardController(vendorDashboardUseCase)
+
+//--------------------------------find ticket details with the user details----------------------
+const ticketDetailsWithUserDetails = new TicketAndUserDetailsOfEventUseCase(ticketdatabase)
+export const injectedTicketDetailsWithUserController = new TicketAndUserDetailsController(ticketDetailsWithUserDetails)

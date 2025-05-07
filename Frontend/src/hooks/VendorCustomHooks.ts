@@ -1,4 +1,4 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, rejectBooking, resendOtpVendor, showBookingsInVendor, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, rejectBooking, resendOtpVendor, showBookingsInVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { Period } from "@/types/DatePeriodType";
 import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
@@ -229,5 +229,12 @@ export const useVendorDashboardDetails = (vendorId: string, datePeriod: Period) 
     return useQuery({
         queryKey: ['vendorDashboard', datePeriod],
         queryFn: () => loadVendorDashboard(vendorId, datePeriod)
+    })
+}
+
+export const useTicketDetailsWithUser = (eventId: string, vendorId: string, pageNo: number) => {
+    return useQuery({
+        queryKey: ['ticketDetailsWithUser', pageNo],
+        queryFn: () => ticketDetailsWithUser(eventId, vendorId, pageNo)
     })
 }

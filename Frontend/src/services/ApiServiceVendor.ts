@@ -336,3 +336,13 @@ export const loadVendorDashboard = async (vendorId: string, datePeriod: Period) 
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching vendor dashboard details')
     }
 }
+
+export const ticketDetailsWithUser = async (eventId: string, vendorId: string, pageNo: number) => {
+    try {
+        const response = await axios.get('/ticketDetailsWithUser', { params: { eventId, vendorId, pageNo } })
+        return response.data
+    } catch (error) {
+        console.log('error while finding the ticket details with user', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding the ticket details with user')
+    }
+}

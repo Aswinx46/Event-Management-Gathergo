@@ -78,7 +78,10 @@ export class TicketRepository implements IticketRepositoryInterface {
         };
         return result
     }
-    async ticketAndUserDetails(eventId: string, vendorId: string): Promise<TicketAndUserDTO[] | []> {
+    async ticketAndUserDetails(eventId: string, vendorId: string, pageNo: number): Promise<{ ticketAndEventDetails: TicketAndUserDTO[] | [], totalPages: number }> {
+        const page = Math.max(pageNo, 1)
+        const limit = 6
+        const skip = (page - 1) * limit
         const tickets = await ticketModel.aggregate([
             {
                 $lookup: {
@@ -115,11 +118,36 @@ export class TicketRepository implements IticketRepositoryInterface {
                     event: 0,
                     client: 0,
                     __v: 0,
-                    'event.__v': 0,
-                    'client.__v': 0
+                    'eventId.__v': 0,
+                    'clientId.__v': 0
                 }
-            }
+            },
+            { $skip: skip },
+            { $limit: limit }
         ]);
-        return tickets
+
+        const countResult = await ticketModel.aggregate([
+            {
+                $lookup: {
+                    from: 'events',
+                    localField: 'eventId',
+                    foreignField: '_id',
+                    as: 'event'
+                }
+            },
+            { $unwind: '$event' },
+            {
+                $match: {
+                    'event._id': new Types.ObjectId(eventId),
+                    'event.hostedBy': new Types.ObjectId(vendorId)
+                }
+            },
+            { $count: 'total' }
+        ]);
+
+        const totalCount = countResult[0]?.total || 0;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return { ticketAndEventDetails: tickets, totalPages }
     }
 }

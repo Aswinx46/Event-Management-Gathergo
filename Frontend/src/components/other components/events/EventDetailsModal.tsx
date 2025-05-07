@@ -247,7 +247,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                         <Progress value={percentageSold} className="h-2 bg-zinc-700" />
                                     </div>
 
-                                    <div className="mt-4 flex justify-center">
+                                    <div className="mt-4 flex flex-col gap-4 justify-center">
                                         {/* {location.pathname.split('/')[1] != 'vendor' ? <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                                             Get Tickets
                                         </Button> : <Button onClick={() => navigate('/vendor/scanTicket')} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
@@ -276,6 +276,12 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                 Scan Tickets
                                             </Button>
                                         )}
+                                        {location.pathname.split('/')[1] == 'vendor' && <Button
+                                            onClick={() => navigate(`/vendor/ticketListing`, { state: { eventId: event._id } })}
+                                            className="w-full bg-purple-800 hover:bg-purple-700 text-white"
+                                        >
+                                            Show Ticket Details
+                                        </Button>}
                                     </div>
 
                                     <div className="mt-2 text-center text-xs text-zinc-500">

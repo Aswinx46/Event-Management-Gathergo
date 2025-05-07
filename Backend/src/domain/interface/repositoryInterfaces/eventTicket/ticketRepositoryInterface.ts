@@ -11,5 +11,5 @@ export interface IticketRepositoryInterface {
     findTicketUsingTicketId(ticketId: string): Promise<TicketEntity | null>
     changeUsedStatus(ticketId: string): Promise<TicketEntity | null>
     ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO | null>
-    ticketAndUserDetails(eventId: string, vendorId: string): Promise<TicketAndUserDTO[] | []>
+    ticketAndUserDetails(eventId: string, vendorId: string, pageNo: number): Promise<{ticketAndEventDetails:TicketAndUserDTO[] | [] , totalPages:number}>
 }
