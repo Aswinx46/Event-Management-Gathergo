@@ -61,12 +61,12 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl h-[70vh] overflow-y-auto flex flex-col justify-start hide-scrollbar">
                 <DialogHeader>
                     <DialogTitle className="text-2xl">Ticket Details</DialogTitle>
                 </DialogHeader>
 
-                <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab} className="mt-4">
+                <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab} className="mt-4 flex flex-col ">
                     <TabsList className="grid grid-cols-3 mb-6">
                         <TabsTrigger value="details">Ticket Details</TabsTrigger>
                         <TabsTrigger value="event">Event Info</TabsTrigger>
@@ -106,7 +106,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                             <DollarSign className="w-5 h-5 mr-2 text-gray-500" />
                                             <div>
                                                 <p className="text-sm text-gray-500">Total Amount</p>
-                                                <p className="font-medium">${ticket.totalAmount}</p>
+                                                <p className="font-medium">₹{ticket.totalAmount}</p>
                                             </div>
                                         </div>
 
@@ -142,7 +142,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                     </div>
                                 </div>
 
-                                <div className="mt-6">
+                                {/* <div className="mt-6">
                                     <Button variant="outline" className="mr-2">
                                         Mark as Used
                                     </Button>
@@ -150,17 +150,17 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                         Process Refund
                                     </Button>
                                     <Button>Download Ticket</Button>
-                                </div>
+                                </div> */}
                             </TabsContent>
 
                             <TabsContent value="event" className="space-y-4">
-                                <div className="flex flex-col md:flex-row gap-4">
-                                    <div className="md:w-1/3">
+                                <div className="flex flex-col  gap-4">
+                                    <div className="">
                                         {ticket.eventId.posterImage && ticket.eventId.posterImage.length > 0 ? (
                                             <img
                                                 src={ticket.eventId.posterImage[0] || "/placeholder.svg"}
                                                 alt={ticket.eventId.title}
-                                                className="w-full h-auto rounded-lg object-cover aspect-[3/4]"
+                                                className="w-full h-[30vh] rounded-lg object-cover aspect-[3/4]"
                                             />
                                         ) : (
                                             <div className="w-full h-full aspect-[3/4] bg-gray-200 rounded-lg flex items-center justify-center">
@@ -169,7 +169,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                         )}
                                     </div>
 
-                                    <div className="md:w-2/3 space-y-4">
+                                    <div className=" space-y-4">
                                         <div>
                                             <h3 className="text-xl font-semibold">{ticket.eventId.title}</h3>
                                             <Badge className={getEventStatusColor(ticket.eventId.status)}>{ticket.eventId.status}</Badge>
@@ -215,7 +215,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                                 <DollarSign className="w-5 h-5 mr-2 text-gray-500" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Price Per Ticket</p>
-                                                    <p className="font-medium">${ticket.eventId.pricePerTicket}</p>
+                                                    <p className="font-medium">₹{ticket.eventId.pricePerTicket}</p>
                                                 </div>
                                             </div>
                                         </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import Pagination from "@/components/other components/Pagination"
 import { TicketList } from "@/components/Vendor/ticketDetailsWithUser/TicketLisitng"
 import { useTicketDetailsWithUser } from "@/hooks/VendorCustomHooks"
 import { RootState } from "@/store/store"
@@ -13,11 +14,12 @@ export default function TicketsPage() {
     const location = useLocation()
     const eventId = location.state.eventId
     // const [tickets, setTickets] = useState<TicketAndUserDTO[]>([])
-    
+
     const [currentPage, setCurrentPage] = useState<number>(1)
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
     const findTicketDetails = useTicketDetailsWithUser(eventId, vendorId!, currentPage)
     const tickets: TicketAndUserDTO[] = findTicketDetails.data?.ticketAndEventDetails
+    const totalPages = findTicketDetails.data?.totalPages
     if (findTicketDetails.isLoading) {
         return (
             <div className="container mx-auto py-12 flex justify-center">
@@ -32,6 +34,7 @@ export default function TicketsPage() {
     return (
         <>
             {tickets && <TicketList tickets={tickets} />}
+            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
         </>
     )
 }

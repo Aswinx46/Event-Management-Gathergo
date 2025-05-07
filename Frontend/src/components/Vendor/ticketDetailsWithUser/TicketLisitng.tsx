@@ -110,7 +110,7 @@ export function TicketList({ tickets }: TicketListProps) {
               <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
                 <div>
                   <p className="text-gray-500">Amount</p>
-                  <p className="font-medium">${ticket.totalAmount}</p>
+                  <p className="font-medium">₹{ticket.totalAmount}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Tickets</p>
