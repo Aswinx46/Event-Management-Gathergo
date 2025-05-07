@@ -1,4 +1,6 @@
+import { Types } from "mongoose";
 import { TicketAndEventDTO } from "../../../domain/entities/Ticket/ticketAndEventDTO";
+import { TicketAndUserDTO } from "../../../domain/entities/Ticket/ticketAndUserDTO";
 import { TicketEntity } from "../../../domain/entities/Ticket/ticketEntity";
 import { TicketAndVendorDTO } from "../../../domain/entities/TicketAndVendorDTO";
 import { IticketRepositoryInterface } from "../../../domain/interface/repositoryInterfaces/eventTicket/ticketRepositoryInterface";
@@ -13,7 +15,7 @@ export class TicketRepository implements IticketRepositoryInterface {
     }
     async findBookedTicketsOfClient(userId: string, pageNo: number): Promise<{ ticketAndEventDetails: TicketAndEventDTO[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
-        const limit = 5
+        const limit = 4
         const skip = (page - 1) * limit
         const ticketAndEvent = await ticketModel.find({ clientId: userId }).select('_id ticketId ticketCount phone email paymentStatus totalAmount ticketStatus qrCodeLink')
             .populate('eventId', '_id title description date startTime endTime status address pricePerTicket posterImage').skip(skip).limit(limit).sort({ createdAt: -1 }).lean()
@@ -75,5 +77,49 @@ export class TicketRepository implements IticketRepositoryInterface {
             paymentTransactionId: ticket.paymentTransactionId,
         };
         return result
+    }
+    async ticketAndUserDetails(eventId: string, vendorId: string): Promise<TicketAndUserDTO[] | []> {
+        const tickets = await ticketModel.aggregate([
+            {
+                $lookup: {
+                    from: 'events',
+                    localField: 'eventId',
+                    foreignField: '_id',
+                    as: 'event'
+                }
+            },
+            { $unwind: '$event' },
+            {
+                $match: {
+                    'event._id': new Types.ObjectId(eventId),
+                    'event.hostedBy': new Types.ObjectId(vendorId)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'clients',
+                    localField: 'clientId',
+                    foreignField: '_id',
+                    as: 'client'
+                }
+            },
+            { $unwind: '$client' },
+            {
+                $addFields: {
+                    eventId: '$event',
+                    clientId: '$client'
+                }
+            },
+            {
+                $project: {
+                    event: 0,
+                    client: 0,
+                    __v: 0,
+                    'event.__v': 0,
+                    'client.__v': 0
+                }
+            }
+        ]);
+        return tickets
     }
 }

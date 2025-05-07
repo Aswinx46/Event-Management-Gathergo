@@ -13,5 +13,5 @@ export interface TicketEntity {
     eventId: ObjectId | string;
     clientId: ObjectId | string;
     ticketStatus: 'used' | 'refunded' | 'unused'
-    paymentTransactionId: ObjectId 
+    paymentTransactionId: ObjectId
 }

@@ -2,6 +2,7 @@ import { ObjectId } from "mongoose";
 import { TicketEntity } from "../../../entities/Ticket/ticketEntity";
 import { TicketAndEventDTO } from "../../../entities/Ticket/ticketAndEventDTO";
 import { TicketAndVendorDTO } from "../../../entities/TicketAndVendorDTO";
+import { TicketAndUserDTO } from "../../../entities/Ticket/ticketAndUserDTO";
 
 export interface IticketRepositoryInterface {
     createTicket(ticket: TicketEntity): Promise<TicketEntity>
@@ -10,4 +11,5 @@ export interface IticketRepositoryInterface {
     findTicketUsingTicketId(ticketId: string): Promise<TicketEntity | null>
     changeUsedStatus(ticketId: string): Promise<TicketEntity | null>
     ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO | null>
+    ticketAndUserDetails(eventId: string, vendorId: string): Promise<TicketAndUserDTO[] | []>
 }
