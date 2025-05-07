@@ -147,7 +147,7 @@ const VendorBookingCard = () => {
   }
 
   return (
-    <div className='bg-black h-screen'>
+    <div className='bg-black '>
       {isOpen && <BookingConfirmation isOpen={isOpen} setIsOpen={setIsOpen} handleBooking={handleNavigate} />}
       {showReviewModal && <AddReviewModal isOpen={showReviewModal} onClose={()=>setShowReviewModal(false)}  reviewerId={clientId!} targetId={serviceId!} targetType='service' onSubmit={handleReviewSubmit} />}
       <div className="container mx-auto  px-4 py-8 max-w-6xl">
