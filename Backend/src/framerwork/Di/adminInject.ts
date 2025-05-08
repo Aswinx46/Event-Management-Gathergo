@@ -33,6 +33,7 @@ import { ChangeTitleAndImageUseCase } from "../../useCases/admin/categoryManagem
 import { CreateCategoryUseCase } from "../../useCases/admin/categoryManagement/createCategoryUseCase";
 import { FindCategoryUseCase } from "../../useCases/admin/categoryManagement/findCategoryUseCase";
 import { DashBoardDetailsUseCase } from "../../useCases/admin/dashboard/dashboardDatasUseCase";
+import { EventGraphUseCase } from "../../useCases/admin/dashboard/eventGraphUseCase";
 import { FindEventsInAdminSideUseCase } from "../../useCases/admin/eventManagement/findEventsInAdminSideUseCase";
 import { BlockClientUseCase } from "../../useCases/admin/userManagement/clientBlockUseCase";
 import { ClientUnblockUseCase } from "../../useCases/admin/userManagement/clientUnblockUseCase";
@@ -135,5 +136,6 @@ const findEventsInAdminSideUseCase = new FindEventsInAdminSideUseCase(eventDatab
 export const injectedFindEventsInAdminSideController = new FindEventsInAdminSideController(findEventsInAdminSideUseCase)
 
 //------------------------fetch admin dashboard details -------------------
+const eventDetailsForAdminDashboard = new EventGraphUseCase(eventDatabase)
 const adminDashboardUseCase = new DashBoardDetailsUseCase(walletDatabase, vendorDataBase, ClientRepository, bookingDatabase, eventDatabase)
-export const injectedAdminDashboardController = new DashboardAdminController(adminDashboardUseCase)
+export const injectedAdminDashboardController = new DashboardAdminController(adminDashboardUseCase, eventDetailsForAdminDashboard)

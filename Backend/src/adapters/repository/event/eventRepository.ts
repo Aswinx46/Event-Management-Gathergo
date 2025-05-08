@@ -3,6 +3,7 @@ import { EventEntity } from "../../../domain/entities/event/eventEntity";
 import { EventUpdateEntity } from "../../../domain/entities/event/eventUpdateEntity";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
 import { eventModal } from "../../../framerwork/database/models/eventModel";
+import { EventDashboardSummary } from "../../../domain/entities/event/eventDashboardDTO";
 
 
 
@@ -124,5 +125,47 @@ export class EventRepository implements IeventRepository {
         ])
         return result[0]?.totalTickets || 0
 
+    }
+    async eventDetailsForAdminDashboard(): Promise<EventDashboardSummary> {
+        const totalEvents = await eventModal.countDocuments()
+        const activeEvents = await eventModal.countDocuments({ isActive: true })
+        const inactiveEvents = await eventModal.countDocuments({ isActive: false })
+
+        const statusAgg = await eventModal.aggregate([
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 }
+                }
+            }
+        ])
+
+        const statusCount = statusAgg.reduce((acc, item) => {
+            acc[item._id] = item.count
+            return acc
+        }, {
+            upcoming: 0,
+            completed: 0,
+            cancelled: 0
+        })
+
+        const totalTicketsAgg = await eventModal.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$ticketPurchased" }
+                }
+            }
+        ])
+
+        const totalTicketsSold = totalTicketsAgg[0]?.total || 0
+
+        return {
+            totalEvents,
+            activeEvents,
+            inactiveEvents,
+            statusCount,
+            totalTicketsSold
+        }
     }
 }

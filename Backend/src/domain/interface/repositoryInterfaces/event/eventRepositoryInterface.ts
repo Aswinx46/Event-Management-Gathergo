@@ -1,7 +1,7 @@
 import { ObjectId } from "mongoose";
 import { EventEntity } from "../../../entities/event/eventEntity";
 import { EventUpdateEntity } from "../../../entities/event/eventUpdateEntity";
-
+import { EventDashboardSummary } from "../../../entities/event/eventDashboardDTO";
 export interface IeventRepository {
     createEvent(event: EventEntity): Promise<EventEntity>
     findAllEventsClient(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }>
@@ -19,4 +19,5 @@ export interface IeventRepository {
     findTotalEvents(vendorId: string, datePeriod: Date | null): Promise<number>
     findRecentEvents(vendorId: string): Promise<EventEntity[] | []>
     findTotalticketsSold(vendorId: string,datePeriod:Date | null): Promise<number>
+    eventDetailsForAdminDashboard():Promise<EventDashboardSummary>
 }

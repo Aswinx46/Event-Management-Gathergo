@@ -16,8 +16,7 @@ import EventCreationForm from "@/components/Vendor/eventCreations/EventCreationF
 import EventlistingInVendor from "@/components/Vendor/event/EventlistingInVendor";
 import TicketVerification from "@/components/Vendor/event/ticketVerification/TicketVerification";
 import VendorWallet from "@/components/Vendor/wallet/VendorWallet";
-import VendorChat from "@/components/Vendor/vendorChat/VendorChat";
-import ChatListingVendor from "@/components/Vendor/chatListing/ChatListingVendor";
+
 import VendorProfile from "@/components/Vendor/home/VendorHome";
 import TicketsPage from "@/components/Vendor/ticketDetailsWithUser/TicketListingPage";
 import VendorChatAndMessage from "@/components/Vendor/chatListing/VendorChatAndMessage";
