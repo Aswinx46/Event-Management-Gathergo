@@ -6,13 +6,21 @@ import { FormattedChat } from "@/types/chatListing"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import VendorChat from "../vendorChat/VendorChat"
+import { useLocation } from "react-router-dom"
 
 function VendorChatAndMessage() {
+  const location = useLocation()
+  const stateClientId = location?.state?.clientId
+  const stateVendorId = location?.state?.vendorId
+  const stateChatId = location?.state?.chatId
+  const stateRoomId = stateClientId + stateVendorId
+  console.log(stateClientId , stateVendorId)
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
   const [clientId, setClientId] = useState<string>('')
-  const [chatId, setChatId] = useState<string>('')
+  const [chatId, setChatId] = useState<string>(stateChatId)
   const selectedRoomId = clientId + vendorId
-  const [roomId, setRoomId] = useState<string>(selectedRoomId)
+  console.log('state room id',stateRoomId)
+  const [roomId, setRoomId] = useState<string>(stateRoomId ?? selectedRoomId)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadChatsInfiniteVendor(vendorId!)
   const loaderRef = useInfiniteScrollObserver()
   const chats = data?.pages.flatMap(page => page.chats) ?? []

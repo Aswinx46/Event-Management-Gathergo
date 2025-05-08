@@ -5,20 +5,22 @@ import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/typ
 import { MessageEntity } from '@/types/messageEntity'
 import { useLoadMessageInfiniteVendor } from '@/hooks/VendorCustomHooks'
 import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
+import { useQueryClient } from '@tanstack/react-query'
 
-interface ClientChatProps{
-    clientId:string
-    vendorId:string
-    roomId:string
-    chatId:string
+interface ClientChatProps {
+    clientId: string
+    vendorId: string
+    roomId: string
+    chatId: string
 }
 
-function VendorChat({chatId,clientId,roomId,vendorId}:ClientChatProps) {
+function VendorChat({ chatId, clientId, roomId, vendorId }: ClientChatProps) {
 
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfiniteVendor(chatId, { enabled: !!chatId })
     const loaderRef = useInfiniteScrollObserver()
     const [chats, setChats] = useState<Message[]>([])
+    const queryClient = useQueryClient()
     useEffect(() => {
         if (data?.pages) {
             const allMessages = data.pages.flatMap(page => page.messages);
@@ -58,9 +60,10 @@ function VendorChat({chatId,clientId,roomId,vendorId}:ClientChatProps) {
             senderId: vendorId,
             senderModel: 'vendors',
         }
+        console.log('sender', sendMessage)
         socket.emit('sendMessage', { sendMessage, roomId, receiverId: clientId, receiverModel: 'client' }, (newChat: MessageTypeFromBackend) => {
             setChats((prev) => [...prev, newChat])
-
+            queryClient.invalidateQueries({ queryKey: ['chats', vendorId] })
         })
     }
 

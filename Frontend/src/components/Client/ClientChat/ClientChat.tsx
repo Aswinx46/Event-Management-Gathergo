@@ -5,6 +5,7 @@ import { MessageEntity } from '@/types/messageEntity'
 import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/types/MessageTypeFromBackend'
 import { useLoadMessageInfinite } from '@/hooks/ClientCustomHooks'
 import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface ClientChatProps{
     clientId:string
@@ -25,6 +26,7 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfinite(chatId, { enabled: !!chatId })
     const [chats, setChats] = useState<Message[]>([])
+    const queryClient=useQueryClient()
 
     useEffect(() => {
         if (data?.pages) {
@@ -78,6 +80,7 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
         socket.emit('sendMessage', { sendMessage, roomId, receiverId: vendorId, receiverModel: 'vendors' }, (newChat: MessageTypeFromBackend) => {
             console.log('acknoledgement',newChat)
             setChats((prev) => [...prev, newChat])
+            queryClient.invalidateQueries({queryKey: ['chats', clientId]})
 
         })
     }
