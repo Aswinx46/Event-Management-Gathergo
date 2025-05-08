@@ -1,20 +1,27 @@
 import { useEffect, useState } from 'react'
 import socket from '../../../hooks/ConnectSocketIo'
 import Chat from '@/components/other components/chat/SingleChat'
-import { useLocation } from 'react-router-dom'
 import { MessageEntity } from '@/types/messageEntity'
 import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/types/MessageTypeFromBackend'
 import { useLoadMessageInfinite } from '@/hooks/ClientCustomHooks'
 import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
-function ClientChat() {
-    const location = useLocation()
-    const stateData = location.state
-    const clientId = stateData.clientId
-    const vendorId = stateData.vendorId
-    const roomId = clientId + vendorId
-    const chatIdFromState = location.state?.chatId || null;
+
+interface ClientChatProps{
+    clientId:string
+    vendorId:string
+    roomId:string
+    chatId:string
+}
+
+function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
+    // const location = useLocation()
+    // const stateData = location.state
+    // const clientId = stateData.clientId
+    // const vendorId = stateData.vendorId
+    // const roomId = clientId + vendorId
+    // const chatIdFromState = location.state?.chatId || null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [chatId, setChatId] = useState(chatIdFromState);
+    // const [chatId, setChatId] = useState(chatIdFromState);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfinite(chatId, { enabled: !!chatId })
     const [chats, setChats] = useState<Message[]>([])
@@ -75,7 +82,7 @@ function ClientChat() {
     }
 
     return (
-        <div>
+        <div className='flex-3/4'>
             <Chat messages={chats} sendMessage={sendMessage} currentUserId={clientId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
         </div>
     )

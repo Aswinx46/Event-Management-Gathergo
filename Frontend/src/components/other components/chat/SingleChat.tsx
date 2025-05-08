@@ -34,18 +34,18 @@ const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      // initial={{ opacity: 0, scale: 0.95 }}
+      // animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, type: "spring", stiffness: 260, damping: 20 }}
-      className="max-w-2xl mx-auto p-6 rounded-2xl shadow-2xl bg-gradient-to-br from-black to-zinc-900 border border-white/10 backdrop-blur-sm"
+      className="h-full p-6  shadow-2xl bg-gradient-to-br  from-black to-zinc-900 border border-white/10 backdrop-blur-sm flex flex-col"
     >
       <div className="mb-6 border-b border-white/10 pb-4">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-white  via-gray-300 to-gray-400 bg-clip-text text-transparent">
           Chat
         </h2>
       </div>
 
-      <div className="h-[500px] overflow-y-auto mb-6 p-4 bg-black/50 rounded-xl shadow-inner relative backdrop-blur-sm">
+      <div className="h-[500px] overflow-y-auto mb-6 p-4 hide-scrollbar bg-black/50 rounded-xl shadow-inner relative backdrop-blur-sm grow-1">
         <AnimatePresence>
           {messages.map((msg, index) => {
             const isUser = msg.senderId === currentUserId
