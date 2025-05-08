@@ -5,21 +5,27 @@ import { motion } from "framer-motion"
 import { Calendar, MapPin, Mail, Twitter, Facebook, Instagram } from "lucide-react"
 import { EventType } from "@/types/EventType"
 import { useParams } from "react-router-dom"
-import { useFindEventById } from "@/hooks/ClientCustomHooks"
+import { useFindEventById, useShowReviews } from "@/hooks/ClientCustomHooks"
 import MapComponent from "./ShowLocation"
 import TicketPurchase from "./TicketBookingModal"
+import UserReviews from "../review/ShowReviews"
+import Pagination from "@/components/other components/Pagination"
 
 export default function EventDetails() {
     const [isLoaded, setIsLoaded] = useState(false)
-    const [showTicketPurchase,setShowTicketPurchase]=useState<boolean>(false)
+    const [showTicketPurchase, setShowTicketPurchase] = useState<boolean>(false)
     const { eventId } = useParams<{ eventId: string }>()
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [rating, setRating] = useState<number>(1)
+    const fetchReviews = useShowReviews({ targetId: eventId!, pageNo: currentPage, rating })
     useEffect(() => {
         setIsLoaded(true)
     }, [])
     const findEventById = useFindEventById(eventId!)
     const event: EventType = findEventById.data?.event
     if (!event) return (<p>Loading .....</p>)
-    console.log(findEventById.data)
+    const reviews = fetchReviews.data?.reviews
+    const totalPages = fetchReviews.data?.totalPages
 
 
 
@@ -57,11 +63,11 @@ export default function EventDetails() {
             },
         },
     }
- 
+
 
     return (
         <div className="bg-black">
-            {showTicketPurchase && <TicketPurchase event={event} setOpen={setShowTicketPurchase} open={showTicketPurchase}/>}
+            {showTicketPurchase && <TicketPurchase event={event} setOpen={setShowTicketPurchase} open={showTicketPurchase} />}
             <motion.div
                 initial="hidden"
                 animate={isLoaded ? "visible" : "hidden"}
@@ -162,7 +168,7 @@ export default function EventDetails() {
                             variants={slideUp}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            onClick={()=>setShowTicketPurchase(true)}
+                            onClick={() => setShowTicketPurchase(true)}
                             className="w-full bg-black text-white py-3 rounded font-medium hover:bg-neutral-800 transition-colors"
                         >
                             Book Now
@@ -209,7 +215,7 @@ export default function EventDetails() {
 
                     {/* Map */}
                     <motion.div variants={fadeIn} className="lg:col-span-2 z-10">
-  
+
                         <MapComponent lat={event?.location?.coordinates[1]} lng={event?.location?.coordinates[0]} />
                     </motion.div>
                 </div>
@@ -221,6 +227,8 @@ export default function EventDetails() {
                     <p className="text-xs text-neutral-400 mt-2">Explore more events by Xplore 24</p>
                 </motion.div>
             </motion.div>
+            {reviews && <UserReviews reviews={reviews} />}
+            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
         </div>
     )
 }

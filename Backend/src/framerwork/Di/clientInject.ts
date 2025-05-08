@@ -87,6 +87,8 @@ import { CancelBookingController } from "../../adapters/controllers/client/booki
 import { AddReviewUseCase } from "../../useCases/client/review/addReviewUseCase";
 import { ReviewRepository } from "../../adapters/repository/review/reviewRepository";
 import { AddReviewController } from "../../adapters/controllers/client/review/addReviewController";
+import { ShowReviewsUseCase } from "../../useCases/client/review/showReviewsUseCase";
+import { ShowReviewController } from "../../adapters/controllers/client/review/showReviewsController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -247,6 +249,10 @@ const bookingCancelUseCase = new BookingCancellationUseCase(bookingDatabase)
 export const injectedBookingCancellationController = new CancelBookingController(bookingCancelUseCase)
 
 //-----------------------------------Add Review-------------------------------------
-const reviewDatabase=new ReviewRepository()
-const addReviewUseCase=new AddReviewUseCase(reviewDatabase)
-export const injectedAddReviewController=new AddReviewController(addReviewUseCase)
+const reviewDatabase = new ReviewRepository()
+const addReviewUseCase = new AddReviewUseCase(reviewDatabase)
+export const injectedAddReviewController = new AddReviewController(addReviewUseCase)
+
+//----------------------------------show Reviews-------------------------
+const showReviewsUseCase = new ShowReviewsUseCase(reviewDatabase)
+export const injectedShowReviewController = new ShowReviewController(showReviewsUseCase)

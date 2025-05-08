@@ -13,11 +13,13 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCreateBooking, useFindSericeDataWithVendor } from '@/hooks/ClientCustomHooks';
+import { useCreateBooking, useFindSericeDataWithVendor, useShowReviews } from '@/hooks/ClientCustomHooks';
 import BookingConfirmation from '@/components/other components/BookingConfirmationModal';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import UserReviews from '../review/ShowReviews';
+import Pagination from '@/components/other components/Pagination';
 
 export interface Booking {
   date: Date[];
@@ -78,9 +80,14 @@ const VendorBookingCard = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { serviceId, vendorId } = useParams()
   const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [rating, setRating] = useState<number>(4)
   const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor
   const bookingApi = useCreateBooking()
   const navigate = useNavigate()
+  const fetchReviews = useShowReviews({ targetId: serviceId!, pageNo: currentPage, rating })
+  const reviews = fetchReviews?.data?.reviews
+  const totalPages=fetchReviews.data?.totalPages
   const handleNavigate = () => {
     navigate('/profile/bookings')
   }
@@ -417,6 +424,8 @@ const VendorBookingCard = () => {
           </motion.div>
         </motion.div>
       </div>
+      {reviews && <UserReviews reviews={reviews} />}
+      <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
     </div>
   );
 };

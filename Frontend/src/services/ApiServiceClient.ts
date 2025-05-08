@@ -451,3 +451,13 @@ export const addReview = async (review: ReviewEntity) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while adding review')
     }
 }
+
+export const showReviews = async (targetId: string, pageNo: number, rating: number) => {
+    try {
+        const response = await axios.get('/injectedShowReviewController', { params: { targetId, pageNo, rating } })
+        return response.data
+    } catch (error) {
+        console.log('error while fetching the reviews', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while fetching the reviews')
+    }
+}

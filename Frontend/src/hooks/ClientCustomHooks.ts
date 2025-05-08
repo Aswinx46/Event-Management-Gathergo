@@ -1,4 +1,4 @@
-import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
+import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, showReviews, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { ReviewEntity } from "@/types/ReviewType";
@@ -299,5 +299,12 @@ export const useCancelBooking = () => {
 export const useAddReview = () => {
     return useMutation({
         mutationFn: (review: ReviewEntity) => addReview(review)
+    })
+}
+
+export const useShowReviews = ({ targetId, pageNo, rating }: { targetId: string, pageNo: number, rating: number }) => {
+    return useQuery({
+        queryKey: ['reviews', targetId, pageNo, rating],
+        queryFn: () => showReviews(targetId, pageNo, rating)
     })
 }
