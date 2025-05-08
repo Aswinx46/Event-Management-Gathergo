@@ -3,7 +3,7 @@ import { Calendar, Clock, MapPin, Ticket } from "lucide-react";
 import { format } from "date-fns";
 import { TicketAndEventDTO } from "@/types/TicketAndEventDTO";
 import { useState } from "react";
-import { useFindTicketAndEventsDetails, useTicketCancellation } from "@/hooks/ClientCustomHooks";
+import { useAddReview, useFindTicketAndEventsDetails, useTicketCancellation } from "@/hooks/ClientCustomHooks";
 import Pagination from "@/components/other components/Pagination";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -11,6 +11,8 @@ import TicketModal from "./TicketDetailsModal";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/components/other components/ConfirmationModal";
 import { useQueryClient } from "@tanstack/react-query";
+import { ReviewEntity } from "@/types/ReviewType";
+import AddReviewModal from "@/components/other components/review/AddReview";
 
 const BookedEvents = () => {
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
@@ -23,9 +25,10 @@ const BookedEvents = () => {
   const [selectedEvent, setSelectedEvent] = useState<TicketAndEventDTO>()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedTicketId, setSelectedTicketId] = useState<string>('')
-
+  const [showAddReviewModal, setShowAddReviewModal] = useState<boolean>(false)
+  const [selectedEventIdForReview, setSelectedEventIdForReview] = useState<string>('')
   const queryClient = useQueryClient()
-
+  const addReview = useAddReview()
   const handleTicketCancel = () => {
     ticketCancellationHook.mutate(selectedTicketId, {
       onSuccess: () => {
@@ -69,10 +72,20 @@ This action is irreversible. Are you sure you want to proceed?
     setShowCancelAlert(true)
   }
 
+  const handleAddReviewSubmit = (review: ReviewEntity) => {
+    console.log(selectedEventIdForReview)
+    addReview.mutate(review, {
+      onSuccess: () => toast.success('Review Added'),
+      onError: (err) => toast.error(err.message)
+    },
+    )
+  }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {isOpen && <TicketModal open={isOpen} setIsOpen={setIsOpen} ticket={selectedEvent!} />}
+      {showAddReviewModal && <AddReviewModal isOpen={showAddReviewModal} onClose={() => setShowAddReviewModal(false)} onSubmit={handleAddReviewSubmit} reviewerId={clientId!} targetId={selectedEventIdForReview} targetType="event" />}
       {showCancelAlert && <ConfirmModal content={ticketCancellationNotice} isOpen={showCancelAlert} onCancel={() => setShowCancelAlert(false)} onConfirm={handleTicketCancel} />}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -179,6 +192,14 @@ This action is irreversible. Are you sure you want to proceed?
                   className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:shadow-purple-300/50"
                 >
                   Cancel Ticket
+                </motion.button>}
+                {ticketAndEvent.ticketStatus == 'used' && <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => { setShowAddReviewModal(true); setSelectedEventIdForReview(ticketAndEvent.event._id) }}
+                  className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:shadow-purple-300/50"
+                >
+                  Add Review
                 </motion.button>}
               </div>
             </div>

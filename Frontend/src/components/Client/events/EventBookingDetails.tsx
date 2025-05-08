@@ -57,8 +57,7 @@ export default function EventDetails() {
             },
         },
     }
-    console.log('startTime:', event?.startTime);
-    console.log('endTime:', event?.endTime);
+ 
 
     return (
         <div className="bg-black">
