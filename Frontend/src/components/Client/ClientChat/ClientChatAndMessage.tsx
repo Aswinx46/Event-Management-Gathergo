@@ -1,17 +1,15 @@
-import React, { useState } from 'react'
-import Chat from '../../other components/chat/SingleChat'
+import  { useState } from 'react'
 import ChatList from '../../other components/chatListing/ChatList'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useLoadChatsInfinite } from '@/hooks/ClientCustomHooks'
-import { useNavigate } from 'react-router-dom'
 import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
 import { FormattedChat } from '@/types/chatListing'
 import ClientChat from '@/components/Client/ClientChat/ClientChat'
 
 function ClientChatAndMessage() {
 
-    const [vendorId, setVendorId] = useState<string>(null)
+    const [vendorId, setVendorId] = useState<string>('')
     const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
     const roomId = clientId + vendorId
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadChatsInfinite(clientId!)

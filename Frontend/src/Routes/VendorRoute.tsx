@@ -20,6 +20,7 @@ import VendorChat from "@/components/Vendor/vendorChat/VendorChat";
 import ChatListingVendor from "@/components/Vendor/chatListing/ChatListingVendor";
 import VendorProfile from "@/components/Vendor/home/VendorHome";
 import TicketsPage from "@/components/Vendor/ticketDetailsWithUser/TicketListingPage";
+import VendorChatAndMessage from "@/components/Vendor/chatListing/VendorChatAndMessage";
 
 const VendorRoute = () => {
     return (
@@ -40,8 +41,8 @@ const VendorRoute = () => {
                 <Route path="showEvents" element={<ProtectedRouteVendor><EventlistingInVendor /></ProtectedRouteVendor>}></Route>
                 <Route path="scanTicket" element={<ProtectedRouteVendor><TicketVerification /></ProtectedRouteVendor>}></Route>
                 <Route path="wallet" element={<ProtectedRouteVendor><VendorWallet /></ProtectedRouteVendor>}></Route>
-                <Route path="chats/messages" element={<ProtectedRouteVendor><VendorChat /></ProtectedRouteVendor>}></Route>
-                <Route path="chats" element={<ProtectedRouteVendor><ChatListingVendor /></ProtectedRouteVendor>}></Route>
+                {/* <Route path="chats/messages" element={<ProtectedRouteVendor><VendorChat /></ProtectedRouteVendor>}></Route> */}
+                <Route path="chats" element={<ProtectedRouteVendor><VendorChatAndMessage /></ProtectedRouteVendor>}></Route>
                 <Route path="dashboard" element={<ProtectedRouteVendor><VendorDashboard /></ProtectedRouteVendor>}></Route>
                 <Route path="ticketListing" element={<ProtectedRouteVendor><TicketsPage /></ProtectedRouteVendor>}></Route>
                 {/* <Route path="editEvent" element={<ProtectedRouteVendor><Edit /></ProtectedRouteVendor>}></Route> */}

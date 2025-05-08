@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
 import socket from '../../../hooks/ConnectSocketIo'
-import { useLocation } from 'react-router-dom'
 import Chat from '@/components/other components/chat/SingleChat'
 import { MessageTypeFromBackend as Message, MessageTypeFromBackend } from '@/types/MessageTypeFromBackend'
 import { MessageEntity } from '@/types/messageEntity'
 import { useLoadMessageInfiniteVendor } from '@/hooks/VendorCustomHooks'
 import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
-function VendorChat() {
-    const location = useLocation()
-    const stateData = location.state
-    const vendorId = stateData.vendorId
-    const clientId = stateData.clientId
-    const roomId = clientId + vendorId
-    const chatIdFromState = location.state?.chatId || null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [chatId, setChatId] = useState(chatIdFromState);
+
+interface ClientChatProps{
+    clientId:string
+    vendorId:string
+    roomId:string
+    chatId:string
+}
+
+function VendorChat({chatId,clientId,roomId,vendorId}:ClientChatProps) {
+
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfiniteVendor(chatId, { enabled: !!chatId })
     const loaderRef = useInfiniteScrollObserver()
@@ -28,14 +28,6 @@ function VendorChat() {
     useEffect(() => {
         if (!socket.connected) socket.connect(); // optional safety check
 
-        // socket.on('connect', () => {
-        //     // console.log('Connected with socket id', socket.id)
-
-        //     // socket.emit('register', { userId: vendorId })
-
-
-
-        // })
         console.log("room id", roomId)
         if (!roomId) return
         socket.emit('joinRoom', { roomId })
@@ -74,7 +66,7 @@ function VendorChat() {
 
 
     return (
-        <div>
+        <div className='flex-3/4'>
             <Chat messages={chats} sendMessage={sendMessage} currentUserId={vendorId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
 
         </div>

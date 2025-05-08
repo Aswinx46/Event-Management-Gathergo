@@ -20,7 +20,7 @@ import ClientWallet from "@/components/Client/profile/wallet/ClientWallet";
 import TicketPaymentForm from "@/components/Client/paymentForm/TicketPaymentForm";
 import BookingPayment from "@/components/Client/bookingListing/BookingPayment";
 import ShowEventsNearYou from "@/components/Client/events/ShowEventsNearYou";
-import ClientChatAndMessage from "@/components/Client/ClientChat/ChatAndMessage";
+import ClientChatAndMessage from "@/components/Client/ClientChat/ClientChatAndMessage";
 const UserRoute = () => {
     return (
         <Routes>
