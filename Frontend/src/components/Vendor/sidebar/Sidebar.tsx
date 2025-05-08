@@ -27,9 +27,9 @@ export function Sidebar() {
   const menuItems = [
     { id: "home", label: "Profile", icon: User },
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
-    { id: "checkStatus", label: "Check Status", icon: CheckCircle },
+    // { id: "checkStatus", label: "Check Status", icon: CheckCircle },
     { id: "services", label: "Service", icon: Briefcase },
-    { id: "workSamples", label: "Work Samples", icon: Image },
+    // { id: "workSamples", label: "Work Samples", icon: Image },
     { id: "bookings", label: "Bookings", icon: Calendar },
     { id: "addEvent", label: "Events", icon: CalendarDays },
     { id: "showEvents", label: "ShowEvents", icon: CalendarDays },

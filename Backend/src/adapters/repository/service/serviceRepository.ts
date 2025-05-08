@@ -46,11 +46,11 @@ export class ServiceRepository implements IserviceRepository {
         );
     }
     async findServiceForClient(pageNo: number): Promise<{ Services: ServiceEntity[] | []; totalPages: number; }> {
-        const limit = 5
+        const limit = 6
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
         const Services = await serviceModal.find({ status: 'active' }).select('-createdAt -updatedAt').skip(skip).limit(limit)
-        const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
+        const totalPages = Math.ceil(await serviceModal.countDocuments({ status: 'active' }) / limit)
         return { Services, totalPages }
     }
     async showServiceDataInBookingPage(serviceId: string): Promise<ServiceWithVendorEntity | null> {
@@ -81,7 +81,7 @@ export class ServiceRepository implements IserviceRepository {
     async findServiceByCategory(categoryId: string | null, pageNo: number, sortBy: string): Promise<{ Services: ServiceEntity[] | [], totalPages: number }> {
 
         const page = Math.max(pageNo, 1)
-        const limit = 5
+        const limit = 6
         const skip = (page - 1) * limit
         const sortOptions: Record<string, any> = {
             "a-z": { serviceTitle: 1 },
@@ -92,16 +92,15 @@ export class ServiceRepository implements IserviceRepository {
             "oldest": { createdAt: 1 }
         }
         const sort = sortOptions[sortBy] || { createdAt: -1 }
-        console.log('this is sort', sort)
-        console.log('this is cat id', categoryId)
+       
         const filter: Filter = { status: 'active' }
         if (categoryId) filter.categoryId = categoryId
         const Services = await serviceModal.find(filter).collation({ locale: 'en', strength: 2 }).select('-createdAt -updatedAt').skip(skip).limit(limit).sort(sort)
-        const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
+        const totalPages = Math.ceil(await serviceModal.countDocuments(filter) / limit)
+        console.log(totalPages)
         return { Services, totalPages }
     }
     async searchService(query: string): Promise<ServiceEntity[] | []> {
-        console.log(query)
         const regex = new RegExp(query || '', 'i');
         return await serviceModal.find({ serviceTitle: { $regex: regex }, status: 'active' }).select('_id serviceTitle ')
     }

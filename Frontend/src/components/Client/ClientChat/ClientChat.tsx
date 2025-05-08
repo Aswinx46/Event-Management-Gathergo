@@ -38,7 +38,7 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
     // socket.connect()
     useEffect(() => {
         if (!socket.connected) socket.connect(); // optional safety check
-
+        console.log("connecting chat websocket")
         socket.on('connect', () => {
             // console.log('Connected with socket id', socket.id)
         })
@@ -65,7 +65,7 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
             socket.off('receiveMessage')
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [roomId])
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sendMessage = (message: any) => {
@@ -76,6 +76,7 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
         }
         // console.log(message)
         socket.emit('sendMessage', { sendMessage, roomId, receiverId: vendorId, receiverModel: 'vendors' }, (newChat: MessageTypeFromBackend) => {
+            console.log('acknoledgement',newChat)
             setChats((prev) => [...prev, newChat])
 
         })

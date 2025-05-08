@@ -229,7 +229,7 @@ export default function EventDetails() {
                 </motion.div>
             </motion.div>
             {reviews && <UserReviews reviews={reviews} />}
-            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
+            {reviews && reviews.length >0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
         </div>
     )
 }

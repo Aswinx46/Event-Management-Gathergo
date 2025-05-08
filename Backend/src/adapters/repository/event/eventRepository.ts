@@ -15,7 +15,7 @@ export class EventRepository implements IeventRepository {
         const limit = 5
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
-        const events = await eventModal.find({ isActive: true }).select('-__v').skip(skip).limit(limit)
+        const events = await eventModal.find({ isActive: true }).select('-__v').skip(skip).limit(limit).sort({createdAt:-1})
         const totalPages = Math.ceil(await eventModal.countDocuments() / limit)
         return { events, totalPages }
     }
@@ -92,7 +92,7 @@ export class EventRepository implements IeventRepository {
         return { events, totalPages }
     }
     async listingEventsInAdminSide(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }> {
-        const limit = 4
+        const limit = 3
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
         const events = await eventModal.find().select('-__v').skip(skip).limit(limit).lean()

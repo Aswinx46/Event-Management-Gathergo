@@ -121,6 +121,7 @@ export class SocketIoController {
             })
 
             socket.on('joinRoom', (data) => {
+                console.log("joining room ", data.roomId)
                 // console.log(`data from join room`, data)
                 if (!data) throw new Error('No room id available')
                 socket.join(data.roomId)

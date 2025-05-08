@@ -11,7 +11,8 @@ function VendorChatAndMessage() {
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
   const [clientId, setClientId] = useState<string>('')
   const [chatId, setChatId] = useState<string>('')
-  const roomId = clientId + chatId
+  const selectedRoomId = clientId + vendorId
+  const [roomId, setRoomId] = useState<string>(selectedRoomId)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadChatsInfiniteVendor(vendorId!)
   const loaderRef = useInfiniteScrollObserver()
   const chats = data?.pages.flatMap(page => page.chats) ?? []
@@ -27,6 +28,7 @@ function VendorChatAndMessage() {
     // })
     setClientId(chat.contact._id)
     setChatId(chat._id!)
+    setRoomId(chat.contact._id + vendorId)
   }
   return (
     <div className="flex  w-full gap-0">
@@ -34,7 +36,7 @@ function VendorChatAndMessage() {
         <ChatList chats={chats} onChatSelect={handleChatSelect} userId={vendorId!} userModel='vendors' />
         <div ref={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
       </div>
-      <VendorChat chatId={chatId} clientId={clientId} roomId={roomId} vendorId={vendorId!}/>
+      <VendorChat chatId={chatId} clientId={clientId} roomId={roomId} vendorId={vendorId!} />
     </div>
   )
 }

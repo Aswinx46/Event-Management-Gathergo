@@ -101,6 +101,7 @@ const ServicesList: React.FC = () => {
     ];
     // const services: Service[] = selectedCategoryId ? servicesWithCategory?.Services || [] : fetchedData?.Services || [];
     const services: Service[] = servicesWithCategory?.Services || fetchedData?.Services || [];
+    console.log(services)
     const handleServiceBooking = (serviceId: string, vendorId: string) => {
         navigate(`/serviceBooking/${serviceId}/${vendorId}`)
     }

@@ -49,7 +49,7 @@ function VendorChat({chatId,clientId,roomId,vendorId}:ClientChatProps) {
 
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [roomId])
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sendMessage = (message: any) => {
