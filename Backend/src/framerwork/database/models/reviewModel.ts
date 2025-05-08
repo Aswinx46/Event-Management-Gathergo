@@ -6,4 +6,4 @@ export interface IreviewModel extends Omit<ReviewEnity, '_id'>, Document {
     _id: ObjectId
 }
 
-export const reviewModel=model('model',reviewSchema)
+export const reviewModel=model('review',reviewSchema)

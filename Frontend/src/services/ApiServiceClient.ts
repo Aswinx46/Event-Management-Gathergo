@@ -3,6 +3,7 @@ import axios from '../axios/clientAxios'
 import { ClientUpdateProfileEntity } from '@/types/ClientUpdateProfileType';
 import { TicketEntity } from '@/types/TicketPaymentType';
 import { BookingType } from '@/types/BookingType';
+import { ReviewEntity } from '../types/ReviewType';
 
 interface Login {
     email: string;
@@ -438,5 +439,15 @@ export const cancelBooking = async (bookingId: string) => {
     } catch (error) {
         console.log('error while cancelling booking', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while cancelling booking')
+    }
+}
+
+export const addReview = async (review: ReviewEntity) => {
+    try {
+        const resposne = await axios.post('/addReview', { review })
+        return resposne.data
+    } catch (error) {
+        console.log('error while adding review', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while adding review')
     }
 }

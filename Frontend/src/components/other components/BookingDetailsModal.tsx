@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { formatDistanceToNow } from "date-fns";
+import {  formatDistanceToNow } from "date-fns";
 import {
     Dialog,
     DialogContent,
@@ -24,11 +24,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import RejectionReasonModal from "./RejectionReasonModal";
 import { useNavigate } from "react-router-dom";
-import { useCancelBooking } from "@/hooks/ClientCustomHooks";
+import { useAddReview, useCancelBooking } from "@/hooks/ClientCustomHooks";
 import ConfirmModal from "./ConfirmationModal";
+import AddReviewModal from "./review/AddReview";
+import { ReviewEntity } from "@/types/ReviewType";
 
 
 interface Service {
+    _id: string
     serviceTitle: string;
     serviceDescription: string;
     serviceDuration: string;
@@ -118,6 +121,8 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     const [rejectionReason, setRejectionReason] = useState<string>('')
     const [rejectingBookingId, setRejectingBookingId] = useState<string>('')
     const [cancelBookingId, setCancelBookingId] = useState<string>('')
+    const [showReviewModal, setShowReviewModal] = useState<boolean>(false)
+    const addReview = useAddReview()
     if (!booking) return null;
 
     // Animation variants
@@ -157,7 +162,6 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             }
         })
     }
-
     const handleApproveBooking = (bookingId: string) => {
 
         if (vendorId && bookingId) {
@@ -200,6 +204,21 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
         // setIsOpen(false)
     }
 
+
+
+    const handleReviewSubmit = (review: ReviewEntity) => {
+        addReview.mutate(review, {
+            onSuccess: () => {
+                toast.success('Review Added')
+                setIsOpen(false)
+            },
+            onError: (err) => {
+                toast.error(err.message)
+                
+            }
+        })
+    }
+
     const handleReject = () => {
 
         rejectBooking.mutate({ bookingId: rejectingBookingId, rejectionReason }, {
@@ -207,6 +226,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                 toast.success(data.message)
                 queryClient.invalidateQueries({ queryKey: ['Bookings-in-vendor', vendorId] })
                 setRejectionModal(false)
+                setIsOpen(false)
             },
             onError: (err) => {
                 toast.success(err.message)
@@ -243,41 +263,45 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     }
     return (
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
-            <DialogContent className="max-w-md max-h-[80vh] bg-gray-900 border border-gray-800 text-white p-0 rounded-xl overflow-hidden">
+            <DialogContent className="max-w-md max-h-[80vh] bg-[#1a1a1a] border border-[#333] text-white p-0 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.3)]">
                 <div className="custom-scrollbar overflow-y-auto max-h-[calc(80vh-4rem)]">
+                    {showReviewModal && <AddReviewModal isOpen={showReviewModal} onClose={() => setShowReviewModal(false)} reviewerId={clientId!} targetId={booking.service._id} targetType='service' onSubmit={handleReviewSubmit} />}
+
                     {showConfirmModal && <ConfirmModal content={cancelMessage} isOpen={showConfirmModal} onCancel={() => setShowConfirmModal(false)} onConfirm={handleCancelBooking} />}
                     {rejectionModal && <RejectionReasonModal isOpen={rejectionModal} onClose={handleOnClose} onSubmit={handleReject} rejectionReason={rejectionReason} setRejectionReason={setRejectionReason} />}
-                    <DialogHeader className="bg-black py-6 px-5">
+                    <DialogHeader className="bg-[#111] py-6 px-5 border-b border-[#333]">
                         <DialogTitle className="text-xl font-bold flex items-center justify-between">
-                            <span>Booking Details</span>
-                            <span className={`text-xs px-3 py-1 rounded-full ${getStatusStyle(booking.status)}`}>
+                            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Booking Details</span>
+                            <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${getStatusStyle(booking.status)}`}>
                                 {booking.status}
                             </span>
                         </DialogTitle>
                     </DialogHeader>
                     <motion.div
-                        className="p-6 space-y-5"
+                        className="p-6 space-y-6"
                         initial="hidden"
                         animate="visible"
                         variants={containerVariants}
                     >
                         {/* Service Details */}
-                        <motion.div variants={itemVariants} className="space-y-1">
+                        <motion.div variants={itemVariants} className="space-y-2 bg-[#222] p-4 rounded-xl border border-[#333]">
                             <h3 className="text-lg font-bold text-white">{booking.service.serviceTitle}</h3>
-                            <p className="text-gray-400 text-sm">{booking.service.serviceDescription}</p>
+                            <p className="text-gray-400 text-sm leading-relaxed">{booking.service.serviceDescription}</p>
                         </motion.div>
 
                         {/* Date and Time */}
-                        <motion.div variants={itemVariants} className="bg-gray-800 p-4 rounded-lg">
-                            <div className="flex flex-col gap-2">
+                        <motion.div variants={itemVariants} className="bg-[#222] p-5 rounded-xl border border-[#333]">
+                            <div className="flex flex-col gap-3">
                                 {Array.isArray(booking.date) &&
                                     booking.date.map((date, index) => {
                                         const dateObj = new Date(date);
                                         return (
-                                            <div key={index} className="flex items-center gap-3">
-                                                <Calendar className="h-5 w-5 text-gray-400" />
+                                            <div key={index} className="flex items-center gap-4">
+                                                <div className="bg-[#333] p-2 rounded-lg">
+                                                    <Calendar className="h-5 w-5 text-blue-400" />
+                                                </div>
                                                 <div>
-                                                    <p className="text-white">
+                                                    <p className="text-white font-medium">
                                                         {dateObj.toLocaleDateString("en-US", {
                                                             weekday: "long",
                                                             year: "numeric",
@@ -293,102 +317,168 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                                         );
                                     })}
                             </div>
-                            <div className="flex items-center gap-3 mt-3">
-                                <Clock className="h-5 w-5 text-gray-400" />
-                                <p className="text-white">{booking.service.serviceDuration}</p>
+                            <div className="flex items-center gap-4 mt-4">
+                                <div className="bg-[#333] p-2 rounded-lg">
+                                    <Clock className="h-5 w-5 text-blue-400" />
+                                </div>
+                                <p className="text-white font-medium">{booking.service.serviceDuration}</p>
                             </div>
                         </motion.div>
 
                         {/* Vendor Info */}
-                        <motion.div variants={itemVariants} className="border border-gray-800 rounded-lg p-4 flex items-center gap-4">
+                        <motion.div variants={itemVariants} className="bg-[#222] p-5 rounded-xl border border-[#333] flex items-center gap-4">
                             {(booking?.vendor?.profileImage || booking.client?.profileImage) &&
-                                <img
-                                    src={booking.vendor?.profileImage || booking.client?.profileImage}
-                                    // alt={booking.vendor?.name || booking.client?.name}
-                                    className="w-12 h-12 rounded-full object-cover"
-                                />
+                                <div className="relative">
+                                    <img
+                                        src={booking.vendor?.profileImage || booking.client?.profileImage}
+                                        className="w-14 h-14 rounded-xl object-cover border-2 border-blue-400"
+                                    />
+                                    <div className="absolute -bottom-1 -right-1 bg-blue-400 w-4 h-4 rounded-full border-2 border-[#222]"></div>
+                                </div>
                             }
                             <div>
-                                <p className="text-white font-medium">{booking?.vendor?.name || booking?.client?.name}</p>
+                                <p className="text-white font-semibold text-lg">{booking?.vendor?.name || booking?.client?.name}</p>
                                 <p className="text-gray-400 text-sm">{booking?.vendor?.email || booking.client.email}</p>
                                 <p className="text-gray-400 text-sm">{formatPhoneNumber(booking?.vendor?.phone || booking?.client?.phone)}</p>
                             </div>
                         </motion.div>
 
                         {/* Customer Info */}
-                        <motion.div variants={itemVariants} className="space-y-3">
-                            <h3 className="text-sm font-medium text-gray-400">{booking?.client?.email ? 'Client Contact Information' : 'Your Contact Information'}</h3>
-                            <div className="grid grid-cols-1 gap-3">
-                                <div className="flex items-center gap-3">
-                                    <Mail className="h-4 w-4 text-gray-500" />
+                        <motion.div variants={itemVariants} className="bg-[#222] p-5 rounded-xl border border-[#333]">
+                            <h3 className="text-sm font-medium text-blue-400 mb-4">{booking?.client?.email ? 'Client Contact Information' : 'Your Contact Information'}</h3>
+                            <div className="grid grid-cols-1 gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-[#333] p-2 rounded-lg">
+                                        <Mail className="h-4 w-4 text-blue-400" />
+                                    </div>
                                     <p className="text-white">{booking.email}</p>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <Phone className="h-4 w-4 text-gray-500" />
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-[#333] p-2 rounded-lg">
+                                        <Phone className="h-4 w-4 text-blue-400" />
+                                    </div>
                                     <p className="text-white">{formatPhoneNumber(booking.phone)}</p>
                                 </div>
                             </div>
                         </motion.div>
 
                         {/* Payment Details */}
-                        <motion.div variants={itemVariants} className="flex justify-between items-center border-t border-gray-800 pt-4 mt-4">
-                            <div className="flex items-center gap-2">
-                                <CreditCard className="h-5 w-5 text-gray-400" />
-                                <div>
-                                    <p className="text-sm text-gray-400">Payment Status</p>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full inline-block mt-1 ${getStatusStyle(booking.paymentStatus)}`}>
-                                        {booking.paymentStatus}
-                                    </span>
+                        <motion.div variants={itemVariants} className="bg-[#222] p-5 rounded-xl border border-[#333]">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-[#333] p-2 rounded-lg">
+                                        <CreditCard className="h-5 w-5 text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-400">Payment Status</p>
+                                        <span className={`text-xs px-2 py-1 rounded-full inline-block mt-1 font-medium ${getStatusStyle(booking.paymentStatus)}`}>
+                                            {booking.paymentStatus}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm text-gray-400">Total Amount</p>
-                                <p className="text-xl font-bold text-white">₹{booking.service.servicePrice.toLocaleString()}</p>
+                                <div className="text-right">
+                                    <p className="text-sm text-gray-400">Total Amount</p>
+                                    <p className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">₹{booking.service.servicePrice.toLocaleString()}</p>
+                                </div>
                             </div>
                         </motion.div>
 
                         {/* Booking ID */}
-                        <motion.div variants={itemVariants} className="text-center pt-2 border-t border-gray-800">
+                        <motion.div variants={itemVariants} className="text-center pt-2">
                             <p className="text-xs text-gray-500">Booking ID: {booking._id}</p>
                         </motion.div>
-                        {booking?.client?.email && booking?.vendorApproval == 'Pending' &&
-                            <motion.div variants={itemVariants} className="text-center pt-2 border-t flex justify-center gap-3 border-gray-800">
-                                <Button onClick={() => handleApproveBooking(booking._id)} className="bg-green-500">{approveBooking.isPending ? 'Approving' : 'Approve'}</Button>
-                                <Button onClick={() => handleDecline(booking._id)} className="bg-red-600">DECLINE</Button>
-                            </motion.div>}
 
-                        {booking?.client?.email && booking.vendorApproval == 'Approved' && booking.paymentStatus !== 'Successfull' &&
-                            < motion.div variants={itemVariants} className="text-center pt-2 border-t flex justify-center gap-3 border-gray-800">
-                                <Button onClick={() => handleChangeBookingStatus(booking)} className={booking.status == 'Pending' ? 'bg-green-500' : 'bg-red-600'}>{booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}</Button>
-                            </motion.div>}
+                        {/* Action Buttons */}
+                        <motion.div variants={itemVariants} className="flex flex-wrap gap-3 justify-center pt-4">
+                            {booking?.client?.email && booking?.vendorApproval == 'Pending' && (
+                                <>
+                                    <Button
+                                        onClick={() => handleApproveBooking(booking._id)}
+                                        className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                    >
+                                        {approveBooking.isPending ? 'Approving...' : 'Approve'}
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleDecline(booking._id)}
+                                        className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                    >
+                                        Decline
+                                    </Button>
+                                </>
+                            )}
+
+                            {booking?.client?.email && booking.vendorApproval == 'Approved' && booking.paymentStatus !== 'Successfull' && (
+                                <Button
+                                    onClick={() => handleChangeBookingStatus(booking)}
+                                    className={`${booking.status == 'Pending'
+                                        ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                        : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'} 
+                                        text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg`}
+                                >
+                                    {booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}
+                                </Button>
+                            )}
+
+                            {booking.status == 'Completed' && booking.paymentStatus == 'Successfull' && (
+                                <Button
+                                    onClick={() => setShowReviewModal(true)}
+                                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                >
+                                    Add Review
+                                </Button>
+                            )}
+
+                            {booking.status == 'Completed' && booking.paymentStatus !== 'Successfull' && booking.paymentStatus !== 'Refunded' && !booking?.client?.email && (
+                                <Button
+                                    onClick={() => handleBookingPayment(booking)}
+                                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                >
+                                    Pay Now
+                                </Button>
+                            )}
+
+                            {booking.vendorApproval == 'Approved' && (
+                                <Button
+                                    onClick={handleChatNavigate}
+                                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                >
+                                    Chat Now
+                                </Button>
+                            )}
+
+                            {booking.paymentStatus == 'Pending' && !booking?.client?.email && booking.status == 'Pending' && (
+                                <Button
+                                    onClick={() => { setCancelBookingId(booking._id); setShowConfirmModal(true) }}
+                                    className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                >
+                                    Cancel Booking
+                                </Button>
+                            )}
+                        </motion.div>
+
+                        {booking.rejectionReason && (
+                            <motion.div variants={itemVariants} className="bg-red-900/20 p-5 rounded-xl border border-red-800">
+                                <h3 className="text-sm font-medium text-red-400 mb-3">Rejection Reason</h3>
+                                <div className="grid grid-cols-1 gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <p className="text-white">{booking.rejectionReason}</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
                     </motion.div>
 
-                    {booking.rejectionReason && <motion.div variants={itemVariants} className="space-y-3">
-                        <h3 className="text-sm font-medium text-gray-400">'Rejection Reason</h3>
-                        <div className="grid grid-cols-1 gap-3">
-                            <div className="flex items-center gap-3">
-                                <p className="text-white">{booking.rejectionReason}</p>
-                            </div>
-                        </div>
-                    </motion.div>}
-                    <div className="flex justify-center">
-                        {booking.status == 'Completed' && booking.paymentStatus !== 'Successfull' && booking.paymentStatus !== 'Refunded' && !booking?.client?.email && < Button onClick={() => handleBookingPayment(booking)} className=" bg-green-500">Pay now</Button>}
-                        {booking.vendorApproval == 'Approved' && <Button onClick={handleChatNavigate} className="bg-purple-400 ">CHAT NOW</Button>}
-                        {booking.paymentStatus == 'Pending' && !booking?.client?.email && booking.status == 'Pending' && <Button onClick={() => { setCancelBookingId(booking._id); setShowConfirmModal(true) }} className="bg-purple-400 ps-3">CANCEL BOOKING</Button>}
-                    </div>
-                    <DialogFooter className="bg-gray-900 p-4  border-t border-gray-800">
+                    <DialogFooter className="bg-[#111] p-4 border-t border-[#333]">
                         <Button
                             onClick={() => setIsOpen(false)}
-                            className="w-full bg-black hover:bg-gray-800 text-white border border-gray-800"
+                            className="w-full bg-[#222] hover:bg-[#333] text-white border border-[#333] rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
                         >
                             Close
                         </Button>
-
                     </DialogFooter>
-
                 </div>
             </DialogContent>
-        </Dialog >
+        </Dialog>
     );
 };
 

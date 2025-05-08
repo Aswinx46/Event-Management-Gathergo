@@ -20,6 +20,7 @@ import { Calendar, Phone, Mail, Clock } from "lucide-react";
 import BookingDetailsModal from "./BookingDetailsModal";
 
 interface Service {
+  _id:string
   serviceTitle: string;
   serviceDescription: string;
   serviceDuration: string;
@@ -149,9 +150,9 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                       <div className="flex items-center space-x-3">
                         <img
                           src={booking.vendor?.profileImage || booking.client?.profileImage}
-                          alt={booking.vendor?.name || booking.client?.profileImage}
+                          // alt={booking.vendor?.name || booking.client?.profileImage}
                           className="w-10 h-10 rounded-full object-cover"
-                        />?
+                        />
                         <div>
                           <p className="font-medium">{booking?.vendor?.name || booking?.client?.name}</p>
                           <p className="text-sm text-gray-500">{booking?.vendor?.email || booking.client.email}</p>

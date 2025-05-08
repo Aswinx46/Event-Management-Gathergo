@@ -84,6 +84,9 @@ import { TicketCancellationUseCase } from "../../useCases/client/ticket/ticketCa
 import { TicketCancellationController } from "../../adapters/controllers/client/ticketCancellation/ticketCancellationController";
 import { BookingCancellationUseCase } from "../../useCases/client/booking/bookingCancellationUseCase";
 import { CancelBookingController } from "../../adapters/controllers/client/booking/cancelBookingController";
+import { AddReviewUseCase } from "../../useCases/client/review/addReviewUseCase";
+import { ReviewRepository } from "../../adapters/repository/review/reviewRepository";
+import { AddReviewController } from "../../adapters/controllers/client/review/addReviewController";
 
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
@@ -242,3 +245,8 @@ export const injectedTicketCancellationController = new TicketCancellationContro
 //----------------------------------booking cancel------------------------
 const bookingCancelUseCase = new BookingCancellationUseCase(bookingDatabase)
 export const injectedBookingCancellationController = new CancelBookingController(bookingCancelUseCase)
+
+//-----------------------------------Add Review-------------------------------------
+const reviewDatabase=new ReviewRepository()
+const addReviewUseCase=new AddReviewUseCase(reviewDatabase)
+export const injectedAddReviewController=new AddReviewController(addReviewUseCase)

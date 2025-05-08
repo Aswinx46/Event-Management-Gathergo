@@ -1,6 +1,7 @@
-import { cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
+import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
+import { ReviewEntity } from "@/types/ReviewType";
 import { TicketEntity } from "@/types/TicketPaymentType";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 type LoginProps = {
@@ -229,7 +230,7 @@ export const useFindEventsBasedOnCategory = (category: string, pageNo: number, s
         queryKey: ['eventsBasedOnCategory', category, pageNo, sortBy],
         queryFn: () => findEventsBasedOnCategory(category, pageNo, sortBy),
         enabled: !!category || !!sortBy,
-        
+
     })
 }
 
@@ -292,5 +293,11 @@ export const useTicketCancellation = () => {
 export const useCancelBooking = () => {
     return useMutation({
         mutationFn: (bookingId: string) => cancelBooking(bookingId)
+    })
+}
+
+export const useAddReview = () => {
+    return useMutation({
+        mutationFn: (review: ReviewEntity) => addReview(review)
     })
 }
