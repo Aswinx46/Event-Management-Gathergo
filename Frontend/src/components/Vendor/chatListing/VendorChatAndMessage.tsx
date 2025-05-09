@@ -16,10 +16,10 @@ function VendorChatAndMessage() {
   const stateRoomId = stateClientId + stateVendorId
   console.log(stateClientId , stateVendorId)
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
-  const [clientId, setClientId] = useState<string>('')
+  const [clientId, setClientId] = useState<string>(stateClientId)
   const [chatId, setChatId] = useState<string>(stateChatId)
   const selectedRoomId = clientId + vendorId
-  console.log('state room id',stateRoomId)
+  // console.log('state room id',stateRoomId)
   const [roomId, setRoomId] = useState<string>(stateRoomId ?? selectedRoomId)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadChatsInfiniteVendor(vendorId!)
   const loaderRef = useInfiniteScrollObserver()
