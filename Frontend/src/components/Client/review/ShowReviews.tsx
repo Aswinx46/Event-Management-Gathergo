@@ -15,7 +15,7 @@ export default function UserReviews({ reviews = [] }: UserReviewsProps) {
         );
       }
     return (
-        <div className="w-full py-8 bg-black text-white">
+        <div className="w-full py-8 bg-black mb-8 text-white">
             <div className="container mx-auto px-4">
                 <motion.h2
                     className="text-3xl font-bold mb-8 text-center"
@@ -39,7 +39,7 @@ export default function UserReviews({ reviews = [] }: UserReviewsProps) {
 function ReviewCard({ review, index }: { review: ReviewDetailsDTO; index: number }) {
     return (
         <motion.div
-            className="bg-zinc-900 rounded-lg p-6 shadow-lg line-clamp-3 overflow-y-scroll hide-scrollbar hover:shadow-purple-900/20 transition-shadow"
+            className="bg-zinc-900  rounded-lg p-6 shadow-lg line-clamp-3 overflow-y-scroll hide-scrollbar hover:shadow-purple-900/20 transition-shadow"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -86,7 +86,7 @@ function ReviewCard({ review, index }: { review: ReviewDetailsDTO; index: number
             </div>
 
             <motion.p
-                className="text-zinc-300 mt-3"
+                className="text-zinc-300 mt-3 hide-scrollbar line-clamp-5 overflow-y-scroll"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}

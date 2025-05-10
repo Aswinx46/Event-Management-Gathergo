@@ -21,7 +21,7 @@ function ShowEventsNearYou() {
     if (error) return <p>{error}</p>;
     if (isPending) return <p>Loading events...</p>;
     if (isError) return <p>Failed to load events.</p>;
-
+    // console.log("event response", response)
     const handleUpdateRange = (newRange: number) => {
         console.log(newRange * 1000)
         setRange(newRange * 1000)
@@ -37,7 +37,7 @@ function ShowEventsNearYou() {
             </h1>
 
             {response?.events && <EventList currentPage={currentPage} events={response?.events} isLoading={isPending} />}
-            <Pagination current={currentPage} setPage={setCurrentPage} total={response?.totalPages} />
+            <Pagination current={currentPage} setPage={setCurrentPage} total={response?.totalPages || 1} />
         </div>
     )
 }

@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BellRing, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { clearAllNotifications } from "@/store/slices/notification/notificationSlice";
+
+import { useLocation } from "react-router-dom";
 
 export interface NotificationDTO {
     _id?: string;
@@ -27,25 +28,25 @@ interface NotificationsDropdownProps {
     onMarkAsRead?: (id: string) => void;
     onMarkAllAsRead?: () => void;
     onClearNotification?: (id: string) => void;
-    // onClearAllNotifications?: () => void;
+    onClearAllNotifications?: () => void;
 }
 
 export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     onMarkAsRead,
     // onMarkAllAsRead,
     onClearNotification,
-    // onClearAllNotifications,
+    onClearAllNotifications,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const notifications = useSelector((state: RootState) => state.notificationSlice.notification).flat()
-    console.log(notifications)
     const unreadNotifications = notifications.filter((notif) => !notif.read);
     const hasUnread = unreadNotifications.length > 0;
     const hasNotifications = notifications.length > 0;
-    const dispatch = useDispatch()
-    const onClearAllNotifications = () => {
-        dispatch(clearAllNotifications([]))
-    }
+ 
+    const location = useLocation()
+    console.log(location.pathname)
+    
+   
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -99,36 +100,36 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        { !hasUnread && <BellRing className="h-6 w-6" />}
+                        {!hasUnread && <BellRing className="h-6 w-6" />}
                         {hasUnread && (
                             <motion.button
-                            onClick={toggleDropdown}
-                            className="relative p-2  rounded-full hover:bg-gray-100 transition-colors focus:outline-none text-white hover:text-black"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                                onClick={toggleDropdown}
+                                className="relative p-2  rounded-full hover:bg-gray-100 transition-colors focus:outline-none text-white hover:text-black"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
-                            <BellRing className="h-6 w-6 " />
-                          {hasUnread && (
-                              <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
-                                  layoutId="notification-dot"
-                              >
-                                  <motion.div
-                                      className="absolute inset-0 rounded-full bg-red-500"
-                                      animate={{ scale: [1, 1.2, 1] }}
-                                      transition={{
-                                          repeat: Infinity,
-                                          duration: 2,
-                                          repeatType: "loop",
-                                      }}
-                                  />
-                                  <span className="relative z-10">{unreadNotifications.length}</span>
-                              </motion.div>
-                          )}
-                      </motion.button>
-                      
+                                <BellRing className="h-6 w-6 " />
+                                {hasUnread && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+                                        layoutId="notification-dot"
+                                    >
+                                        <motion.div
+                                            className="absolute inset-0 rounded-full bg-red-500"
+                                            animate={{ scale: [1, 1.2, 1] }}
+                                            transition={{
+                                                repeat: Infinity,
+                                                duration: 2,
+                                                repeatType: "loop",
+                                            }}
+                                        />
+                                        <span className="relative z-10">{unreadNotifications.length}</span>
+                                    </motion.div>
+                                )}
+                            </motion.button>
+
                         )}
                     </motion.button>
 

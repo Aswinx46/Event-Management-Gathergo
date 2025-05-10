@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedTicketDetailsWithUserController, injectedTicketVerificationController, injectedUpdateAboutAndPhoneController, injectedUpdateBookingAsCompleteController, injectedUpdateEventController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorDashboardController, injectedVendorLoginController, injectedVendorLogoutController, injectedWalletDetailsVendorController } from "../../Di/vendorInject";
 import { injectedTokenExpiryValidationChecking, injectedVendorStatusCheckingMiddleware, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
-import { injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
+import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
 
 export class VendorRoute {
     public vendorRoute: Router
@@ -91,6 +91,12 @@ export class VendorRoute {
         })
         this.vendorRoute.get('/ticketDetailsWithUser', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedTicketDetailsWithUserController.handleTicketAndUserDetails(req, res)
+        })
+        this.vendorRoute.delete('/deleteSingleNotification', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedDeleteSingleNotificationController.handleDeleteSingleNotification(req, res)
+        })
+        this.vendorRoute.delete('/deleteAllNotifications', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedDeleteAllNotificationsController.handleDeleteAllNotification(req, res)
         })
     }
 }

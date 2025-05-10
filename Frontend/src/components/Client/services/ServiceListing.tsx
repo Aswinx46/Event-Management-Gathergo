@@ -6,7 +6,6 @@ import Pagination from '@/components/other components/Pagination';
 import { useNavigate, useParams } from 'react-router-dom';
 import FilterComponent from '@/components/other components/Filter';
 import SearchModal from '@/components/other components/search/SearchContainer';
-import { Button } from '@/components/ui/button';
 // import { toast } from 'react-toastify';
 
 // interface SearchResult {
@@ -138,7 +137,7 @@ const ServicesList: React.FC = () => {
     return (
         <div className='w-full min-h-screen bg-black'>
             <div className='flex justify-end pt-5 items-center px-0 md:px-[10%] gap-1 md:gap-4'>
-                <Button onClick={() => setSearchOpen(true)}>SEARCH</Button>
+                {/* <Button onClick={() => setSearchOpen(true)}>SEARCH</Button> */}
                 {<SearchModal handleOnClick={handleSearchOnClick} onSubmit={handleOnSubmit} setIsOpen={setSearchOpen} setText={setQuery} text={query} isOpen={searchOpen} />}
                 {!categoryId && <FilterComponent filterFields={filterFields} onSortChange={handleSelectSort} onClearFilter={handleClearField} onClearSort={handleClearSort} onFilterChange={handleSelectItem} sortOptions={categorySortOptions} />}
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar as CalendarIcon, Mail, Phone, Clock, DollarSign, User } from 'lucide-react';
@@ -87,7 +88,7 @@ const VendorBookingCard = () => {
   const navigate = useNavigate()
   const fetchReviews = useShowReviews({ targetId: serviceId!, pageNo: currentPage, rating })
   const reviews = fetchReviews?.data?.reviews
-  const totalPages=fetchReviews.data?.totalPages
+  const totalPages = fetchReviews.data?.totalPages
   const handleNavigate = () => {
     navigate('/profile/bookings')
   }
@@ -425,7 +426,7 @@ const VendorBookingCard = () => {
         </motion.div>
       </div>
       {reviews && <UserReviews reviews={reviews} />}
-      <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
+      {reviews && reviews.length >0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
     </div>
   );
 };

@@ -90,6 +90,7 @@ import { AddReviewController } from "../../adapters/controllers/client/review/ad
 import { ShowReviewsUseCase } from "../../useCases/client/review/showReviewsUseCase";
 import { ShowReviewController } from "../../adapters/controllers/client/review/showReviewsController";
 
+
 // -----------------------register client ----------------------------//
 const otpService = new OtpService()
 const EmailService = new emailService()
@@ -256,3 +257,4 @@ export const injectedAddReviewController = new AddReviewController(addReviewUseC
 //----------------------------------show Reviews-------------------------
 const showReviewsUseCase = new ShowReviewsUseCase(reviewDatabase)
 export const injectedShowReviewController = new ShowReviewController(showReviewsUseCase)
+

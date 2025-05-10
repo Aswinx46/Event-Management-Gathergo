@@ -17,4 +17,10 @@ export class NotificationRepository implements InotificationRepository {
         const notifications = await notificationModal.find({ to: userId }).populate('from', '_id name profileImage')
         return notifications
     }
+    async deleteSingleNotification(notificationdId: string): Promise<boolean> {
+        const deleteNotification = await notificationModal.findByIdAndDelete(notificationdId)
+        if (!deleteNotification) throw new Error('No notification found in this ID')
+        return true
+
+    }
 }

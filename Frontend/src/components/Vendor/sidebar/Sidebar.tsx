@@ -4,9 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown"
 import {
   User,
-  CheckCircle,
   Briefcase,
-  Image,
   Calendar,
   CalendarDays,
   Lock,
@@ -19,10 +17,17 @@ import {
   LayoutDashboardIcon
 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useDeleteAllNotificationsVendor } from "@/hooks/VendorCustomHooks"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "@/store/store"
+import { clearAllNotifications } from "@/store/slices/notification/notificationSlice"
+import { toast } from "react-toastify"
 
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(true)
+
+  const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
 
   const menuItems = [
     { id: "home", label: "Profile", icon: User },
@@ -43,6 +48,7 @@ export function Sidebar() {
     setIsOpen(!isOpen)
   }
   const location = useLocation()
+  const dispatch = useDispatch()
 
   const isActive = (link: string) => {
     const id = location.pathname.split('/')[2]
@@ -56,6 +62,21 @@ export function Sidebar() {
     navigate(`/vendor/${sectionId}`)
     if (window.innerWidth < 768) {
       setIsOpen(false)
+    }
+  }
+
+  const clearAllNotificationVendor = useDeleteAllNotificationsVendor()
+
+  const OnclearAllNotification = () => {
+    if (vendorId) {
+      clearAllNotificationVendor.mutate(vendorId, {
+        onSuccess: () => {
+          dispatch(clearAllNotifications([]))
+        },
+        onError: (err) => {
+          toast.error(err.message)
+        }
+      })
     }
   }
 
@@ -92,7 +113,7 @@ export function Sidebar() {
       >
         <div className="p-5 border-b flex gap-3">
           <h2 className="text-xl font-bold text-gray-800">Vendor Dashboard</h2>
-          <NotificationsDropdown />
+          <NotificationsDropdown onClearAllNotifications={OnclearAllNotification} />
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4">

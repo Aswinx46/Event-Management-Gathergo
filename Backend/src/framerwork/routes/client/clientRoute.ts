@@ -3,7 +3,7 @@ import { clientAuthenticationController, injectedAddReviewController, injectedBo
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
-import { injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
+import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -132,6 +132,12 @@ export class clientRoute {
         })
         this.clientRoute.get('/injectedShowReviewController', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedShowReviewController.handleShowReview(req, res)
+        })
+        this.clientRoute.delete('/deleteSingleNotification', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedDeleteSingleNotificationController.handleDeleteSingleNotification(req, res)
+        })
+        this.clientRoute.delete('/deleteAllNotifications', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedDeleteAllNotificationsController.handleDeleteAllNotification(req, res)
         })
     }
 }

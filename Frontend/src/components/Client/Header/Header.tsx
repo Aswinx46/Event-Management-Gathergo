@@ -5,10 +5,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useClientLogout } from '@/hooks/ClientCustomHooks';
+import { useClientLogout, useDeleteAllNotificationsClient } from '@/hooks/ClientCustomHooks';
 import { removeClient } from '@/store/slices/user/userSlice';
 import { removeToken } from '@/store/slices/user/userTokenSlice';
 import { NotificationsDropdown } from '@/components/notifications/NotificationsDropdown';
+import { clearAllNotifications } from '@/store/slices/notification/notificationSlice';
+import { toast } from 'react-toastify';
 type NavItem =
   | { name: string; path: string; onClick?: never }
   | { name: string; onClick: () => void; path?: never };
@@ -77,6 +79,7 @@ const Header = () => {
 
   const clientLogout = useClientLogout()
   const dispatch = useDispatch()
+  const clearAllNotficationClient = useDeleteAllNotificationsClient()
 
   const navItems: NavItem[] = [
     { name: 'Home', path: '/' },
@@ -108,6 +111,20 @@ const Header = () => {
       name: 'Login',
       path: '/login'
     })
+  }
+
+  const onClearAllNotifications = () => {
+    if (client) {
+      clearAllNotficationClient.mutate(client._id!, {
+        onSuccess: () => {
+          dispatch(clearAllNotifications([]))
+        },
+        onError: (err) => {
+          toast.error(err.message)
+        }
+      })
+
+    }
   }
 
   return (
@@ -153,7 +170,7 @@ const Header = () => {
                   )}
                 </motion.div>
               ))}
-        {client && <NotificationsDropdown />}
+              {client && <NotificationsDropdown onClearAllNotifications={onClearAllNotifications} />}
 
             </nav>
           )}
@@ -211,7 +228,7 @@ const Header = () => {
                     variants={itemVariants}
                     className="px-4"
                   >
-                    
+
                     {item.path ? (
                       <Link
                         to={item.path}
