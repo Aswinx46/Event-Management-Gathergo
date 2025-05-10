@@ -56,7 +56,7 @@ const ChatList = ({ chats, userId, userModel, onChatSelect, selectedChatId }: Ch
     );
 
     return (
-        <div className="h-screen flex flex-col bg-gradient-to-b from-black  to-zinc-900 border-r border-white/10">
+        <div className="md:h-screen  flex flex-col bg-gradient-to-b from-black  to-zinc-900 border-r border-white/10">
             <div className="p-6 border-b border-white/10 bg-black/50 backdrop-blur-sm">
                 <h2 className="text-3xl font-bold mb-5 text-white bg-clip-text bg-gradient-to-r from-white to-zinc-400">
                     Messages

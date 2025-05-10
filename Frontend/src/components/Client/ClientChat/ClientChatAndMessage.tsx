@@ -37,8 +37,8 @@ function ClientChatAndMessage() {
 
     const chats = data?.pages.flatMap(page => page.chats) ?? []
     return (
-        <div className='flex  w-full gap-0'>
-            <div className='flex-1/4'>
+        <div className='flex flex-col md:flex-row w-full gap-0 '>
+            <div className='md:flex-1/4 '>
                 <ChatList chats={chats} onChatSelect={handleChatSelect} userId={clientId ?? stateClientId} userModel='client' selectedChatId='' />
                 <div ref={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
             </div>
