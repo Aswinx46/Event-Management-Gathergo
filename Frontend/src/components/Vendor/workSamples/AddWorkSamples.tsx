@@ -65,10 +65,10 @@ export default function AddWorkSample() {
 
     try {
       const uploadPromises = values.images.map((image: ImageFile) => {
-        if (!image.file && image.file.size <= 5 * 1024 * 1024 && image.file.type.startsWith('image/')) {
-          toast.error('Only image files under 5MB are allowed')
-          return
-        }
+        // if (!image.file && image.file.size <= 5 * 1024 * 1024 && image.file.type.startsWith('image/')) {
+        //   toast.error('Only image files under 5MB are allowed')
+        //   return
+        // }
         const formdata = new FormData()
         formdata.append('file', image.file)
         formdata.append('upload_preset', 'workSamples')

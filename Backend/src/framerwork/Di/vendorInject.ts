@@ -64,6 +64,8 @@ import { VendorDashboardUseCase } from "../../useCases/vendor/dashboard/vendorDa
 import { VendorDashboardController } from "../../adapters/controllers/vendor/dashboard/vendorDashboardController";
 import { TicketAndUserDetailsOfEventUseCase } from "../../useCases/vendor/ticket/ticketAndUserDetailsOfEventUseCase";
 import { TicketAndUserDetailsController } from "../../adapters/controllers/vendor/ticket/ticketAndUserDetailsController";
+import { FindWorkSamplesOfAVendorUseCase } from "../../useCases/vendor/workSamples/findWorkSamplesOfAUser";
+import { FindWorkSamplesOfAVendorController } from "../../adapters/controllers/vendor/workSamples/findWorkSamplesOfAVendorController";
 
 
 
@@ -181,3 +183,6 @@ export const injectedVendorDashboardController = new VendorDashboardController(v
 //--------------------------------find ticket details with the user details----------------------
 const ticketDetailsWithUserDetails = new TicketAndUserDetailsOfEventUseCase(ticketdatabase)
 export const injectedTicketDetailsWithUserController = new TicketAndUserDetailsController(ticketDetailsWithUserDetails)
+//--------------------------------find work sample of a vendor-------------------------------
+const findWorkSampleOfAVendorUseCase=new FindWorkSamplesOfAVendorUseCase(worksampleDatabase)
+export const injectedFindWorkSamplesOfVendorController = new FindWorkSamplesOfAVendorController(findWorkSampleOfAVendorUseCase)

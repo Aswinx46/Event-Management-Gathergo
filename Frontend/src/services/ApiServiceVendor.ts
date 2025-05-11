@@ -378,3 +378,13 @@ export const createWorkSamples = async (workSample: WorkSamplesEntity) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while creating work samples')
     }
 }
+
+export const findWorkSamples = async (vendorId: string, pageNo: number) => {
+    try {
+        const response = await axios.get('/workSamples', { params: { vendorId, pageNo } })
+        return response.data
+    } catch (error) {
+        console.log('error while finding the work samples', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding work samples')
+    }
+}
