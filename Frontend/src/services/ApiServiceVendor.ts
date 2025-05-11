@@ -3,6 +3,7 @@ import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
 import { EventUpdateEntity } from '@/types/updateEventType';
 import { Period } from '@/types/DatePeriodType';
+import { WorkSamplesEntity } from '@/types/workSampleEntity';
 
 
 interface VendorData {
@@ -365,5 +366,15 @@ export const deleteSingleNotificationVendor = async (notificationId: string) => 
     } catch (error) {
         console.log('error while deleting single notifications', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while deleting single notification')
+    }
+}
+
+export const createWorkSamples = async (workSample: WorkSamplesEntity) => {
+    try {
+        const response = await axios.post('/createWorkSample', { workSample })
+        return response.data
+    } catch (error) {
+        console.log('error while creating work sample', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while creating work samples')
     }
 }

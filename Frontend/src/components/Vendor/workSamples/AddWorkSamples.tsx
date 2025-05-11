@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import  { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
+import { useCreateWorkSample, useUploadeImageToCloudinaryMutation } from '@/hooks/VendorCustomHooks';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { WorkSamplesEntity } from '@/types/workSampleEntity';
 
 // TypeScript interfaces
 interface ImageFile {
@@ -11,6 +17,7 @@ interface ImageFile {
 }
 
 interface WorkSampleFormValues {
+  vendorId?: string
   title: string;
   description: string;
   images: ImageFile[];
@@ -21,7 +28,9 @@ interface WorkSampleFormValues {
 export default function AddWorkSample() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-
+  const uploadImageToCloudinary = useUploadeImageToCloudinaryMutation()
+  const createWorkSample = useCreateWorkSample()
+  const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
   // Form validation schema
   const validationSchema = Yup.object({
     title: Yup.string()
@@ -51,19 +60,41 @@ export default function AddWorkSample() {
   };
 
   // Handle form submission
-  const handleSubmit = async (values: WorkSampleFormValues) => {
+  const handleSubmit = async (values: WorkSampleFormValues, resetForm: () => void) => {
     setSubmitting(true);
-    console.log(values)
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    //   onSubmit(values);
-      setSuccess(true);
-      
-      // Reset success state after 3 seconds
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
+      const uploadPromises = values.images.map((image: ImageFile) => {
+        if (!image.file && image.file.size <= 5 * 1024 * 1024 && image.file.type.startsWith('image/')) {
+          toast.error('Only image files under 5MB are allowed')
+          return
+        }
+        const formdata = new FormData()
+        formdata.append('file', image.file)
+        formdata.append('upload_preset', 'workSamples')
+        return uploadImageToCloudinary.mutateAsync(formdata)
+      })
+      const responses = await Promise.all(uploadPromises)
+      const images = responses.map(res => res.secure_url);
+
+
+      const uploadValue: WorkSamplesEntity = {
+        description: values.description,
+        images,
+        title: values.title,
+        vendorId: vendorId!,
+
+      }
+      const workSampleCreation = createWorkSample.mutate(uploadValue, {
+        onSuccess: () => {
+          toast.success('Work sample created')
+          setSuccess(true)
+          setTimeout(() => setSuccess(false), 3000) // optional auto-hide
+          // formik.resetForm()
+          resetForm()
+        },
+        onError: (err) => toast.error(err.message)
+      })
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
@@ -94,17 +125,17 @@ export default function AddWorkSample() {
 
   const successVariants = {
     hidden: { scale: 0.8, opacity: 0 },
-    visible: { 
-      scale: 1, 
+    visible: {
+      scale: 1,
       opacity: 1,
-      transition: { 
+      transition: {
         type: "spring",
         stiffness: 300,
         damping: 15
       }
     },
-    exit: { 
-      scale: 0.8, 
+    exit: {
+      scale: 0.8,
       opacity: 0,
       transition: { duration: 0.2 }
     }
@@ -118,7 +149,7 @@ export default function AddWorkSample() {
         animate="visible"
         className="bg-white rounded-2xl shadow-xl p-8 border border-purple-100"
       >
-        <motion.h2 
+        <motion.h2
           variants={itemVariants}
           className="text-3xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600"
         >
@@ -128,7 +159,9 @@ export default function AddWorkSample() {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
+          onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
+
         >
           {({ values, errors, touched }) => (
             <Form className="space-y-6">
@@ -140,9 +173,8 @@ export default function AddWorkSample() {
                   type="text"
                   id="title"
                   name="title"
-                  className={`w-full px-4 py-3 rounded-lg border ${
-                    errors.title && touched.title ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200`}
+                  className={`w-full px-4 py-3 rounded-lg border ${errors.title && touched.title ? 'border-red-500' : 'border-gray-300'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200`}
                   placeholder="Enter work sample title"
                 />
                 <ErrorMessage name="title">
@@ -159,9 +191,8 @@ export default function AddWorkSample() {
                   id="description"
                   name="description"
                   rows={4}
-                  className={`w-full px-4 py-3 rounded-lg border ${
-                    errors.description && touched.description ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200`}
+                  className={`w-full px-4 py-3 rounded-lg border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-300'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200`}
                   placeholder="Describe your work sample in detail"
                 />
                 <ErrorMessage name="description">
@@ -173,7 +204,7 @@ export default function AddWorkSample() {
                 <label className="block text-sm font-medium text-gray-700">
                   Images
                 </label>
-                
+
                 <FieldArray name="images">
                   {({ push, remove }) => (
                     <div className="space-y-4">
@@ -205,7 +236,7 @@ export default function AddWorkSample() {
                             </motion.button>
                           </motion.div>
                         ))}
-                        
+
                         {/* Add image button */}
                         {values.images.length < 10 && (
                           <motion.div
@@ -242,18 +273,18 @@ export default function AddWorkSample() {
                           </motion.div>
                         )}
                       </div>
-                      
+
                       {/* Error message for images */}
                       {typeof errors.images === 'string' && (
                         <div className="text-red-500 text-sm mt-1">{errors.images}</div>
                       )}
-                      
+
                       {values.images.length === 0 && (
                         <p className="text-center text-gray-500 text-sm italic">
                           Please add at least one image of your work sample
                         </p>
                       )}
-                      
+
                       {values.images.length >= 10 && (
                         <p className="text-center text-amber-600 text-sm">
                           Maximum 10 images allowed
@@ -264,7 +295,7 @@ export default function AddWorkSample() {
                 </FieldArray>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="pt-4"
               >
@@ -274,8 +305,8 @@ export default function AddWorkSample() {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className={`w-full py-3 px-6 rounded-lg font-medium text-white 
-                    ${submitting 
-                      ? 'bg-gray-400 cursor-not-allowed' 
+                    ${submitting
+                      ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'
                     } transition-all duration-200 transform`}
                 >
@@ -293,7 +324,7 @@ export default function AddWorkSample() {
             </Form>
           )}
         </Formik>
-        
+
         {/* Success message */}
         {success && (
           <motion.div

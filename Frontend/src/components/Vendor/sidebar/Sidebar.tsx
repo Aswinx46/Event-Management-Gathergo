@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   ChevronRight,
-  LayoutDashboardIcon
+  LayoutDashboardIcon,
+  Image
 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useDeleteAllNotificationsVendor } from "@/hooks/VendorCustomHooks"
@@ -34,7 +35,7 @@ export function Sidebar() {
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
     // { id: "checkStatus", label: "Check Status", icon: CheckCircle },
     { id: "services", label: "Service", icon: Briefcase },
-    // { id: "workSamples", label: "Work Samples", icon: Image },
+    { id: "workSamples", label: "Work Samples", icon: Image },
     { id: "bookings", label: "Bookings", icon: Calendar },
     { id: "addEvent", label: "Events", icon: CalendarDays },
     { id: "showEvents", label: "ShowEvents", icon: CalendarDays },
