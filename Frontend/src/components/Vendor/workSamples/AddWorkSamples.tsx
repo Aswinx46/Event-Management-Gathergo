@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { WorkSamplesEntity } from '@/types/workSampleEntity';
+import ImageCropper from '@/components/other components/ImageCropper';
 
 // TypeScript interfaces
 interface ImageFile {
@@ -28,8 +29,11 @@ interface WorkSampleFormValues {
 export default function AddWorkSample() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [image, setImage] = useState<string>('')
   const uploadImageToCloudinary = useUploadeImageToCloudinaryMutation()
   const createWorkSample = useCreateWorkSample()
+  const [showCropper, setShowCropper] = useState<boolean>(false)
+  const [selectedImagesFile, setSelectedImagesFile] = useState<File[]>([])
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
   // Form validation schema
   const validationSchema = Yup.object({
@@ -41,15 +45,15 @@ export default function AddWorkSample() {
       .required('Description is required')
       .min(10, 'Description must be at least 10 characters')
       .max(1000, 'Description must be less than 1000 characters'),
-    images: Yup.array()
-      .of(
-        Yup.object().shape({
-          file: Yup.mixed().required('Image is required'),
-          preview: Yup.string().required()
-        })
-      )
-      .min(1, 'At least one image is required')
-      .max(10, 'Maximum 10 images allowed')
+    // images: Yup.array()
+    //   .of(
+    //     Yup.object().shape({
+    //       file: Yup.mixed().required('Image is required'),
+    //       preview: Yup.string().required()
+    //     })
+    //   )
+    //   .min(1, 'At least one image is required')
+    //   .max(10, 'Maximum 10 images allowed')
   });
 
   // Initial form values
@@ -62,15 +66,19 @@ export default function AddWorkSample() {
   // Handle form submission
   const handleSubmit = async (values: WorkSampleFormValues, resetForm: () => void) => {
     setSubmitting(true);
-
+    if (selectedImagesFile.length <= 0) {
+      toast.error('Select atleast One image')
+    } else if (selectedImagesFile.length > 10) {
+      toast.error("Maximum 100 images allowed")
+    }
     try {
-      const uploadPromises = values.images.map((image: ImageFile) => {
+      const uploadPromises = selectedImagesFile.map((image: File) => {
         // if (!image.file && image.file.size <= 5 * 1024 * 1024 && image.file.type.startsWith('image/')) {
         //   toast.error('Only image files under 5MB are allowed')
         //   return
         // }
         const formdata = new FormData()
-        formdata.append('file', image.file)
+        formdata.append('file', image)
         formdata.append('upload_preset', 'workSamples')
         return uploadImageToCloudinary.mutateAsync(formdata)
       })
@@ -91,6 +99,7 @@ export default function AddWorkSample() {
           setSuccess(true)
           setTimeout(() => setSuccess(false), 3000) // optional auto-hide
           // formik.resetForm()
+          setSelectedImagesFile([])
           resetForm()
         },
         onError: (err) => toast.error(err.message)
@@ -141,8 +150,20 @@ export default function AddWorkSample() {
     }
   };
 
+  const handleOnCropComplete = (croppedFile: File | null) => {
+    if (!croppedFile) return
+    setShowCropper(false)
+    setSelectedImagesFile((prev) => [...prev, croppedFile])
+  }
+
+  const handleRemovePreviewImages = (image: File) => {
+    const images = selectedImagesFile.filter((img) => img !== image)
+    setSelectedImagesFile(images)
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-6">
+      {showCropper && <ImageCropper image={image} showCropper={setShowCropper} onCropComplete={handleOnCropComplete} />}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -210,7 +231,7 @@ export default function AddWorkSample() {
                     <div className="space-y-4">
                       {/* Image preview section */}
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {values.images.map((image, index) => (
+                        {selectedImagesFile.map((image, index) => (
                           <motion.div
                             key={index}
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -219,7 +240,7 @@ export default function AddWorkSample() {
                             className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group"
                           >
                             <img
-                              src={image.preview}
+                              src={URL.createObjectURL(image)}
                               alt={`Preview ${index + 1}`}
                               className="w-full h-full object-cover"
                             />
@@ -227,7 +248,7 @@ export default function AddWorkSample() {
                               type="button"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
-                              onClick={() => remove(index)}
+                              onClick={() => handleRemovePreviewImages(image)}
                               className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -257,15 +278,18 @@ export default function AddWorkSample() {
                                 onChange={(event) => {
                                   const file = event.currentTarget.files?.[0];
                                   if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = () => {
-                                      push({
-                                        file,
-                                        preview: reader.result as string
-                                      });
-                                    };
-                                    reader.readAsDataURL(file);
-                                    event.currentTarget.value = '';
+                                    setImage(URL.createObjectURL(file))
+                                    setShowCropper(true)
+                                    // const reader = new FileReader();
+                                    // reader.onload = () => {
+                                    //   push({
+                                    //     file,
+                                    //     preview: reader.result as string
+                                    //   });
+                                    //   setImage(reader.result as string)
+                                    // };
+                                    // reader.readAsDataURL(file);
+                                    // event.currentTarget.value = '';
                                   }
                                 }}
                               />
