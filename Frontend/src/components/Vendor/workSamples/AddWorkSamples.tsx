@@ -280,16 +280,6 @@ export default function AddWorkSample() {
                                   if (file) {
                                     setImage(URL.createObjectURL(file))
                                     setShowCropper(true)
-                                    // const reader = new FileReader();
-                                    // reader.onload = () => {
-                                    //   push({
-                                    //     file,
-                                    //     preview: reader.result as string
-                                    //   });
-                                    //   setImage(reader.result as string)
-                                    // };
-                                    // reader.readAsDataURL(file);
-                                    // event.currentTarget.value = '';
                                   }
                                 }}
                               />
