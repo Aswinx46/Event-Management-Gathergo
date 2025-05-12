@@ -16,7 +16,7 @@ function Home() {
 
   }, [])
   return (
-    <div className='bg-black  w-full overflow-x-hidden'>
+    <div className='bg-black  w-full overflow-x-hidden '>
       <Suspense fallback={<LoadingScreen />}>
         {/* <BlackHero /> */}
         <LazyHeroSection />

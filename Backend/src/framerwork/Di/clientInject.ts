@@ -264,5 +264,5 @@ export const injectedShowReviewController = new ShowReviewController(showReviews
 
 //-----------------------------------vendor profile fetching in client side--------------------------
 const workSampleDatabase = new WorkSampleRepository()
-const findVendorProfileUseCase = new FindVendorProfileUseCase(workSampleDatabase)
+const findVendorProfileUseCase = new FindVendorProfileUseCase(workSampleDatabase, serviceDatabase)
 export const injectedFindVendorProfileWithSample = new VendorProfileWithSamplesController(findVendorProfileUseCase)

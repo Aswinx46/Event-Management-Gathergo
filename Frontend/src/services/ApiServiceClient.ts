@@ -482,9 +482,9 @@ export const deleteSingleNotificationClient = async (notificationId: string) => 
     }
 }
 
-export const findVendorProfileWithSample = async (vendorId: string) => {
+export const findVendorProfileWithSample = async (vendorId: string,pageNo:number) => {
     try {
-        const response = await axios.get(`/vendorProfile/${vendorId}`)
+        const response = await axios.get(`/vendorProfile/${vendorId}/${pageNo}`)
         return response.data
     } catch (error) {
         console.log('error while finding the vendor profile', error)

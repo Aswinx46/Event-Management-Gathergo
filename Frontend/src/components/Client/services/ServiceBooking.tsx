@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar as CalendarIcon, Mail, Phone, Clock, DollarSign, User } from 'lucide-react';
+import { Calendar as CalendarIcon, Mail, Phone, Clock, User } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
@@ -14,13 +14,14 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCreateBooking, useFindSericeDataWithVendor, useShowReviews } from '@/hooks/ClientCustomHooks';
+import { useCreateBooking, useFindSericeDataWithVendor } from '@/hooks/ClientCustomHooks';
 import BookingConfirmation from '@/components/other components/BookingConfirmationModal';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import UserReviews from '../review/ShowReviews';
 import Pagination from '@/components/other components/Pagination';
+import { FaRupeeSign } from 'react-icons/fa';
 
 export interface Booking {
   date: Date[];
@@ -396,7 +397,7 @@ const VendorBookingCard = () => {
                 >
                   <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                     <h4 className="font-medium text-lg text-white">{Service?.serviceTitle}</h4>
-                    <p className="text-sm text-gray-400 mt-1 line-clamp-4 overflow-y-auto">{Service?.serviceDescription}</p>
+                    <p className="text-sm text-gray-400 mt-1 line-clamp-4 overflow-y-auto custom-scrollbar">{Service?.serviceDescription}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -412,11 +413,11 @@ const VendorBookingCard = () => {
 
                     <div className="flex items-center gap-2">
                       <div className="bg-white/10 p-2 rounded-full">
-                        <DollarSign className="h-4 w-4 text-white" />
+                        <FaRupeeSign className="h-4 w-4 text-white" />
                       </div>
                       <div>
                         <p className="text-xs text-gray-400">Price</p>
-                        <p className="font-medium text-white">${Service?.price}</p>
+                        <p className="font-medium text-white">₹{Service?.price}</p>
                       </div>
                     </div>
                   </div>

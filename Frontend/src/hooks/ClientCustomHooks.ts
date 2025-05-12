@@ -321,9 +321,9 @@ export const useDeleteSingleNotificationsClient = () => {
     })
 }
 
-export const useFindVendorProfileWithSample = (vendorId: string) => {
+export const useFindVendorProfileWithSample = (vendorId: string,pageNo:number) => {
     return useQuery({
         queryKey: ['vendorProfileWithSample', vendorId],
-        queryFn: () => findVendorProfileWithSample(vendorId)
+        queryFn: () => findVendorProfileWithSample(vendorId,pageNo)
     })
 }

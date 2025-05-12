@@ -139,7 +139,7 @@ export class clientRoute {
         this.clientRoute.delete('/deleteAllNotifications', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedDeleteAllNotificationsController.handleDeleteAllNotification(req, res)
         })
-        this.clientRoute.get('/vendorProfile/:vendorId', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.get('/vendorProfile/:vendorId/:PageNo', (req: Request, res: Response) => {
             injectedFindVendorProfileWithSample.handleFindVendorProfile(req, res)
         })
     }
