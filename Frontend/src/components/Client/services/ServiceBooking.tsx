@@ -80,15 +80,15 @@ const VendorBookingCard = () => {
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { serviceId, vendorId } = useParams()
-  const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!)
-  const [currentPage, setCurrentPage] = useState<number>(1)
   const [rating, setRating] = useState<number>(4)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!, currentPage, rating)
   const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor
   const bookingApi = useCreateBooking()
   const navigate = useNavigate()
-  const fetchReviews = useShowReviews({ targetId: serviceId!, pageNo: currentPage, rating })
-  const reviews = fetchReviews?.data?.reviews
-  const totalPages = fetchReviews.data?.totalPages
+  // const fetchReviews = useShowReviews({ targetId: serviceId!, pageNo: currentPage, rating })
+  const reviews = findServiceWithVendor?.data?.reviews
+  const totalPages = findServiceWithVendor.data?.totalPages
   const handleNavigate = () => {
     navigate('/profile/bookings')
   }
@@ -426,7 +426,7 @@ const VendorBookingCard = () => {
         </motion.div>
       </div>
       {reviews && <UserReviews reviews={reviews} />}
-      {reviews && reviews.length >0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
+      {reviews && reviews.length > 0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
     </div>
   );
 };

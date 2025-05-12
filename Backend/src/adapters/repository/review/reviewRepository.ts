@@ -8,7 +8,7 @@ export class ReviewRepository implements IreviewRepository {
     async createReview(review: ReviewEnity): Promise<ReviewEnity> {
         return reviewModel.create(review)
     }
-    async findReviews(targetId: string, pageNo: number, rating: number): Promise<{ reviews: ReviewDetailsDTO[] | [], totalPages: number }> {
+    async findReviews(targetId: string, pageNo: number, rating?: number): Promise<{ reviews: ReviewDetailsDTO[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
         const limit = 3
         const skip = (page - 1) * limit

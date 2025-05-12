@@ -88,8 +88,8 @@ export const useFetchCategoryForServiceQuery = () => {
     return useQuery({
         queryKey: ['categories-for-addService'],
         queryFn: () => fetchCategoryCategoryForService(),
-
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        
     },
     )
 }

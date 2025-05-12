@@ -188,9 +188,9 @@ export const createBooking = async (booking: Booking) => {
     }
 }
 
-export const fetchServiceDetailsWithVendor = async (serviceId: string) => {
+export const fetchServiceDetailsWithVendor = async (serviceId: string, pageNo: number, rating: number) => {
     try {
-        const response = await axios.get(`/showClientWithVendor/${serviceId}`)
+        const response = await axios.get(`/showClientWithVendor`, { params: { serviceId, pageNo, rating } })
         return response.data
     } catch (error) {
         console.log('error while fetching service details with vendor', error)

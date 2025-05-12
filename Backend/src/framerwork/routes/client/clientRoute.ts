@@ -49,7 +49,7 @@ export class clientRoute {
 
             injectedCreateBookingController.handleCreateBooking(req, res)
         })
-        this.clientRoute.get('/showClientWithVendor/:serviceId', (req: Request, res: Response) => {
+        this.clientRoute.get('/showClientWithVendor', (req: Request, res: Response) => {
             injectedShowServiceWithVendorCController.handleShowServiceWithVendor(req, res)
         })
         this.clientRoute.get('/showBookings/:clientId/:pageNo', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {

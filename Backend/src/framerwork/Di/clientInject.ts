@@ -148,7 +148,8 @@ const createBookingUseCase = new CreateBookingUseCase(bookingDatabase)
 export const injectedCreateBookingController = new CreateBookingController(createBookingUseCase)
 
 //----------------------------------show service data with vendor-----------------------
-const showServiceWithVendorUseCase = new ServiceWithVendorUseCase(serviceDatabase)
+const reviewDatabase = new ReviewRepository()
+const showServiceWithVendorUseCase = new ServiceWithVendorUseCase(serviceDatabase,reviewDatabase)
 export const injectedShowServiceWithVendorCController = new ShowServiceWithVendorController(showServiceWithVendorUseCase)
 
 //----------------------------------Fetch all bookings of client ------------------
@@ -250,7 +251,7 @@ const bookingCancelUseCase = new BookingCancellationUseCase(bookingDatabase)
 export const injectedBookingCancellationController = new CancelBookingController(bookingCancelUseCase)
 
 //-----------------------------------Add Review-------------------------------------
-const reviewDatabase = new ReviewRepository()
+
 const addReviewUseCase = new AddReviewUseCase(reviewDatabase)
 export const injectedAddReviewController = new AddReviewController(addReviewUseCase)
 

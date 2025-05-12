@@ -114,12 +114,12 @@ export const useCreateBooking = () => {
     })
 }
 
-export const useFindSericeDataWithVendor = (serviceId: string) => {
+export const useFindSericeDataWithVendor = (serviceId: string, pageNo: number, rating: number) => {
     return useQuery({
         queryKey: ['serviceDataWithVendor'],
-        queryFn: () => fetchServiceDetailsWithVendor(serviceId),
-        staleTime: 5 * 60 * 1000,
-        refetchOnWindowFocus: false
+        queryFn: () => fetchServiceDetailsWithVendor(serviceId, pageNo, rating),
+        // staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: true
     })
 }
 
