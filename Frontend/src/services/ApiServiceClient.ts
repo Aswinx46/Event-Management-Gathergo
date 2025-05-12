@@ -481,3 +481,13 @@ export const deleteSingleNotificationClient = async (notificationId: string) => 
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while deleting single notification')
     }
 }
+
+export const findVendorProfileWithSample = async (vendorId: string) => {
+    try {
+        const response = await axios.get(`/vendorProfile/${vendorId}`)
+        return response.data
+    } catch (error) {
+        console.log('error while finding the vendor profile', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding vendor profile')
+    }
+}

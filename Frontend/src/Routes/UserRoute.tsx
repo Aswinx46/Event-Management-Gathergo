@@ -42,7 +42,7 @@ const UserRoute = () => {
                 <Route path="/event/:eventId" element={<EventDetails />}></Route>
                 <Route path="/ticketPayment" element={<ProtectedRouteClient><TicketPaymentForm /></ProtectedRouteClient>}></Route>
                 <Route path="/eventsNearToYou" element={<ShowEventsNearYou />}></Route>
-                <Route path="/vendorProfile" element={<VendorDetails />}></Route>
+                <Route path="/vendorProfile/:vendorId" element={<VendorDetails />}></Route>
             </Route>
             <Route path="/profile/*" element={<ProtectedRouteClient><ClientLayout /> </ProtectedRouteClient>}>
                 {/* <Route path="chat/messages" element={<ProtectedRouteClient><ClientChat /></ProtectedRouteClient>}></Route> */}

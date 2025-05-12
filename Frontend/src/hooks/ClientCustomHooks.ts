@@ -1,4 +1,4 @@
-import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, showReviews, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
+import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findVendorProfileWithSample, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, showReviews, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { ReviewEntity } from "@/types/ReviewType";
@@ -318,5 +318,12 @@ export const useDeleteAllNotificationsClient = () => {
 export const useDeleteSingleNotificationsClient = () => {
     return useMutation({
         mutationFn: (notificationId: string) => deleteSingleNotificationClient(notificationId)
+    })
+}
+
+export const useFindVendorProfileWithSample = (vendorId: string) => {
+    return useQuery({
+        queryKey: ['vendorProfileWithSample', vendorId],
+        queryFn: () => findVendorProfileWithSample(vendorId)
     })
 }

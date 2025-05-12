@@ -225,6 +225,7 @@ const VendorBookingCard = () => {
                     </li>
                   </ul>
                 </motion.div>
+                <Button onClick={() => navigate(`/vendorProfile/${Service.vendor._id}`)} className='bg-purple-500 text-black '>{`See ${Service?.vendor.name}'s Profile`}</Button>
 
               </motion.div>
             </Card>

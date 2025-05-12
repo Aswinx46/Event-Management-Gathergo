@@ -1,3 +1,4 @@
+import { VendorProfileEntityInClient } from "../../../domain/entities/vendor/vendorProfileEntityInClient";
 import { WorkSamplesEntity } from "../../../domain/entities/vendor/workSampleEntity";
 import { IworkSampleRepository } from "../../../domain/interface/repositoryInterfaces/workSamples/workSampleRepositoryInterface";
 import { workSampleModel } from "../../../framerwork/database/models/workSamplesModel";
@@ -12,6 +13,9 @@ export class WorkSampleRepository implements IworkSampleRepository {
         const skip = (page - 1) * limit
         const workSamples = await workSampleModel.find({ vendorId }).skip(skip).limit(limit).sort({ createdAt: -1 })
         const totalPages = await workSampleModel.countDocuments({ vendorId })
-        return {workSamples,totalPages}
+        return { workSamples, totalPages }
+    }
+    async vendorProfileIWithWorkSample(vendorId: string): Promise<VendorProfileEntityInClient | null> {
+        return await workSampleModel.findOne({ vendorId }).populate('vendorId', '_id name profileImage').lean<VendorProfileEntityInClient>()
     }
 }

@@ -89,6 +89,9 @@ import { ReviewRepository } from "../../adapters/repository/review/reviewReposit
 import { AddReviewController } from "../../adapters/controllers/client/review/addReviewController";
 import { ShowReviewsUseCase } from "../../useCases/client/review/showReviewsUseCase";
 import { ShowReviewController } from "../../adapters/controllers/client/review/showReviewsController";
+import { FindVendorProfileUseCase } from "../../useCases/client/vendorFetching/findVendorProfileuseCase";
+import { WorkSampleRepository } from "../../adapters/repository/workSamples/workSampleRepository";
+import { VendorProfileWithSamplesController } from "../../adapters/controllers/client/vendorDetailsFetching/vendorProfileWithSamplesController";
 
 
 // -----------------------register client ----------------------------//
@@ -149,7 +152,7 @@ export const injectedCreateBookingController = new CreateBookingController(creat
 
 //----------------------------------show service data with vendor-----------------------
 const reviewDatabase = new ReviewRepository()
-const showServiceWithVendorUseCase = new ServiceWithVendorUseCase(serviceDatabase,reviewDatabase)
+const showServiceWithVendorUseCase = new ServiceWithVendorUseCase(serviceDatabase, reviewDatabase)
 export const injectedShowServiceWithVendorCController = new ShowServiceWithVendorController(showServiceWithVendorUseCase)
 
 //----------------------------------Fetch all bookings of client ------------------
@@ -259,3 +262,7 @@ export const injectedAddReviewController = new AddReviewController(addReviewUseC
 const showReviewsUseCase = new ShowReviewsUseCase(reviewDatabase)
 export const injectedShowReviewController = new ShowReviewController(showReviewsUseCase)
 
+//-----------------------------------vendor profile fetching in client side--------------------------
+const workSampleDatabase = new WorkSampleRepository()
+const findVendorProfileUseCase = new FindVendorProfileUseCase(workSampleDatabase)
+export const injectedFindVendorProfileWithSample = new VendorProfileWithSamplesController(findVendorProfileUseCase)
