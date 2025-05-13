@@ -29,6 +29,7 @@ export default function VendorDetails() {
     const vendor = findVendorProfile.data?.vendorProfile
     const services = findVendorProfile.data?.services
     const totalPages = findVendorProfile.data?.totalPages
+    console.log('this is the totalPages',totalPages)
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev === vendor?.images.length - 1 ? 0 : prev + 1))
     }

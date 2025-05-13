@@ -3,6 +3,7 @@ import { ServiceWithVendorEntity } from "../../../domain/entities/serviceWithVen
 import { IserviceRepository } from "../../../domain/interface/repositoryInterfaces/service/serviceRepositoryInterface";
 import { serviceModal } from "../../../framerwork/database/models/serviceModel";
 import { VendorDTO } from "../../../domain/entities/vendorDTO";
+import { Types } from "mongoose";
 
 interface Filter {
     status: string
@@ -16,8 +17,8 @@ export class ServiceRepository implements IserviceRepository {
         const limit = 3
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
-        const Services = await serviceModal.find({ vendorId }).skip(skip).limit(limit)
-        const totalPages = Math.ceil(await serviceModal.countDocuments() / limit)
+        const Services = await serviceModal.find({ vendorId }).sort({createdAt:-1}).skip(skip).limit(limit)
+        const totalPages = Math.ceil(await serviceModal.countDocuments({ vendorId: new Types.ObjectId(vendorId) }) / limit)
         return { Services, totalPages }
     }
     async editService(service: ServiceEntity, serviceId: string): Promise<ServiceEntity | null> {
@@ -92,7 +93,7 @@ export class ServiceRepository implements IserviceRepository {
             "oldest": { createdAt: 1 }
         }
         const sort = sortOptions[sortBy] || { createdAt: -1 }
-       
+
         const filter: Filter = { status: 'active' }
         if (categoryId) filter.categoryId = categoryId
         const Services = await serviceModal.find(filter).collation({ locale: 'en', strength: 2 }).select('-createdAt -updatedAt').skip(skip).limit(limit).sort(sort)

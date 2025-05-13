@@ -9,8 +9,8 @@ export class VendorProfileWithSamplesController {
     }
     async handleFindVendorProfile(req: Request, res: Response): Promise<void> {
         try {
-            const { vendorId, pageNo } = req.params
-            const page = parseInt(pageNo, 10) || 1
+            const { vendorId, PageNo} = req.params
+            const page = parseInt(PageNo, 10) || 1
             const { services, totalPages, vendorProfile } = await this.vendorProfileWithSamples.findVendorProfile(vendorId, page)
             res.status(HttpStatus.OK).json({
                 message: 'vendor profile fetched',
