@@ -2,6 +2,7 @@ import { FindChatOfUserController } from "../../adapters/controllers/chat/findCh
 import { LoadPreviousMessageController } from "../../adapters/controllers/messages/loadPreviousMessageController";
 import { DeleteAllNotificationController } from "../../adapters/controllers/notifications/deleteAllNotificationController";
 import { DeleteSingleNotificationController } from "../../adapters/controllers/notifications/deleteSingleNotificationController";
+import { ReadNotificationController } from "../../adapters/controllers/notifications/readNotificationController";
 import { ChatRepository } from "../../adapters/repository/chat/chatRepository";
 import { MessageRepository } from "../../adapters/repository/message/messageRepository";
 import { NotificationRepository } from "../../adapters/repository/notification/notificationRepository";
@@ -14,6 +15,7 @@ import { GetMessagesOfAChatUseCase } from "../../useCases/message/getMessagesOfA
 import { LoadPreviousChatUseCase } from "../../useCases/message/loadPreviousChatUseCase";
 import { DeleteAllNotificationsUseCase } from "../../useCases/notification/deleteAllNotificationsUseCase";
 import { DeleteSingleNotificationUseCase } from "../../useCases/notification/deleteSingleNotificationUseCase";
+import { ReadNotificationUseCase } from "../../useCases/notification/readNotitificationUseCase";
 
 //-------------------------------- create chat --------------------------
 const chatRepository = new ChatRepository()
@@ -54,3 +56,7 @@ export const injectedDeleteSingleNotificationController = new DeleteSingleNotifi
 //------------------------------deleteAllNotifications----------------------------
 const deleteAllNotficationUseCase = new DeleteAllNotificationsUseCase(notificationDatabase)
 export const injectedDeleteAllNotificationsController = new DeleteAllNotificationController(deleteAllNotficationUseCase)
+
+//----------------------------Notification reading------------------------------
+const readNotificationUseCase = new ReadNotificationUseCase(notificationDatabase)
+export const injectedReadNotificationController = new ReadNotificationController(readNotificationUseCase)

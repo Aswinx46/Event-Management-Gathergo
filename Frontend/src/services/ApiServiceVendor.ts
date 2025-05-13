@@ -388,3 +388,14 @@ export const findWorkSamples = async (vendorId: string, pageNo: number) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding work samples')
     }
 }
+
+
+export const singleNotificationReadVendor = async (notificationId: string) => {
+    try {
+        const response = await axios.patch('/readNotification', { notificationId })
+        return response.data
+    } catch (error) {
+        console.log('error while notification marking as read', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while notification marking as read')
+    }
+}

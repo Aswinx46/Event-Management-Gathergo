@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedFindWorkSamplesOfVendorController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedTicketDetailsWithUserController, injectedTicketVerificationController, injectedUpdateAboutAndPhoneController, injectedUpdateBookingAsCompleteController, injectedUpdateEventController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorDashboardController, injectedVendorLoginController, injectedVendorLogoutController, injectedWalletDetailsVendorController } from "../../Di/vendorInject";
 import { injectedTokenExpiryValidationChecking, injectedVendorStatusCheckingMiddleware, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
-import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
+import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController, injectedReadNotificationController } from "../../Di/chatInject";
 
 export class VendorRoute {
     public vendorRoute: Router
@@ -100,6 +100,9 @@ export class VendorRoute {
         })
         this.vendorRoute.get('/workSamples', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedFindWorkSamplesOfVendorController.handleFindWorkSampleOfVendor(req, res)
+        })
+        this.vendorRoute.patch('/readNotification', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedReadNotificationController.handleReadNotification(req, res)
         })
     }
 }

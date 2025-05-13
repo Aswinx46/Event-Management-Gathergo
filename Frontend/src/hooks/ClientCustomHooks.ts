@@ -1,4 +1,4 @@
-import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findVendorProfileWithSample, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, showReviews, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
+import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findVendorProfileWithSample, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, showReviews, singleNotificationRead, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { ReviewEntity } from "@/types/ReviewType";
@@ -321,9 +321,15 @@ export const useDeleteSingleNotificationsClient = () => {
     })
 }
 
-export const useFindVendorProfileWithSample = (vendorId: string,pageNo:number) => {
+export const useFindVendorProfileWithSample = (vendorId: string, pageNo: number) => {
     return useQuery({
-        queryKey: ['vendorProfileWithSample', vendorId,pageNo],
-        queryFn: () => findVendorProfileWithSample(vendorId,pageNo)
+        queryKey: ['vendorProfileWithSample', vendorId, pageNo],
+        queryFn: () => findVendorProfileWithSample(vendorId, pageNo)
+    })
+}
+
+export const useReadSingleNotification = () => {
+    return useMutation({
+        mutationFn: (notificationId: string) => singleNotificationRead(notificationId)
     })
 }

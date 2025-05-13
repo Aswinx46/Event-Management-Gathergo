@@ -5,4 +5,5 @@ export interface InotificationRepository {
     findNotifications(userId: string): Promise<NotificationEntity[] | {}>
     deleteNotifications(userId: string): Promise<boolean>
     deleteSingleNotification(notificationdId: string): Promise<boolean>
+    readNotification(notificationId: string): Promise<boolean>
 }

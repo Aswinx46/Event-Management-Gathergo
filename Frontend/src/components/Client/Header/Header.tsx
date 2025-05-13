@@ -5,7 +5,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useClientLogout, useDeleteAllNotificationsClient } from '@/hooks/ClientCustomHooks';
+import { useClientLogout, useDeleteAllNotificationsClient, useReadSingleNotification } from '@/hooks/ClientCustomHooks';
 import { removeClient } from '@/store/slices/user/userSlice';
 import { removeToken } from '@/store/slices/user/userTokenSlice';
 import { NotificationsDropdown } from '@/components/notifications/NotificationsDropdown';
@@ -81,7 +81,7 @@ const Header = () => {
   const clientLogout = useClientLogout()
   const dispatch = useDispatch()
   const clearAllNotficationClient = useDeleteAllNotificationsClient()
-
+  const readNotificationClient = useReadSingleNotification()
   const navItems: NavItem[] = [
     { name: 'Home', path: '/' },
     // { name: 'About', path: '/about' },
@@ -130,8 +130,16 @@ const Header = () => {
 
   const onClearNotification = (id: string) => {
     if (client) {
-      console.log('insidethe header file')
       dispatch(removeNotification(id))
+    }
+  }
+
+  const onReadNotification = (id: string) => {
+    if (client) {
+      readNotificationClient.mutate(id, {
+        onSuccess: () => dispatch(removeNotification(id)),
+        onError: (err) => toast.error(err.message)
+      })
     }
   }
 
@@ -178,7 +186,7 @@ const Header = () => {
                   )}
                 </motion.div>
               ))}
-              {client && <NotificationsDropdown onClearAllNotifications={onClearAllNotifications} onClearNotification={onClearNotification} />}
+              {client && <NotificationsDropdown onMarkAsRead={onReadNotification} onClearAllNotifications={onClearAllNotifications} onClearNotification={onClearNotification} />}
 
             </nav>
           )}

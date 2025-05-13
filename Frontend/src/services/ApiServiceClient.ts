@@ -482,12 +482,22 @@ export const deleteSingleNotificationClient = async (notificationId: string) => 
     }
 }
 
-export const findVendorProfileWithSample = async (vendorId: string,pageNo:number) => {
+export const findVendorProfileWithSample = async (vendorId: string, pageNo: number) => {
     try {
         const response = await axios.get(`/vendorProfile/${vendorId}/${pageNo}`)
         return response.data
     } catch (error) {
         console.log('error while finding the vendor profile', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding vendor profile')
+    }
+}
+
+export const singleNotificationRead = async (notificationId: string) => {
+    try {
+        const response = await axios.patch('/readNotification', { notificationId })
+        return response.data
+    } catch (error) {
+        console.log('error while notification marking as read', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while notification marking as read')
     }
 }

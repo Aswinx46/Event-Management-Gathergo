@@ -3,7 +3,7 @@ import { clientAuthenticationController, injectedAddReviewController, injectedBo
 import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
-import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController } from "../../Di/chatInject";
+import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController, injectedReadNotificationController } from "../../Di/chatInject";
 
 export class clientRoute {
     public clientRoute: Router
@@ -141,6 +141,9 @@ export class clientRoute {
         })
         this.clientRoute.get('/vendorProfile/:vendorId/:PageNo', (req: Request, res: Response) => {
             injectedFindVendorProfileWithSample.handleFindVendorProfile(req, res)
+        })
+        this.clientRoute.patch('/readNotification', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+            injectedReadNotificationController.handleReadNotification(req, res)
         })
     }
 }
