@@ -12,8 +12,9 @@ export class TransactionRepository implements ItransactionRepository {
         console.log(walletId)
         const limit = 5
         const skip = (page - 1) * limit
+        const formattedWalletId = typeof walletId === 'string' ? new Types.ObjectId(walletId) : walletId;
         const transactions = await transactionModel.find({ walletId }).select('-__v -createdAt -updatedAt').sort({ createdAt: -1 }).skip(skip).limit(limit)
-        const totalPages = Math.ceil(await transactionModel.countDocuments({ walletId }) / limit)
+        const totalPages = Math.ceil(await transactionModel.countDocuments({ walletId: formattedWalletId }) / limit)
         return { transactions, totalPages }
     }
     async revenueChart(walletId: string, datePeriod: Date | null): Promise<{ month: string; revenue: number; }[]> {
