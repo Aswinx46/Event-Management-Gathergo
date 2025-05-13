@@ -20,7 +20,7 @@ export const notificationSlice = createSlice({
             state.notification = action.payload
         },
         removeNotification: (state, action: PayloadAction<string>) => {
-            state.notification.filter((notification) => notification._id !== action.payload)
+            state.notification=state.notification.filter((notification) => notification._id !== action.payload)
         },
         addSingleNotification: (state, action: PayloadAction<NotificationDTO>) => {
             state.notification.push(action.payload)

@@ -9,7 +9,7 @@ import { useClientLogout, useDeleteAllNotificationsClient } from '@/hooks/Client
 import { removeClient } from '@/store/slices/user/userSlice';
 import { removeToken } from '@/store/slices/user/userTokenSlice';
 import { NotificationsDropdown } from '@/components/notifications/NotificationsDropdown';
-import { clearAllNotifications } from '@/store/slices/notification/notificationSlice';
+import { clearAllNotifications, removeNotification } from '@/store/slices/notification/notificationSlice';
 import { toast } from 'react-toastify';
 type NavItem =
   | { name: string; path: string; onClick?: never }
@@ -70,6 +70,7 @@ const logoVariants = {
 };
 
 
+
 const Header = () => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -127,6 +128,13 @@ const Header = () => {
     }
   }
 
+  const onClearNotification = (id: string) => {
+    if (client) {
+      console.log('insidethe header file')
+      dispatch(removeNotification(id))
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-black text-white shadow-lg">
       <div className="container mx-auto px-4 md:px-6">
@@ -170,7 +178,7 @@ const Header = () => {
                   )}
                 </motion.div>
               ))}
-              {client && <NotificationsDropdown onClearAllNotifications={onClearAllNotifications} />}
+              {client && <NotificationsDropdown onClearAllNotifications={onClearAllNotifications} onClearNotification={onClearNotification} />}
 
             </nav>
           )}
