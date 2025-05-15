@@ -1,0 +1,55 @@
+name: Deploy to S3 and CloudFront
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Frontend/**"
+      - ".github/workflows/frontend-deployer.yml"
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies with legacy peer deps
+        run: |
+          cd Frontend
+          npm ci --legacy-peer-deps
+
+      - name: Build
+        env:
+          VITE_API_BASEURL: ${{ secrets.VITE_API_BASEURL }}
+          VITE_API_VENDOR_BASEURL: ${{ secrets.VITE_API_VENDOR_BASEURL }}
+          VITE_API_ADMIN_BASEURL: ${{ secrets.VITE_API_ADMIN_BASEURL }}
+          VITE_API_AUTH_BASEURL: ${{ secrets.VITE_API_AUTH_BASEURL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_STRIPE_PUBLIC_KEY: ${{ secrets.VITE_STRIPE_PUBLIC_KEY }}
+          VITE_STRIPE_SECRET_KEY: ${{ secrets.VITE_STRIPE_SECRET_KEY }}
+        run: |
+          cd Frontend
+          npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          cd Frontend
+          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }} --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
