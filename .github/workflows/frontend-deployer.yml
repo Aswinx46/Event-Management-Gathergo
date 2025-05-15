@@ -32,8 +32,8 @@ jobs:
           VITE_API_ADMIN_BASEURL: ${{ secrets.VITE_API_ADMIN_BASEURL }}
           VITE_API_AUTH_BASEURL: ${{ secrets.VITE_API_AUTH_BASEURL }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-          VITE_STRIPE_PUBLIC_KEY: ${{ secrets.VITE_STRIPE_PUBLIC_KEY }}
-          VITE_STRIPE_SECRET_KEY: ${{ secrets.VITE_STRIPE_SECRET_KEY }}
+          VITE_STRIPE_PK: ${{ secrets.VITE_STRIPE_PK }}
+          VITE_STRIPE_SECRET_KEY: ${{ secrets.VITE_STRIPE_SK }}
         run: |
           cd Frontend
           npm run build
