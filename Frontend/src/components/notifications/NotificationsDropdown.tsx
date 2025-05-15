@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-import { useLocation } from "react-router-dom";
 
 export interface NotificationDTO {
     _id?: string;
@@ -42,8 +41,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     const hasUnread = unreadNotifications.length > 0;
     const hasNotifications = notifications.length > 0;
 
-    const location = useLocation()
-    console.log(location.pathname)
+    // const location = useLocation()
 
 
 
@@ -52,6 +50,10 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     };
 
     const handleMarkAsRead = (id: string) => {
+        if (!id) {
+            
+        }
+        console.log('this is the notification id in the notification dropdown', id)
         if (onMarkAsRead) {
             onMarkAsRead(id);
         }

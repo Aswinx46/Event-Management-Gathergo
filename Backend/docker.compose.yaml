@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+  environment:
+    - PORT=3000
+    - ORIGIN=http://localhost:5173
+    - MONGODB=mongodb://localhost:27017/GatherGo
+    - NODEMAILER_EMAIL='itzhawk464@gmail.com'
+    - NODEMAILER_PASSWORD=ionz kcya zhph bidx
+    - ACCESSTOKEN_SECRET_KEY=ce9c5663f79947c43f7919f63fef0b39ca666ad55995069e564970361074b68e134f35f0e5ce27d68a22924ee2a5a44637f1aa6bf8853379fceb810ff57d0974
+    - REFRESHTOKEN_SECRET_KEY=0ecd36b31edea89422c25353f7916450b43367ed3f0e3c6a03ad3cadf18ec77a435d4ecf5bb2556d007e4f3a531b192838051b02f9dd62621b70419af0038331
+    - REDIS_URL=redis://localhost:6379
+    - RAZORPAY_SECRET=e8rh0sWTc5s1OI61fTiuz5mQ
+    - RAZORPAY_KEY_ID=rzp_test_ffVIhYffimysvE
+    - ADMIN_ID=67dd52b68f0e70cf7aab5069
+    - HOSTNAME=http://localhost:3000
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+
+redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
