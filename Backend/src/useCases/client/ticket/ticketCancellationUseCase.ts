@@ -18,7 +18,8 @@ export class TicketCancellationUseCase implements ITicketCancellationUseCase {
     async ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO> {
         const cancelledTicket = await this.ticketDatabase.ticketCancellation(ticketId)
         if (!cancelledTicket) throw new Error('No ticket found in this ID for cancellation')
-        const refundAmountToClient = cancelledTicket.totalAmount * 0.29
+        const refundAmountToVendor = cancelledTicket.totalAmount * 0.29
+        const refundAmountToClient = cancelledTicket.totalAmount - (refundAmountToVendor + cancelledTicket.totalAmount * 0.01)
         const updateFundAmountToClient = await this.walletDatabase.addMoney(cancelledTicket.clientId, refundAmountToClient)
         if (!updateFundAmountToClient) throw new Error('Error while updating refund amount to client')
         const clientTransaction: TransactionsEntity = {

@@ -5,11 +5,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useClientLogout, useDeleteAllNotificationsClient } from '@/hooks/ClientCustomHooks';
+import { useClientLogout, useDeleteAllNotificationsClient, useReadSingleNotification } from '@/hooks/ClientCustomHooks';
 import { removeClient } from '@/store/slices/user/userSlice';
 import { removeToken } from '@/store/slices/user/userTokenSlice';
 import { NotificationsDropdown } from '@/components/notifications/NotificationsDropdown';
-import { clearAllNotifications } from '@/store/slices/notification/notificationSlice';
+import { clearAllNotifications, removeNotification } from '@/store/slices/notification/notificationSlice';
 import { toast } from 'react-toastify';
 type NavItem =
   | { name: string; path: string; onClick?: never }
@@ -70,6 +70,7 @@ const logoVariants = {
 };
 
 
+
 const Header = () => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -80,7 +81,7 @@ const Header = () => {
   const clientLogout = useClientLogout()
   const dispatch = useDispatch()
   const clearAllNotficationClient = useDeleteAllNotificationsClient()
-
+  const readNotificationClient = useReadSingleNotification()
   const navItems: NavItem[] = [
     { name: 'Home', path: '/' },
     // { name: 'About', path: '/about' },
@@ -127,6 +128,22 @@ const Header = () => {
     }
   }
 
+  const onClearNotification = (id: string) => {
+    if (client) {
+      dispatch(removeNotification(id))
+    }
+  }
+
+  const onReadNotification = (id: string) => {
+    console.log('this is the notificaion id', id)
+    if (client) {
+      readNotificationClient.mutate(id, {
+        onSuccess: () => dispatch(removeNotification(id)),
+        onError: (err) => toast.error(err.message)
+      })
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-black text-white shadow-lg">
       <div className="container mx-auto px-4 md:px-6">
@@ -170,7 +187,7 @@ const Header = () => {
                   )}
                 </motion.div>
               ))}
-              {client && <NotificationsDropdown onClearAllNotifications={onClearAllNotifications} />}
+              {client && <NotificationsDropdown onMarkAsRead={onReadNotification} onClearAllNotifications={onClearAllNotifications} onClearNotification={onClearNotification} />}
 
             </nav>
           )}

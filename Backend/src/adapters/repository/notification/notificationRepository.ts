@@ -21,6 +21,11 @@ export class NotificationRepository implements InotificationRepository {
         const deleteNotification = await notificationModal.findByIdAndDelete(notificationdId)
         if (!deleteNotification) throw new Error('No notification found in this ID')
         return true
-
     }
+    async readNotification(notificationId: string): Promise<boolean> {
+        const readNotification = await notificationModal.findByIdAndUpdate(notificationId, { read: true }, { new: true })
+        if (!readNotification) throw new Error('No notification found in this ID')
+        return true
+    }
+
 }

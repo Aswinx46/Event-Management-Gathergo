@@ -1,13 +1,11 @@
-
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BellRing, Trash2 } from "lucide-react";
+import { BellRing, Trash2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-import { useLocation } from "react-router-dom";
 
 export interface NotificationDTO {
     _id?: string;
@@ -42,17 +40,20 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     const unreadNotifications = notifications.filter((notif) => !notif.read);
     const hasUnread = unreadNotifications.length > 0;
     const hasNotifications = notifications.length > 0;
- 
-    const location = useLocation()
-    console.log(location.pathname)
-    
-   
+
+    // const location = useLocation()
+
+
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
 
     const handleMarkAsRead = (id: string) => {
+        if (!id) {
+            
+        }
+        console.log('this is the notification id in the notification dropdown', id)
         if (onMarkAsRead) {
             onMarkAsRead(id);
         }
@@ -65,6 +66,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     // };
 
     const handleClearNotification = (id: string, event: React.MouseEvent) => {
+        console.log('inside clear')
         event.stopPropagation();
         if (onClearNotification) {
             onClearNotification(id);
@@ -203,7 +205,6 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                                     "p-4 hover:bg-gray-50 cursor-pointer transition-colors relative group",
                                                     !notification.read && "bg-blue-50"
                                                 )}
-                                                onClick={() => notification._id && handleMarkAsRead(notification._id)}
                                             >
                                                 <div className="flex gap-3">
                                                     {/* Avatar */}
@@ -232,23 +233,40 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                                         <p className="text-sm text-gray-600 line-clamp-2">{notification.message}</p>
                                                     </div>
 
-                                                    {/* Unread indicator */}
-                                                    {!notification.read && (
-                                                        <div className="flex-shrink-0">
-                                                            <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                    {/* Action Buttons (visible on hover) */}
+                                                    {/* Action Buttons (beautifully styled) */}
+                                                    <motion.div
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        whileHover={{ scale: 1.05 }}
+                                                        className="absolute right-2 top-2 flex gap-2 opacity-100 group-hover:opacity-100 transition-all duration-300 ease-in-out z-40 backdrop-blur-md bg-white/70 p-1 rounded-xl shadow-lg border border-gray-200"
+                                                    >
+                                                        {!notification.read && (
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.15 }}
+                                                                className="p-1 rounded-full bg-emerald-100 hover:bg-emerald-200 transition-all duration-200 shadow-sm"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleMarkAsRead(notification._id!);
+                                                                }}
+                                                            >
+                                                                <Check size={16} className="text-emerald-600 hover:text-emerald-700 transition-colors" />
+                                                            </motion.button>
+                                                        )}
 
-                                                {/* Delete Button (visible on hover) */}
-                                                <motion.button
-                                                    initial={{ opacity: 0 }}
-                                                    whileHover={{ scale: 1.1 }}
-                                                    className="absolute right-2 top-2 p-1 bg-gray-200 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    onClick={(e) => notification._id && handleClearNotification(notification._id, e)}
-                                                >
-                                                    <Trash2 size={14} className="text-gray-600" />
-                                                </motion.button>
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.15 }}
+                                                            className="p-1 rounded-full bg-rose-100 hover:bg-rose-200 transition-all duration-200 shadow-sm"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleClearNotification(notification._id!, e);
+                                                            }}
+                                                        >
+                                                            <Trash2 size={16} className="text-rose-600 hover:text-rose-700 transition-colors" />
+                                                        </motion.button>
+                                                    </motion.div>
+
+                                                </div>
                                             </motion.div>
                                         ))
                                     )}
