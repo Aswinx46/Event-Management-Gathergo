@@ -26,7 +26,6 @@ type Errors = {
 };
 
 const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
-  console.log(event)
   const [ticketCount, setTicketCount] = useState(1);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -94,7 +93,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       clientId: clientId!,
       email: email,
       phone: phone,
-      eventId: event._id,
+      eventId: event._id!,
 
     }
     navigate('/ticketPayment', {

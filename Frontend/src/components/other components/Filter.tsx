@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { Search, SortAsc } from 'lucide-react'
-import { Input } from "@/components/ui/input"
+import { useState } from 'react'
+import { SortAsc } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -27,7 +26,7 @@ interface FilterComponentProps {
   onSortChange: (key: string) => void
   onClearFilter: (key: string) => void
   onClearSort: () => void
-  
+
 }
 
 const FilterComponent = ({
@@ -41,11 +40,11 @@ const FilterComponent = ({
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [sortKey, setSortKey] = useState(sortOptions[0]?.key || '')
 
-  const handleSearchChange = (value: string) => {
-    const newFilters = { ...filters, search: value }
-    setFilters(newFilters)
-    onFilterChange(newFilters)
-  }
+  // const handleSearchChange = (value: string) => {
+  //   const newFilters = { ...filters, search: value }
+  //   setFilters(newFilters)
+  //   onFilterChange(newFilters)
+  // }
 
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...filters, [key]: value }
@@ -95,15 +94,15 @@ const FilterComponent = ({
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border border-gray-700">
                 {field.options.map((option) => (
-                  <SelectItem 
-                    key={option.value} 
+                  <SelectItem
+                    key={option.value}
                     value={option.value}
                     className="text-white hover:bg-gray-800 focus:bg-gray-800 focus:text-purple-400"
                   >
                     {option.label}
                   </SelectItem>
                 ))}
-                <SelectItem 
+                <SelectItem
                   value="clear"
                   className="text-purple-400 hover:bg-gray-800 focus:bg-gray-800 border-t border-gray-700"
                 >
@@ -115,8 +114,8 @@ const FilterComponent = ({
 
           {/* Sort dropdown */}
           <div className="relative">
-            <Select 
-              value={sortKey} 
+            <Select
+              value={sortKey}
               onValueChange={(val) => {
                 if (val === 'clear') {
                   onClearSort();
@@ -130,8 +129,8 @@ const FilterComponent = ({
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border border-gray-700">
                 {sortOptions.map((option) => (
-                  <SelectItem 
-                    key={option.key} 
+                  <SelectItem
+                    key={option.key}
                     value={option.key}
                     className="text-white hover:bg-gray-800 focus:bg-gray-800 focus:text-purple-400"
                   >
@@ -141,7 +140,7 @@ const FilterComponent = ({
                     </div>
                   </SelectItem>
                 ))}
-                <SelectItem 
+                <SelectItem
                   value="clear"
                   className="text-purple-400 hover:bg-gray-800 focus:bg-gray-800 border-t border-gray-700"
                 >

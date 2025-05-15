@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store/store'
+import { useDispatch } from 'react-redux'
 import { removeVendor } from '@/store/slices/vendor/vendorSlice'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'

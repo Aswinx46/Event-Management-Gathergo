@@ -203,7 +203,7 @@ interface Vendor {
   onlineStatus: string
   phone: number
   rejectionReason?: string
-  profileImage?:string
+  profileImage?:string | null
   role: string
   status: string
   vendorId?: string
@@ -220,7 +220,7 @@ interface Client {
   phone: number
   role: "client"
   status?: "active" | "block"
-  profileImage?: string
+  profileImage?: string | null
   createdAt?: string
   lastLogin?: string
   onlineStatus?: "online" | "offline"

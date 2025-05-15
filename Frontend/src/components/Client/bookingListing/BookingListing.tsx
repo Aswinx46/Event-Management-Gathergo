@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import BookingListingTable from '../../other components/BookingListingTable'
 import { useFetchBookingsInClient } from '@/hooks/ClientCustomHooks'
 import { useSelector } from 'react-redux'
@@ -6,6 +6,7 @@ import { RootState } from '@/store/store'
 import Pagination from '@/components/other components/Pagination'
 
 interface Service {
+  _id:string
   serviceTitle: string;
   serviceDescription: string;
   serviceDuration: string;

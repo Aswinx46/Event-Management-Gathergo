@@ -26,7 +26,7 @@ export const vendorSlice=createSlice({
         addVendor:(state,action)=>{
             state.vendor=action.payload
         },
-        removeVendor:(state,action)=>{
+        removeVendor:(state,_action)=>{
             state.vendor=null
         }
     }

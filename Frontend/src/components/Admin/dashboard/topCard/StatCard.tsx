@@ -14,7 +14,6 @@ interface StatCardProps {
 }
 
 const StatCard = ({ title, value, icon: Icon, color, formatter, percentageChange }: StatCardProps) => {
-  const displayValue = formatter ? formatter(value) : value.toString();
   const isPositiveChange = percentageChange && percentageChange > 0;
   
   return (

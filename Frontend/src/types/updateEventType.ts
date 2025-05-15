@@ -1,9 +1,9 @@
 export interface EventUpdateEntity {
     title: string;
     description: string;
-    location?: {
-        longitude: number,
-        latitude: number
+    location: {
+        type: string,
+        coordinates: [number, number];
     },
     startTime: Date;
     endTime: Date;

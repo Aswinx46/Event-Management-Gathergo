@@ -66,7 +66,7 @@ function Adminlogin() {
             </h1>
 
             <Formik initialValues={initalValues} validationSchema={validationSchema} onSubmit={handleSubmit} >
-                {({ isSubmitting }) => (
+                {() => (
                     <Form className='w-[90vw] md:w-1/4 flex gap-5 flex-col  '>
 
                         <motion.div

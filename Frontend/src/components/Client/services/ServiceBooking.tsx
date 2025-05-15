@@ -81,7 +81,7 @@ const VendorBookingCard = () => {
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { serviceId, vendorId } = useParams()
-  const [rating, setRating] = useState<number>(4)
+  const [rating, _setRating] = useState<number>(4)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const findServiceWithVendor = useFindSericeDataWithVendor(serviceId!, currentPage, rating)
   const Service: ServiceWithVendorEntity = findServiceWithVendor?.data?.serviceWithVendor

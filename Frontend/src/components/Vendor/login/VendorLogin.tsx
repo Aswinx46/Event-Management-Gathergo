@@ -70,7 +70,7 @@ export default function VendorLogin() {
 
     return (
         <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-            {({ isSubmitting }) => (
+            {() => (
                 <Form>
 
                     <div className="flex h-screen w-full overflow-hidden">

@@ -15,7 +15,7 @@ export const vendorTokenSlice = createSlice({
         addVendorToken: (state, action) => {
             state.token = action.payload
         },
-        removeVendorToken: (state, action) => {
+        removeVendorToken: (state, _action) => {
             state.token = null
         }
     }

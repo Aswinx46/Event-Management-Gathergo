@@ -21,7 +21,6 @@ import TicketPaymentForm from "@/components/Client/paymentForm/TicketPaymentForm
 import BookingPayment from "@/components/Client/bookingListing/BookingPayment";
 import ShowEventsNearYou from "@/components/Client/events/ShowEventsNearYou";
 import ClientChatAndMessage from "@/components/Client/ClientChat/ClientChatAndMessage";
-import VendorProfile from "@/components/Vendor/home/VendorHome";
 import VendorDetails from "@/components/Client/vendorProfile/VendorProfile";
 const UserRoute = () => {
     return (

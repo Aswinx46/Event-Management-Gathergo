@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 
 interface Message {
     id: number;
@@ -11,11 +11,11 @@ interface Message {
     timestamp: string;
 }
 
-interface ChatProps {
-    socket: Socket
-}
+// interface ChatProps {
+//     socket: Socket
+// }
 
-const Chat = ({ socket }: ChatProps) => {
+const Chat = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,

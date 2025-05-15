@@ -27,7 +27,7 @@ interface TicketConfirmationModalProps {
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const TicketConfirmationModal = ({ ticket, isOpen, setIsOpen }: TicketConfirmationModalProps) => {
+export const TicketConfirmationModal = ({ ticket, isOpen }: TicketConfirmationModalProps) => {
     const navigate = useNavigate()
     console.log(ticket)
     return (

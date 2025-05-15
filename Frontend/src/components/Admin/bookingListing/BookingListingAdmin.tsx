@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Info, Clock, User } from "lucide-react";
+import { CalendarDays, Info, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BookingDetailsModal from "./BookingDetailsModalAdmin";
 import { Card, CardContent } from "@/components/ui/card";

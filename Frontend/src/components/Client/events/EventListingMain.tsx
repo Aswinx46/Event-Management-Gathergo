@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import EventList from '../../other components/events/EventList'
 import { useFindEvents, useFindEventsBasedOnCategory, useFindEventsOnQuery } from '@/hooks/ClientCustomHooks'
 import Pagination from '@/components/other components/Pagination'
@@ -81,7 +81,7 @@ function EventListingMain() {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const handleOnClick = (id: string, title: string) => {
+    const handleOnClick = (id: string) => {
         navigate(`/event/${id}`)
     }
 

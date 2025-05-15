@@ -1,7 +1,6 @@
 import PasswordChange from '@/components/Client/profile/ChangePassword'
 import { useVendorChangePassword } from '@/hooks/VendorCustomHooks'
 import { RootState } from '@/store/store'
-import React from 'react'
 import { useSelector } from 'react-redux'
 
 function ChangePasswordVendor() {

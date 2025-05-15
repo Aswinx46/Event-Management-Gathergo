@@ -30,7 +30,7 @@ const itemVariants = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const TicketForm: React.FC<TicketFormProps> = ({ values }) => {
+const TicketForm: React.FC<TicketFormProps> = () => {
   return (
     <motion.div
       variants={containerVariants}

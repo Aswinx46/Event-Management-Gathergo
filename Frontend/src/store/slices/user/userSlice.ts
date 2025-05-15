@@ -23,7 +23,7 @@ export const clientSlice = createSlice({
         addClient: (state, action) => {
             state.client = action.payload
         },
-        removeClient: (state, action) => {
+        removeClient: (state, _action) => {
             state.client = null
         }
     }

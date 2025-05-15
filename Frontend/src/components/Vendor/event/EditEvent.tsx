@@ -30,7 +30,6 @@ import {
 import { cn } from "@/lib/utils";
 import { EventEntity } from "@/types/EventEntity";
 import { Badge } from "@/components/ui/badge";
-import { date } from "yup";
 import { toast } from "react-toastify";
 
 interface EventEditModalProps {
@@ -319,7 +318,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                     >
                       <label className="text-sm font-medium">Selected Dates</label>
                       <div className="flex flex-wrap gap-2 p-2 border rounded-md bg-slate-50">
-                        {formData.date.map((date, index) => (
+                        {formData.date.map((date) => (
                           <motion.div
                             key={new Date(date).getTime()}
                             layout

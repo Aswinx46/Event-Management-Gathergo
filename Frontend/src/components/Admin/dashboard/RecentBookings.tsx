@@ -8,14 +8,12 @@ import {
   Clock,
   CreditCard,
   DollarSign,
-  MoreHorizontal,
   Phone,
   User,
   X,
   XCircle,
 } from "lucide-react"
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { useNavigate } from "react-router-dom"
 
@@ -40,7 +38,7 @@ interface RecentBookingsProps {
   onViewDetails?: (booking: BookingEntity) => void
 }
 
-export default function RecentBookings({ bookings, onViewDetails }: RecentBookingsProps) {
+export default function RecentBookings({ bookings }: RecentBookingsProps) {
   // Take only the 5 most recent bookings
   const recentBookings = bookings.slice(0, 5)
 
@@ -197,7 +195,7 @@ function StatusBadge({ status }: { status: BookingEntity["status"] }) {
 
 function PaymentBadge({ status }: { status: BookingEntity["paymentStatus"] }) {
   let color
-  const icon = <DollarSign className="h-3 w-3" />
+  <DollarSign className="h-3 w-3" />
 
   switch (status) {
     case "Successfull":

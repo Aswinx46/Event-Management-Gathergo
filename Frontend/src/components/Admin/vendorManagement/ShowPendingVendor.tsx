@@ -52,7 +52,7 @@ const buttonVariants = {
 
 const PendingVendorRequests: React.FC = () => {
 
-  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [currentPage, _setCurrentPage] = useState<number>(1)
   const [pendingVendors, setPendingVendors] = useState<Vendor[] | []>([])
   const [preview, setPreview] = useState<boolean>(false)
   const [selectedIdProof, setSelectedProof] = useState<string>('')
@@ -73,7 +73,7 @@ const PendingVendorRequests: React.FC = () => {
   const rejectVendor = useRejectPendingVendor()
 
 
-  const handleViewProof = (id: string, idProof: string) => {
+  const handleViewProof = ( idProof: string) => {
     setSelectedProof(idProof)
     setPreview(true)
   };
@@ -183,7 +183,7 @@ const PendingVendorRequests: React.FC = () => {
                   className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg"
                 >
                   <motion.button
-                    onClick={() => handleViewProof(vendor._id, vendor.idProof)}
+                    onClick={() => handleViewProof( vendor.idProof)}
                     variants={buttonVariants}
                     whileHover="hover"
                   >

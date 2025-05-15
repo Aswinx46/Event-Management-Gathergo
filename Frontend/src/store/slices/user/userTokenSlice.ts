@@ -16,7 +16,7 @@ export const tokenSlice = createSlice({
         addToken: (state, action:PayloadAction<string>) => {
             state.token = action.payload
         },
-        removeToken: (state, action) => {
+        removeToken: (state, _action) => {
             state.token = null
         }
     }

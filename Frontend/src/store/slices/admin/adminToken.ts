@@ -15,7 +15,7 @@ export const adminTokenSlice=createSlice({
         addAdminToken:(state,action)=>{
             state.adminToken=action.payload
         },
-        removeAdminToken:(state,action)=>{
+        removeAdminToken:(state,_action)=>{
             state.adminToken=null
         }
     }

@@ -2,7 +2,7 @@ import Pagination from '@/components/other components/Pagination'
 import { WalletCard } from '@/components/other components/wallet/Wallet'
 import { useFindWalletClient } from '@/hooks/ClientCustomHooks'
 import { RootState } from '@/store/store'
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 function ClientWallet() {

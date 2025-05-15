@@ -20,7 +20,7 @@ interface Category { title: string; image: File | null; }
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, currentPage }) => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [showCropper, setShowCropper] = useState<boolean>(false)
-  const [category, setCategory] = useState<Category>()
+  const [_category, setCategory] = useState<Category>()
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [croppedImage, setCroppedImage] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -84,32 +84,6 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
     }
   }
 
-  // const handleSubmit = async (values: Category, { resetForm }: FormikHelpers<Category>) => {
-  //   values.image = croppedImage
-  //   const formdata = new FormData()
-  //   if (values.image) {
-  //     formdata.append('file', values.image)
-  //     formdata.append('upload_preset', 'Category')
-  //     const response = await imageUpload.mutateAsync(formdata)
-  //     values.image = response?.secure_url
-  //     createCategory.mutate(values, {
-  //       onSuccess: (data) => {
-  //         console.log('asdkjf')
-  //         console.log('data updated', data)
-  //       },
-  //       onError: (err) => {
-  //         console.log('err')
-  //         console.log(err)
-  //       }
-  //     })
-  //   }
-  //   resetForm()
-  //   setCategory(values)
-  //   setIsOpen(false);
-  //   resetForm();
-  //   setPreviewUrl("");
-
-  // }
 
   return (
     <AnimatePresence>

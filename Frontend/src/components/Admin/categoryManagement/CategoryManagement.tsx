@@ -293,7 +293,7 @@ const CategoryManagement: React.FC = () => {
         className="max-w-[1920px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
       >
         <AnimatePresence mode="popLayout">
-          {categories?.map((category: Category, index: number) => (
+          {categories?.map((category: Category) => (
             <motion.div
               key={category._id}
               variants={cardVariants}

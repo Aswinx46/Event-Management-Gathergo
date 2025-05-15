@@ -93,7 +93,7 @@ export default function AddWorkSample() {
         vendorId: vendorId!,
 
       }
-      const workSampleCreation = createWorkSample.mutate(uploadValue, {
+       createWorkSample.mutate(uploadValue, {
         onSuccess: () => {
           toast.success('Work sample created')
           setSuccess(true)
@@ -227,7 +227,7 @@ export default function AddWorkSample() {
                 </label>
 
                 <FieldArray name="images">
-                  {({ push, remove }) => (
+                  {() => (
                     <div className="space-y-4">
                       {/* Image preview section */}
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

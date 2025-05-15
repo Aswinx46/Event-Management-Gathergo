@@ -18,7 +18,6 @@ export interface PaymentFormProps {
 const PaymentForm: React.FC<PaymentFormProps> = ({
   amount,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  metadata,
   onCreatePaymentIntent,
   onConfirmSuccess,
 }) => {

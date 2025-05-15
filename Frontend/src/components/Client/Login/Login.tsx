@@ -172,7 +172,7 @@ export default function LoginComponent() {
                         <p className="mt-2 text-sm text-gray-600">Sign in to your account to continue</p>
                     </motion.div>
                     <Formik initialValues={initialValues} onSubmit={handleLogin} validationSchema={validationSchema}>
-                        {({ isSubmitting }) => (
+                        {() => (
                             <Form>
 
                                 <div className="space-y-6">

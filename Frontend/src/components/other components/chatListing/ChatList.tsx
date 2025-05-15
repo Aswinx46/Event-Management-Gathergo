@@ -9,12 +9,12 @@ import { Input } from "@/components/ui/input";
 interface ChatListProps {
     chats: ChatEntityDTO[];
     userId: string;
-    userModel: 'client' | 'vendors';
+    userModel?: 'client' | 'vendors';
     onChatSelect: (chat: FormattedChat) => void;
     selectedChatId?: string;
 }
 
-const ChatList = ({ chats, userId, userModel, onChatSelect, selectedChatId }: ChatListProps) => {
+const ChatList = ({ chats, userId, onChatSelect, selectedChatId }: ChatListProps) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [formattedChats, setFormattedChats] = useState<FormattedChat[]>([]);
 

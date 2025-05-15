@@ -47,7 +47,7 @@ const ServicesList: React.FC = () => {
     const { categoryId, title } = useParams()
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId ?? null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [selecteCategoryTitle, setSelectedCategoryTitle] = useState<string | null>(title ?? null)
+    const [selecteCategoryTitle, _setSelectedCategoryTitle] = useState<string | null>(title ?? null)
     const { data: servicesWithCategory, error: errorCategory } = useFindServiceOnCategoryBasis(selectedCategoryId ?? '', currentPage, selectedSort, { enabled: !!selectedCategoryId || selectedSort !== '' })
     const searchService = useFindServiceUsingSearch()
     const categories = findCategory.data?.categories

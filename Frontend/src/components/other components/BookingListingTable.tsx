@@ -133,7 +133,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {bookings.map((booking, index) => (
+                {bookings.map((booking) => (
                   <motion.tr
                     key={booking._id}
                     variants={itemVariants}

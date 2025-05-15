@@ -1,13 +1,13 @@
-import { useVerifyTicket } from '@/hooks/VendorCustomHooks'
+// import { useVerifyTicket } from '@/hooks/VendorCustomHooks'
 
 import TicketScanner from './TicketScanner'
 
 function TicketVerification() {
-    const scanQr=useVerifyTicket()
+    // const scanQr=useVerifyTicket()
     // scanQr.mutate()
   return (
     <div>
-      <TicketScanner scanQr={scanQr}/>
+      <TicketScanner />
     </div>
   )
 }

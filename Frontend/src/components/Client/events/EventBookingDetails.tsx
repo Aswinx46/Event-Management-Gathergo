@@ -17,7 +17,7 @@ export default function EventDetails() {
     const [showTicketPurchase, setShowTicketPurchase] = useState<boolean>(false)
     const { eventId } = useParams<{ eventId: string }>()
     const [currentPage, setCurrentPage] = useState<number>(1)
-    const [rating, setRating] = useState<number>(1)
+    const [rating, _setRating] = useState<number>(1)
     const fetchReviews = useShowReviews({ targetId: eventId!, pageNo: currentPage, rating })
     useEffect(() => {
         setIsLoaded(true)

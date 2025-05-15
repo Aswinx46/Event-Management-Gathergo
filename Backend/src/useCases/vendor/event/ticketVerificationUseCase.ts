@@ -20,7 +20,7 @@ export class TicketVerificationUseCase implements IticketVerificationUseCase {
         if (!event) throw new Error('No event found in this ID')
         if (event.hostedBy.toString() !== vendorId) throw new Error("This event is not hosted by you")
         const today = new Date().toISOString().slice(0, 10)
-        
+
         const eventDates = event.date?.map(d => new Date(d).toISOString().slice(0, 10))
         if (!eventDates.includes(today)) {
             throw new Error("This ticket is not valid for today's date");

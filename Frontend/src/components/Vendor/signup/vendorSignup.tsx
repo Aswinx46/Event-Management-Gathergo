@@ -131,7 +131,7 @@ export default function SignupPage() {
             setData(vendor)
             console.log(vendor)
             // await vendorSignupAPI.mutateAsync(vendor)
-            const mutation = vendorSignupAPI.mutate(vendor, {
+            vendorSignupAPI.mutate(vendor, {
                 onSuccess: () => {
                     setIsOpen(true)
                 },
@@ -164,7 +164,7 @@ export default function SignupPage() {
                 </Suspense>
             </div>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                {({ isSubmitting }) => (
+                {() => (
                     <Form className="flex w-full items-center justify-center bg-white p-8 lg:w-1/2">
                         <div className="w-full max-w-md space-y-6">
                             <div className="space-y-2 text-center">

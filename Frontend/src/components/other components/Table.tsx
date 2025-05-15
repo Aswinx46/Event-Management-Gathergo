@@ -18,7 +18,7 @@ interface Client {
     phone: number,
     role: 'client',
     status?: 'active' | 'block',
-    profileImage?: string
+    profileImage?: string | null
     createdAt?: string,
     lastLogin?: string,
     onlineStatus?: 'online' | 'offline',

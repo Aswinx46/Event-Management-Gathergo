@@ -15,7 +15,9 @@ interface BasicInfoFormProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFieldValue: (field: string, value: any) => void;
   posterImages: File[] 
-  setPosterImages: (images: File[]) => void;
+  // setPosterImages: (images: File[]) => void;
+  setPosterImages: React.Dispatch<React.SetStateAction<File[]>>;
+
 }
 
 const containerVariants = {
@@ -48,7 +50,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
     // setPosterImages([...posterImages, ...imageUrls]);
   };
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [imageFiles, setImageFiles] = useState<File[] | null>([])
+  const [imageFiles, _setImageFiles] = useState<File[] | null>([])
 
   console.log('image files',imageFiles)
   values.posterImage = imageFiles
