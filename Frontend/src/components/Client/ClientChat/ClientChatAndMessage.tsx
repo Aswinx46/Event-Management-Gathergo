@@ -16,7 +16,7 @@ function ClientChatAndMessage() {
     const [vendorId, setVendorId] = useState<string>('')
     const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
     const selectedRoomId = clientId + vendorId
-    const [isSelectedChat, setIsSelectedChat] = useState<boolean>(location.state.selectedChat ?? false)
+    const [isSelectedChat, setIsSelectedChat] = useState<boolean>(location?.state?.selectedChat ?? false)
     const [roomId, setRoomId] = useState<string>(stateRoomId ?? selectedRoomId)
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadChatsInfinite(clientId ?? stateClientId)
     // const [selectedChat, setSelectedChat] = useState<FormattedChat>()
