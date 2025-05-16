@@ -91,7 +91,7 @@ function ClientChat({ clientId, roomId, vendorId, chatId, isChatSelect }: Client
             {isChatSelect ?
                 <Chat messages={chats} sendMessage={sendMessage} currentUserId={clientId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
                 : <div className="flex items-center justify-center h-full bg-black text-white">
-                    <div className="bg-gradient-to-r h-full from-gray-900 via-gray-800 to-gray-900 p-8 rounded-xl shadow-xl text-center max-w-md">
+                    <div className="bg-gradient-to-r  from-gray-900 via-gray-800 to-gray-900 p-8 rounded-xl shadow-xl text-center max-w-md">
                         <p className="text-lg  font-semibold tracking-wide text-gray-100">
                             Please select a chat to start a conversation
                         </p>
