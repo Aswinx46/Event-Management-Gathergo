@@ -14,10 +14,11 @@ function VendorChatAndMessage() {
   const stateVendorId = location?.state?.vendorId
   const stateChatId = location?.state?.chatId
   const stateRoomId = stateClientId + stateVendorId
-  console.log(stateClientId , stateVendorId)
+  console.log(stateClientId, stateVendorId)
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
   const [clientId, setClientId] = useState<string>(stateClientId)
   const [chatId, setChatId] = useState<string>(stateChatId)
+  const [isChatSelected, setIsChatSelected] = useState<boolean>(false)
   const selectedRoomId = clientId + vendorId
   // console.log('state room id',stateRoomId)
   const [roomId, setRoomId] = useState<string>(stateRoomId ?? selectedRoomId)
@@ -25,18 +26,10 @@ function VendorChatAndMessage() {
   const loaderRef = useInfiniteScrollObserver()
   const chats = data?.pages.flatMap(page => page.chats) ?? []
   const handleChatSelect = (chat: FormattedChat) => {
-    // You can navigate or update UI state
-    console.log(chat)
-    // navigate('/vendor/chats/messages', {
-    //   state: {
-    //     clientId: chat.contact._id,
-    //     vendorId,
-    //     chatId: chat._id
-    //   }
-    // })
     setClientId(chat.contact._id)
     setChatId(chat._id!)
     setRoomId(chat.contact._id + vendorId)
+    setIsChatSelected(true)
   }
   return (
     <div className="flex  w-full gap-0">
@@ -44,7 +37,7 @@ function VendorChatAndMessage() {
         <ChatList chats={chats} onChatSelect={handleChatSelect} userId={vendorId!} userModel='vendors' />
         <div ref={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
       </div>
-      <VendorChat chatId={chatId} clientId={clientId} roomId={roomId} vendorId={vendorId!} />
+      <VendorChat isChatSelected={isChatSelected} chatId={chatId} clientId={clientId} roomId={roomId} vendorId={vendorId!} />
     </div>
   )
 }

@@ -53,7 +53,7 @@ export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
           >
             <div className="space-y-2">
               <p className="text-sm text-white/80">Available Balance</p>
-              <h2 className="text-4xl font-bold">${wallet?.balance?.toFixed(2)}</h2>
+              <h2 className="text-4xl font-bold">₹{wallet?.balance?.toFixed(2)}</h2>
             </div>
             <div className="flex items-center justify-between text-sm">
               <div>
@@ -122,7 +122,7 @@ const TransactionItem = ({ amount, paymentStatus, paymentType, date, currency }:
         </div>
       </div>
       <p className={`font-semibold ${paymentStatus === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
-        {paymentType === 'credit' ? '+' : '-'}${amount.toFixed(2)}
+        {paymentType === 'credit' ? '+' : '-'}₹{amount.toFixed(2)}
       </p>
     </motion.div>
   );

@@ -45,7 +45,7 @@ const Chat = ({ messages, sendMessage, currentUserId, topMessageRef }: ChatProps
         </h2>
       </div>
 
-      <div className="h-[500px] overflow-y-auto mb-6 p-4 hide-scrollbar bg-black/50 rounded-xl shadow-inner relative backdrop-blur-sm grow-1">
+      <div className="h-full overflow-y-auto mb-6 p-4 hide-scrollbar bg-black/50 rounded-xl shadow-inner relative backdrop-blur-sm grow-1">
         <AnimatePresence>
           {messages.map((msg, index) => {
             const isUser = msg.senderId === currentUserId

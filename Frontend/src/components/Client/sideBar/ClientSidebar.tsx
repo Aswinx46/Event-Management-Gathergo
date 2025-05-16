@@ -13,6 +13,8 @@ import {
   MessageCircle
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const menuItems = [
   {
@@ -53,6 +55,7 @@ const menuItems = [
 ];
 
 export function ClientSidebar() {
+  const client = useSelector((state: RootState) => state.clientSlice.client)
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,6 +74,7 @@ export function ClientSidebar() {
       setIsOpen(false);
     }
   };
+
 
   return (
     <>
@@ -109,7 +113,12 @@ export function ClientSidebar() {
 
         <nav className="flex-1 overflow-y-auto py-4">
           <ul className="space-y-1 px-3">
-            {menuItems.map((item) => (
+            {menuItems.filter(item => {
+              if (item.label === "Change Password" && client?.googleVerified == true) {
+                return false; // Skip this menu item
+              }
+              return true;
+            }).map((item) => (
               <li key={item.path}>
                 <motion.button
                   whileHover={{ x: 5 }}
@@ -142,7 +151,7 @@ export function ClientSidebar() {
               <User size={18} className="text-gray-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-800">John Doe</p>
+              <p className="text-sm font-medium text-gray-800">{client?.name}</p>
               <p className="text-xs text-gray-500">Client</p>
             </div>
           </div>

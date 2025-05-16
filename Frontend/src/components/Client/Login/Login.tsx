@@ -265,6 +265,32 @@ export default function LoginComponent() {
                                                 Sign up
                                             </Link>
                                         </p>
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ duration: 0.4 }}
+                                            className="mt-6 text-center"
+                                        >
+                                            <div className="h-px w-full max-w-[120px] bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto mb-5" />
+
+                                            <motion.p
+                                                className="text-sm text-gray-500 mb-2"
+                                                initial={{ y: 5 }}
+                                                animate={{ y: 0 }}
+                                                transition={{ delay: 0.1, duration: 0.3 }}
+                                            >
+                                                Are you a vendor?
+                                            </motion.p>
+
+                                            <motion.div whileHover={{ y: -1 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                                                <Link
+                                                    to="/vendor/login"
+                                                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                                                >
+                                                    Sign in here
+                                                </Link>
+                                            </motion.div>
+                                        </motion.div>
                                     </motion.div>
                                 </div>
                             </Form>

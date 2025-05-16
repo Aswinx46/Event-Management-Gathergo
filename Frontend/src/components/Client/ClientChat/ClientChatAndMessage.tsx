@@ -16,15 +16,14 @@ function ClientChatAndMessage() {
     const [vendorId, setVendorId] = useState<string>('')
     const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
     const selectedRoomId = clientId + vendorId
-
+    const [isSelectedChat, setIsSelectedChat] = useState<boolean>(false)
     const [roomId, setRoomId] = useState<string>(stateRoomId ?? selectedRoomId)
-    console.log(clientId, vendorId)
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadChatsInfinite(clientId ?? stateClientId)
     // const [selectedChat, setSelectedChat] = useState<FormattedChat>()
     const [chatId, setChatId] = useState<string>('')
 
     const handleChatSelect = (chat: FormattedChat) => {
-        console.log("chat selected")
+        setIsSelectedChat(true)
         const vendorId = chat.contact._id
         setVendorId(vendorId)
         const chatId = chat._id
@@ -42,7 +41,7 @@ function ClientChatAndMessage() {
                 <ChatList chats={chats} onChatSelect={handleChatSelect} userId={clientId ?? stateClientId} userModel='client' selectedChatId='' />
                 <div ref={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
             </div>
-            <ClientChat clientId={clientId ?? stateClientId} vendorId={stateVendorId ?? vendorId} roomId={roomId} chatId={chatId} />
+            <ClientChat isChatSelect={isSelectedChat} clientId={clientId ?? stateClientId} vendorId={stateVendorId ?? vendorId} roomId={roomId} chatId={chatId} />
         </div>
     )
 }

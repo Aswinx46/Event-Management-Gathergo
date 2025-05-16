@@ -77,7 +77,11 @@ const HeroSection = () => {
                 </motion.div>
             </AnimatePresence>
 
-            <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 space-x-2">
+            <div className="absolute bottom-8  left-1/2 flex flex-col -translate-x-1/2 space-x-2">
+            <div className='m-0'>
+                <Button onClick={() => navigate('/events')} className='p-5 mb-[90%] md:mb-[75%] bg-gray-500/35 hover:bg-gray-500/65'>BOOK EVENTS</Button>
+                </div>
+                <div className='flex space-x-2 justify-center'>
                 {slides.map((_, index) => (
                     <button
                         key={index}
@@ -87,8 +91,10 @@ const HeroSection = () => {
                         aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}
+                </div>
+                
             </div>
-            <Button onClick={() => navigate('/events')} className=' top-[54vh] left-[32vw]  absolute md:top-[40vh] bg-transparent hover:bg-gray-500 md:right-[31vw]'>BOOK EVENTS</Button>
+            
         </div>
     );
 };

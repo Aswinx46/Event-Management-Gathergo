@@ -12,9 +12,10 @@ interface ClientChatProps {
     vendorId: string
     roomId: string
     chatId: string
+    isChatSelected: boolean
 }
 
-function VendorChat({ chatId, clientId, roomId, vendorId }: ClientChatProps) {
+function VendorChat({ chatId, clientId, roomId, vendorId, isChatSelected }: ClientChatProps) {
 
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfiniteVendor(chatId, { enabled: !!chatId })
@@ -70,7 +71,18 @@ function VendorChat({ chatId, clientId, roomId, vendorId }: ClientChatProps) {
 
     return (
         <div className='flex-3/4'>
-            <Chat messages={chats} sendMessage={sendMessage} currentUserId={vendorId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
+            {isChatSelected ?
+                <Chat messages={chats} sendMessage={sendMessage} currentUserId={vendorId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
+                : <div className="flex items-center justify-center h-full bg-black text-white">
+                    <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-8 rounded-xl shadow-xl text-center max-w-md">
+                        <p className="text-lg font-semibold tracking-wide text-gray-100">
+                            Please select a chat to start a conversation
+                        </p>
+                        <p className="text-sm text-gray-400 mt-2">
+                            Choose a contact from the list to begin chatting
+                        </p>
+                    </div>
+                </div>}
 
         </div>
     )

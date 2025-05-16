@@ -9,7 +9,7 @@ interface Client {
     _id?: string
     role: 'client',
     status: 'active' | 'block'
-    googleVerified: string
+    googleVerified: boolean
 }
 
 const initialState: { client: Client | null } = {

@@ -146,11 +146,11 @@ export default function VendorLogin() {
                                                     Remember me
                                                 </Label>
                                             </div>
-                                            {/* <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                                                 <Link to="#" className="text-sm font-medium text-primary hover:text-primary/90">
                                                     Forgot password?
                                                 </Link>
-                                            </motion.div> */}
+                                            </motion.div>
                                         </div>
                                     </div>
 

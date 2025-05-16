@@ -7,14 +7,15 @@ import { useLoadMessageInfinite } from '@/hooks/ClientCustomHooks'
 import { useInfiniteScrollObserver } from '@/hooks/useInfiniteScrollObserver'
 import { useQueryClient } from '@tanstack/react-query'
 
-interface ClientChatProps{
-    clientId:string
-    vendorId:string
-    roomId:string
-    chatId:string
+interface ClientChatProps {
+    clientId: string
+    vendorId: string
+    roomId: string
+    chatId: string
+    isChatSelect: boolean
 }
 
-function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
+function ClientChat({ clientId, roomId, vendorId, chatId, isChatSelect }: ClientChatProps) {
     // const location = useLocation()
     // const stateData = location.state
     // const clientId = stateData.clientId
@@ -26,7 +27,7 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useLoadMessageInfinite(chatId, { enabled: !!chatId })
     const [chats, setChats] = useState<Message[]>([])
-    const queryClient=useQueryClient()
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         if (data?.pages) {
@@ -78,16 +79,27 @@ function ClientChat({clientId,roomId,vendorId,chatId}:ClientChatProps) {
         }
         // console.log(message)
         socket.emit('sendMessage', { sendMessage, roomId, receiverId: vendorId, receiverModel: 'vendors' }, (newChat: MessageTypeFromBackend) => {
-            console.log('acknoledgement',newChat)
+            console.log('acknoledgement', newChat)
             setChats((prev) => [...prev, newChat])
-            queryClient.invalidateQueries({queryKey: ['chats', clientId]})
+            queryClient.invalidateQueries({ queryKey: ['chats', clientId] })
 
         })
     }
 
     return (
         <div className='flex-3/4'>
-            <Chat messages={chats} sendMessage={sendMessage} currentUserId={clientId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
+            {isChatSelect ?
+                <Chat messages={chats} sendMessage={sendMessage} currentUserId={clientId} topMessageRef={(node) => loaderRef(node, { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading })} />
+                : <div className="flex items-center justify-center h-full bg-black text-white">
+                    <div className="bg-gradient-to-r h-full from-gray-900 via-gray-800 to-gray-900 p-8 rounded-xl shadow-xl text-center max-w-md">
+                        <p className="text-lg  font-semibold tracking-wide text-gray-100">
+                            Please select a chat to start a conversation
+                        </p>
+                        <p className="text-sm text-gray-400 mt-2">
+                            Choose a contact from the list to begin chatting
+                        </p>
+                    </div>
+                </div>}
         </div>
     )
 }

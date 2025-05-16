@@ -22,6 +22,7 @@ import { RootState } from '@/store/store';
 import UserReviews from '../review/ShowReviews';
 import Pagination from '@/components/other components/Pagination';
 import { FaRupeeSign } from 'react-icons/fa';
+import { enUS } from 'date-fns/locale';
 
 export interface Booking {
   date: Date[];
@@ -117,8 +118,15 @@ const VendorBookingCard = () => {
         .matches(/^[6-9]\d{9}$/, 'Phone number must start with 6-9 and contain exactly 10 digits')
         .required('Phone number is required'),
       name: Yup.string().required('Name is required')
+        .trim()
         .min(2, 'Name must be at least 2 characters')
         .max(50, 'Name must be less than 50 characters')
+        .matches(/^[a-zA-Z\s]+$/, 'Name can only contain letters and spaces')
+        .test(
+          'not-just-spaces',
+          'Name cannot be only spaces',
+          (value) => !!value && value.trim().length > 0
+        )
     }),
     onSubmit: (values) => {
       if (clientId && vendorId && serviceId) {
@@ -265,7 +273,7 @@ const VendorBookingCard = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-4 bg-black border-white/30 space-y-4">
-                      <Calendar
+                       <Calendar
                         mode="multiple"
                         selected={selectedDates}
                         onSelect={(dates) => {
@@ -283,7 +291,6 @@ const VendorBookingCard = () => {
                         disabled={(date) =>
                           isBefore(startOfDay(date), startOfDay(new Date()))
                         }
-                        initialFocus
                         className="bg-white text-black"
                         modifiersStyles={{
                           selected: {
@@ -291,7 +298,10 @@ const VendorBookingCard = () => {
                             color: 'white'
                           }
                         }}
-                      />
+                        weekStartsOn={0}
+                        locale={enUS}
+                      /> 
+                    
                       <Button
                         variant="secondary"
                         className="w-full bg-white text-black"
@@ -329,7 +339,7 @@ const VendorBookingCard = () => {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+91 123456789"
                       className="pl-10 bg-black border-white/30 text-white placeholder:text-gray-500"
                       {...formik.getFieldProps('phone')}
                     />

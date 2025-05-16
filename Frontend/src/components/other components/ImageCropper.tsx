@@ -25,7 +25,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const onZoomChange = (zoom: number) => setZoom(zoom);
 
   const handleCropComplete = useCallback(
-    (croppedPixels: Area) => {
+    (_croppedArea: Area,croppedPixels: Area) => {
       setCroppedAreaPixels(croppedPixels);
     },
     []
@@ -62,6 +62,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     });
   };
 
+
+
   const createImage = (url: string): Promise<HTMLImageElement> =>
     new Promise((resolve, reject) => {
       const img = new Image();
@@ -86,7 +88,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     <div className="absolute inset-0 bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-md z-50 flex justify-center items-center">
       <div className="relative w-[90%] max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden">
         <div className="absolute top-4 right-4 z-10">
-          <button 
+          <button
             onClick={() => showCropper(false)}
             className="p-2 hover:bg-white/10 rounded-full transition-colors backdrop-blur-sm text-white"
           >

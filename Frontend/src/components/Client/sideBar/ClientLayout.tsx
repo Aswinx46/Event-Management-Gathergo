@@ -4,7 +4,7 @@ export default function ClientLayout() {
     return (
         <div className="w-full flex">
             <ClientSidebar />
-            <div className="grow">
+            <div className="grow h-[100vh] overflow-y-scroll hide-scrollbar">
                 <Outlet />
             </div>
         </div>
