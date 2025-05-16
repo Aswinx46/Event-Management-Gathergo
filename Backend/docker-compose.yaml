@@ -15,14 +15,16 @@ services:
       - REFRESHTOKEN_SECRET_KEY=0ecd36b31edea89422c25353f7916450b43367ed3f0e3c6a03ad3cadf18ec77a435d4ecf5bb2556d007e4f3a531b192838051b02f9dd62621b70419af0038331
       - STRIPE_PK=${STRIPE_PK}
       - STRIPE_SK=${STRIPE_SK}
-      - REDIS_URL=redis://localhost:6379
+
+      - REDIS_URL=redis://redis:6379
       - RAZORPAY_SECRET=e8rh0sWTc5s1OI61fTiuz5mQ
       - RAZORPAY_KEY_ID=rzp_test_ffVIhYffimysvE
       - ADMIN_ID=67dd52b68f0e70cf7aab5069
       - HOSTNAME=https://gathergo.aswinb.site
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-
+    depends_on:
+       - redis
   redis:
     image: redis:latest
     ports:
