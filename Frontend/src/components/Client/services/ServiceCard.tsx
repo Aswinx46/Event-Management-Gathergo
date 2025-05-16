@@ -58,7 +58,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
           >
             <IndianRupee size={18} className="mr-1" />
-            <span>${servicePrice}</span>
+            <span>₹{servicePrice}</span>
           </motion.div>
 
           <motion.div
