@@ -18,7 +18,7 @@ function VendorChatAndMessage() {
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
   const [clientId, setClientId] = useState<string>(stateClientId)
   const [chatId, setChatId] = useState<string>(stateChatId)
-  const [isChatSelected, setIsChatSelected] = useState<boolean>(false)
+  const [isChatSelected, setIsChatSelected] = useState<boolean>(location.state.selectedChat ?? false)
   const selectedRoomId = clientId + vendorId
   // console.log('state room id',stateRoomId)
   const [roomId, setRoomId] = useState<string>(stateRoomId ?? selectedRoomId)

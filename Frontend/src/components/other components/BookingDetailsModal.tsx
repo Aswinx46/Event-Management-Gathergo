@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {  formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import {
     Dialog,
     DialogContent,
@@ -182,17 +182,21 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     const handleChatNavigate = () => {
         if (booking.client?.email) {
+
             navigate('/vendor/chats', {
                 state: {
                     clientId: booking.client._id,
-                    vendorId: vendorId
+                    vendorId: vendorId,
+                    selectedChat: true
                 }
             })
         } else {
+
             navigate('/profile/chats', {
                 state: {
                     clientId: clientId,
-                    vendorId: booking.vendor._id
+                    vendorId: booking.vendor._id,
+                    selectedChat: true
                 }
             })
         }
@@ -214,7 +218,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             },
             onError: (err) => {
                 toast.error(err.message)
-                
+
             }
         })
     }

@@ -12,6 +12,7 @@ import { isAxiosError } from "axios"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { removeVendorToken } from "@/store/slices/vendor/vendorTokenSlice"
+import * as Yup from 'yup';
 export default function VendorProfile() {
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [isPending, setIsPending] = useState(false)
@@ -90,9 +91,23 @@ export default function VendorProfile() {
 
   const updateVendorDetails = useUpdateVendorDetailsMutation()
 
+  const nameValidation = Yup.string()
+    .required('Name is required')
+    .test('three-words', 'Name must contain at least 3 words', value => {
+      if (!value) return false;
+      const words = value.trim().split(/\s+/);
+      return words.length >= 3;
+    })
+    .matches(/^[A-Za-z ]+$/, 'Name can only contain letters and spaces')
+    .test('no-empty-words', 'Name should not contain empty words', value => {
+      if (!value) return false;
+      return value.trim().split(/\s+/).every(word => word.trim().length > 0);
+    });
+
   const handleUpdateDetails = async () => {
     if (!vendor?._id) return
     try {
+      nameValidation.validateSync(name)
       updateVendorDetails.mutate(
         { id: vendor._id, about, phone, name },
         {
@@ -108,7 +123,12 @@ export default function VendorProfile() {
         }
       )
     } catch (error) {
-      handleError(error, 'Error updating vendor details')
+      // handleError(error, 'Error updating vendor details')
+      if (error instanceof Yup.ValidationError) {
+        toast.error(error.message);
+      } else {
+        handleError(error, 'Error updating vendor details');
+      }
     }
   }
 

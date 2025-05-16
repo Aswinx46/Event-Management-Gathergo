@@ -12,7 +12,7 @@ import CountUp from "./CountUp"
 interface MetricCardProps {
   title: string
   value: number | string
-  description: string
+  description?: string
   icon: React.ReactNode
   trend?: number
   variants?: any

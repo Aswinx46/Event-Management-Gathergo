@@ -18,7 +18,7 @@ import { addClient } from "@/store/slices/user/userSlice"
 
 // Define the user type
 interface UserData {
-    _id:string,
+    _id: string,
     clientId: string,
     email: string,
     name: string,
@@ -29,7 +29,7 @@ interface UserData {
 }
 
 type EditableUserFields = {
-    _id:string
+    _id: string
     name: string
     phone: number
     profileImage?: string
@@ -38,7 +38,16 @@ type EditableUserFields = {
 
 // Validation schema
 const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
+    name: Yup.string().required('Name is required')
+        .trim()
+        .min(2, 'Name must be at least 2 characters')
+        .max(10, 'Name must be less than 50 characters')
+        .matches(/^[a-zA-Z\s]+$/, 'Name can only contain letters and spaces')
+        .test(
+            'not-just-spaces',
+            'Name cannot be only spaces',
+            (value) => !!value && value.trim().length > 0
+        ),
     phone: Yup.string()
         .required("Phone number is required")
         .matches(/^[6-9]\d{9}$/, "Phone number must be 10 digits and start with 6, 7, 8, or 9"),
@@ -74,7 +83,7 @@ export default function UserDetails() {
         }
     }, [croppedImage])
 
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
 
     const handleSubmit = async (values: EditableUserFields) => {
         // const { email, ...rest } = values
@@ -90,7 +99,7 @@ export default function UserDetails() {
                 const response = await uploadImageCloudinary.mutateAsync(formdata)
                 const imageUrl = response.secure_url
                 values.profileImage = imageUrl
-                values._id=userData?._id
+                values._id = userData?._id
             }
             // values.phone = Number(values.phone)
             updateProfile.mutate(values, {
@@ -120,7 +129,7 @@ export default function UserDetails() {
 
     const handleImageChange = (
         e: React.ChangeEvent<HTMLInputElement>,
-        setFieldValue: (field: string, value: string|boolean|number|File|Blob) => void,
+        setFieldValue: (field: string, value: string | boolean | number | File | Blob) => void,
     ) => {
         setShowCropper(true)
         const file = e.target.files?.[0]
@@ -167,7 +176,7 @@ export default function UserDetails() {
 
                                 <Formik<EditableUserFields>
                                     initialValues={{
-                                        _id:userData?._id,
+                                        _id: userData?._id,
                                         name: userData?.name,
                                         phone: userData?.phone,
                                         profileImage: userData?.profileImage,

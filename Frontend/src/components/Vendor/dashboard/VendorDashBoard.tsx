@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { BookingType } from "@/types/BookingType"
-import { EventEntity as EventType } from "@/types/EventEntity"
 import { MetricCard } from "./MetricCard"
 import { RevenueChart } from "./RevenueChart"
 import { BookingStatusChart } from "./BookingStatusChart"
@@ -21,241 +20,6 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { Period } from "@/types/DatePeriodType"
 
-
-// Mock data for demonstration
-const mockEvents: EventType[] = [
-  {
-    _id: "1",
-    title: "Summer Music Festival",
-    description: "A 3-day music festival featuring top artists",
-    location: {
-      type: "Point",
-      coordinates: [40.7128, -74.006],
-    },
-    startTime: new Date("2023-07-15T18:00:00"),
-    endTime: new Date("2023-07-17T23:00:00"),
-    posterImage: ["/placeholder.svg?height=400&width=600"],
-    pricePerTicket: 150,
-    maxTicketsPerUser: 4,
-    totalTicket: 5000,
-    date: [new Date("2023-07-15"), new Date("2023-07-16"), new Date("2023-07-17")],
-    createdAt: new Date("2023-05-01"),
-    ticketPurchased: 4200,
-    address: "Central Park, New York",
-    venueName: "Central Park",
-    category: "Music",
-    hostedBy: "NYC Events",
-    status: "completed",
-  },
-  {
-    _id: "2",
-    title: "Tech Conference 2023",
-    description: "Annual tech conference with workshops and keynotes",
-    location: {
-      type: "Point",
-      coordinates: [37.7749, -122.4194],
-    },
-    startTime: new Date("2023-09-10T09:00:00"),
-    endTime: new Date("2023-09-12T17:00:00"),
-    posterImage: ["/placeholder.svg?height=400&width=600"],
-    pricePerTicket: 299,
-    maxTicketsPerUser: 2,
-    totalTicket: 2000,
-    date: [new Date("2023-09-10"), new Date("2023-09-11"), new Date("2023-09-12")],
-    createdAt: new Date("2023-06-15"),
-    ticketPurchased: 1850,
-    address: "Moscone Center, San Francisco",
-    venueName: "Moscone Center",
-    category: "Technology",
-    hostedBy: "TechEvents Inc",
-    status: "upcoming",
-  },
-  {
-    _id: "3",
-    title: "Food & Wine Festival",
-    description: "Taste the best food and wine from local restaurants",
-    location: {
-      type: "Point",
-      coordinates: [34.0522, -118.2437],
-    },
-    startTime: new Date("2023-08-05T12:00:00"),
-    endTime: new Date("2023-08-06T20:00:00"),
-    posterImage: ["/placeholder.svg?height=400&width=600"],
-    pricePerTicket: 85,
-    maxTicketsPerUser: 6,
-    totalTicket: 3000,
-    date: [new Date("2023-08-05"), new Date("2023-08-06")],
-    createdAt: new Date("2023-05-20"),
-    ticketPurchased: 2700,
-    address: "Grand Park, Los Angeles",
-    venueName: "Grand Park",
-    category: "Food",
-    hostedBy: "LA Culinary Events",
-    status: "completed",
-  },
-  {
-    _id: "4",
-    title: "Business Leadership Summit",
-    description: "Connect with industry leaders and learn new strategies",
-    location: {
-      type: "Point",
-      coordinates: [41.8781, -87.6298],
-    },
-    startTime: new Date("2023-10-20T08:00:00"),
-    endTime: new Date("2023-10-21T17:00:00"),
-    posterImage: ["/placeholder.svg?height=400&width=600"],
-    pricePerTicket: 350,
-    maxTicketsPerUser: 1,
-    totalTicket: 1000,
-    date: [new Date("2023-10-20"), new Date("2023-10-21")],
-    createdAt: new Date("2023-07-10"),
-    ticketPurchased: 750,
-    address: "Chicago Convention Center",
-    venueName: "Chicago Convention Center",
-    category: "Business",
-    hostedBy: "Business Leaders Network",
-    status: "upcoming",
-  },
-  {
-    _id: "5",
-    title: "Art Exhibition Opening",
-    description: "Opening night for contemporary art exhibition",
-    location: {
-      type: "Point",
-      coordinates: [25.7617, -80.1918],
-    },
-    startTime: new Date("2023-08-25T19:00:00"),
-    endTime: new Date("2023-08-25T22:00:00"),
-    posterImage: ["/placeholder.svg?height=400&width=600"],
-    pricePerTicket: 45,
-    maxTicketsPerUser: 4,
-    totalTicket: 500,
-    date: [new Date("2023-08-25")],
-    createdAt: new Date("2023-07-01"),
-    ticketPurchased: 450,
-    address: "Miami Art Museum",
-    venueName: "Miami Art Museum",
-    category: "Art",
-    hostedBy: "Miami Arts Council",
-    status: "completed",
-  },
-]
-
-const mockBookings: BookingType[] = [
-  {
-    _id: "1",
-    serviceId: "1",
-    clientId: "client1",
-    vendorId: "vendor1",
-    date: [new Date("2023-07-15")],
-    email: "john@example.com",
-    phone: 1234567890,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Completed",
-    createdAt: new Date("2023-06-20"),
-    isComplete: true,
-  },
-  {
-    _id: "2",
-    serviceId: "2",
-    clientId: "client2",
-    vendorId: "vendor1",
-    date: [new Date("2023-09-10")],
-    email: "sarah@example.com",
-    phone: 2345678901,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Pending",
-    createdAt: new Date("2023-08-15"),
-    isComplete: false,
-  },
-  {
-    _id: "3",
-    serviceId: "3",
-    clientId: "client3",
-    vendorId: "vendor1",
-    date: [new Date("2023-08-05")],
-    email: "mike@example.com",
-    phone: 3456789012,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Completed",
-    createdAt: new Date("2023-07-10"),
-    isComplete: true,
-  },
-  {
-    _id: "4",
-    serviceId: "4",
-    clientId: "client4",
-    vendorId: "vendor1",
-    date: [new Date("2023-10-20")],
-    email: "lisa@example.com",
-    phone: 4567890123,
-    vendorApproval: "Pending",
-    paymentStatus: "Pending",
-    status: "Pending",
-    createdAt: new Date("2023-09-05"),
-    isComplete: false,
-  },
-  {
-    _id: "5",
-    serviceId: "5",
-    clientId: "client5",
-    vendorId: "vendor1",
-    date: [new Date("2023-08-25")],
-    email: "david@example.com",
-    phone: 5678901234,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Completed",
-    createdAt: new Date("2023-08-01"),
-    isComplete: true,
-  },
-  {
-    _id: "6",
-    serviceId: "1",
-    clientId: "client6",
-    vendorId: "vendor1",
-    date: [new Date("2023-07-16")],
-    email: "emma@example.com",
-    phone: 6789012345,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Completed",
-    createdAt: new Date("2023-06-25"),
-    isComplete: true,
-  },
-  {
-    _id: "7",
-    serviceId: "2",
-    clientId: "client7",
-    vendorId: "vendor1",
-    date: [new Date("2023-09-11")],
-    email: "james@example.com",
-    phone: 7890123456,
-    vendorApproval: "Rejected",
-    paymentStatus: "Refunded",
-    rejectionReason: "Double booking",
-    status: "Rejected",
-    createdAt: new Date("2023-08-20"),
-    isComplete: false,
-  },
-  {
-    _id: "8",
-    serviceId: "3",
-    clientId: "client8",
-    vendorId: "vendor1",
-    date: [new Date("2023-08-06")],
-    email: "olivia@example.com",
-    phone: 8901234567,
-    vendorApproval: "Approved",
-    paymentStatus: "Successfull",
-    status: "Completed",
-    createdAt: new Date("2023-07-15"),
-    isComplete: true,
-  },
-]
 
 export default function VendorDashboard() {
   const [timeRange, setTimeRange] = useState<Period>('allTime')
@@ -274,7 +38,7 @@ export default function VendorDashboard() {
   const recentBookings = fetchVendorDashboard.data?.recentBookings
 
   // Calculate completion rate
-  const completedBookings = mockBookings.filter((booking) => booking.status === "Completed").length
+  const completedBookings = recentBookings.filter((booking:BookingType) => booking.status === "Completed").length
   const completionRate = Math.round((completedBookings / totalBookings) * 100)
 
   // Calculate average ticket price
@@ -282,16 +46,16 @@ export default function VendorDashboard() {
 
 
 
-  // Calculate most popular category
-  const categoryCount = mockEvents.reduce(
-    (acc, event) => {
-      acc[event.category] = (acc[event.category] || 0) + 1
-      return acc
-    },
-    {} as Record<string, number>,
-  )
+  // // Calculate most popular category
+  // const categoryCount = recentBookings.reduce(
+  //   (acc, event) => {
+  //     acc[event.category] = (acc[event.category] || 0) + 1
+  //     return acc
+  //   },
+  //   {} as Record<string, number>,
+  // )
 
-  const mostPopularCategory = Object.entries(categoryCount).sort((a, b) => b[1] - a[1])[0][0]
+  // const mostPopularCategory = Object.entries(categoryCount).sort((a, b) => b[1] - a[1])[0][0]
 
   const container = {
     hidden: { opacity: 0 },
@@ -372,7 +136,7 @@ export default function VendorDashboard() {
         <MetricCard
           title="Events Hosted"
           value={totalEventsHosted}
-          description={`Most popular: ${mostPopularCategory}`}
+          // description={`Most popular: ${mostPopularCategory}`}
           icon={<CalendarDays className="h-5 w-5 text-orange-600" />}
           trend={+2}
           variants={item}
