@@ -18,10 +18,10 @@ import {
   Image
 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useDeleteAllNotificationsVendor } from "@/hooks/VendorCustomHooks"
+import { useDeleteAllNotificationsVendor, useReadSingleNotificationVendor } from "@/hooks/VendorCustomHooks"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
-import { clearAllNotifications } from "@/store/slices/notification/notificationSlice"
+import { clearAllNotifications, removeNotification } from "@/store/slices/notification/notificationSlice"
 import { toast } from "react-toastify"
 
 
@@ -44,6 +44,8 @@ export function Sidebar() {
     { id: "chats", label: "Chats", icon: MessageCircle },
     // { id: "logout", label: "Logout", icon: LogOut },
   ]
+
+  const readNotificationVendor = useReadSingleNotificationVendor()
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
@@ -81,6 +83,22 @@ export function Sidebar() {
     }
   }
 
+
+  const onClearNotification = (id: string) => {
+    if (vendorId) {
+      dispatch(removeNotification(id))
+    }
+  }
+
+
+  const onReadNotification = (id: string) => {
+    if (vendorId) {
+      readNotificationVendor.mutate(id, {
+        onSuccess: () => dispatch(removeNotification(id)),
+        onError: (err) => toast.error(err.message)
+      })
+    }
+  }
   return (
     <>
       {/* Mobile menu button */}
@@ -114,7 +132,7 @@ export function Sidebar() {
       >
         <div className="p-5 border-b flex gap-3">
           <h2 className="text-xl font-bold text-gray-800">Vendor Dashboard</h2>
-          <NotificationsDropdown onClearAllNotifications={OnclearAllNotification} />
+          <NotificationsDropdown onClearAllNotifications={OnclearAllNotification} onClearNotification={onClearNotification} onMarkAsRead={onReadNotification} />
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4">

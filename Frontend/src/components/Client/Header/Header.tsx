@@ -135,7 +135,6 @@ const Header = () => {
   }
 
   const onReadNotification = (id: string) => {
-    console.log('this is the notificaion id', id)
     if (client) {
       readNotificationClient.mutate(id, {
         onSuccess: () => dispatch(removeNotification(id)),

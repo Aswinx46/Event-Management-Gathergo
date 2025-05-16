@@ -50,9 +50,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
     };
 
     const handleMarkAsRead = (id: string) => {
-        if (!id) {
-            
-        }
+
         console.log('this is the notification id in the notification dropdown', id)
         if (onMarkAsRead) {
             onMarkAsRead(id);
@@ -102,7 +100,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        {!hasUnread && <BellRing className="h-6 w-6" />}
+                        {!hasUnread && <BellRing className="h-6 w-6 text-blue-500" />}
                         {hasUnread && (
                             <motion.button
                                 onClick={toggleDropdown}
@@ -110,7 +108,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                <BellRing className="h-6 w-6 " />
+                                <BellRing className="h-6 w-6 text-black " />
                                 {hasUnread && (
                                     <motion.div
                                         initial={{ scale: 0 }}
@@ -224,13 +222,15 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
 
                                                     {/* Content */}
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="flex justify-between mb-1">
+                                                        <div className="flex justify-between mb-3">
                                                             <p className="text-sm font-medium text-gray-900 truncate">
                                                                 {notification.from.name}
                                                             </p>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <p className="text-sm text-gray-600 line-clamp-2">{notification.message}</p>
                                                             <span className="text-xs text-gray-500">Just now</span>
                                                         </div>
-                                                        <p className="text-sm text-gray-600 line-clamp-2">{notification.message}</p>
                                                     </div>
 
                                                     {/* Action Buttons (visible on hover) */}
