@@ -210,4 +210,15 @@ export class BookingRepository implements IbookingRepository {
 
         return !!conflictingBooking;
     }
+    async findBookingByIdForDateChecking(bookingId: string): Promise<BookingEntity | null> {
+        return await bookingModel.findById(bookingId).select('_id date vendorId')
+    }
+    async findBookingWithSameDate(bookingId: string, vendorId: string, date: Date[]): Promise<BookingEntity | null> {
+        return await bookingModel.findOne({
+            _id: { $ne: bookingId },             
+            vendorId: vendorId,               
+            date: { $in: date },                 
+            vendorApproval: "Approved",          
+        });
+    }
 }

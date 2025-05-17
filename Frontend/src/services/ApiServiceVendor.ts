@@ -195,7 +195,7 @@ export const approveBookingVendor = async (bookingId: string) => {
         return response.data
     } catch (error) {
         console.log('error while approving booking in vendor side', error)
-        if (isAxiosError(error)) throw new Error(error.response?.data.message)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error whilw approving booking in vendor side')
     }
 }

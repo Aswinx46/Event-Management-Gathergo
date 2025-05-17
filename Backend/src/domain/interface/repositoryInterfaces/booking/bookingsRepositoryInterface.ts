@@ -21,5 +21,7 @@ export interface IbookingRepository {
     findTotalBookings(): Promise<number>
     findTotalCountOfBookings(vendorId: string, datePeriod: Date | null): Promise<number>
     findRecentsBooking(vendorId: string): Promise<BookingListingEntityVendor[] | []>
-    findBookingInSameDate(clientId:string,serviceId: string, dates: Date[]): Promise<boolean>
+    findBookingInSameDate(clientId: string, serviceId: string, dates: Date[]): Promise<boolean>
+    findBookingByIdForDateChecking(bookingId: string): Promise<BookingEntity | null>
+    findBookingWithSameDate(bookingId: string, vendorId: string, date: Date[]): Promise<BookingEntity | null>
 }
