@@ -399,3 +399,33 @@ export const singleNotificationReadVendor = async (notificationId: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while notification marking as read')
     }
 }
+
+export const sendOtpForgetPasswordVendor = async (email: string) => {
+    try {
+        const response = await axios.post('/sendOtpForgetPassword', { email })
+        return response.data
+    } catch (error) {
+        console.log('error while sending otp for forget password vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while sending otp for forget password vendor')
+    }
+}
+
+export const otpVerificationForgetPassword = async (email: string, enteredOtp: string) => {
+    try {
+        const response = await axios.post('/verifyOtpForgetPassword', { email, enteredOtp })
+        return response.data
+    } catch (error) {
+        console.log('error while verifying otp for forget password vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while verifying otp for forget password vendor')
+    }
+}
+
+export const changePasswordInForgetPassword = async (email: string, newPassword: string) => {
+    try {
+        const response = await axios.post('/changePasswordUsingForgetPassword', { email, newPassword })
+        return response.data
+    } catch (error) {
+        console.log('error while changing password using forget password vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while chaning password using forget password')
+    }
+}

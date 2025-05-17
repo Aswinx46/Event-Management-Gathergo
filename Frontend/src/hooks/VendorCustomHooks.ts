@@ -1,4 +1,4 @@
-import { approveBookingVendor, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, rejectBooking, resendOtpVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, changePasswordInForgetPassword, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, otpVerificationForgetPassword, rejectBooking, resendOtpVendor, sendOtpForgetPasswordVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { Period } from "@/types/DatePeriodType";
 import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
@@ -268,5 +268,23 @@ export const useFindWorkSamples = (vendorId: string, pageNo: number) => {
 export const useReadSingleNotificationVendor = () => {
     return useMutation({
         mutationFn: (notificationId: string) => singleNotificationReadVendor(notificationId)
+    })
+}
+
+export const useSendOtpForgetPasswordVendor = () => {
+    return useMutation({
+        mutationFn: (email: string) => sendOtpForgetPasswordVendor(email)
+    })
+}
+
+export const useOtpVerificationForgetPassword = () => {
+    return useMutation({
+        mutationFn: ({ email, enteredOtp }: { email: string, enteredOtp: string }) => otpVerificationForgetPassword(email, enteredOtp)
+    })
+}
+
+export const useChangePasswordInForgetPassword = () => {
+    return useMutation({
+        mutationFn: ({ email, newPassword }: { email: string, newPassword: string }) => changePasswordInForgetPassword(email, newPassword)
     })
 }

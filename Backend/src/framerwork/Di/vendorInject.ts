@@ -66,6 +66,12 @@ import { TicketAndUserDetailsOfEventUseCase } from "../../useCases/vendor/ticket
 import { TicketAndUserDetailsController } from "../../adapters/controllers/vendor/ticket/ticketAndUserDetailsController";
 import { FindWorkSamplesOfAVendorUseCase } from "../../useCases/vendor/workSamples/findWorkSamplesOfAUser";
 import { FindWorkSamplesOfAVendorController } from "../../adapters/controllers/vendor/workSamples/findWorkSamplesOfAVendorController";
+import { SendOtpForgetPasswordVendorUseCase } from "../../useCases/vendor/authentication/sendOtpForgetPasswordUseCase";
+import { SendOtpForForgetPasswordVendorController } from "../../adapters/controllers/vendor/authentication/sendOtpForForgetPasswordVendorController";
+import { VerifyForgetPasswordOtpVendorUseCase } from "../../useCases/vendor/authentication/verifyForgetPasswordOtpVendorUseCase";
+import { VerifyOtpForgetPasswordVendorController } from "../../adapters/controllers/vendor/authentication/verifyOtpForgetPasswordVendorController";
+import { ForgetPasswordVendorUseCase } from "../../useCases/vendor/authentication/forgetPasswordUseCase";
+import { ForgetPasswordChangeVendorController } from "../../adapters/controllers/vendor/authentication/vendorForgetPasswordChangingController";
 
 
 
@@ -184,5 +190,17 @@ export const injectedVendorDashboardController = new VendorDashboardController(v
 const ticketDetailsWithUserDetails = new TicketAndUserDetailsOfEventUseCase(ticketdatabase)
 export const injectedTicketDetailsWithUserController = new TicketAndUserDetailsController(ticketDetailsWithUserDetails)
 //--------------------------------find work sample of a vendor-------------------------------
-const findWorkSampleOfAVendorUseCase=new FindWorkSamplesOfAVendorUseCase(worksampleDatabase)
+const findWorkSampleOfAVendorUseCase = new FindWorkSamplesOfAVendorUseCase(worksampleDatabase)
 export const injectedFindWorkSamplesOfVendorController = new FindWorkSamplesOfAVendorController(findWorkSampleOfAVendorUseCase)
+
+//------------------------send otp for forget password in vendor------------
+const sendOtpForForgetPasswordUseCase = new SendOtpForgetPasswordVendorUseCase(vendorRespository, EmailService, otpService)
+export const injectedSendOtpForgetPasswordVendorController = new SendOtpForForgetPasswordVendorController(sendOtpForForgetPasswordUseCase)
+
+//------------------------------OTP verification for forget password vendor---------------------------
+const verifyOtpForgetPasswordVendorUseCase = new VerifyForgetPasswordOtpVendorUseCase(otpService)
+export const injectedVerifyOtpForgetPasswordVendorController = new VerifyOtpForgetPasswordVendorController(verifyOtpForgetPasswordVendorUseCase)
+
+//-----------------------------change password in forget password vendor --------------
+const changePasswordInForgetPasswordUseCase = new ForgetPasswordVendorUseCase(vendorRespository)
+export const injectedForgetPasswordChangeVendorController=new ForgetPasswordChangeVendorController(changePasswordInForgetPasswordUseCase)

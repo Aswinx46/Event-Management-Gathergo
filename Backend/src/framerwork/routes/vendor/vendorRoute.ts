@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedFindWorkSamplesOfVendorController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedShowBookingsInVendorController, injectedTicketDetailsWithUserController, injectedTicketVerificationController, injectedUpdateAboutAndPhoneController, injectedUpdateBookingAsCompleteController, injectedUpdateEventController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorDashboardController, injectedVendorLoginController, injectedVendorLogoutController, injectedWalletDetailsVendorController } from "../../Di/vendorInject";
+import { injectedApproveBookingController, injectedChangePasswordVendorController, injectedChangeStatusServiceController, injectedCreateServiceController, injectedCreateWorkSampleController, injectedEditServiceController, injectedEventCreationController, injectedFindAllEventsVendorController, injectedFindCategoryForServiceController, injectedFindServiceController, injectedFindWorkSamplesOfVendorController, injectedForgetPasswordChangeVendorController, injectedRejectBookingInVendor, injectedResendOtpVendorController, injectedSendOtpForgetPasswordVendorController, injectedShowBookingsInVendorController, injectedTicketDetailsWithUserController, injectedTicketVerificationController, injectedUpdateAboutAndPhoneController, injectedUpdateBookingAsCompleteController, injectedUpdateEventController, injectedUpdateImageVendorController, injectedVendorAuthenticationController, injectedVendorDashboardController, injectedVendorLoginController, injectedVendorLogoutController, injectedVerifyOtpForgetPasswordVendorController, injectedWalletDetailsVendorController } from "../../Di/vendorInject";
 import { injectedTokenExpiryValidationChecking, injectedVendorStatusCheckingMiddleware, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController, injectedReadNotificationController } from "../../Di/chatInject";
@@ -103,6 +103,15 @@ export class VendorRoute {
         })
         this.vendorRoute.patch('/readNotification', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedReadNotificationController.handleReadNotification(req, res)
+        })
+        this.vendorRoute.post('/sendOtpForgetPassword', (req: Request, res: Response) => {
+            injectedSendOtpForgetPasswordVendorController.handleSendOtpForForgetPassword(req, res)
+        })
+        this.vendorRoute.post('/verifyOtpForgetPassword', (req: Request, res: Response) => {
+            injectedVerifyOtpForgetPasswordVendorController.handleVerifyOtpForgetPassword(req, res)
+        })
+        this.vendorRoute.post('/changePasswordUsingForgetPassword', (req: Request, res: Response) => {
+            injectedForgetPasswordChangeVendorController.handleForgetPasswordChange(req, res)
         })
     }
 }

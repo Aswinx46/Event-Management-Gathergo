@@ -15,7 +15,7 @@ export class ForgetPasswordVendorUseCase implements IforgetPasswordVendorUseCase
         if (!user) throw new Error('No vendor found in this email')
         const hashPassword = await this.hashPassword.hashPassword(newPassword)
         if (!hashPassword) throw new Error('error while hashing new password')
-        const updateVendor = await this.vendorDatabase.forgetPassword(email, newPassword)
+        const updateVendor = await this.vendorDatabase.forgetPassword(email, hashPassword)
         if (!updateVendor) throw new Error('error while updating new password in vendor')
         return updateVendor
     }
