@@ -429,3 +429,23 @@ export const changePasswordInForgetPassword = async (email: string, newPassword:
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while chaning password using forget password')
     }
 }
+
+export const pdfDownloadVendor = async (vendorId: string) => {
+    try {
+        const response = await axios.post('/pdfDownload', { vendorId }, { responseType: 'blob' })
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'vendor_report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.log('error while downloading pdf for the vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while downloading pdf for the vendor')
+    }
+}

@@ -72,6 +72,9 @@ import { VerifyForgetPasswordOtpVendorUseCase } from "../../useCases/vendor/auth
 import { VerifyOtpForgetPasswordVendorController } from "../../adapters/controllers/vendor/authentication/verifyOtpForgetPasswordVendorController";
 import { ForgetPasswordVendorUseCase } from "../../useCases/vendor/authentication/forgetPasswordUseCase";
 import { ForgetPasswordChangeVendorController } from "../../adapters/controllers/vendor/authentication/vendorForgetPasswordChangingController";
+import { PdfGenerateVendorUseCase } from "../../useCases/vendor/dashboard/pdfGenerateVendorUseCase";
+import { PdfServiceVendor } from "../services/pdfServiceForVendor";
+import { PdfDownloaderVendorController } from "../../adapters/controllers/vendor/dashboard/pdfDownloaderVendorController";
 
 
 
@@ -203,4 +206,9 @@ export const injectedVerifyOtpForgetPasswordVendorController = new VerifyOtpForg
 
 //-----------------------------change password in forget password vendor --------------
 const changePasswordInForgetPasswordUseCase = new ForgetPasswordVendorUseCase(vendorRespository)
-export const injectedForgetPasswordChangeVendorController=new ForgetPasswordChangeVendorController(changePasswordInForgetPasswordUseCase)
+export const injectedForgetPasswordChangeVendorController = new ForgetPasswordChangeVendorController(changePasswordInForgetPasswordUseCase)
+
+//---------------------------vendor pdf download-------------------------
+const pdfServiceVendor = new PdfServiceVendor()
+const pdfGenerateVendorUseCase = new PdfGenerateVendorUseCase(eventRepository, bookingsDatabase, pdfServiceVendor)
+export const injectedPdfDownloadVendorController = new PdfDownloaderVendorController(pdfGenerateVendorUseCase)

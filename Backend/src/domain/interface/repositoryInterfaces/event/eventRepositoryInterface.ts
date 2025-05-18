@@ -18,6 +18,7 @@ export interface IeventRepository {
     listingEventsInAdminSide(pageNo: number): Promise<{ events: EventEntity[] | [], totalPages: number }>
     findTotalEvents(vendorId: string, datePeriod: Date | null): Promise<number>
     findRecentEvents(vendorId: string): Promise<EventEntity[] | []>
-    findTotalticketsSold(vendorId: string,datePeriod:Date | null): Promise<number>
-    eventDetailsForAdminDashboard():Promise<EventDashboardSummary>
+    findTotalticketsSold(vendorId: string, datePeriod: Date | null): Promise<number>
+    eventDetailsForAdminDashboard(): Promise<EventDashboardSummary>
+    findAllEventsOfAVendor(vendorId: string): Promise<EventEntity[] | []>
 }

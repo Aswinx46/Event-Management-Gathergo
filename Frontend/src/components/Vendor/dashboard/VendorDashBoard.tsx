@@ -15,10 +15,11 @@ import { BookingStatusChart } from "./BookingStatusChart"
 import { TicketSalesChart } from "./TicketSalesChart"
 import { EventCategoryChart } from "./EventCategoryChart"
 import { UpcomingEvents } from "./UpcomingEvents"
-import { useVendorDashboardDetails } from "@/hooks/VendorCustomHooks"
+import { usePdfDownloadVendor, useVendorDashboardDetails } from "@/hooks/VendorCustomHooks"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import { Period } from "@/types/DatePeriodType"
+import { Button } from "@/components/ui/button"
 
 
 export default function VendorDashboard() {
@@ -26,10 +27,9 @@ export default function VendorDashboard() {
   const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
 
   const fetchVendorDashboard = useVendorDashboardDetails(vendorId!, timeRange)
-  console.log(fetchVendorDashboard.data)
   // Calculate metrics
   const totalBookings = fetchVendorDashboard.data?.totalBookings
-  const totalRevenue = fetchVendorDashboard.data?.revenueChart?.reduce((acc:number, cur:any) => acc += cur.revenue,0)
+  const totalRevenue = fetchVendorDashboard.data?.revenueChart?.reduce((acc: number, cur: any) => acc += cur.revenue, 0)
   const totalTicketsSold = fetchVendorDashboard.data?.totalTickets
   const totalEventsHosted = fetchVendorDashboard.data?.totalEvents
   const revenueDetails = fetchVendorDashboard.data?.revenueChart
@@ -37,8 +37,11 @@ export default function VendorDashboard() {
 
   const recentBookings = fetchVendorDashboard.data?.recentBookings
 
+  const { mutate: downloadReport } = usePdfDownloadVendor();
+
+
   // Calculate completion rate
-  const completedBookings = recentBookings.filter((booking:BookingType) => booking.status === "Completed").length
+  const completedBookings = recentBookings?.filter((booking: BookingType) => booking.status === "Completed").length
   const completionRate = Math.round((completedBookings / totalBookings) * 100)
 
   // Calculate average ticket price
@@ -85,7 +88,8 @@ export default function VendorDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <motion.div variants={item}>
           <h1 className="text-3xl font-bold tracking-tight">Vendor Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back! Here's an overview of your business performance.</p>
+          <p className="text-muted-foreground my-4">Welcome back! Here's an overview of your business performance.</p>
+          <Button onClick={() => downloadReport(vendorId!)}>Download Report</Button>
         </motion.div>
 
         <motion.div variants={item} className="flex items-center gap-2">
@@ -115,7 +119,7 @@ export default function VendorDashboard() {
           variants={item}
         />
 
-        {totalRevenue>=0 && <MetricCard
+        {totalRevenue >= 0 && <MetricCard
           title="Total Revenue"
           value={`$${totalRevenue.toLocaleString()}`}
           description={`$${avgTicketPrice.toFixed(2)} avg. ticket price`}

@@ -2,9 +2,9 @@ import { ObjectId } from "mongoose";
 import { BookingEntity } from "../../../entities/bookingEntity";
 import { BookingsInClientEntity } from "../../../entities/bookingListingInClientEntity";
 import { BookingPaymentEntity } from "../../../entities/bookingPayment/bookingPaymentEntity";
-import { ClientBookingDTO } from "../../../entities/clientBookingDTO";
 import { BookingListingEntityVendor } from "../../../entities/vendor/BookingListingEntityVendor";
 import { PopulatedBookingForAdmin } from "../../../entities/bookingDetailsInAdminDTO";
+import { BookingPdfDTO } from "../../../entities/pdf/bookingsPdfDTO";
 
 export interface IbookingRepository {
     createBooking(booking: BookingEntity): Promise<BookingEntity>
@@ -24,4 +24,5 @@ export interface IbookingRepository {
     findBookingInSameDate(clientId: string, serviceId: string, dates: Date[]): Promise<boolean>
     findBookingByIdForDateChecking(bookingId: string): Promise<BookingEntity | null>
     findBookingWithSameDate(bookingId: string, vendorId: string, date: Date[]): Promise<BookingEntity | null>
+    findBookingsOfAVendor(vendorId: string): Promise<BookingPdfDTO[] | []>
 }

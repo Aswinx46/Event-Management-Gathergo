@@ -9,6 +9,9 @@ import { BookingListingEntityVendor } from "../../../domain/entities/vendor/Book
 import { PopulatedBookingEntityVendor } from "../../../domain/entities/vendor/populatedBookingEntity";
 import { BookingPaymentEntity } from "../../../domain/entities/bookingPayment/bookingPaymentEntity";
 import { BookingDetailsInAdminEntity, PopulatedBookingForAdmin } from "../../../domain/entities/bookingDetailsInAdminDTO";
+import { BookingPdfDTO } from "../../../domain/entities/pdf/bookingsPdfDTO";
+
+
 
 export class BookingRepository implements IbookingRepository {
     async createBooking(booking: BookingEntity): Promise<BookingEntity> {
@@ -215,10 +218,20 @@ export class BookingRepository implements IbookingRepository {
     }
     async findBookingWithSameDate(bookingId: string, vendorId: string, date: Date[]): Promise<BookingEntity | null> {
         return await bookingModel.findOne({
-            _id: { $ne: bookingId },             
-            vendorId: vendorId,               
-            date: { $in: date },                 
-            vendorApproval: "Approved",          
+            _id: { $ne: bookingId },
+            vendorId: vendorId,
+            date: { $in: date },
+            vendorApproval: "Approved",
         });
+    }
+    async findBookingsOfAVendor(vendorId: string): Promise<BookingPdfDTO[] | []> {
+        const bookings = await bookingModel.find({
+            vendorId,
+            vendorApproval: "Approved"
+        })
+            .populate("serviceId") 
+            .populate("clientId", "email name") 
+            .sort({ createdAt: -1 }).lean<BookingPdfDTO[]>()
+        return bookings
     }
 }
