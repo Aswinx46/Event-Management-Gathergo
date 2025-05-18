@@ -52,8 +52,10 @@ export function BookingStatusChart({ bookings }: BookingStatusChartProps) {
             animationDuration={1000}
             animationBegin={200}
           >
-            {chartData.map((index) => (
+            {chartData.map((_,index) => (
+            
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              
             ))}
           </Pie>
           <Tooltip

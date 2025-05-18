@@ -195,7 +195,7 @@ export const approveBookingVendor = async (bookingId: string) => {
         return response.data
     } catch (error) {
         console.log('error while approving booking in vendor side', error)
-        if (isAxiosError(error)) throw new Error(error.response?.data.message)
+        if (isAxiosError(error)) throw new Error(error.response?.data.error)
         throw new Error('error whilw approving booking in vendor side')
     }
 }
@@ -397,5 +397,55 @@ export const singleNotificationReadVendor = async (notificationId: string) => {
     } catch (error) {
         console.log('error while notification marking as read', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while notification marking as read')
+    }
+}
+
+export const sendOtpForgetPasswordVendor = async (email: string) => {
+    try {
+        const response = await axios.post('/sendOtpForgetPassword', { email })
+        return response.data
+    } catch (error) {
+        console.log('error while sending otp for forget password vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while sending otp for forget password vendor')
+    }
+}
+
+export const otpVerificationForgetPassword = async (email: string, enteredOtp: string) => {
+    try {
+        const response = await axios.post('/verifyOtpForgetPassword', { email, enteredOtp })
+        return response.data
+    } catch (error) {
+        console.log('error while verifying otp for forget password vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while verifying otp for forget password vendor')
+    }
+}
+
+export const changePasswordInForgetPassword = async (email: string, newPassword: string) => {
+    try {
+        const response = await axios.post('/changePasswordUsingForgetPassword', { email, newPassword })
+        return response.data
+    } catch (error) {
+        console.log('error while changing password using forget password vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while chaning password using forget password')
+    }
+}
+
+export const pdfDownloadVendor = async (vendorId: string) => {
+    try {
+        const response = await axios.post('/pdfDownload', { vendorId }, { responseType: 'blob' })
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'vendor_report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.log('error while downloading pdf for the vendor', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while downloading pdf for the vendor')
     }
 }

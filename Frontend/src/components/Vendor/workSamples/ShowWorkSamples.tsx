@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import Pagination from '@/components/other components/Pagination';
 import { Pencil } from 'lucide-react';
+import { Sparkles } from "lucide-react"; // optional icon
 
 interface WorkSample {
   id: string;
@@ -111,6 +112,7 @@ export default function VendorWorkSamples() {
       </h1>
 
       {/* Grid of samples */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {workSamples?.map((sample: WorkSample, index: number) => (
           <motion.div
@@ -270,7 +272,39 @@ export default function VendorWorkSamples() {
           </motion.div>
         )}
       </AnimatePresence>
-      <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
+      {workSamples?.length > 0 ? <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} /> : <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col items-center justify-center text-center p-6  bg-white dark:bg-gray-900"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 10 }}
+          className="p-4 bg-indigo-100 dark:bg-indigo-900 rounded-full mb-4"
+        >
+          <Sparkles className="text-indigo-600 dark:text-indigo-300 h-10 w-10" />
+        </motion.div>
+
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+          No Work Samples Yet
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md">
+          You haven't uploaded any work samples. Add some to showcase your services and attract more clients!
+        </p>
+
+        {/* <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-6 py-2 bg-indigo-600 text-white rounded-xl shadow hover:bg-indigo-700 transition"
+          onClick={() => {
+            // trigger upload action
+          }}
+        >
+          Add Work Sample
+        </motion.button> */}
+      </motion.div>}
     </div>
   );
 }

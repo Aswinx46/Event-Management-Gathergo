@@ -7,7 +7,6 @@ export class VerifyForgetPasswordOtp implements IverifyForgetPasswordOTP {
         this.otpService = otpService
     }
     async verifyForgetPasswordOtp(email: string, enteredOtp: string): Promise<boolean> {
-        console.log(email,enteredOtp)
         const verifyOtp = await this.otpService.verifyOtp(email, enteredOtp)
         if (!verifyOtp) {
             throw new Error('Invalid OTP')
