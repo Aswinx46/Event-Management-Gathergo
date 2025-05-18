@@ -28,7 +28,7 @@ import { toast } from "react-toastify"
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(true)
 
-  const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
+  const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
 
   const menuItems = [
     { id: "home", label: "Profile", icon: User },
@@ -71,8 +71,8 @@ export function Sidebar() {
   const clearAllNotificationVendor = useDeleteAllNotificationsVendor()
 
   const OnclearAllNotification = () => {
-    if (vendorId) {
-      clearAllNotificationVendor.mutate(vendorId, {
+    if (vendor) {
+      clearAllNotificationVendor.mutate(vendor?.vendorId, {
         onSuccess: () => {
           dispatch(clearAllNotifications([]))
         },
@@ -85,14 +85,14 @@ export function Sidebar() {
 
 
   const onClearNotification = (id: string) => {
-    if (vendorId) {
+    if (vendor?.vendorId) {
       dispatch(removeNotification(id))
     }
   }
 
 
   const onReadNotification = (id: string) => {
-    if (vendorId) {
+    if (vendor) {
       readNotificationVendor.mutate(id, {
         onSuccess: () => dispatch(removeNotification(id)),
         onError: (err) => toast.error(err.message)
@@ -168,7 +168,7 @@ export function Sidebar() {
               <User size={18} className="text-gray-600" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-800">John Doe</p>
+              <p className="text-sm font-medium text-gray-800">{vendor?.name}</p>
               <p className="text-xs text-gray-500">Vendor</p>
             </div>
           </div>

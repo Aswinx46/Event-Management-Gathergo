@@ -124,7 +124,6 @@ export default function LoginComponent() {
     }
 
     const handleForgetPassword = (email: string) => {
-        console.log(email)
         setForgetPasswordEmail(email)
         getForgetPasswordOtp.mutate(email, {
             onSuccess: () => {

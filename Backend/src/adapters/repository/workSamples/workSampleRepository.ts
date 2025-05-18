@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { VendorProfileEntityInClient } from "../../../domain/entities/vendor/vendorProfileEntityInClient";
 import { WorkSamplesEntity } from "../../../domain/entities/vendor/workSampleEntity";
 import { IworkSampleRepository } from "../../../domain/interface/repositoryInterfaces/workSamples/workSampleRepositoryInterface";
@@ -12,7 +13,7 @@ export class WorkSampleRepository implements IworkSampleRepository {
         const limit = 3
         const skip = (page - 1) * limit
         const workSamples = await workSampleModel.find({ vendorId }).skip(skip).limit(limit).sort({ createdAt: -1 })
-        const totalPages = await workSampleModel.countDocuments({ vendorId })
+        const totalPages = Math.ceil(await workSampleModel.countDocuments({ vendorId: new Types.ObjectId(vendorId) }) / limit) || 1
         return { workSamples, totalPages }
     }
     async vendorProfileIWithWorkSample(vendorId: string): Promise<VendorProfileEntityInClient | null> {
