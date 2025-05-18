@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   FaTachometerAlt,
   FaUsers,
@@ -12,9 +12,28 @@ import {
   FaBars,
   FaTimes
 } from 'react-icons/fa';
+import { useAdminLogout } from '@/hooks/AdminCustomHooks';
+import { useDispatch } from 'react-redux';
+import { removeAdminToken } from '@/store/slices/admin/adminToken';
+import { toast } from 'react-toastify';
+import { Button } from '@/components/ui/button';
 
 const Sidebar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const adminLogout = useAdminLogout()
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const handleLogout = () => {
+    adminLogout.mutate(undefined, {
+      onSuccess: () => {
+        toast.success('Admin logged out')
+        localStorage.removeItem('adminId')
+        dispatch(removeAdminToken(null))
+        navigate('/admin/login')
+      }
+    })
+  }
 
   const sidebarVariants = {
     hidden: { x: -250, opacity: 0 },
@@ -97,7 +116,7 @@ const Sidebar: React.FC = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={`fixed md:static top-0 left-0 h-screen bg-gray-800 text-white shadow-lg z-50
+            className={`fixed md:static top-0  justify-between  left-0 h-screen bg-gray-800 text-white shadow-lg z-50
               ${isMobileMenuOpen ? 'w-64' : 'w-64 hidden lg:block'}`}
           >
             <div className="p-6">
@@ -139,9 +158,11 @@ const Sidebar: React.FC = () => {
                 ))}
               </nav>
             </div>
+            <Button className='ms-7 bg-amber-700 hover:bg-amber-600' onClick={handleLogout}>LOGOUT</Button>
           </motion.div>
         )}
       </AnimatePresence>
+
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { injectedAdminDashboardController, injectedAdminLoginController, injectedApproveVendorStatus, injectedBlockClientController, InjectedChangeStatusCategoryController, injectedChangeTitleAndImageController, injectedClientUnblockController, injectedCreateCategoryController, injectedFindAdminWalletDetailsController, injectedFindAllCategoryController, injectedFindAllPendingVendorController, injectedFindAllRejectedVendorController, injectedFindAllVendorController, injectedFindEventsInAdminSideController, injectedRejectVendorController, injectedShowBookingsInAdminController, injectedVendorBlockController, injectedVendorUnblockController } from "../../Di/adminInject";
+import { injectedAdminDashboardController, injectedAdminLoginController, injectedAdminLogoutController, injectedApproveVendorStatus, injectedBlockClientController, InjectedChangeStatusCategoryController, injectedChangeTitleAndImageController, injectedClientUnblockController, injectedCreateCategoryController, injectedFindAdminWalletDetailsController, injectedFindAllCategoryController, injectedFindAllPendingVendorController, injectedFindAllRejectedVendorController, injectedFindAllVendorController, injectedFindEventsInAdminSideController, injectedRejectVendorController, injectedShowBookingsInAdminController, injectedVendorBlockController, injectedVendorUnblockController } from "../../Di/adminInject";
 import { injectedFindAllClientController } from "../../Di/adminInject";
 import { checkAdminMiddleWare, injectedTokenExpiryValidationChecking, injectedVerifyTokenAndCheckBlacklistMiddleWare } from "../../Di/serviceInject";
 
@@ -66,6 +66,9 @@ export class AdminRoute {
         })
         this.adminRoute.get('/dashboardDetails', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkAdminMiddleWare, (req: Request, res: Response) => {
             injectedAdminDashboardController.handleAdminDashboardata(req, res)
+        })
+        this.adminRoute.post('/adminLogout', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkAdminMiddleWare, (req: Request, res: Response) => {
+            injectedAdminLogoutController.handleAdminLogout(req, res)
         })
     }
 }

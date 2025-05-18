@@ -1,4 +1,5 @@
 import { AdminLoginController } from "../../adapters/controllers/admin/adminLoginController";
+import { AdminLogoutController } from "../../adapters/controllers/admin/adminLogoutController";
 import { ApproveVendorController } from "../../adapters/controllers/admin/approveVendorController";
 import { ShowBookingInAdminController } from "../../adapters/controllers/admin/bookingManagement/showBookingsInAdminController";
 import { ChangeStatusCategoryController } from "../../adapters/controllers/admin/categoryManagement/changeStatusCategoryController";
@@ -26,6 +27,7 @@ import { TransactionRepository } from "../../adapters/repository/transaction/tra
 import { VendorDatabase } from "../../adapters/repository/vendor/vendorDatabase";
 import { WalletRepository } from "../../adapters/repository/wallet/walletRepository";
 import { AdminLoginUseCase } from "../../useCases/admin/authentication/adminLoginuseCase";
+import { AdminLogoutUseCase } from "../../useCases/admin/authentication/adminLogoutUseCase";
 import { ShowBookingsInAdminUseCase } from "../../useCases/admin/bookingManagement/showBookingsInAdminUseCase";
 
 import { ChangeStatusOfCategory } from "../../useCases/admin/categoryManagement/changeStatusOfCategoryUseCase";
@@ -139,3 +141,7 @@ export const injectedFindEventsInAdminSideController = new FindEventsInAdminSide
 const eventDetailsForAdminDashboard = new EventGraphUseCase(eventDatabase)
 const adminDashboardUseCase = new DashBoardDetailsUseCase(walletDatabase, vendorDataBase, ClientRepository, bookingDatabase, eventDatabase)
 export const injectedAdminDashboardController = new DashboardAdminController(adminDashboardUseCase, eventDetailsForAdminDashboard)
+
+//--------------------------admin logout---------------------------------
+const adminLogoutUseCase = new AdminLogoutUseCase(redisService, jwtService)
+export const injectedAdminLogoutController = new AdminLogoutController(adminLogoutUseCase)

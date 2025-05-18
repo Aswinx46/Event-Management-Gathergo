@@ -231,3 +231,13 @@ export const adminDashBoardDetatils = async (adminId: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while finding amdin dashboard details')
     }
 }
+
+export const adminLogout = async () => {
+    try {
+        const response = await axios.post('/adminLogout')
+        return response.data
+    } catch (error) {
+        console.log('error while admin logout', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while admin logout')
+    }
+}
