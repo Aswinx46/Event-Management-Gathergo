@@ -108,7 +108,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                <BellRing className="h-6 w-6 text-black " />
+                                <BellRing className="h-6 w-6 text-blue-500 " />
                                 {hasUnread && (
                                     <motion.div
                                         initial={{ scale: 0 }}
