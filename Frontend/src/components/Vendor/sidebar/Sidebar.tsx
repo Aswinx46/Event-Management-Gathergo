@@ -72,7 +72,7 @@ export function Sidebar() {
 
   const OnclearAllNotification = () => {
     if (vendor) {
-      clearAllNotificationVendor.mutate(vendor?.vendorId, {
+      clearAllNotificationVendor.mutate(vendor?._id, {
         onSuccess: () => {
           dispatch(clearAllNotifications([]))
         },
