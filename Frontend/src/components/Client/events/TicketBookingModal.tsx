@@ -32,7 +32,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [showChoosePaymentModal, setShowChoosePaymentModal] = useState<boolean>(false)
-  const [paymentMethod, SetPaymentMethod] = useState<string>('')
+  const [_paymentMethod, SetPaymentMethod] = useState<string>('')
   const navigate = useNavigate()
   const availableTickets = event.totalTicket - event.ticketPurchased;
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)

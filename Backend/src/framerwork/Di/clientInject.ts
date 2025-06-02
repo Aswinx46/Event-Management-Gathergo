@@ -270,5 +270,5 @@ const findVendorProfileUseCase = new FindVendorProfileUseCase(workSampleDatabase
 export const injectedFindVendorProfileWithSample = new VendorProfileWithSamplesController(findVendorProfileUseCase)
 
 //----------------------------------- wallet payment in client side----------
-const walletPayUseCase = new WalletPayUseCase(walletDatabase, transactionDatabase)
+const walletPayUseCase = new WalletPayUseCase(walletDatabase, transactionDatabase,eventDatabase,ticketDatabase)
 export const injectedWalletPayController = new WalletPayController(walletPayUseCase) 
