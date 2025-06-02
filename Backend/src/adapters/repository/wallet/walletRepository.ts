@@ -51,4 +51,12 @@ export class WalletRepository implements IwalletRepository {
 
     //     return formatted
     // }
+    async payWithWallet(userId: string, amount: number): Promise<boolean> {
+        const wallet = await walletModel.findOneAndUpdate({ userId }, { $inc: { balance: -amount } })
+        if (!wallet) return false
+        return true
+    }
+    async findWalletById(walletId: string): Promise<WalletEntity | null> {
+        return await walletModel.findById(walletId)
+    }
 }

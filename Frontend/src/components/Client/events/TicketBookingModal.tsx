@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Label } from "../../ui/label";
 import { Input } from "../../ui/input";
+import PaymentMethodModal from "@/components/other components/paymentSelection/PaymenSelectionModal";
 
 type TicketPurchaseProps = {
   event: EventType;
@@ -30,6 +31,8 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState<Errors>({});
+  const [showChoosePaymentModal, setShowChoosePaymentModal] = useState<boolean>(false)
+  const [paymentMethod, SetPaymentMethod] = useState<string>('')
   const navigate = useNavigate()
   const availableTickets = event.totalTicket - event.ticketPurchased;
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
@@ -83,6 +86,42 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   };
 
 
+
+  const onSelectPaymentMethod = (paymentMethod: string) => {
+    SetPaymentMethod(paymentMethod)
+    if (paymentMethod == 'stripe') {
+      handlePayment()
+    } else if (paymentMethod == 'wallet') {
+      handleWalletPayment()
+    }
+  }
+
+  const handleWalletPayment = () => {
+    const validationErrors = validateContactInfo(email, phone);
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      return; // ❌ Stop if there are validation errors
+    }
+    const ticketPaymentData: TicketEntity = {
+      clientId: clientId!,
+      email: email,
+      phone: phone,
+      eventId: event._id!,
+
+    }
+    navigate('/ticketPaymentWallet', {
+      state: {
+        amount: event.pricePerTicket * ticketCount,
+        ticketData: ticketPaymentData,
+        type: 'ticketBooking',
+        totalTicketCount: ticketCount,
+        vendorId: event.hostedBy,
+      }
+    })
+  }
+
+
+
   const handlePayment = () => {
     const validationErrors = validateContactInfo(email, phone);
     setErrors(validationErrors);
@@ -111,7 +150,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white">
-
+        {showChoosePaymentModal && <PaymentMethodModal isOpen={showChoosePaymentModal} onClose={() => setShowChoosePaymentModal(false)} onSelectPaymentMethod={onSelectPaymentMethod} />}
         <motion.div initial="hidden" animate="visible" variants={containerVariants} className="w-full">
           <Card className="w-full bg-[#0A0A0A] border-[#2A2F3C] text-white">
             <CardHeader className="space-y-1">

@@ -501,3 +501,13 @@ export const singleNotificationRead = async (notificationId: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while notification marking as read')
     }
 }
+
+export const payementUsingWallet = async (userId: string, amount: number, paymentType: 'bookingPayment' | 'ticketBooking', ticket: TicketEntity, vendorId: string) => {
+    try {
+        const response = await axios.post('/paymentUsingWallet', { userId, amount, paymentType, ticket, vendorId })
+        return response.data
+    } catch (error) {
+        console.log('error while making payment using wallet ', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while making payment using wallet')
+    }
+}

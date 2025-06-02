@@ -92,6 +92,8 @@ import { ShowReviewController } from "../../adapters/controllers/client/review/s
 import { FindVendorProfileUseCase } from "../../useCases/client/vendorFetching/findVendorProfileuseCase";
 import { WorkSampleRepository } from "../../adapters/repository/workSamples/workSampleRepository";
 import { VendorProfileWithSamplesController } from "../../adapters/controllers/client/vendorDetailsFetching/vendorProfileWithSamplesController";
+import { WalletPayUseCase } from "../../useCases/wallet/walletPayUseCase";
+import { WalletPayController } from "../../adapters/controllers/client/wallet/payWithWalletController";
 
 
 // -----------------------register client ----------------------------//
@@ -266,3 +268,7 @@ export const injectedShowReviewController = new ShowReviewController(showReviews
 const workSampleDatabase = new WorkSampleRepository()
 const findVendorProfileUseCase = new FindVendorProfileUseCase(workSampleDatabase, serviceDatabase)
 export const injectedFindVendorProfileWithSample = new VendorProfileWithSamplesController(findVendorProfileUseCase)
+
+//----------------------------------- wallet payment in client side----------
+const walletPayUseCase = new WalletPayUseCase(walletDatabase, transactionDatabase)
+export const injectedWalletPayController = new WalletPayController(walletPayUseCase) 

@@ -1,4 +1,4 @@
-import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findVendorProfileWithSample, findWalletOfClient, loadChats, loadPreviousChat, searchCategory, searchEvents, searchService, showReviews, singleNotificationRead, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
+import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findVendorProfileWithSample, findWalletOfClient, loadChats, loadPreviousChat, payementUsingWallet, searchCategory, searchEvents, searchService, showReviews, singleNotificationRead, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
 import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { ReviewEntity } from "@/types/ReviewType";
@@ -331,5 +331,11 @@ export const useFindVendorProfileWithSample = (vendorId: string, pageNo: number)
 export const useReadSingleNotification = () => {
     return useMutation({
         mutationFn: (notificationId: string) => singleNotificationRead(notificationId)
+    })
+}
+
+export const useWalletPayment = () => {
+    return useMutation({
+        mutationFn: ({ userId, amount, paymentType, ticket, vendorId }: { userId: string, amount: number, paymentType: 'bookingPayment' | 'ticketBooking', ticket: TicketEntity, vendorId: string }) => payementUsingWallet(userId, amount, paymentType, ticket, vendorId)
     })
 }

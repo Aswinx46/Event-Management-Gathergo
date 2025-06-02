@@ -18,9 +18,7 @@ export const useUploadeImageToCloudinaryMutation = () => {
     return useMutation({
         mutationFn: async (formData: FormData) => {
             return await uploadImageCloudinary(formData)
-
         },
-
     })
 }
 
