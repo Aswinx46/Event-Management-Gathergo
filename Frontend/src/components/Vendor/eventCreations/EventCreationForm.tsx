@@ -31,37 +31,37 @@ const basicInfoValidation = Yup.object({
 
 
 const scheduleValidation = Yup.object({
-    date: Yup.array()
-        .min(1, "At least one date is required")
-        .test(
-            "no-past-date",
-            "Dates must be today or in the future",
-            (dates) => {
-                if (!dates || dates.length === 0) return false;
-
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // remove time part for accurate comparison
-
-                return dates.every((d) => {
-                    const date = new Date(d);
-                    date.setHours(0, 0, 0, 0);
-                    return date >= today;
-                });
-            }
-        ),
-    startTime: Yup.string().required("Start time is required"),
-    endTime: Yup.string().required("End time is required"),
+    schedule: Yup.array()
+        .of(
+            Yup.object({
+                date: Yup.date()
+                    .required("Date is required")
+                    .test("no-past-date", "Date must be today or in the future", (value) => {
+                        if (!value) return false;
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const compareDate = new Date(value);
+                        compareDate.setHours(0, 0, 0, 0);
+                        return compareDate >= today;
+                    }),
+                startTime: Yup.string()
+                    .required("Start time is required")
+                    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time"),
+                endTime: Yup.string()
+                    .required("End time is required")
+                    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time")
+                    .test("is-after-start", "End time must be after start time", function (value) {
+                        const { startTime } = this.parent;
+                        if (!value || !startTime) return false;
+                        return value > startTime; // string comparison works for "HH:mm"
+                    }),
+            })
+        )
+        .min(1, "At least one schedule is required")
 });
 
 
-// const locationValidation = Yup.object({
-//     location: Yup.object({
-//         latitude: Yup.number().required("Location is required"),
-//         longitude: Yup.number().required("Location is required"),
-//     }),
-//     address: Yup.string().required("Address is required"),
-//     venueName: Yup.string().required("Venue name is required"),
-// });
+
 
 const locationValidation = Yup.object({
     location: Yup.object({
@@ -100,13 +100,17 @@ const validationSchema = Yup.object({
 
 const EventCreationForm: React.FC = () => {
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
-    const [dates, setDates] = useState<Date[]>([new Date()]);
-    const [startTime, setStartTime] = useState<string>("10:00");
-    const [endTime, setEndTime] = useState<string>("18:00");
+    // const [dates, setDates] = useState<Date[]>([new Date()]);
+    // const [startTime, setStartTime] = useState<string>("10:00");
+    // const [endTime, setEndTime] = useState<string>("18:00");
+    const [schedule, setSchedule] = useState<{ date: Date; startTime: string; endTime: string }[]>([]);
     const [posterImages, setPosterImages] = useState<File[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_isStepValid, setIsStepValid] = useState(true);
+    // const dates = schedule.map((Item) => Item.date)
+    // const startTime = schedule.map((item) => item.startTime)
+    // const endTime = schedule.map((item) => item.endTime)
     const initialValues: EventType = {
         title: "",
         description: "",
@@ -114,19 +118,20 @@ const EventCreationForm: React.FC = () => {
             type: "Point",
             coordinates: [0, 0]
         },
-        startTime: new Date(),
-        endTime: new Date(),
+        // startTime: new Date(),
+        // endTime: new Date(),
         posterImage: [],
         pricePerTicket: 0,
         maxTicketsPerUser: 1,
         totalTicket: 0,
-        date: [],
+        // date: [],
         createdAt: new Date(),
         ticketPurchased: 0,
         category: "",
         status: "upcoming", // or "completed", "cancelled"
         address: "", // optional
-        venueName: "" // optional
+        venueName: "", // optional,
+        // schedule
     };
 
     const steps = [
@@ -149,11 +154,16 @@ const EventCreationForm: React.FC = () => {
                     }, { abortEarly: false });
                     break;
                 case 1:
-                    await scheduleValidation.validate({
-                        date: dates,
-                        startTime,
-                        endTime
-                    }, { abortEarly: false });
+                    //   await scheduleValidation.validate({
+                    //         date: dates,
+                    //         startTime,
+                    //         endTime
+                    //     }, { abortEarly: false });
+                    await scheduleValidation.validate(
+                        { schedule },  // from your state
+                        { abortEarly: false }
+                    );
+
                     break;
                 case 2:
                     await locationValidation.validate({
@@ -204,7 +214,7 @@ const EventCreationForm: React.FC = () => {
     const createEvent = useCreateEvent()
     const navigate = useNavigate()
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
-        console.log('handleCreateEvent called with values:', values);
+        // console.log('handleCreateEvent called with values:', values);
         if (!vendorId) {
             toast.error("Please Login")
             console.log('Vendor Id not found')
@@ -230,15 +240,16 @@ const EventCreationForm: React.FC = () => {
         }
 
 
-        const event = {
+        const event: EventType = {
             ...values,
-            date: dates,
-            startTime: new Date(`2000-01-01T${startTime}`),
-            endTime: new Date(`2000-01-01T${endTime}`),
+            // date: dates,
+            // startTime: new Date(`2000-01-01T${startTime}`),
+            // endTime: new Date(`2000-01-01T${endTime}`),
             posterImage: imageUrls,
             createdAt: new Date(),
-            attendees: [],
+            // attendees: [],
             ticketPurchased: 0,
+            schedule,
 
         };
 
@@ -297,12 +308,14 @@ const EventCreationForm: React.FC = () => {
                             {/* Step 2: Schedule */}
                             {currentStep === 1 && (
                                 <ScheduleForm
-                                    dates={dates}
-                                    setDates={setDates}
-                                    startTime={startTime}
-                                    setStartTime={setStartTime}
-                                    endTime={endTime}
-                                    setEndTime={setEndTime}
+                                    // dates={dates}
+                                    // setDates={setDates}
+                                    // startTime={startTime}
+                                    // setStartTime={setStartTime}
+                                    // endTime={endTime}
+                                    // setEndTime={setEndTime}
+                                    schedule={schedule}
+                                    setSchedule={setSchedule}
                                     values={values}
                                     setFieldValue={setFieldValue}
                                 />
@@ -322,9 +335,7 @@ const EventCreationForm: React.FC = () => {
                             {currentStep === 4 && (
                                 <ReviewForm
                                     values={values}
-                                    dates={dates}
-                                    startTime={startTime}
-                                    endTime={endTime}
+                                    schedule={schedule}
                                     posterImages={posterImages}
                                 />
                             )}

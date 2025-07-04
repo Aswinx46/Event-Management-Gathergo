@@ -1,3 +1,5 @@
+import { ScheduleItem } from "./ScheduleItemType";
+
 export interface EventType {
     _id?: string
     title: string;
@@ -20,10 +22,6 @@ export interface EventType {
     category: string
     hostedBy?: string
     status: "upcoming" | "completed" | "cancelled"
-    schedule: [{
-        date: Date,
-        startTime: string,
-        endTime: string
-    }]
+    schedule?:ScheduleItem[]
 }
 
