@@ -431,14 +431,14 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   transition={{ delay: 0.4 }}
                 >
                   <Button variant="outline" onClick={onClose}>Cancel</Button>
-                  <Button onClick={handleSubmit}>Save Changes</Button>
+                  {event && event.status === 'upcoming' && < Button onClick={handleSubmit}>Save Changes</Button>}
                 </motion.div>
               </DialogFooter>
             </motion.div>
           </DialogContent>
-        </Dialog>
+        </Dialog >
       )}
-    </AnimatePresence>
+    </AnimatePresence >
   );
 };
 

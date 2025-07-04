@@ -135,7 +135,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             </div>
 
                             <div className="flex items-center space-x-2">
-                                {verifyPathName == 'vendor' && <Button
+                                {verifyPathName == 'vendor' && event.status==='upcoming' && <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={() => handleEdit(event)}

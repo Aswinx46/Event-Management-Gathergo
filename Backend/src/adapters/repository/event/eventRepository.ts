@@ -15,7 +15,7 @@ export class EventRepository implements IeventRepository {
         const limit = 6
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
-        const events = await eventModal.find({ isActive: true }).select('-__v').skip(skip).limit(limit).sort({ createdAt: -1 })
+        const events = await eventModal.find({ isActive: true, status: "upcoming" }).select('-__v').skip(skip).limit(limit).sort({ createdAt: -1 })
         const totalPages = Math.ceil(await eventModal.countDocuments() / limit)
         return { events, totalPages }
     }
