@@ -18,10 +18,10 @@ export const eventSchema = new Schema<EventEntity>({
         type: Date,
         default: Date.now
     },
-    date: [{
-        type: Date,
-        required: true
-    }],
+    // date: [{
+    //     type: Date,
+    //     required: true
+    // }],
     description: {
         type: String,
         required: true
@@ -50,17 +50,18 @@ export const eventSchema = new Schema<EventEntity>({
         type: Number,
         required: true
     },
-    startTime: {
-        type: Date,
-        required: true
-    },
-    endTime: {
-        type: Date,
-        required: true
-    },
+    // startTime: {
+    //     type: Date,
+    //     required: true
+    // },
+    // endTime: {
+    //     type: Date,
+    //     required: true
+    // },
     status: {
         type: String,
-        enum: ["upcoming", "completed", "cancelled"]
+        enum: ["upcoming", "completed", "cancelled"],
+        default: "upcoming"
     },
     maxTicketsPerUser: {
         type: Number,
@@ -89,7 +90,12 @@ export const eventSchema = new Schema<EventEntity>({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    schedule: [{
+        date: { type: Date, required: true },
+        startTime: { type: String, required: true },
+        endTime: { type: String, required: true }
+    }]
 
 })
 

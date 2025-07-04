@@ -166,7 +166,7 @@ export class PdfServiceVendor implements IpdfServiceVendor {
 
         const values = [
           event.title,
-          new Date(event.startTime).toDateString(),
+          new Date(event.schedule[0].startTime).toDateString(),
           event.ticketPurchased.toString(),
           `₹${(event.pricePerTicket * event.ticketPurchased).toFixed(2)}`
         ];

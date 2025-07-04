@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { ErrorMessage } from "formik";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Clock, Plus, X } from "lucide-react";
 import { EventType } from "@/types/EventType";
+import { toast } from "react-toastify";
 
 interface ScheduleFormProps {
   dates: Date[];
@@ -63,10 +63,43 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
     setTempDate(undefined);
   };
 
+  const isValidTime = (startTime: string, endTime: string) => {
+    const [startHour, startMin] = startTime.split(":").map(Number);
+    const [endHour, endMin] = endTime.split(":").map(Number);
+
+    const today = new Date();
+
+    const startDate = new Date(today);
+    startDate.setHours(startHour, startMin, 0, 0);
+
+    const endDate = new Date(today);
+    endDate.setHours(endHour, endMin, 0, 0);
+
+    return endDate > startDate;
+  };
+
+
   const handleAddNewDate = () => {
+    // if (tempDate) {
+    //   setDates([...dates, tempDate]);
+    //   setFieldValue("date", [...dates, tempDate]);
+    //   setShowAddCalendar(false);
+    //   setTempDate(undefined);
+    // }
     if (tempDate) {
-      setDates([...dates, tempDate]);
-      setFieldValue("date", [...dates, tempDate]);
+      const isAfterAllDates = dates.every(
+        (existingDate) => tempDate > existingDate
+      );
+
+      if (!isAfterAllDates) {
+        toast.error("New date must be after all existing dates.");
+        return;
+      }
+
+
+      const newDates = [...dates, tempDate];
+      setDates(newDates);
+      setFieldValue("date", newDates);
       setShowAddCalendar(false);
       setTempDate(undefined);
     }
@@ -235,7 +268,13 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
               id="startTime"
               type="time"
               value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
+              onChange={(e) => {
+                if (isValidTime(startTime, endTime)) {
+                  alert("End time must be after start time");
+                  return;
+                }
+                setStartTime(e.target.value)
+              }}
               className="w-full"
             />
           </div>
@@ -251,14 +290,20 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
               id="endTime"
               type="time"
               value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
+              onChange={(e) => {
+                if (isValidTime(startTime, endTime)) {
+                  alert("End time must be after start time");
+                  return;
+                }
+                setStartTime(e.target.value)
+              }}
               className="w-full"
             />
           </div>
         </motion.div>
       </div>
 
-      <motion.div variants={itemVariants} className="mb-6">
+      {/* <motion.div variants={itemVariants} className="mb-6">
         <Label htmlFor="status" className="block text-sm font-medium mb-1">
           Event Status <span className="text-red-500">*</span>
         </Label>
@@ -278,7 +323,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
           </SelectContent>
         </Select>
         <ErrorMessage name="status" component="p" className="text-red-500 text-sm mt-1" />
-      </motion.div>
+      </motion.div> */}
     </motion.div>
   );
 };

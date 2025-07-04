@@ -9,13 +9,13 @@ export interface EventEntity {
         coordinates: [number, number];
     },
     hostedBy: ObjectId | string,
-    startTime: Date;
-    endTime: Date;
+    // startTime: Date;
+    // endTime: Date;
     posterImage: string[];
     pricePerTicket: number;
     maxTicketsPerUser: number;
     totalTicket: number;
-    date: Date[];
+    // date: Date[];
     createdAt: Date;
     attendees: ObjectId[]
     ticketPurchased: number
@@ -24,5 +24,10 @@ export interface EventEntity {
     category: string
     status: "upcoming" | "completed" | "cancelled"
     attendeesCount: number
-    isActive:boolean
+    isActive: boolean
+    schedule: [{
+        date: Date,
+        startTime: string,
+        endTime: string
+    }]
 }

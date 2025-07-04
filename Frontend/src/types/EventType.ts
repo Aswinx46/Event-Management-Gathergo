@@ -6,13 +6,13 @@ export interface EventType {
         type: string,
         coordinates: [number, number];
     },
-    startTime: Date;
-    endTime: Date;
+    // startTime: Date;
+    // endTime: Date;
     posterImage: File[] | string[] | null;
     pricePerTicket: number;
     maxTicketsPerUser: number;
     totalTicket: number;
-    date: Date[];
+    // date: Date[];
     createdAt: Date;
     ticketPurchased: number
     address?: string
@@ -20,5 +20,10 @@ export interface EventType {
     category: string
     hostedBy?: string
     status: "upcoming" | "completed" | "cancelled"
+    schedule: [{
+        date: Date,
+        startTime: string,
+        endTime: string
+    }]
 }
 
