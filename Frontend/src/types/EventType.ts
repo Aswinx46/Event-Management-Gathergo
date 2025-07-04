@@ -22,6 +22,6 @@ export interface EventType {
     category: string
     hostedBy?: string
     status: "upcoming" | "completed" | "cancelled"
-    schedule?:ScheduleItem[]
+    schedule:ScheduleItem[]
 }
 

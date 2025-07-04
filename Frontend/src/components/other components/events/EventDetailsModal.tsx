@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface EventDetailModalProps {
-    event: EventEntity | null;
+    event: EventEntity;
     isOpen: boolean;
     onClose: () => void;
     onEdit: (event: EventEntity) => void;
@@ -74,13 +74,16 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     currentPage
 }) => {
     const location = useLocation()
-
     const editEvent = useUpdateEvent()
     const queryClient = useQueryClient()
     const navigate = useNavigate()
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
+    console.log(event.schedule)
+    const sortedSchedule = [...event.schedule].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
     const verifyPathName = location.pathname.split('/')[1]
     // const ticketsRemaining = event.totalTicket - event.ticketPurchased;
     const percentageSold = (event.ticketPurchased / event.totalTicket) * 100;
@@ -135,7 +138,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             </div>
 
                             <div className="flex items-center space-x-2">
-                                {verifyPathName == 'vendor' && event.status==='upcoming' && <Button
+                                {verifyPathName == 'vendor' && event.status === 'upcoming' && <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={() => handleEdit(event)}
@@ -185,16 +188,19 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                 >
                                     <div className="flex items-center text-zinc-300">
                                         <Calendar className="h-5 w-5 mr-2 text-purple-400" />
-                                        <span>{event.date.length > 1 ? ` ${formatDate(new Date(event.date[0]))} to ${formatDate(new Date(event.date[event.date.length - 1]))}` : formatDate(new Date(event.date[0]))}</span>
+                                        <div className="flex flex-col">
+                                            {event.schedule.length > 0 && sortedSchedule.map((item) => <span>{`${formatDate(new Date(item.date))} - ${item.startTime} to ${item.endTime}`}</span>)}
+                                        </div>
+                                        {/* {event.schedule.length > 0 && <span>{sortedSchedule.length > 1 ? ` ${formatDate(new Date(sortedSchedule[0].date))} to ${formatDate(new Date(sortedSchedule[event.schedule?.length - 1].date))}` : formatDate(new Date(sortedSchedule[0].date))}</span>} */}
                                     </div>
 
                                     <div className="flex items-center text-zinc-300">
                                         <Clock className="h-5 w-5 mr-2 text-purple-400" />
                                         <span>
-                                            {formatEventDuration(
-                                                new Date(event.startTime),
-                                                new Date(event.endTime)
-                                            )}
+                                            {/* {formatEventDuration(
+                                                new Date(event.schedule[0].startTime),
+                                                new Date(event.schedule[0].endTime)
+                                            )} */}
                                         </span>
                                     </div>
 
@@ -249,11 +255,6 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     </div>
 
                                     <div className="mt-4 flex flex-col gap-4 justify-center">
-                                        {/* {location.pathname.split('/')[1] != 'vendor' ? <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                                            Get Tickets
-                                        </Button> : <Button onClick={() => navigate('/vendor/scanTicket')} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                                            Scan Tickets
-                                        </Button>} */}
                                         {event.status === "completed" ? (
                                             <Button disabled className="w-full bg-gray-400 text-white cursor-not-allowed">
                                                 Event Completed

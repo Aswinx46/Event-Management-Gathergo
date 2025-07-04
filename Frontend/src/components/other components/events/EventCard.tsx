@@ -49,6 +49,7 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
+
     return (
         <motion.div
             onClick={onClick}
@@ -80,7 +81,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                     <div className="space-y-2">
                         <div className="flex items-center text-sm text-zinc-400">
                             <Calendar className="h-4 w-4 mr-2 text-purple-400" />
-                            <span>{event.date.length > 1 ? ` ${formatDate(new Date(event.date[0]))} to ${formatDate(new Date(event.date[event.date.length - 1]))}` : formatDate(new Date(event.date[0]))}</span>
+                            {event.schedule.length > 0 &&
+                                <span>{event.schedule.length > 0 ? ` ${formatDate(new Date(event.schedule[0].date))} to ${formatDate(new Date(event.schedule[event.schedule?.length - 1].date))}` : formatDate(new Date(event.schedule[0].date))}</span>}
                         </div>
 
                         {event.venueName && (
