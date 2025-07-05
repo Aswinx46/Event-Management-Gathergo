@@ -35,7 +35,7 @@ const formatCurrency = (amount: number): string => {
     }).format(amount);
 };
 
-const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string => {
+const getStatusColor = (status: "upcoming" | "completed" | "cancelled" | "onGoing"): string => {
     switch (status) {
         case "upcoming":
             return "bg-emerald-900/50 text-emerald-300";
@@ -43,6 +43,8 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
             return "bg-zinc-800/50 text-zinc-300";
         case "cancelled":
             return "bg-red-900/50 text-red-300";
+        case "onGoing":
+            return "bg-green-600/50 text-red-300";
         default:
             return "bg-blue-900/50 text-blue-300";
     }

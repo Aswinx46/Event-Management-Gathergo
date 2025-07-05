@@ -82,31 +82,6 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
 
   const selectedDates = formData?.schedule.map((item) => item.date)
 
-  // const handleRemoveDate = (dateToRemove: Date) => {
-  //   if (!formData) return;
-  //   console.log(typeof dateToRemove)
-  //   const updatedDates = formData.date.filter(date => {
-  //     return date !== dateToRemove
-  //   }
-  //   );
-
-  //   setFormData({
-  //     ...formData,
-  //     date: updatedDates
-  //   });
-  // };
-
-  // const handleTimeChange = (field: "startTime" | "endTime", value: string) => {
-  //   if (!formData) return;
-
-  //   const [hour, minute] = value.split(":").map(Number);
-  //   const newDate = new Date(formData[field]);
-  //   newDate.setHours(hour);
-  //   newDate.setMinutes(minute);
-
-  //   setFormData({ ...formData, [field]: newDate });
-  // };
-
   const handleCategoryChange = (value: string) => {
     setFormData((prev) =>
       prev ? { ...prev, category: value } : null
@@ -115,45 +90,16 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
 
   const handleStatusChange = (value: string) => {
     setFormData((prev) =>
-      prev ? { ...prev, status: value as "upcoming" | "completed" | "cancelled" } : null
+      prev ? { ...prev, status: value as "upcoming" | "completed" | "cancelled" | "onGoing" } : null
     );
   };
 
   const handleSubmit = () => {
-    // if (formData) {
-    //   onSave(formData);
-    //   onClose();
-    // }
+
     if (!formData) return;
-
-    // const errors: string[] = [];
-
-    // if (!formData.date || formData.date.length === 0) {
-    //   errors.push("Please select at least one event date.");
-    // }
-
-    // if (formData.pricePerTicket <= 0) {
-    //   errors.push("Price per ticket must be greater than 0.");
-    // }
-
-    // if (formData.totalTicket <= 0) {
-    //   errors.push("Total tickets must be greater than 0.");
-    // }
-
-    // if (errors.length > 0) {
-    //   toast.error(errors.join("\n"));
-    //   return;
-    // }
-
     onSave(formData);
     onClose();
   };
-
-  // const formatTime = (date: Date) => {
-  //   const hours = date.getHours().toString().padStart(2, '0');
-  //   const minutes = date.getMinutes().toString().padStart(2, '0');
-  //   return `${hours}:${minutes}`;
-  // };
 
   return (
     <AnimatePresence>
@@ -260,6 +206,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                           <SelectItem value="upcoming">Upcoming</SelectItem>
                           <SelectItem value="completed">Completed</SelectItem>
                           <SelectItem value="cancelled">Cancelled</SelectItem>
+                          <SelectItem value="onGoing">OnGoing</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -308,63 +255,6 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                       </Popover>
                     </div>
                   </div>
-
-                  {/* Selected dates display with delete option */}
-                  {/* {formData.date.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-2"
-                    >
-                      <label className="text-sm font-medium">Selected Dates</label>
-                      <div className="flex flex-wrap gap-2 p-2 border rounded-md bg-slate-50">
-                        {formData.date.map((date) => (
-                          <motion.div
-                            key={new Date(date).getTime()}
-                            layout
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Badge
-                              className="pl-3 pr-2 py-1.5 bg-primary text-primary-foreground flex items-center gap-1 group hover:bg-primary/90"
-                            >
-                              <span>{format(date, "MMM d, yyyy")}</span>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveDate(date)}
-                                className="ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5"
-                                aria-label="Remove date"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </Badge>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )} */}
-
-                  {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Start Time</label>
-                      <Input
-                        type="time"
-                        value={formatTime(new Date(formData.startTime))}
-                        onChange={(e) => handleTimeChange("startTime", e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">End Time</label>
-                      <Input
-                        type="time"
-                        value={formatTime(new Date(formData.endTime))}
-                        onChange={(e) => handleTimeChange("endTime", e.target.value)}
-                      />
-                    </div>
-                  </div> */}
                 </motion.div>
 
                 <motion.div
@@ -435,7 +325,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   transition={{ delay: 0.4 }}
                 >
                   <Button variant="outline" onClick={onClose}>Cancel</Button>
-                  {event && event.status === 'upcoming' && < Button onClick={handleSubmit}>Save Changes</Button>}
+                  {event && event.status !== 'cancelled' && event.status !== 'completed' && < Button onClick={handleSubmit}>Save Changes</Button>}
                 </motion.div>
               </DialogFooter>
             </motion.div>

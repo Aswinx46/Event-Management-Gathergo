@@ -16,6 +16,6 @@ export interface EventUpdateEntity {
     address?: string
     venueName?: string
     category: string
-    status: "upcoming" | "completed" | "cancelled"
+    status: "upcoming" | "completed" | "cancelled" | "onGoing"
     schedule: ScheduleItem[]
 }

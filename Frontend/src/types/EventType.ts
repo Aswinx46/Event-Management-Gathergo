@@ -8,20 +8,17 @@ export interface EventType {
         type: string,
         coordinates: [number, number];
     },
-    // startTime: Date;
-    // endTime: Date;
     posterImage: File[] | string[] | null;
     pricePerTicket: number;
     maxTicketsPerUser: number;
     totalTicket: number;
-    // date: Date[];
     createdAt: Date;
     ticketPurchased: number
     address?: string
     venueName?: string
     category: string
     hostedBy?: string
-    status: "upcoming" | "completed" | "cancelled"
-    schedule:ScheduleItem[]
+    status: "upcoming" | "completed" | "cancelled" | "onGoing"
+    schedule: ScheduleItem[]
 }
 

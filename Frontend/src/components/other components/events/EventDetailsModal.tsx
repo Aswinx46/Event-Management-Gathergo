@@ -31,7 +31,7 @@ const formatCurrency = (amount: number): string => {
     }).format(amount);
 };
 
-const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string => {
+const getStatusColor = (status: "upcoming" | "completed" | "cancelled" | "onGoing"): string => {
     switch (status) {
         case "upcoming":
             return "bg-emerald-900/50 text-emerald-300";
@@ -39,6 +39,8 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
             return "bg-zinc-800/50 text-zinc-300";
         case "cancelled":
             return "bg-red-900/50 text-red-300";
+        case "onGoing":
+            return "bg-green-600/50 text-red-300";
         default:
             return "bg-blue-900/50 text-blue-300";
     }
@@ -124,7 +126,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             </div>
 
                             <div className="flex items-center space-x-2">
-                                {verifyPathName == 'vendor' && event.status === 'upcoming' && <Button
+                                {verifyPathName == 'vendor' && event.status !== 'cancelled' && event.status !== 'completed' && <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={() => handleEdit(event)}
@@ -175,6 +177,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     <div className="flex items-center text-zinc-300">
                                         <Calendar className="h-5 w-5 mr-2 text-purple-400" />
                                         <div className="flex flex-col">
+                                            {event.schedule.length > 0 && event.schedule.map((item) => <span>{`${new Date(item.date).toDateString()} - ${item.startTime} to ${item.endTime}`}</span>)}
 
                                         </div>
                                         {/* {event.schedule.length > 0 && <span>{sortedSchedule.length > 1 ? ` ${formatDate(new Date(sortedSchedule[0].date))} to ${formatDate(new Date(sortedSchedule[event.schedule?.length - 1].date))}` : formatDate(new Date(sortedSchedule[0].date))}</span>} */}
@@ -182,12 +185,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
                                     <div className="flex items-center text-zinc-300">
                                         <Clock className="h-5 w-5 mr-2 text-purple-400" />
-                                        <span>
-                                            {/* {formatEventDuration(
-                                                new Date(event.schedule[0].startTime),
-                                                new Date(event.schedule[0].endTime)
-                                            )} */}
-                                        </span>
+
                                     </div>
 
                                     {event.venueName && (

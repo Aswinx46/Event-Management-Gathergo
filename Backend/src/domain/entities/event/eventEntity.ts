@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import { ScheduleItem } from "../ScheduleType";
 
 export interface EventEntity {
     _id?: ObjectId;
@@ -22,12 +23,8 @@ export interface EventEntity {
     address?: string
     venueName?: string
     category: string
-    status: "upcoming" | "completed" | "cancelled"
+    status: "upcoming" | "completed" | "cancelled" | "onGoing"
     attendeesCount: number
     isActive: boolean
-    schedule: [{
-        date: Date,
-        startTime: string,
-        endTime: string
-    }]
+    schedule: ScheduleItem[]
 }
