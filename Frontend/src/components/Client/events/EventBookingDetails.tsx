@@ -105,20 +105,19 @@ export default function EventDetails() {
                         <motion.div variants={slideUp} className="space-y-4 mb-6">
                             <div className="flex items-center gap-3">
                                 <Calendar className="w-5 h-5 text-purple-400" />
-                                <div>
-                                    {event?.date?.map((date, i) => (
-                                        <span key={i} className=" text-sm text-neutral-300">
-                                            {new Date(date).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric',
-                                            })}
-                                        </span>
+                                <div className="flex flex-col">
+                                    {event?.schedule?.map((item, i) => (
+                                        <>
+                                            <span key={i} className=" text-sm text-neutral-300">
+                                                {new Date(item.date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                })} -
+                                                <span>     {`${item.startTime} to ${item.endTime} `}</span>
+                                            </span>
+                                        </>
                                     ))}
-                                    {/* <p className="text-sm text-neutral-300">February 2, 2025</p> */}
-                                    <p className="text-xs text-neutral-500">
-                                        {formatTime(event?.startTime)} - {formatTime(event?.endTime)}
-                                    </p>
                                 </div>
                             </div>
 
@@ -184,7 +183,7 @@ export default function EventDetails() {
                             <h3 className="text-lg font-bold mb-4 ">About The Event</h3>
                             <motion.div variants={stagger} className="space-y-3 text-sm">
                                 <motion.div variants={slideUp} className="flex justify-between items-center">
-                                    <span className="text-neutral-400 pb-3">Jeepers Of Bangalore</span>
+                                    <span className="text-neutral-400 pb-3">{event?.title}</span>
                                 </motion.div>
                                 <motion.div variants={slideUp} className="flex justify-between items-center">
                                     <span className="text-neutral-400 pb-3">Reg fee</span>
@@ -192,15 +191,20 @@ export default function EventDetails() {
                                 </motion.div>
                                 <motion.div variants={slideUp} className="flex justify-between items-center">
                                     <span className="text-neutral-400 pb-3">Date</span>
-                                    {event?.date?.map((date, i) => (
-                                        <span key={i} className="text-neutral-300">
-                                            {new Date(date).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric',
-                                            })}
-                                        </span>
-                                    ))}
+                                    <div className="flex flex-col">
+                                        {event?.schedule?.map((item, i) => (
+                                            <>
+                                                <span key={i} className=" text-sm text-neutral-300">
+                                                    {new Date(item.date).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                    })} -
+                                                    <span>     {`${item.startTime} to ${item.endTime} `}</span>
+                                                </span>
+                                            </>
+                                        ))}
+                                    </div>
                                 </motion.div>
                                 <motion.div variants={slideUp} className="flex justify-between items-center">
                                     <span className="text-neutral-400 pb-3">Venue</span>
@@ -208,7 +212,7 @@ export default function EventDetails() {
                                 </motion.div>
                                 <motion.div variants={slideUp} className="flex justify-between items-center">
                                     <span className="text-neutral-400 pb-3">Contact</span>
-                                    <span className="text-neutral-300 pb-3">Unknown - +91 99957 10101</span>
+                                    <span className="text-neutral-300 pb-3">- +91 99957 10101</span>
                                 </motion.div>
                             </motion.div>
                         </div>
@@ -229,7 +233,7 @@ export default function EventDetails() {
                 </motion.div>
             </motion.div>
             {reviews && <UserReviews reviews={reviews} />}
-            {reviews && reviews.length >0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
+            {reviews && reviews.length > 0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
         </div>
     )
 }

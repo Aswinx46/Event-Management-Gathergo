@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { format } from "date-fns";
-import { CalendarIcon, Clock, MapPin, Minus, Plus, Ticket } from "lucide-react";
+import { CalendarIcon, MapPin, Minus, Plus, Ticket } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../ui/card";
 import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
@@ -36,7 +35,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   const navigate = useNavigate()
   const availableTickets = event.totalTicket - event.ticketPurchased;
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
-  const formatTime = (date: Date) => format(new Date(date), "h:mm a");
+
 
   const handleIncrement = () => {
     if (ticketCount < Math.min(event.maxTicketsPerUser, availableTickets)) {
@@ -168,13 +167,23 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
               <motion.div variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-3 text-gray-300">
                   <CalendarIcon className="w-5 h-5 text-purple-400" />
-                  <span>{format(new Date(event.date[0]), "MMMM d, yyyy")}</span>
+                  <div className="flex flex-col">
+                    {event?.schedule?.map((item, i) => (
+                      <>
+                        <span key={i} className=" text-sm text-neutral-300">
+                          {new Date(item.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })} -
+                          <span>     {`${item.startTime} to ${item.endTime} `}</span>
+                        </span>
+                      </>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Clock className="w-5 h-5 text-purple-400" />
-                  <span>{formatTime(event.startTime)} - {formatTime(event.endTime)}</span>
-                </div>
+   
 
                 <div className="flex items-center gap-3 text-gray-300">
                   <MapPin className="w-5 h-5 text-purple-400" />
@@ -184,6 +193,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
                   </div>
                 </div>
               </motion.div>
+
 
               <Separator className="bg-[#2A2F3C]" />
 

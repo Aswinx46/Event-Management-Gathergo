@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, Ticket } from "lucide-react";
-import { format } from "date-fns";
+import { Calendar, MapPin, Ticket } from "lucide-react";
 import { TicketAndEventDTO } from "@/types/TicketAndEventDTO";
 import { useState } from "react";
 import { useAddReview, useFindTicketAndEventsDetails, useTicketCancellation } from "@/hooks/ClientCustomHooks";
@@ -82,6 +81,7 @@ This action is irreversible. Are you sure you want to proceed?
   }
 
 
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {isOpen && <TicketModal open={isOpen} setIsOpen={setIsOpen} ticket={selectedEvent!} />}
@@ -151,16 +151,21 @@ This action is irreversible. Are you sure you want to proceed?
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="h-4 w-4 text-purple-500" />
-                      <span className="truncate">{ticketAndEvent.event.date.length > 0 ? format(new Date(ticketAndEvent.event.date[0]), 'MMM dd, yyyy') : 'Date not set'}</span>
+                      <div className="flex flex-col">
+                        {ticketAndEvent?.event.schedule?.map((item, i) => (
+                          <>
+                            <span key={i} className=" text-sm line-clamp-1 overflow-auto scroll-auto hide-scrollbar text-amber-900-300">
+                              {new Date(item.date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })} -
+                              <span>     {`${item.startTime} to ${item.endTime} `}</span>
+                            </span>
+                          </>
+                        ))}
+                      </div>
                     </div>
-
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Clock className="h-4 w-4 text-purple-500" />
-                      <span className="truncate">
-                        {format(new Date(ticketAndEvent.event.startTime), 'h:mm a')} - {format(new Date(ticketAndEvent.event.endTime), 'h:mm a')}
-                      </span>
-                    </div>
-
                     <div className="flex items-center gap-2 text-sm text-gray-600 col-span-2">
                       <MapPin className="h-4 w-4 text-purple-500" />
                       <span className="truncate">{ticketAndEvent.event.address || 'Location not specified'}</span>

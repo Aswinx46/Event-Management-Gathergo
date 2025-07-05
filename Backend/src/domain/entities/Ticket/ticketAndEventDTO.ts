@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import { ScheduleItem } from "../ScheduleType";
 
 export interface TicketAndEventDTO {
     _id?: ObjectId | string
@@ -13,9 +14,7 @@ export interface TicketAndEventDTO {
         _id: ObjectId | string
         title: string,
         description: string,
-        date: Date[],
-        startTime: Date,
-        endTime: Date,
+        schedule: ScheduleItem[]
         status: "upcoming" | "completed" | "cancelled"
         address?: string,
         pricePerTicket: number;

@@ -29,8 +29,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { EventEntity } from "@/types/EventEntity";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "react-toastify";
+
 
 interface EventEditModalProps {
   isOpen: boolean;
@@ -81,30 +80,32 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
     }
   };
 
-  const handleRemoveDate = (dateToRemove: Date) => {
-    if (!formData) return;
-    console.log(typeof dateToRemove)
-    const updatedDates = formData.date.filter(date => {
-      return date !== dateToRemove
-    }
-    );
+  const selectedDates = formData?.schedule.map((item) => item.date)
 
-    setFormData({
-      ...formData,
-      date: updatedDates
-    });
-  };
+  // const handleRemoveDate = (dateToRemove: Date) => {
+  //   if (!formData) return;
+  //   console.log(typeof dateToRemove)
+  //   const updatedDates = formData.date.filter(date => {
+  //     return date !== dateToRemove
+  //   }
+  //   );
 
-  const handleTimeChange = (field: "startTime" | "endTime", value: string) => {
-    if (!formData) return;
+  //   setFormData({
+  //     ...formData,
+  //     date: updatedDates
+  //   });
+  // };
 
-    const [hour, minute] = value.split(":").map(Number);
-    const newDate = new Date(formData[field]);
-    newDate.setHours(hour);
-    newDate.setMinutes(minute);
+  // const handleTimeChange = (field: "startTime" | "endTime", value: string) => {
+  //   if (!formData) return;
 
-    setFormData({ ...formData, [field]: newDate });
-  };
+  //   const [hour, minute] = value.split(":").map(Number);
+  //   const newDate = new Date(formData[field]);
+  //   newDate.setHours(hour);
+  //   newDate.setMinutes(minute);
+
+  //   setFormData({ ...formData, [field]: newDate });
+  // };
 
   const handleCategoryChange = (value: string) => {
     setFormData((prev) =>
@@ -125,34 +126,34 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
     // }
     if (!formData) return;
 
-    const errors: string[] = [];
+    // const errors: string[] = [];
 
-    if (!formData.date || formData.date.length === 0) {
-      errors.push("Please select at least one event date.");
-    }
+    // if (!formData.date || formData.date.length === 0) {
+    //   errors.push("Please select at least one event date.");
+    // }
 
-    if (formData.pricePerTicket <= 0) {
-      errors.push("Price per ticket must be greater than 0.");
-    }
+    // if (formData.pricePerTicket <= 0) {
+    //   errors.push("Price per ticket must be greater than 0.");
+    // }
 
-    if (formData.totalTicket <= 0) {
-      errors.push("Total tickets must be greater than 0.");
-    }
+    // if (formData.totalTicket <= 0) {
+    //   errors.push("Total tickets must be greater than 0.");
+    // }
 
-    if (errors.length > 0) {
-      toast.error(errors.join("\n"));
-      return;
-    }
+    // if (errors.length > 0) {
+    //   toast.error(errors.join("\n"));
+    //   return;
+    // }
 
     onSave(formData);
     onClose();
   };
 
-  const formatTime = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  };
+  // const formatTime = (date: Date) => {
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   return `${hours}:${minutes}`;
+  // };
 
   return (
     <AnimatePresence>
@@ -283,17 +284,17 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                             className="w-full justify-start text-left font-normal"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {formData.date && formData.date.length > 0
-                              ? formData.date.length > 1
-                                ? `${formData.date.length} dates selected`
-                                : format(formData.date[0], "PPP")
+                            {formData.schedule && formData.schedule.length > 0
+                              ? formData.schedule.length > 1
+                                ? `${formData.schedule.length} dates selected`
+                                : format(formData.schedule[0].date, "PPP")
                               : "Pick dates"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="multiple"
-                            selected={formData.date}
+                            selected={selectedDates}
                             onSelect={handleDateSelect}
                             disabled={(date) => isBefore(startOfDay(date), startOfDay(new Date()))}
                             showOutsideDays={false}
@@ -309,7 +310,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   </div>
 
                   {/* Selected dates display with delete option */}
-                  {formData.date.length > 0 && (
+                  {/* {formData.date.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
@@ -344,9 +345,9 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                         ))}
                       </div>
                     </motion.div>
-                  )}
+                  )} */}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Start Time</label>
                       <Input
@@ -363,7 +364,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                         onChange={(e) => handleTimeChange("endTime", e.target.value)}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </motion.div>
 
                 <motion.div
@@ -382,6 +383,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                         name="pricePerTicket"
                         value={formData.pricePerTicket}
                         onChange={handleNumberChange}
+                        disabled={true}
                         min="0"
                         step="0.01"
                       />
@@ -392,6 +394,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                         type="number"
                         name="maxTicketsPerUser"
                         value={formData.maxTicketsPerUser}
+                        disabled={true}
                         onChange={handleNumberChange}
                         min="1"
                       />
@@ -402,6 +405,7 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                         type="number"
                         name="totalTicket"
                         value={formData.totalTicket}
+                        disabled={true}
                         onChange={handleNumberChange}
                         min="1"
                       />

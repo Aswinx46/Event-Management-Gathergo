@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { format } from "date-fns";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EventEdit } from "@/components/Vendor/event/EditEvent";
 import { useUpdateEvent } from "@/hooks/VendorCustomHooks";
@@ -14,23 +13,15 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface EventDetailModalProps {
-    event: EventEntity;
+    event: EventEntity | null;
     isOpen: boolean;
     onClose: () => void;
     onEdit: (event: EventEntity) => void;
     currentPage: number
 }
 
-const formatDate = (date: Date): string => {
-    // return format(date, "EEE, MMM d, yyyy 'at' h:mm a");
-    return format(date, "MMM d, yyyy");
-};
 
-const formatEventDuration = (startTime: Date, endTime: Date): string => {
-    const start = format(startTime, "h:mm a");
-    const end = format(endTime, "h:mm a");
-    return `${start} - ${end}`;
-};
+
 
 const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -80,12 +71,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
-    console.log(event.schedule)
-    const sortedSchedule = [...event.schedule].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
     const verifyPathName = location.pathname.split('/')[1]
-    // const ticketsRemaining = event.totalTicket - event.ticketPurchased;
     const percentageSold = (event.ticketPurchased / event.totalTicket) * 100;
     const handleEdit = (event: EventEntity) => {
         setSelectedEvent(event)
@@ -189,7 +175,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     <div className="flex items-center text-zinc-300">
                                         <Calendar className="h-5 w-5 mr-2 text-purple-400" />
                                         <div className="flex flex-col">
-                                            {event.schedule.length > 0 && sortedSchedule.map((item) => <span>{`${formatDate(new Date(item.date))} - ${item.startTime} to ${item.endTime}`}</span>)}
+
                                         </div>
                                         {/* {event.schedule.length > 0 && <span>{sortedSchedule.length > 1 ? ` ${formatDate(new Date(sortedSchedule[0].date))} to ${formatDate(new Date(sortedSchedule[event.schedule?.length - 1].date))}` : formatDate(new Date(sortedSchedule[0].date))}</span>} */}
                                     </div>

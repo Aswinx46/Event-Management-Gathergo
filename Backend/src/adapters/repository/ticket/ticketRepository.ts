@@ -18,7 +18,7 @@ export class TicketRepository implements IticketRepositoryInterface {
         const limit = 4
         const skip = (page - 1) * limit
         const ticketAndEvent = await ticketModel.find({ clientId: userId }).select('_id ticketId ticketCount phone email paymentStatus totalAmount ticketStatus qrCodeLink')
-            .populate('eventId', '_id title description date startTime endTime status address pricePerTicket posterImage').skip(skip).limit(limit).sort({ createdAt: -1 }).lean()
+            .populate('eventId', '_id title description status address pricePerTicket posterImage schedule').skip(skip).limit(limit).sort({ createdAt: -1 }).lean()
         const totalPages = Math.ceil(await ticketModel.countDocuments() / limit)
         const ticketAndEventDetails: TicketAndEventDTO[] = ticketAndEvent.map(ticket => {
             const event = ticket.eventId as any; // TypeScript doesn't know it's populated
@@ -37,9 +37,7 @@ export class TicketRepository implements IticketRepositoryInterface {
                     _id: event._id,
                     title: event.title,
                     description: event.description,
-                    date: event.date,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
+                    schedule: event.schedule,
                     status: event.status,
                     address: event.address,
                     pricePerTicket: event.pricePerTicket,

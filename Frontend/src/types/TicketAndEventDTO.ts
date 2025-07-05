@@ -1,3 +1,4 @@
+import { ScheduleItem } from "./ScheduleItemType";
 
 export interface TicketAndEventDTO {
     _id?: string
@@ -12,12 +13,10 @@ export interface TicketAndEventDTO {
         _id: string
         title: string,
         description: string,
-        date: Date[],
-        startTime: Date,
-        endTime: Date,
         status: "upcoming" | "completed" | "cancelled"
         address?: string,
         pricePerTicket: number;
         posterImage: string[];
+        schedule: ScheduleItem[]
     }
 }
