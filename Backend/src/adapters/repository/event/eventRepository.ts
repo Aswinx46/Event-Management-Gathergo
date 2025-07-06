@@ -43,7 +43,7 @@ export class EventRepository implements IeventRepository {
         return { totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased }
     }
     async findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null> {
-        return eventModal.findById(eventId).select('hostedBy date')
+        return eventModal.findById(eventId).select('hostedBy schedule')
     }
     async findTotalTicketAndBookedTicket(eventId: string): Promise<EventEntity | null> {
         return eventModal.findById(eventId).select('totalTicket ticketPurchased status')
