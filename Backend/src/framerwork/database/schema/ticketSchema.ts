@@ -53,7 +53,13 @@ export const ticketSchema = new Schema<TicketEntity>({
     checkInHistory: {
         type: [Date],
         default: []
-      }
+    },
+    ticketType: {
+        type: String,
+        required: false,
+        default: 'normal'
+    }
+
 
 }, {
     timestamps: true

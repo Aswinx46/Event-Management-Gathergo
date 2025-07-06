@@ -1,5 +1,7 @@
 import { ObjectId } from "mongoose";
 
+
+
 export interface TicketEntity {
     _id?: ObjectId | string
     ticketId: string;
@@ -15,4 +17,5 @@ export interface TicketEntity {
     ticketStatus: 'used' | 'refunded' | 'unused'
     paymentTransactionId: ObjectId
     checkInHistory?: Date[]
+    ticketType: string
 }

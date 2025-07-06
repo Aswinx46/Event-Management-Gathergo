@@ -1,6 +1,16 @@
 import { ObjectId } from "mongoose";
 import { ScheduleItem } from "../ScheduleType";
 
+
+export interface TicketType {
+    ticketType: string
+    description: string,
+    price: number,
+    maxCount: number,
+    purchasedCount: number
+}
+
+
 export interface EventEntity {
     _id?: ObjectId;
     title: string;
@@ -10,16 +20,13 @@ export interface EventEntity {
         coordinates: [number, number];
     },
     hostedBy: ObjectId | string,
-    // startTime: Date;
-    // endTime: Date;
     posterImage: string[];
-    pricePerTicket: number;
+    pricePerTicket?: number;
     maxTicketsPerUser: number;
-    totalTicket: number;
-    // date: Date[];
+    totalTicketCount: number;
     createdAt: Date;
     attendees: ObjectId[]
-    ticketPurchased: number
+    totalTicketsSold: number
     address?: string
     venueName?: string
     category: string
@@ -27,4 +34,7 @@ export interface EventEntity {
     attendeesCount: number
     isActive: boolean
     schedule: ScheduleItem[]
+    ticketTypeDescription?: TicketType[]
+    multipleTicketTypeNeeded: boolean
+
 }
