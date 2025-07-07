@@ -1,5 +1,14 @@
 import { ScheduleItem } from "./ScheduleItemType";
 
+export interface TicketType {
+    ticketType: string
+    description: string,
+    price: number,
+    maxCount: number,
+    purchasedCount?: number,
+    ticketLimitPerUser: number
+}
+
 export interface EventType {
     _id?: string
     title: string;
@@ -20,5 +29,7 @@ export interface EventType {
     hostedBy?: string
     status: "upcoming" | "completed" | "cancelled" | "onGoing"
     schedule: ScheduleItem[]
+    ticketTypeDescription?: TicketType[]
+    multipleTicketTypeNeeded: boolean
 }
 

@@ -12,4 +12,5 @@ export interface TicketBackendEntity {
     clientId: string;
     ticketStatus: 'used' | 'refunded' | 'unused';
     paymentTransactionId: string;
+    ticketType: string
 }

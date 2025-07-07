@@ -7,7 +7,8 @@ export interface TicketType {
     description: string,
     price: number,
     maxCount: number,
-    purchasedCount: number
+    buyedCount: number,
+    ticketLimitPerUser: number
 }
 
 
@@ -23,10 +24,10 @@ export interface EventEntity {
     posterImage: string[];
     pricePerTicket?: number;
     maxTicketsPerUser: number;
-    totalTicketCount: number;
+    totalTicket: number;
     createdAt: Date;
     attendees: ObjectId[]
-    totalTicketsSold: number
+    ticketPurchased: number
     address?: string
     venueName?: string
     category: string

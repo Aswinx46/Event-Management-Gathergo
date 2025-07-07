@@ -30,19 +30,7 @@ export default function EventDetails() {
 
 
 
-    // Format date for display
 
-
-    // Format time for display
-    const formatTime = (time?: Date) => {
-        if (!time) return null;
-        const date = new Date(time);
-        if (isNaN(date.getTime())) return null;
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
 
 
     const fadeIn = {

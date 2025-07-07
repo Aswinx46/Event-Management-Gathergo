@@ -44,7 +44,7 @@ export const eventSchema = new Schema<EventEntity>({
     }],
     pricePerTicket: {
         type: Number,
-        required: false
+        required: true
     },
     status: {
         type: String,
@@ -55,7 +55,7 @@ export const eventSchema = new Schema<EventEntity>({
         type: Number,
         required: true
     },
-    totalTicketsSold: {
+    ticketPurchased: {
         type: Number,
         required: true
     },
@@ -63,7 +63,7 @@ export const eventSchema = new Schema<EventEntity>({
         type: String,
         required: true
     },
-    totalTicketCount: {
+    totalTicket: {
         type: Number,
         required: true
     },
@@ -93,7 +93,8 @@ export const eventSchema = new Schema<EventEntity>({
         description: { type: String, required: false },
         price: { type: Number, required: false },
         maxCount: { type: Number, required: false },
-        purchasedCount: { type: Number, required: false, default: 0 }
+        purchasedCount: { type: Number, required: false, default: 0 },
+        ticketLimitPerUser: { type: Number, required: false, default: 1 }
     }]
 
 }, {
