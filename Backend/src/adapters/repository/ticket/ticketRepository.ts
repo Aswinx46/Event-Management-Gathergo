@@ -26,8 +26,7 @@ export class TicketRepository implements IticketRepositoryInterface {
             return {
                 _id: ticket._id,
                 ticketId: ticket.ticketId,
-                totalAmount: ticket.totalAmount,
-                ticketCount: ticket.ticketCount,
+                amount: ticket.amount,
                 phone: ticket.phone,
                 email: ticket.email,
                 paymentStatus: ticket.paymentStatus,
@@ -60,8 +59,7 @@ export class TicketRepository implements IticketRepositoryInterface {
         const result: TicketAndVendorDTO = {
             _id: ticket._id,
             ticketId: ticket.ticketId,
-            totalAmount: ticket.totalAmount,
-            ticketCount: ticket.ticketCount,
+            amount: ticket.amount,
             phone: ticket.phone,
             email: ticket.email,
             paymentStatus: ticket.paymentStatus,
@@ -72,7 +70,7 @@ export class TicketRepository implements IticketRepositoryInterface {
             },
             clientId: ticket.clientId,
             ticketStatus: ticket.ticketStatus,
-            paymentTransactionId: ticket.paymentTransactionId,
+            // paymentTransactionId: ticket.paymentTransactionId,
         };
         return result
     }
@@ -158,5 +156,8 @@ export class TicketRepository implements IticketRepositoryInterface {
         );
 
         return result.modifiedCount > 0;
+    }
+    async createManyTicket(tickets: TicketEntity[]): Promise<TicketEntity[]> {
+        return await ticketModel.insertMany(tickets)
     }
 }

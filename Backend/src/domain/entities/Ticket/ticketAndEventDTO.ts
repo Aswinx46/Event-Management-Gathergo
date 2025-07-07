@@ -3,8 +3,8 @@ import { ScheduleItem } from "../ScheduleType";
 
 export interface TicketAndEventDTO {
     _id?: ObjectId | string
-    ticketId: string; totalAmount: number
-    ticketCount: number
+    ticketId: string; 
+    amount: number
     phone: string;
     email: string;
     paymentStatus: 'pending' | 'successful' | 'failed';

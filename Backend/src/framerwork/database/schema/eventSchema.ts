@@ -93,7 +93,7 @@ export const eventSchema = new Schema<EventEntity>({
         description: { type: String, required: false },
         price: { type: Number, required: false },
         maxCount: { type: Number, required: false },
-        purchasedCount: { type: Number, required: false, default: 0 },
+        buyedCount: { type: Number, required: false, default: 0 },
         ticketLimitPerUser: { type: Number, required: false, default: 1 }
     }]
 

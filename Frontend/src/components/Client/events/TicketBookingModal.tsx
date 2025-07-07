@@ -112,7 +112,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       email: email,
       phone: phone,
       eventId: event._id!,
-
+      hasVariant: false
     }
     navigate('/ticketPaymentWallet', {
       state: {
@@ -121,6 +121,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
         type: 'ticketBooking',
         totalTicketCount: ticketCount,
         vendorId: event.hostedBy,
+
       }
     })
   }
@@ -138,19 +139,21 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       email: email,
       phone: phone,
       eventId: event._id!,
-
+      hasVariant: Object.keys(selectedTickets).length > 0
     }
     if (totalTicketPrice <= 0) {
       toast.error('Select atleast one ticket')
       return
     }
+
     navigate('/ticketPayment', {
       state: {
         amount: totalTicketPrice,
         ticketData: ticketPaymentData,
         type: 'ticketBooking',
         totalTicketCount: ticketCount,
-        vendorId: event.hostedBy
+        vendorId: event.hostedBy,
+        ticketPurchasedDetails: selectedTickets
       }
     })
     setOpen(false)
@@ -264,7 +267,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
                 {event.multipleTicketTypeNeeded ? (<div>
                   {event.ticketTypeDescription?.map((ticket) => {
                     const currentCount = selectedTickets[ticket.ticketType] || 0;
-                    const available = ticket.maxCount - (ticket.purchasedCount || 0);
+                    const available = ticket.maxCount - (ticket.buyedCount || 0);
                     return (
                       <div key={ticket.ticketType} className="mb-6">
                         <div className="flex justify-between items-center">

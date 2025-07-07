@@ -22,6 +22,7 @@ function TicketPaymentForm() {
             totalAmount: data.amount,
             totalCount: data.totalTicketCount,
             vendorId: data.vendorId,
+            ticketPurchasedDetails: data.ticketPurchasedDetails
         });
 
         return {
@@ -30,7 +31,7 @@ function TicketPaymentForm() {
         };
     };
 
-    const handleConfirmSuccess = (ticketData: TicketEntity, paymentIntentId: string) => {
+    const handleConfirmSuccess = (ticketData: TicketEntity[], paymentIntentId: string) => {
         confirmTicket.mutate({
             ticket: ticketData,
             paymentIntent: paymentIntentId,
@@ -40,7 +41,7 @@ function TicketPaymentForm() {
                 setUpdatedTicket(data.confirmTicketAndPayment)
                 setIsOpen(true)
             },
-            onError:(err)=>{
+            onError: (err) => {
                 toast.error(err.message)
             }
         });

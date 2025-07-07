@@ -1,5 +1,5 @@
 import { ObjectId, Types } from "mongoose";
-import { EventEntity } from "../../../domain/entities/event/eventEntity";
+import { EventEntity, TicketType } from "../../../domain/entities/event/eventEntity";
 import { EventUpdateEntity } from "../../../domain/entities/event/eventUpdateEntity";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";
 import { eventModal } from "../../../framerwork/database/models/eventModel";
@@ -37,16 +37,16 @@ export class EventRepository implements IeventRepository {
     async updateTicketPurchaseCount(eventId: string | ObjectId, newCount: number): Promise<EventEntity | null> {
         return eventModal.findByIdAndUpdate(eventId, { ticketPurchased: newCount })
     }
-    async findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number; ticketPurchased: number; }> {
-        const eventDetails = await eventModal.findById(eventId).select('ticketPurchased totalTicket')
+    async findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number; ticketPurchased: number; ticketTypeDescription?: TicketType[] }> {
+        const eventDetails = await eventModal.findById(eventId).select('ticketPurchased totalTicket ticketTypeDescription')
         if (!eventDetails) throw new Error('No event found in this ID')
-        return { totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased }
+        return { totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased, ticketTypeDescription: eventDetails?.ticketTypeDescription }
     }
     async findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null> {
         return eventModal.findById(eventId).select('hostedBy schedule')
     }
     async findTotalTicketAndBookedTicket(eventId: string): Promise<EventEntity | null> {
-        return eventModal.findById(eventId).select('totalTicket ticketPurchased status')
+        return eventModal.findById(eventId).select('totalTicket ticketPurchased status ticketTypeDescription').lean()
     }
     async findEventsBaseOnCategory(category: string, pageNo: number, sortBy: string): Promise<{ events: EventEntity[] | []; totalPages: number; }> {
         const sortOptions: Record<string, any> = {
@@ -170,5 +170,9 @@ export class EventRepository implements IeventRepository {
     }
     async findAllEventsOfAVendor(vendorId: string): Promise<EventEntity[] | []> {
         return await eventModal.find({ hostedBy: vendorId })
+    }
+    async updateTicketVariantsCount(eventId: ObjectId, updatedTicketVariant: TicketType[]): Promise<boolean> {
+        const result = await eventModal.updateOne({ _id: eventId }, { $set: { ticketTypeDescription: updatedTicketVariant } })
+        return result.modifiedCount > 0
     }
 }

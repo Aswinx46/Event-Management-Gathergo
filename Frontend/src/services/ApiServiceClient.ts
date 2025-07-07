@@ -300,9 +300,9 @@ export const findEventById = async (eventId: string) => {
     }
 }
 
-export const createTicket = async (ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string) => {
+export const createTicket = async (ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string, ticketPurchasedDetails: Record<string, number>) => {
     try {
-        const response = await axios.post('/createTicket', { ticket, totalCount, totalAmount, paymentIntentId, vendorId })
+        const response = await axios.post('/createTicket', { ticket, totalCount, totalAmount, paymentIntentId, vendorId, ticketPurchasedDetails })
         return response.data
     } catch (error) {
         console.log('error while creating ticket', error)
@@ -311,7 +311,7 @@ export const createTicket = async (ticket: TicketEntity, totalCount: number, tot
 
 }
 
-export const confirmTicketAndPayment = async (ticket: TicketEntity, paymentIntent: string, vendorId: string) => {
+export const confirmTicketAndPayment = async (ticket: TicketEntity[], paymentIntent: string, vendorId: string) => {
     try {
         const response = await axios.post('/confirmTicket', { ticket, paymentIntent, vendorId })
         return response.data

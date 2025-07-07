@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose";
-import { EventEntity } from "../../../entities/event/eventEntity";
+import { EventEntity, TicketType } from "../../../entities/event/eventEntity";
 import { EventUpdateEntity } from "../../../entities/event/eventUpdateEntity";
 import { EventDashboardSummary } from "../../../entities/event/eventDashboardDTO";
 export interface IeventRepository {
@@ -9,7 +9,7 @@ export interface IeventRepository {
     editEvent(eventId: string, update: EventUpdateEntity): Promise<EventEntity | null>
     findEventById(eventId: string): Promise<EventEntity | null>
     updateTicketPurchaseCount(eventId: string | ObjectId, newCount: number): Promise<EventEntity | null>
-    findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number, ticketPurchased: number }>
+    findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number, ticketPurchased: number, ticketTypeDescription?: TicketType[] }>
     findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null>
     findTotalTicketAndBookedTicket(eventId: string): Promise<EventEntity | null>
     findEventsBaseOnCategory(category: string, pageNo: number, sortBy: string): Promise<{ events: EventEntity[] | [], totalPages: number }>
@@ -21,4 +21,5 @@ export interface IeventRepository {
     findTotalticketsSold(vendorId: string, datePeriod: Date | null): Promise<number>
     eventDetailsForAdminDashboard(): Promise<EventDashboardSummary>
     findAllEventsOfAVendor(vendorId: string): Promise<EventEntity[] | []>
+    updateTicketVariantsCount(eventId: ObjectId, updatedTicketVariant: TicketType[]): Promise<boolean>
 }

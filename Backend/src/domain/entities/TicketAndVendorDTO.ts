@@ -4,8 +4,7 @@ export interface TicketAndVendorDTO {
     _id?: ObjectId | string
     ticketId: string;
     // createdAt?: Date;
-    totalAmount: number
-    ticketCount: number
+    amount: number
     phone: string;
     email: string;
     paymentStatus: 'pending' | 'successful' | 'failed';
@@ -16,5 +15,5 @@ export interface TicketAndVendorDTO {
     }
     clientId: ObjectId | string;
     ticketStatus: 'used' | 'refunded' | 'unused'
-    paymentTransactionId: ObjectId
+    paymentTransactionId?: ObjectId
 }
