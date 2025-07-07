@@ -10,7 +10,6 @@ export class TicketAndEventDetailsClientController {
     async handleFetchTicketAndEventDetails(req: Request, res: Response): Promise<void> {
         try {
             const { userId, pageNo } = req.params
-            console.log(userId)
             const page = parseInt(pageNo, 10) || 1
             const { ticketAndEventDetails, totalPages } = await this.ticketAndEventDetailsUseCase.showTicketAndEvent(userId, page)
             res.status(HttpStatus.OK).json({ message: "Ticket details fetched", ticketAndEventDetails, totalPages })

@@ -145,7 +145,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       toast.error('Select atleast one ticket')
       return
     }
-
+  
     navigate('/ticketPayment', {
       state: {
         amount: totalTicketPrice,

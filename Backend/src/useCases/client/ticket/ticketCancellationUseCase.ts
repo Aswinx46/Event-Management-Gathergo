@@ -17,10 +17,12 @@ export class TicketCancellationUseCase implements ITicketCancellationUseCase {
     }
     async ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO> {
         const cancelledTicket = await this.ticketDatabase.ticketCancellation(ticketId)
+        // console.log('this is the cancelled ticket', cancelledTicket)
         if (!cancelledTicket) throw new Error('No ticket found in this ID for cancellation')
         const refundAmountToVendor = cancelledTicket.amount * 0.29
         const refundAmountToClient = cancelledTicket.amount - (refundAmountToVendor + cancelledTicket.amount * 0.01)
         const updateFundAmountToClient = await this.walletDatabase.addMoney(cancelledTicket.clientId, refundAmountToClient)
+  
         if (!updateFundAmountToClient) throw new Error('Error while updating refund amount to client')
         const clientTransaction: TransactionsEntity = {
             amount: refundAmountToClient,
@@ -31,7 +33,7 @@ export class TicketCancellationUseCase implements ITicketCancellationUseCase {
         }
         const updateCilentTransaction = await this.transactionDatabase.createTransaction(clientTransaction)
         if (!updateCilentTransaction) throw new Error('Error while creating client transction for ticket refund')
-        console.log('this is the populated event', cancelledTicket)
+    
         const deductMoneyFromVendor = await this.walletDatabase.reduceMoney(cancelledTicket.eventId.hostedBy, refundAmountToClient)
         if (!deductMoneyFromVendor) throw new Error('Error while deducting money from the vendor wallet')
         const vendorTransaction: TransactionsEntity = {

@@ -3,13 +3,14 @@ import { ScheduleItem } from "../ScheduleType";
 
 export interface TicketAndEventDTO {
     _id?: ObjectId | string
-    ticketId: string; 
+    ticketId: string;
     amount: number
     phone: string;
     email: string;
     paymentStatus: 'pending' | 'successful' | 'failed';
     qrCodeLink: string;
     ticketStatus: 'used' | 'refunded' | 'unused'
+    ticketType: string
     event: {
         _id: ObjectId | string
         title: string,

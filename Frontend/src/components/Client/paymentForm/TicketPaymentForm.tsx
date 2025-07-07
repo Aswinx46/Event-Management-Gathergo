@@ -1,14 +1,14 @@
 import { useConfirmTicketAndPayment, useCreateTicket } from '@/hooks/ClientCustomHooks'
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import PaymentForm from './PaymentFormStripe'
-import { TicketBackendEntity } from '@/types/TicketBackendType'
-import { TicketConfirmationModal } from '../events/TicketConfirmation'
+// import { TicketBackendEntity } from '@/types/TicketBackendType'
+import { TicketBookingSuccessModal } from '../events/TicketConfirmation'
 import { TicketEntity } from '@/types/TicketPaymentType'
 import { toast } from 'react-toastify'
 
 function TicketPaymentForm() {
-    const [updatedTicket, setUpdatedTicket] = useState<TicketBackendEntity>()
+    // const [updatedTicket, setUpdatedTicket] = useState<TicketBackendEntity>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const location = useLocation()
     const data = location.state
@@ -37,8 +37,8 @@ function TicketPaymentForm() {
             paymentIntent: paymentIntentId,
             vendorId: data.vendorId,
         }, {
-            onSuccess: (data) => {
-                setUpdatedTicket(data.confirmTicketAndPayment)
+            onSuccess: () => {
+                // setUpdatedTicket(data.confirmTicketAndPayment)
                 setIsOpen(true)
             },
             onError: (err) => {
@@ -46,10 +46,13 @@ function TicketPaymentForm() {
             }
         });
     };
-
+    const navigate = useNavigate()
     return (
         <div className='h-screen'>
-            {isOpen && <TicketConfirmationModal isOpen={isOpen} setIsOpen={setIsOpen} ticket={updatedTicket!} />}
+            {isOpen && <TicketBookingSuccessModal isOpen={isOpen} onClose={() => {
+                navigate('/events')
+                setIsOpen(false)
+            }} />}
             <PaymentForm amount={data.amount} onConfirmSuccess={handleConfirmSuccess} onCreatePaymentIntent={handleCreatePaymentIntent} />
         </div>
     )

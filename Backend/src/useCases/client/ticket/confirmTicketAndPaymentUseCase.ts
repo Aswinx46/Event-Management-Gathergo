@@ -25,12 +25,12 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
         this.eventDatabase = eventDatabase
     }
     async confirmTicketAndPayment(tickets: TicketEntity[], paymentIntent: string, vendorId: string): Promise<boolean> {
-        console.log('vendor id in useCase', vendorId)
+        // console.log('vendor id in useCase', vendorId)
         const confirmPayment = await this.stripeService.confirmPayment(paymentIntent)
         if (confirmPayment.status !== 'succeeded') {
             throw new Error('Payment not successful');
         }
-        const eventDetails = await this.eventDatabase.findTotalTicketCountAndticketPurchased(tickets[0].eventId!)
+        const eventDetails = await this.eventDatabase.findTotalTicketCountAndticketPurchased(tickets[0].eventId)
         if (!eventDetails) throw new Error("No event found in this event id in confirm ticket use case")
         if (eventDetails.ticketPurchased > eventDetails.totalTicket) {
             throw new Error('Ticket full Sold out')

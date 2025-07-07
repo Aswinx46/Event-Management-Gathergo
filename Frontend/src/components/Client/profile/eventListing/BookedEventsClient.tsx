@@ -171,9 +171,14 @@ This action is irreversible. Are you sure you want to proceed?
                       <span className="truncate">{ticketAndEvent.event.address || 'Location not specified'}</span>
                     </div>
                     <span className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                      ₹{ticketAndEvent.event.pricePerTicket.toFixed(2)}
+                      ₹{ticketAndEvent.amount.toFixed(2)}
                     </span>
                   </div>
+                  <span className="inline-block px-4 py-1 text-lg font-bold text-white bg-gradient-to-r from-black  to-gray-800 rounded-lg shadow-lg">
+                    {ticketAndEvent.ticketType.toUpperCase()}
+                  </span>
+
+
                 </div>
               </div>
 

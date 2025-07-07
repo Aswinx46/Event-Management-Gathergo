@@ -88,7 +88,7 @@ const TicketModal: React.FC<TicketModalProps> = ({ open, setIsOpen, ticket }) =>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium text-gray-800">Total Paid</span>
-                    <span className="font-semibold text-purple-700">${ticket.totalAmount}</span>
+                    <span className="font-semibold text-purple-700">₹{ticket.amount}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium text-gray-800">Phone</span>

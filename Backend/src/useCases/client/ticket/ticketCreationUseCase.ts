@@ -23,7 +23,7 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
         this.eventDatabase = eventDatabase
     }
     async createTicket(ticket: TicketFromFrontend, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string, ticketPurchasedDetails: Record<string, number>): Promise<{ createdTicket: TicketEntity[], stripeClientId: string }> {
-
+  
         const eventDetails = await this.eventDatabase.findTotalTicketAndBookedTicket(ticket.eventId)
         if (!eventDetails) throw new Error('No event found in this ID')
         if (eventDetails?.status == "completed") throw new Error("This event is already completed")
@@ -74,7 +74,26 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
             // const updateTotalTicketCount = await this.eventDatabase.updateTicketPurchaseCount(eventDetails._id!, eventDetails.ticketPurchased + totalCount)
             // if (!updateTotalTicketCount) throw new Error("Error while updating the ticket count to the database")
 
+        } else {
+            for (let i = 0; i < totalCount; i++) {
+                const ticketId = genarateRandomUuid()
+                if (!ticketId) throw new Error('Error while creating ticket id')
+                const qrLink = `${hostName}/verifyTicket/${ticketId}/${ticket.eventId}`
+                const qrCodeLink = await this.genQr.createQrLink(qrLink)
+                if (!qrCodeLink) throw new Error('Error while creating qr code link')
+                ticketToCreate.push({
+                    ...ticket,
+                    ticketId, // ensure this is unique per ticket if needed
+                    qrCodeLink, // if this is per ticket, make sure it's unique
+                    paymentStatus: "pending",
+                    ticketStatus: "unused",
+                    amount: totalAmount / totalCount,
+                    ticketType:'normal'
+                });
+            }
         }
+
+
 
         // const paymentDetails: PaymentEntity = {
         //     amount: totalAmount,
@@ -100,6 +119,7 @@ export class CreateTicketUseCase implements IcreateTicketUseCase {
         //     // paymentTransactionId: paymentDocumentCreation._id!,
         // }
         const createdTicket = await this.ticketDatabase.createManyTicket(ticketToCreate)
+
         if (!createdTicket) throw new Error('Error while creating ticket')
         return { createdTicket, stripeClientId: clientStripeId }
     }
