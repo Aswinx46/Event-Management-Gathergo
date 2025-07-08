@@ -83,7 +83,7 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
           <div className="flex flex-col items-end">
             <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">{event.category}</Badge>
 
-            <span className="text-sm font-medium mt-2">${event.pricePerTicket}</span>
+            <span className="text-sm font-medium mt-2">₹{event.pricePerTicket}</span>
 
             <span className="text-xs text-muted-foreground">
               {event.ticketPurchased}/{event.totalTicket} sold

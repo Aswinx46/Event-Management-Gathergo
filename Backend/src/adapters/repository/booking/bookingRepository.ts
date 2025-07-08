@@ -229,9 +229,17 @@ export class BookingRepository implements IbookingRepository {
             vendorId,
             vendorApproval: "Approved"
         })
-            .populate("serviceId") 
-            .populate("clientId", "email name") 
+            .populate("serviceId")
+            .populate("clientId", "email name")
             .sort({ createdAt: -1 }).lean<BookingPdfDTO[]>()
         return bookings
+    }
+    async findBookingDatesOfABooking(bookingId: string): Promise<Date[] | null> {
+        const booking = await bookingModel.findById(bookingId).select('date').lean();
+        if (booking && booking.date) {
+    
+            return Array.isArray(booking.date) ? booking.date.map((d: any) => new Date(d)) : [];
+        }
+        return null;  
     }
 }

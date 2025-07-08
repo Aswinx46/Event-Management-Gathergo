@@ -185,10 +185,10 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white">
+      <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white h-[85vh] overflow-y-scroll custom-scrollbar">
         {showChoosePaymentModal && <PaymentMethodModal isOpen={showChoosePaymentModal} onClose={() => setShowChoosePaymentModal(false)} onSelectPaymentMethod={onSelectPaymentMethod} />}
         <motion.div initial="hidden" animate="visible" variants={containerVariants} className="w-full">
-          <Card className="w-full bg-[#0A0A0A] border-[#2A2F3C] text-white">
+          <Card className="w-full bg-[#0A0A0A] border-transparent text-white">
             <CardHeader className="space-y-1">
               <motion.div variants={itemVariants}>
                 <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">

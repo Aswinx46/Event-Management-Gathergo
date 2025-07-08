@@ -25,4 +25,5 @@ export interface IbookingRepository {
     findBookingByIdForDateChecking(bookingId: string): Promise<BookingEntity | null>
     findBookingWithSameDate(bookingId: string, vendorId: string, date: Date[]): Promise<BookingEntity | null>
     findBookingsOfAVendor(vendorId: string): Promise<BookingPdfDTO[] | []>
+    findBookingDatesOfABooking(bookingId: string): Promise<Date[] | null>
 }

@@ -59,12 +59,34 @@ export class PdfServiceVendor implements IpdfServiceVendor {
       data.events.forEach(event => {
         x = startX;
 
+        // const values = [
+        //   event.title,
+        //   new Date(event.schedule[0].date).toDateString(),
+        //   event.ticketPurchased.toString(),
+        //   `₹${(event.pricePerTicket! * event.ticketPurchased).toFixed(2)}`
+        // ];
+
+
+        let totalRevenue = 0;
+        let totalTicketsSold = 0;
+
+        if (event.multipleTicketTypeNeeded && event.ticketTypeDescription?.length) {
+          for (const type of event.ticketTypeDescription) {
+            totalRevenue += type.price * type.buyedCount;
+            totalTicketsSold += type.buyedCount;
+          }
+        } else {
+          totalRevenue = (event.pricePerTicket ?? 0) * event.ticketPurchased;
+          totalTicketsSold = event.ticketPurchased;
+        }
+
         const values = [
           event.title,
-          new Date(event.schedule[0].startTime).toDateString(),
-          event.ticketPurchased.toString(),
-          `₹${(event.pricePerTicket! * event.ticketPurchased).toFixed(2)}`
+          new Date(event.schedule[0].date).toDateString(),
+          totalTicketsSold.toString(),
+          `₹${totalRevenue.toFixed(2)}`
         ];
+
 
         values.forEach((text, i) => {
           doc.text(text, x, y, { width: eventColumns[i].width });
