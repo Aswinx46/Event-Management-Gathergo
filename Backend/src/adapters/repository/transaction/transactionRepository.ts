@@ -1,13 +1,20 @@
-import { ObjectId, Types } from "mongoose";
+import { ClientSession, ObjectId, Types } from "mongoose";
 import { TransactionsEntity } from "../../../domain/entities/wallet/transactionEntity";
 import { ItransactionRepository } from "../../../domain/interface/repositoryInterfaces/transactions/transactionRepositoryInterface";
 import { transactionModel } from "../../../framerwork/database/models/transactionModel";
 
 export class TransactionRepository implements ItransactionRepository {
-    async createTransaction(transaction: TransactionsEntity): Promise<TransactionsEntity> {
-        return await transactionModel.create(transaction)
+    async createTransaction(transaction: TransactionsEntity, session?: ClientSession): Promise<TransactionsEntity> {
+       
+        if (session) {
+            const [result] = await transactionModel.create([transaction], { session })
+            return result
+        } else {
+            return await transactionModel.create(transaction)
+        }
     }
     async findTransactionsOfAWallet(walletId: string | ObjectId, pageNo: number): Promise<{ transactions: TransactionsEntity[] | [], totalPages: number }> {
+     
         const page = Math.max(pageNo, 1)
         const limit = 5
         const skip = (page - 1) * limit

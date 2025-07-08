@@ -195,7 +195,7 @@ This action is irreversible. Are you sure you want to proceed?
                   View Ticket Details
                 </motion.button>
 
-                {ticketAndEvent.ticketStatus == 'unused' && <motion.button
+                {ticketAndEvent.ticketStatus == 'unused' && ticketAndEvent.event.status !== 'cancelled' && <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleOnClickTicketCancel(ticketAndEvent._id!)}

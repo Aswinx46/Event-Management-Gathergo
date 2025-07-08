@@ -177,7 +177,9 @@ export class EventRepository implements IeventRepository {
     }
     async updateTicketVariantCountAndTotaTicketCountWhileCancelling(eventId: ObjectId | string, ticketVariant: string): Promise<boolean> {
         const result = await eventModal.updateOne({ _id: eventId }, { $inc: { [ticketVariant]: -1, ticketPurchased: -1 } })
-        if (!result) throw new Error("Error while updating the count after ticket cancellation")
-        return true
+        return result.modifiedCount > 0
+    }
+    async markEventAsCancelled(eventId: ObjectId | string): Promise<EventEntity | null> {
+        return await eventModal.findByIdAndUpdate({ _id: eventId }, { $set: { status: "cancelled" } })
     }
 }

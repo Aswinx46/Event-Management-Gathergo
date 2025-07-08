@@ -23,4 +23,5 @@ export interface IeventRepository {
     findAllEventsOfAVendor(vendorId: string): Promise<EventEntity[] | []>
     updateTicketVariantsCount(eventId: ObjectId, updatedTicketVariant: TicketType[]): Promise<boolean>
     updateTicketVariantCountAndTotaTicketCountWhileCancelling(eventId: ObjectId | string, ticketVariant: string): Promise<boolean>
+    markEventAsCancelled(eventId: ObjectId | string): Promise<EventEntity | null>
 }

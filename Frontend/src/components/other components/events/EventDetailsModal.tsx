@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EventEdit } from "@/components/Vendor/event/EditEvent";
-import { useUpdateEvent } from "@/hooks/VendorCustomHooks";
+import { useCancelEvent, useUpdateEvent } from "@/hooks/VendorCustomHooks";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -63,10 +63,10 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     event,
     isOpen,
     onClose,
-
     currentPage
 }) => {
     const location = useLocation()
+    const cancelEvent = useCancelEvent()
     const editEvent = useUpdateEvent()
     const queryClient = useQueryClient()
     const navigate = useNavigate()
@@ -95,9 +95,23 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
             }
         })
     }
+
+    const handleCancelEvent = async (eventId: string) => {
+        cancelEvent.mutate(eventId, {
+            onSuccess: () => {
+                toast.success("Eventt Cancelled")
+                queryClient.invalidateQueries({ queryKey: ['eventsInVendor', currentPage] })
+                setShowEdit(false)
+            },
+            onError: (err) => {
+                toast.error(err.message)
+                console.log('error while canceling the event', err)
+            }
+        })
+    }
     return (
         <AnimatePresence>
-            {showEdit && <EventEdit event={selectedEvent!} onClose={() => setShowEdit(false)} onSave={handleOnSaveEdit} isOpen={showEdit} />}
+            {showEdit && <EventEdit event={selectedEvent!} onClose={() => setShowEdit(false)} onSave={handleOnSaveEdit} isOpen={showEdit} onCancel={handleCancelEvent} />}
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4  bg-black/80">
                     <motion.div

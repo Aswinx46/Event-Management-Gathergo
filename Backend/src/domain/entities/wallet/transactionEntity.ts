@@ -1,8 +1,8 @@
-import { ObjectId } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 
 export interface TransactionsEntity {
     _id?: ObjectId;
-    walletId: ObjectId | string;
+    walletId: ObjectId | string | Types.ObjectId;
     currency: string;
     paymentStatus: "debit" | "credit";
     amount: number;

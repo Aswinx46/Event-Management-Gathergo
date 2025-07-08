@@ -36,6 +36,7 @@ interface EventEditModalProps {
   onClose: () => void;
   event: EventEntity | null;
   onSave: (event: EventEntity) => void;
+  onCancel: (eventId: string) => void
 }
 
 export const EventEdit: React.FC<EventEditModalProps> = ({
@@ -43,10 +44,10 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
   onClose,
   event,
   onSave,
+  onCancel
 }) => {
   const [formData, setFormData] = useState<EventEntity | null>(event);
 
-  // If no event is provided, close the modal
   if (!event) return null;
 
   const handleInputChange = (
@@ -95,11 +96,11 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
   };
 
   const handleSubmit = () => {
-
     if (!formData) return;
     onSave(formData);
     onClose();
   };
+
 
   return (
     <AnimatePresence>
@@ -205,7 +206,6 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                         <SelectContent>
                           <SelectItem value="upcoming">Upcoming</SelectItem>
                           <SelectItem value="completed">Completed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
                           <SelectItem value="onGoing">OnGoing</SelectItem>
                         </SelectContent>
                       </Select>
@@ -324,7 +324,8 @@ export const EventEdit: React.FC<EventEditModalProps> = ({
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <Button variant="outline" onClick={onClose}>Cancel</Button>
+                  <Button variant="outline" onClick={()=>onCancel(event._id)}>Cancel Event</Button>
+                  <Button variant="outline" onClick={onClose}>close</Button>
                   {event && event.status !== 'cancelled' && event.status !== 'completed' && < Button onClick={handleSubmit}>Save Changes</Button>}
                 </motion.div>
               </DialogFooter>

@@ -160,4 +160,7 @@ export class TicketRepository implements IticketRepositoryInterface {
     async createManyTicket(tickets: TicketEntity[]): Promise<TicketEntity[]> {
         return await ticketModel.insertMany(tickets)
     }
+    async findPersonsWhoBuyedTicketForAnEvent(eventId: string): Promise<TicketEntity[] | []> {
+        return await ticketModel.find({ eventId, paymentStatus: 'successful' })
+    }
 }
