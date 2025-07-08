@@ -9,6 +9,7 @@ export class EventCreationUseCase implements IeventCreationUseCase {
     }
     async createEvent(event: EventEntity, vendorId: string): Promise<EventEntity> {
         event.hostedBy = vendorId
+        event.schedule = event.schedule.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const createEvent = await this.eventDatabase.createEvent(event)
         if (!createEvent) throw new Error('Error while creating event')
         return createEvent

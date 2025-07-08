@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 
 export interface ServiceEntity {
     _id?: ObjectId;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;

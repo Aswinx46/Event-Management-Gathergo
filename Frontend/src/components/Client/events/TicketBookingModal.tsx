@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { format } from "date-fns";
-import { CalendarIcon, Clock, MapPin, Minus, Plus, Ticket } from "lucide-react";
+import { CalendarIcon, MapPin, Minus, Plus, Ticket } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../ui/card";
 import { Button } from "../../ui/button";
 import { Separator } from "../../ui/separator";
@@ -14,6 +13,7 @@ import { RootState } from "@/store/store";
 import { Label } from "../../ui/label";
 import { Input } from "../../ui/input";
 import PaymentMethodModal from "@/components/other components/paymentSelection/PaymenSelectionModal";
+import { toast } from "react-toastify";
 
 type TicketPurchaseProps = {
   event: EventType;
@@ -27,7 +27,9 @@ type Errors = {
 };
 
 const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
-  const [ticketCount, setTicketCount] = useState(1);
+  const [ticketCount, setTicketCount] = useState(0);
+  const [selectedTickets, setSelectedTickets] = useState<Record<string, number>>({});
+  const [totalTicketPrice, setTotalTicketPrice] = useState(0)
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState<Errors>({});
@@ -36,18 +38,21 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
   const navigate = useNavigate()
   const availableTickets = event.totalTicket - event.ticketPurchased;
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
-  const formatTime = (date: Date) => format(new Date(date), "h:mm a");
+
 
   const handleIncrement = () => {
     if (ticketCount < Math.min(event.maxTicketsPerUser, availableTickets)) {
       setTicketCount(prev => prev + 1);
     }
+    setTotalTicketPrice((prev) => prev += event.pricePerTicket)
   };
 
   const handleDecrement = () => {
     if (ticketCount > 1) {
       setTicketCount(prev => prev - 1);
     }
+    setTotalTicketPrice((prev) => prev -= event.pricePerTicket)
+
   };
 
   const containerVariants = {
@@ -107,7 +112,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       email: email,
       phone: phone,
       eventId: event._id!,
-
+      hasVariant: false
     }
     navigate('/ticketPaymentWallet', {
       state: {
@@ -116,6 +121,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
         type: 'ticketBooking',
         totalTicketCount: ticketCount,
         vendorId: event.hostedBy,
+
       }
     })
   }
@@ -133,26 +139,56 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
       email: email,
       phone: phone,
       eventId: event._id!,
-
+      hasVariant: Object.keys(selectedTickets).length > 0
     }
+    if (totalTicketPrice <= 0) {
+      toast.error('Select atleast one ticket')
+      return
+    }
+  
     navigate('/ticketPayment', {
       state: {
-        amount: event.pricePerTicket * ticketCount,
+        amount: totalTicketPrice,
         ticketData: ticketPaymentData,
         type: 'ticketBooking',
         totalTicketCount: ticketCount,
-        vendorId: event.hostedBy
+        vendorId: event.hostedBy,
+        ticketPurchasedDetails: selectedTickets
       }
     })
     setOpen(false)
   }
 
+  const handleTicketTypeIncreament = (ticketType: string, limit: number, available: number, price: number) => {
+    setSelectedTickets((prev) => {
+      const current = prev[ticketType] || 0;
+      if (current < Math.min(limit, available)) {
+        return { ...prev, [ticketType]: current + 1 };
+      }
+      return prev;
+    });
+    setTotalTicketPrice((prev) => prev += price)
+  };
+
+  const handleTicketTypeDecrement = (ticketType: string, price: number) => {
+    setSelectedTickets((prev) => {
+      const current = prev[ticketType] || 0;
+      if (current > 0) {
+        return { ...prev, [ticketType]: current - 1 };
+      }
+      return prev;
+    });
+    setTotalTicketPrice((prev) => prev -= price)
+
+  };
+
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white">
+      <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#2A2F3C] z-50 backdrop-blur-2xl text-white h-[85vh] overflow-y-scroll custom-scrollbar">
         {showChoosePaymentModal && <PaymentMethodModal isOpen={showChoosePaymentModal} onClose={() => setShowChoosePaymentModal(false)} onSelectPaymentMethod={onSelectPaymentMethod} />}
         <motion.div initial="hidden" animate="visible" variants={containerVariants} className="w-full">
-          <Card className="w-full bg-[#0A0A0A] border-[#2A2F3C] text-white">
+          <Card className="w-full bg-[#0A0A0A] border-transparent text-white">
             <CardHeader className="space-y-1">
               <motion.div variants={itemVariants}>
                 <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">
@@ -168,13 +204,23 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
               <motion.div variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-3 text-gray-300">
                   <CalendarIcon className="w-5 h-5 text-purple-400" />
-                  <span>{format(new Date(event.date[0]), "MMMM d, yyyy")}</span>
+                  <div className="flex flex-col">
+                    {event?.schedule?.map((item, i) => (
+                      <>
+                        <span key={i} className=" text-sm text-neutral-300">
+                          {new Date(item.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })} -
+                          <span>     {`${item.startTime} to ${item.endTime} `}</span>
+                        </span>
+                      </>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Clock className="w-5 h-5 text-purple-400" />
-                  <span>{formatTime(event.startTime)} - {formatTime(event.endTime)}</span>
-                </div>
+
 
                 <div className="flex items-center gap-3 text-gray-300">
                   <MapPin className="w-5 h-5 text-purple-400" />
@@ -184,6 +230,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
                   </div>
                 </div>
               </motion.div>
+
 
               <Separator className="bg-[#2A2F3C]" />
 
@@ -217,51 +264,117 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
 
                   </div>
                 </div>
+                {event.multipleTicketTypeNeeded ? (<div>
+                  {event.ticketTypeDescription?.map((ticket) => {
+                    const currentCount = selectedTickets[ticket.ticketType] || 0;
+                    const available = ticket.maxCount - (ticket.buyedCount || 0);
+                    return (
+                      <div key={ticket.ticketType} className="mb-6">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2 text-gray-300">
+                            <Ticket className="w-5 h-5 text-purple-400" />
+                            <span className="font-medium">{ticket.ticketType}</span>
+                          </div>
+                          <span className="text-xl font-bold text-white">₹{ticket.price}</span>
+                        </div>
 
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2 text-gray-300">
-                    <Ticket className="w-5 h-5 text-purple-400" />
-                    <span className="font-medium">Ticket Price</span>
-                  </div>
-                  <span className="text-xl font-bold text-white">₹{event.pricePerTicket}</span>
-                </div>
+                        <div className="flex justify-between items-center text-gray-300">
+                          <span>Available Tickets</span>
+                          <span>{available}</span>
+                        </div>
 
-                <div className="flex justify-between items-center text-gray-300">
-                  <span>Available Tickets</span>
-                  <span>{availableTickets}</span>
-                </div>
+                        <div className="flex justify-between items-center text-gray-300">
+                          <span>Max Tickets Per User</span>
+                          <span>{ticket.ticketLimitPerUser}</span>
+                        </div>
 
-                <div className="flex justify-between items-center text-gray-300">
-                  <span>Max Tickets Per User</span>
-                  <span>{event.maxTicketsPerUser}</span>
-                </div>
+                        <div className="p-4 bg-[#1A1F2C] rounded-lg border border-[#2A2F3C] mt-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-white">Select Tickets</span>
+                            <div className="flex items-center gap-4">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleTicketTypeDecrement(ticket.ticketType, ticket.price)}
+                                disabled={currentCount <= 0}
+                                className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <span className="w-8 text-center text-white">{currentCount}</span>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() =>
+                                  handleTicketTypeIncreament(
+                                    ticket.ticketType,
+                                    ticket.ticketLimitPerUser,
+                                    available,
+                                    ticket.price
+                                  )
+                                }
+                                disabled={currentCount >= Math.min(ticket.ticketLimitPerUser, available)}
+                                className="bg-transparent border-[#2A2F2C] hover:bg-[#2A2F3C] text-white"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
 
-                <div className="p-4 bg-[#1A1F2C] rounded-lg border border-[#2A2F3C]">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-white">Select Tickets</span>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleDecrement}
-                        disabled={ticketCount <= 1}
-                        className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-8 text-center text-white">{ticketCount}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleIncrement}
-                        disabled={ticketCount >= Math.min(event.maxTicketsPerUser, availableTickets)}
-                        className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                </div>) : (
+                  <div>
+
+
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <Ticket className="w-5 h-5 text-purple-400" />
+                        <span className="font-medium">Ticket Price</span>
+                      </div>
+                      <span className="text-xl font-bold text-white">₹{event.pricePerTicket}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-gray-300">
+                      <span>Available Tickets</span>
+                      <span>{availableTickets}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-gray-300">
+                      <span>Max Tickets Per User</span>
+                      <span>{event.maxTicketsPerUser}</span>
+                    </div>
+
+                    <div className="p-4 bg-[#1A1F2C] rounded-lg border border-[#2A2F3C]">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-white">Select Tickets</span>
+                        <div className="flex items-center gap-4">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleDecrement}
+                            disabled={ticketCount <= 1}
+                            className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="w-8 text-center text-white">{ticketCount}</span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleIncrement}
+                            disabled={ticketCount >= Math.min(event.maxTicketsPerUser, availableTickets)}
+                            className="bg-transparent border-[#2A2F3C] hover:bg-[#2A2F3C] text-white"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </motion.div>
             </CardContent>
 
@@ -269,7 +382,7 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
               <div className="w-full flex justify-between items-center">
                 <span className="text-lg text-gray-300">Total Amount</span>
                 <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  ₹{event.pricePerTicket * ticketCount}
+                  ₹{totalTicketPrice}
                 </span>
               </div>
               <Button
@@ -288,3 +401,4 @@ const TicketPurchase = ({ event, open, setOpen }: TicketPurchaseProps) => {
 };
 
 export default TicketPurchase;
+

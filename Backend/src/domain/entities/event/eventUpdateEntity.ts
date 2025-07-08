@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import { ScheduleItem } from "../ScheduleType";
 
 export interface EventUpdateEntity {
     title: string;
@@ -7,18 +8,18 @@ export interface EventUpdateEntity {
         longitude: number,
         latitude: number
     },
-    startTime: Date;
-    endTime: Date;
+
     posterImage: string[];
     pricePerTicket: number;
     maxTicketsPerUser: number;
     totalTicket: number;
-    date: Date[];
+
     createdAt: Date;
     attendees: ObjectId[]
     ticketPurchased: number
     address?: string
     venueName?: string
     category: string
-    status: "upcoming" | "completed" | "cancelled"
+    status: "upcoming" | "completed" | "cancelled" | "onGoing" 
+    schedule: ScheduleItem[]
 }

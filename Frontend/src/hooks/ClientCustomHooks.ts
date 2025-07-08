@@ -188,14 +188,14 @@ export const useFindEventById = (eventId: string) => {
 
 export const useCreateTicket = () => {
     return useMutation({
-        mutationFn: ({ ticket, totalCount, totalAmount, paymentIntentId, vendorId }: { ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string }) => createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId)
+        mutationFn: ({ ticket, totalCount, totalAmount, paymentIntentId, vendorId, ticketPurchasedDetails }: { ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string, ticketPurchasedDetails: Record<string, number> }) => createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId,ticketPurchasedDetails)
 
     })
 }
 
 export const useConfirmTicketAndPayment = () => {
     return useMutation({
-        mutationFn: ({ ticket, paymentIntent, vendorId }: { ticket: TicketEntity, paymentIntent: string, vendorId: string }) => confirmTicketAndPayment(ticket, paymentIntent, vendorId)
+        mutationFn: ({ ticket, paymentIntent, vendorId }: { ticket: TicketEntity[], paymentIntent: string, vendorId: string }) => confirmTicketAndPayment(ticket, paymentIntent, vendorId)
     })
 }
 

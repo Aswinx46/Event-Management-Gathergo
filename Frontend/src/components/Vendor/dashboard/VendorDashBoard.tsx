@@ -121,8 +121,8 @@ export default function VendorDashboard() {
 
         {totalRevenue >= 0 && <MetricCard
           title="Total Revenue"
-          value={`$${totalRevenue.toLocaleString()}`}
-          description={`$${avgTicketPrice.toFixed(2)} avg. ticket price`}
+          value={`₹${totalRevenue.toLocaleString()}`}
+          description={`₹${avgTicketPrice.toFixed(2)} avg. ticket price`}
           icon={<DollarSign className="h-5 w-5 text-green-600" />}
           trend={+12}
           variants={item}

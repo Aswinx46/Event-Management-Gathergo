@@ -1,4 +1,16 @@
 import { ObjectId } from "mongoose";
+import { ScheduleItem } from "../ScheduleType";
+
+
+export interface TicketType {
+    ticketType: string
+    description: string,
+    price: number,
+    maxCount: number,
+    buyedCount: number,
+    ticketLimitPerUser: number
+}
+
 
 export interface EventEntity {
     _id?: ObjectId;
@@ -9,20 +21,21 @@ export interface EventEntity {
         coordinates: [number, number];
     },
     hostedBy: ObjectId | string,
-    startTime: Date;
-    endTime: Date;
     posterImage: string[];
-    pricePerTicket: number;
+    pricePerTicket?: number;
     maxTicketsPerUser: number;
     totalTicket: number;
-    date: Date[];
     createdAt: Date;
     attendees: ObjectId[]
     ticketPurchased: number
     address?: string
     venueName?: string
     category: string
-    status: "upcoming" | "completed" | "cancelled"
+    status: "upcoming" | "completed" | "cancelled" | "onGoing"
     attendeesCount: number
-    isActive:boolean
+    isActive: boolean
+    schedule: ScheduleItem[]
+    ticketTypeDescription?: TicketType[]
+    multipleTicketTypeNeeded: boolean
+
 }

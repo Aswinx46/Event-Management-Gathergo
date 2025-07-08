@@ -272,7 +272,7 @@ const VendorBookingCard = () => {
                           : "Pick a date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-4 bg-black border-white/30 space-y-4">
+                    <PopoverContent className="w-auto p-4 bg-white border-white/30 space-y-4">
                        <Calendar
                         mode="multiple"
                         selected={selectedDates}

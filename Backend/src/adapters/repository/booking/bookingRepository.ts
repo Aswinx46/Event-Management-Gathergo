@@ -122,13 +122,14 @@ export class BookingRepository implements IbookingRepository {
     async updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { paymentStatus: status }, { new: true }).select('-__v -createdAt')
     }
-    async findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ date: Date[]; servicePrice: number; } | null> {
-        const bookingDetails = await bookingModel.findById(bookingId).select('date').populate('serviceId', 'servicePrice').lean<{
+    async findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[]; servicePrice: number; } | null> {
+        const bookingDetails = await bookingModel.findById(bookingId).select('_id date').populate('serviceId', 'servicePrice').lean<{
+            _id: ObjectId;
             date: Date[];
             serviceId: { servicePrice: number };
         }>();
         if (!bookingDetails) return null
-        return { date: bookingDetails?.date, servicePrice: bookingDetails?.serviceId.servicePrice }
+        return { _id: bookingDetails._id, date: bookingDetails?.date, servicePrice: bookingDetails?.serviceId.servicePrice }
     }
     async cancelBooking(bookingId: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { status: 'Cancelled' }, { new: true })
@@ -229,9 +230,17 @@ export class BookingRepository implements IbookingRepository {
             vendorId,
             vendorApproval: "Approved"
         })
-            .populate("serviceId") 
-            .populate("clientId", "email name") 
+            .populate("serviceId")
+            .populate("clientId", "email name")
             .sort({ createdAt: -1 }).lean<BookingPdfDTO[]>()
         return bookings
+    }
+    async findBookingDatesOfABooking(bookingId: string): Promise<Date[] | null> {
+        const booking = await bookingModel.findById(bookingId).select('date').lean();
+        if (booking && booking.date) {
+
+            return Array.isArray(booking.date) ? booking.date.map((d: any) => new Date(d)) : [];
+        }
+        return null;
     }
 }

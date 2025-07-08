@@ -17,29 +17,26 @@ export class TicketRepository implements IticketRepositoryInterface {
         const page = Math.max(pageNo, 1)
         const limit = 4
         const skip = (page - 1) * limit
-        const ticketAndEvent = await ticketModel.find({ clientId: userId }).select('_id ticketId ticketCount phone email paymentStatus totalAmount ticketStatus qrCodeLink')
-            .populate('eventId', '_id title description date startTime endTime status address pricePerTicket posterImage').skip(skip).limit(limit).sort({ createdAt: -1 }).lean()
+        const ticketAndEvent = await ticketModel.find({ clientId: userId }).select('_id ticketId ticketCount phone email paymentStatus totalAmount ticketStatus qrCodeLink amount ticketType')
+            .populate('eventId', '_id title description status address pricePerTicket posterImage schedule').skip(skip).limit(limit).sort({ createdAt: -1 }).lean()
         const totalPages = Math.ceil(await ticketModel.countDocuments() / limit)
         const ticketAndEventDetails: TicketAndEventDTO[] = ticketAndEvent.map(ticket => {
             const event = ticket.eventId as any; // TypeScript doesn't know it's populated
-
             return {
                 _id: ticket._id,
                 ticketId: ticket.ticketId,
-                totalAmount: ticket.totalAmount,
-                ticketCount: ticket.ticketCount,
+                amount: ticket.amount,
                 phone: ticket.phone,
                 email: ticket.email,
                 paymentStatus: ticket.paymentStatus,
                 ticketStatus: ticket.ticketStatus,
                 qrCodeLink: ticket.qrCodeLink,
+                ticketType: ticket.ticketType,
                 event: {
                     _id: event._id,
                     title: event.title,
                     description: event.description,
-                    date: event.date,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
+                    schedule: event.schedule,
                     status: event.status,
                     address: event.address,
                     pricePerTicket: event.pricePerTicket,
@@ -58,14 +55,13 @@ export class TicketRepository implements IticketRepositoryInterface {
     async ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO | null> {
         const ticket = await ticketModel.findByIdAndUpdate(ticketId, { ticketStatus: 'refunded' }, { new: true }).populate('eventId', 'hostedBy').lean()
         if (!ticket) return null;
-        console.log('ticket in the repo', ticket)
         const result: TicketAndVendorDTO = {
             _id: ticket._id,
             ticketId: ticket.ticketId,
-            totalAmount: ticket.totalAmount,
-            ticketCount: ticket.ticketCount,
+            amount: ticket.amount,
             phone: ticket.phone,
             email: ticket.email,
+            ticketType: ticket.ticketType,
             paymentStatus: ticket.paymentStatus,
             qrCodeLink: ticket.qrCodeLink,
             eventId: {
@@ -74,7 +70,7 @@ export class TicketRepository implements IticketRepositoryInterface {
             },
             clientId: ticket.clientId,
             ticketStatus: ticket.ticketStatus,
-            paymentTransactionId: ticket.paymentTransactionId,
+            // paymentTransactionId: ticket.paymentTransactionId,
         };
         return result
     }
@@ -160,5 +156,11 @@ export class TicketRepository implements IticketRepositoryInterface {
         );
 
         return result.modifiedCount > 0;
+    }
+    async createManyTicket(tickets: TicketEntity[]): Promise<TicketEntity[]> {
+        return await ticketModel.insertMany(tickets)
+    }
+    async findPersonsWhoBuyedTicketForAnEvent(eventId: string): Promise<TicketEntity[] | []> {
+        return await ticketModel.find({ eventId, paymentStatus: 'successful' })
     }
 }

@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { format } from "date-fns";
 import { useLocation, useNavigate } from "react-router-dom";
 import { EventEdit } from "@/components/Vendor/event/EditEvent";
-import { useUpdateEvent } from "@/hooks/VendorCustomHooks";
+import { useCancelEvent, useUpdateEvent } from "@/hooks/VendorCustomHooks";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -21,16 +20,8 @@ interface EventDetailModalProps {
     currentPage: number
 }
 
-const formatDate = (date: Date): string => {
-    // return format(date, "EEE, MMM d, yyyy 'at' h:mm a");
-    return format(date, "MMM d, yyyy");
-};
 
-const formatEventDuration = (startTime: Date, endTime: Date): string => {
-    const start = format(startTime, "h:mm a");
-    const end = format(endTime, "h:mm a");
-    return `${start} - ${end}`;
-};
+
 
 const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -40,7 +31,7 @@ const formatCurrency = (amount: number): string => {
     }).format(amount);
 };
 
-const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string => {
+const getStatusColor = (status: "upcoming" | "completed" | "cancelled" | "onGoing"): string => {
     switch (status) {
         case "upcoming":
             return "bg-emerald-900/50 text-emerald-300";
@@ -48,6 +39,8 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
             return "bg-zinc-800/50 text-zinc-300";
         case "cancelled":
             return "bg-red-900/50 text-red-300";
+        case "onGoing":
+            return "bg-green-600/50 text-red-300";
         default:
             return "bg-blue-900/50 text-blue-300";
     }
@@ -70,11 +63,10 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     event,
     isOpen,
     onClose,
-
     currentPage
 }) => {
     const location = useLocation()
-
+    const cancelEvent = useCancelEvent()
     const editEvent = useUpdateEvent()
     const queryClient = useQueryClient()
     const navigate = useNavigate()
@@ -82,7 +74,6 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null)
     if (!event) return null;
     const verifyPathName = location.pathname.split('/')[1]
-    // const ticketsRemaining = event.totalTicket - event.ticketPurchased;
     const percentageSold = (event.ticketPurchased / event.totalTicket) * 100;
     const handleEdit = (event: EventEntity) => {
         setSelectedEvent(event)
@@ -104,9 +95,23 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
             }
         })
     }
+
+    const handleCancelEvent = async (eventId: string) => {
+        cancelEvent.mutate(eventId, {
+            onSuccess: () => {
+                toast.success("Eventt Cancelled")
+                queryClient.invalidateQueries({ queryKey: ['eventsInVendor', currentPage] })
+                setShowEdit(false)
+            },
+            onError: (err) => {
+                toast.error(err.message)
+                console.log('error while canceling the event', err)
+            }
+        })
+    }
     return (
         <AnimatePresence>
-            {showEdit && <EventEdit event={selectedEvent!} onClose={() => setShowEdit(false)} onSave={handleOnSaveEdit} isOpen={showEdit} />}
+            {showEdit && <EventEdit event={selectedEvent!} onClose={() => setShowEdit(false)} onSave={handleOnSaveEdit} isOpen={showEdit} onCancel={handleCancelEvent} />}
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4  bg-black/80">
                     <motion.div
@@ -135,7 +140,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             </div>
 
                             <div className="flex items-center space-x-2">
-                                {verifyPathName == 'vendor' && <Button
+                                {verifyPathName == 'vendor' && event.status !== 'cancelled' && event.status !== 'completed' && <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={() => handleEdit(event)}
@@ -185,17 +190,16 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                 >
                                     <div className="flex items-center text-zinc-300">
                                         <Calendar className="h-5 w-5 mr-2 text-purple-400" />
-                                        <span>{event.date.length > 1 ? ` ${formatDate(new Date(event.date[0]))} to ${formatDate(new Date(event.date[event.date.length - 1]))}` : formatDate(new Date(event.date[0]))}</span>
+                                        <div className="flex flex-col">
+                                            {event.schedule.length > 0 && event.schedule.map((item) => <span>{`${new Date(item.date).toDateString()} - ${item.startTime} to ${item.endTime}`}</span>)}
+
+                                        </div>
+                                        {/* {event.schedule.length > 0 && <span>{sortedSchedule.length > 1 ? ` ${formatDate(new Date(sortedSchedule[0].date))} to ${formatDate(new Date(sortedSchedule[event.schedule?.length - 1].date))}` : formatDate(new Date(sortedSchedule[0].date))}</span>} */}
                                     </div>
 
                                     <div className="flex items-center text-zinc-300">
                                         <Clock className="h-5 w-5 mr-2 text-purple-400" />
-                                        <span>
-                                            {formatEventDuration(
-                                                new Date(event.startTime),
-                                                new Date(event.endTime)
-                                            )}
-                                        </span>
+
                                     </div>
 
                                     {event.venueName && (
@@ -249,11 +253,6 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                     </div>
 
                                     <div className="mt-4 flex flex-col gap-4 justify-center">
-                                        {/* {location.pathname.split('/')[1] != 'vendor' ? <Button onClick={() => navigate(`/event/${event._id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                                            Get Tickets
-                                        </Button> : <Button onClick={() => navigate('/vendor/scanTicket')} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                                            Scan Tickets
-                                        </Button>} */}
                                         {event.status === "completed" ? (
                                             <Button disabled className="w-full bg-gray-400 text-white cursor-not-allowed">
                                                 Event Completed

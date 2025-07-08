@@ -10,6 +10,7 @@ export class CreateBookingUseCase implements IcreateBookingUseCase {
     async createBooking(booking: BookingEntity): Promise<BookingEntity> {
         const existingBooking = await this.bookingDatabase.findBookingInSameDate(booking.clientId.toString(), booking.serviceId.toString(), booking.date)
         if (existingBooking) throw new Error('There is already a booking in same date')
+        booking.date = booking.date.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
         return await this.bookingDatabase.createBooking(booking)
     }
 }

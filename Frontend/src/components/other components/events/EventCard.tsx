@@ -35,7 +35,7 @@ const formatCurrency = (amount: number): string => {
     }).format(amount);
 };
 
-const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string => {
+const getStatusColor = (status: "upcoming" | "completed" | "cancelled" | "onGoing"): string => {
     switch (status) {
         case "upcoming":
             return "bg-emerald-900/50 text-emerald-300";
@@ -43,12 +43,17 @@ const getStatusColor = (status: "upcoming" | "completed" | "cancelled"): string 
             return "bg-zinc-800/50 text-zinc-300";
         case "cancelled":
             return "bg-red-900/50 text-red-300";
+        case "onGoing":
+            return "bg-green-600/50 text-red-300";
         default:
             return "bg-blue-900/50 text-blue-300";
     }
 };
 
 const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
+    const sortedSchedule = [...event.schedule].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
     return (
         <motion.div
             onClick={onClick}
@@ -80,7 +85,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
                     <div className="space-y-2">
                         <div className="flex items-center text-sm text-zinc-400">
                             <Calendar className="h-4 w-4 mr-2 text-purple-400" />
-                            <span>{event.date.length > 1 ? ` ${formatDate(new Date(event.date[0]))} to ${formatDate(new Date(event.date[event.date.length - 1]))}` : formatDate(new Date(event.date[0]))}</span>
+                            <div className="flex flex-col">
+                                {event.schedule.length > 0 && sortedSchedule.map((item) => <span>{`${formatDate(new Date(item.date))} - ${item.startTime} to ${item.endTime}`}</span>)}
+                            </div>
                         </div>
 
                         {event.venueName && (

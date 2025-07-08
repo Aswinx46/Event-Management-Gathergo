@@ -24,26 +24,36 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
         this.stripeService = stripeService
         this.eventDatabase = eventDatabase
     }
-    async confirmTicketAndPayment(ticket: TicketEntity, paymentIntent: string, vendorId: string): Promise<TicketEntity> {
-        console.log('vendor id in useCase', vendorId)
+    async confirmTicketAndPayment(tickets: TicketEntity[], paymentIntent: string, vendorId: string): Promise<boolean> {
+        // console.log('vendor id in useCase', vendorId)
         const confirmPayment = await this.stripeService.confirmPayment(paymentIntent)
         if (confirmPayment.status !== 'succeeded') {
             throw new Error('Payment not successful');
         }
-        const eventDetails = await this.eventDatabase.findTotalTicketCountAndticketPurchased(ticket.eventId!)
+        const eventDetails = await this.eventDatabase.findTotalTicketCountAndticketPurchased(tickets[0].eventId)
+        if (!eventDetails) throw new Error("No event found in this event id in confirm ticket use case")
         if (eventDetails.ticketPurchased > eventDetails.totalTicket) {
             throw new Error('Ticket full Sold out')
-        } else if (eventDetails.ticketPurchased + ticket.ticketCount > eventDetails.totalTicket) {
+        } else if (eventDetails.ticketPurchased + tickets.length > eventDetails.totalTicket) {
             throw new Error('Not enough ticket available')
         }
-        const newTicketPurchasedCount = eventDetails.ticketPurchased + ticket.ticketCount
-        const updateTicketCount = await this.eventDatabase.updateTicketPurchaseCount(ticket.eventId!, newTicketPurchasedCount)
-        const updatedTicket = await this.ticketDatabase.updatePaymentstatus(ticket._id!)
-        if (!updatedTicket) throw new Error("No ticket found in this ID")
+
+        const newTicketPurchasedCount = eventDetails.ticketPurchased + tickets.length
+        const updateTicketCount = await this.eventDatabase.updateTicketPurchaseCount(tickets[0].eventId!, newTicketPurchasedCount)
+        if (!updateTicketCount) throw new Error("error while updating ticket purchased total count in confirm ticket payment use case")
+
+        let adminCommision = 0
+        let vendorPrice = 0
+        for (let ticket of tickets) {
+            adminCommision += ticket.amount * 0.01
+            vendorPrice += ticket.amount - ticket.amount * 0.01
+            const updatedTicket = await this.ticketDatabase.updatePaymentstatus(ticket._id!)
+            if (!updatedTicket) throw new Error("No ticket found in this ID")
+        }
+
         const adminId = process.env.ADMIN_ID
         if (!adminId) throw new Error('NO admin id found')
-        const adminCommision = ticket.totalAmount * 0.01
-        const vendorPrice = ticket.totalAmount - adminCommision
+      
         const adminWallet = await this.walletDatabase.findWalletByUserId(adminId!)
         if (!adminWallet) throw new Error("No admin Wallet found in this ID")
         const adminTransaction: TransactionsEntity = {
@@ -52,6 +62,10 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
             paymentStatus: "credit",
             paymentType: "adminCommission",
             walletId: adminWallet._id!,
+            paymentFor: {
+                resourceType: "event",
+                resourceId: eventDetails._id
+            }
         }
 
         const transaction = await this.transactionDatabase.createTransaction(adminTransaction)
@@ -85,9 +99,15 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
             paymentStatus: 'credit',
             paymentType: "ticketBooking",
             walletId: vendorWalletId,
+            paymentFor: {
+                resourceType: "event",
+                resourceId: eventDetails._id
+            }
         };
         const vendorTransaction = await this.transactionDatabase.createTransaction(vendorTransactionData)
+        if (!vendorTransaction) throw new Error('error while creating vendor transaction')
         const addMoneyToVendorWallet = await this.walletDatabase.addMoney(vendorId, vendorPrice)
-        return updatedTicket
+        if (!addMoneyToVendorWallet) throw new Error("Error while adding money to vendor wallet")
+        return true
     }
 }

@@ -7,6 +7,18 @@ export class UpdateBookingAsCompleteUseCase implements IupdateBookingAsCompleteU
         this.bookingDatabase = bookingDatabase
     }
     async changeStatusOfBooking(bookingId: string, status: string): Promise<boolean> {
+        // const booking=await this.bookingDatabase.f
+        const dates = await this.bookingDatabase.findBookingDatesOfABooking(bookingId)
+        if (!dates) throw new Error('No booking found in this ID')
+        const today = new Date()
+        today.setHours(0, 0, 0, 0);
+
+        const checkDate = dates.every((date) => {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            return d.getTime() <= today.getTime(); // allow today as valid
+        });
+        if (!checkDate) throw new Error("The booking date has not arrived yet");
         const changeBookingStatus = await this.bookingDatabase.changeStatus(bookingId, status)
         if (!changeBookingStatus) throw new Error('No booking found in this Id')
         return true

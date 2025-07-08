@@ -50,6 +50,10 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
             paymentStatus: "credit",
             paymentType: "adminCommission",
             walletId: adminWallet._id!,
+            paymentFor: {
+                resourceType: "service",
+                resourceId: dateAndServicePrice._id
+            }
         }
 
         const vendorTransaction: TransactionsEntity = {
@@ -58,6 +62,10 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
             paymentStatus: "credit",
             paymentType: "bookingPayment",
             walletId: vendorWallet._id!,
+            paymentFor: {
+                resourceType: "event",
+                resourceId: dateAndServicePrice._id
+            }
         }
         const CreateVendorTransaction = await this.transactionDatabase.createTransaction(vendorTransaction)
         if (!CreateVendorTransaction) throw new Error('error while creatitng vendor transcation')
@@ -68,7 +76,7 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
         const addMoneyToVendorWallet = await this.walletDatabase.addMoney(booking.vendorId, vendorPrice)
         if (!addMoneyToVendorWallet) throw new Error("error while adding money to vendor wallet")
         const updateBooking = await this.bookingDatabase.updateBookingPaymnentStatus(booking._id!, 'Successfull')
-        if(!updateBooking) throw new Error('error while updating booking database')
+        if (!updateBooking) throw new Error('error while updating booking database')
         return true
     }
 }

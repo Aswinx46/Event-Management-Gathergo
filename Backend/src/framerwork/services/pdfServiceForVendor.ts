@@ -1,109 +1,4 @@
 
-// import PDFDocument from "pdfkit";
-// import { IpdfServiceVendor } from "../../domain/interface/serviceInterface/IpdfServiceVendor";
-// import { VendorPdfReportInput } from "../../domain/entities/eventReportDataEntity";
-
-// export class PdfServiceVendor implements IpdfServiceVendor {
-//   async generateVendorReportPdf(data: VendorPdfReportInput): Promise<Buffer> {
-//     return new Promise((resolve, _reject) => {
-//       const doc = new PDFDocument({ margin: 50 });
-//       const buffers: Uint8Array[] = [];
-
-//       doc.on("data", buffers.push.bind(buffers));
-//       doc.on("end", () => {
-//         const pdfData = Buffer.concat(buffers);
-//         resolve(pdfData);
-//       });
-
-//       // Header
-//       doc.fontSize(20).text("Vendor Report", { align: "center" });
-//       doc.moveDown(1);
-
-//       // -------- EVENTS SECTION --------
-//       doc.fontSize(16).fillColor("black").text("Event Summary", { underline: true });
-//       doc.moveDown(0.5);
-
-//       data.events.forEach(event => {
-//         doc
-//           .fontSize(14)
-//           .fillColor("blue")
-//           .text(`${event.title}`, { underline: false });
-
-//         doc
-//           .fontSize(12)
-//           .fillColor("black")
-//           .text(`Date: ${new Date(event.startTime).toDateString()}`)
-//           .text(`Tickets Sold: ${event.ticketPurchased}`)
-//           .text(`Total Income: ₹${(event.pricePerTicket * event.ticketPurchased).toFixed(2)}`);
-//         doc.moveDown(1);
-//       });
-
-//       // -------- BOOKINGS SECTION --------
-//       doc.addPage();
-//       doc.fontSize(16).fillColor("black").text("Service Booking Summary", { underline: true });
-//       doc.moveDown(0.5);
-
-//       const tableTop = doc.y + 10;
-//       const rowHeight = 20;
-
-//       const columns = [
-//         { label: "Service Title", width: 130 },
-//         { label: "Price", width: 60 },
-//         { label: "Date", width: 100 },
-//         { label: "Payment", width: 80 },
-//         { label: "Status", width: 80 },
-//         { label: "Client Email", width: 150 }
-//       ];
-
-//       const startX = doc.page.margins.left;
-
-//       // Draw table header
-//       let x = startX;
-//       doc.font("Helvetica-Bold").fontSize(10);
-//       columns.forEach(col => {
-//         doc.text(col.label, x, tableTop, { width: col.width });
-//         x += col.width;
-//       });
-
-//       // Draw horizontal line under header
-//       doc.moveTo(startX, tableTop + rowHeight - 5)
-//         .lineTo(startX + columns.reduce((sum, col) => sum + col.width, 0), tableTop + rowHeight - 5)
-//         .stroke();
-
-//       // Draw rows
-//       doc.font("Helvetica").fontSize(10);
-//       let y = tableTop + rowHeight;
-
-//       data.bookings.forEach(booking => {
-//         x = startX;
-//         const values = [
-//           booking.serviceId.serviceTitle,
-//           `₹${booking.serviceId.servicePrice}`,
-//           new Date(booking.createdAt).toDateString(),
-//           booking.paymentStatus,
-//           booking.status,
-//           booking.clientId.email
-//         ];
-
-//         values.forEach((text, i) => {
-//           doc.text(text, x, y, { width: columns[i].width });
-//           x += columns[i].width;
-//         });
-
-//         y += rowHeight;
-
-//         // Add page if reaching end
-//         if (y > doc.page.height - 50) {
-//           doc.addPage();
-//           y = doc.y;
-//         }
-//       });
-
-//       doc.end();
-//     });
-//   }
-// }
-
 
 import PDFDocument from "pdfkit";
 import { IpdfServiceVendor } from "../../domain/interface/serviceInterface/IpdfServiceVendor";
@@ -164,12 +59,34 @@ export class PdfServiceVendor implements IpdfServiceVendor {
       data.events.forEach(event => {
         x = startX;
 
+        // const values = [
+        //   event.title,
+        //   new Date(event.schedule[0].date).toDateString(),
+        //   event.ticketPurchased.toString(),
+        //   `₹${(event.pricePerTicket! * event.ticketPurchased).toFixed(2)}`
+        // ];
+
+
+        let totalRevenue = 0;
+        let totalTicketsSold = 0;
+
+        if (event.multipleTicketTypeNeeded && event.ticketTypeDescription?.length) {
+          for (const type of event.ticketTypeDescription) {
+            totalRevenue += type.price * type.buyedCount;
+            totalTicketsSold += type.buyedCount;
+          }
+        } else {
+          totalRevenue = (event.pricePerTicket ?? 0) * event.ticketPurchased;
+          totalTicketsSold = event.ticketPurchased;
+        }
+
         const values = [
           event.title,
-          new Date(event.startTime).toDateString(),
-          event.ticketPurchased.toString(),
-          `₹${(event.pricePerTicket * event.ticketPurchased).toFixed(2)}`
+          new Date(event.schedule[0].date).toDateString(),
+          totalTicketsSold.toString(),
+          `₹${totalRevenue.toFixed(2)}`
         ];
+
 
         values.forEach((text, i) => {
           doc.text(text, x, y, { width: eventColumns[i].width });
@@ -189,15 +106,15 @@ export class PdfServiceVendor implements IpdfServiceVendor {
 
       // -------- BOOKINGS SECTION --------
       const headingX = doc.page.margins.left;
-  const headingY = doc.y;
+      const headingY = doc.y;
       doc
-      .fontSize(18)
-      .fillColor("black")
-      .text("Service Booking Summary", headingX, headingY, {
-        underline: true,
-        align: "left",
-        width: doc.page.width - doc.page.margins.left - doc.page.margins.right, // full width
-      });
+        .fontSize(18)
+        .fillColor("black")
+        .text("Service Booking Summary", headingX, headingY, {
+          underline: true,
+          align: "left",
+          width: doc.page.width - doc.page.margins.left - doc.page.margins.right, // full width
+        });
       doc.moveDown(1);
 
       const bookingTableTop = doc.y;
@@ -232,7 +149,7 @@ export class PdfServiceVendor implements IpdfServiceVendor {
       data.bookings.forEach(booking => {
         x = startX;
         const values = [
-          booking.serviceId.serviceTitle,
+          booking.serviceId.title,
           `Rs ${booking.serviceId.servicePrice}`,
           new Date(booking.createdAt).toDateString(),
           booking.paymentStatus,
@@ -241,7 +158,7 @@ export class PdfServiceVendor implements IpdfServiceVendor {
         ];
 
         values.forEach((text, i) => {
-          doc.text(text, x, y, { width: bookingColumns[i].width, lineBreak:true });
+          doc.text(text, x, y, { width: bookingColumns[i].width, lineBreak: true });
           x += bookingColumns[i].width;
         });
 

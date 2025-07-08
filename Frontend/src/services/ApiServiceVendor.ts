@@ -449,3 +449,13 @@ export const pdfDownloadVendor = async (vendorId: string) => {
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while downloading pdf for the vendor')
     }
 }
+
+export const cancelEvent = async (eventId: string) => {
+    try {
+        const response = await axios.put(`/cancelEvent/${eventId}`)
+        return response.data
+    } catch (error) {
+        console.log('error while canceling the event', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while canceling the event')
+    }
+}

@@ -34,7 +34,7 @@ export default function TicketsPage() {
     return (
         <>
             {tickets && <TicketList tickets={tickets} />}
-            <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />
+            {tickets.length > 0 && <Pagination current={currentPage} setPage={setCurrentPage} total={totalPages} />}
         </>
     )
 }

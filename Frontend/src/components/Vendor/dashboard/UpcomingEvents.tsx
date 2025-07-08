@@ -13,7 +13,7 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
   // Get upcoming events
   const upcomingEvents = events
     .filter((event) => event.status === "upcoming")
-    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+    .sort((a, b) => new Date(a.schedule[0].startTime).getTime() - new Date(b.schedule[0].startTime).getTime())
     .slice(0, 5)
 
   const container = {
@@ -65,12 +65,25 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
             <div className="flex flex-col mt-1 text-xs text-muted-foreground">
               <div className="flex items-center">
                 <Calendar className="h-3 w-3 mr-1" />
-                <span>{new Date(event.startTime).toLocaleDateString()}</span>
+                {event.schedule.map((item) => (
+                  <p className="text-sm text-gray-500">
+                    {/* {formatDate(item.startTime)} at {event.venueName} */}
+                    <span>{new Date(item.startTime).toLocaleDateString()}</span>
+                  </p>
+
+                ))}
               </div>
 
               <div className="flex items-center mt-1">
                 <Clock className="h-3 w-3 mr-1" />
-                <span>{new Date(event.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                {event.schedule.map((item) => (
+                  <>
+                    {/* {formatDate(item.startTime)} at {event.venueName} */}
+                    <span>{new Date(item.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                  </>
+
+
+                ))}
               </div>
 
               <div className="flex items-center mt-1">
@@ -83,18 +96,21 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
           <div className="flex flex-col items-end">
             <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">{event.category}</Badge>
 
-            <span className="text-sm font-medium mt-2">${event.pricePerTicket}</span>
+            <span className="text-sm font-medium mt-2">₹{event.pricePerTicket}</span>
 
             <span className="text-xs text-muted-foreground">
               {event.ticketPurchased}/{event.totalTicket} sold
             </span>
           </div>
         </motion.div>
-      ))}
+      ))
+      }
 
-      {upcomingEvents.length === 0 && (
-        <div className="text-center py-6 text-muted-foreground">No upcoming events found</div>
-      )}
-    </motion.div>
+      {
+        upcomingEvents.length === 0 && (
+          <div className="text-center py-6 text-muted-foreground">No upcoming events found</div>
+        )
+      }
+    </motion.div >
   )
 }

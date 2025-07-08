@@ -3,7 +3,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EventEntity } from '../../../types/EventEntity';
-import { 
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -11,10 +11,10 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   Calendar,
-  MapPin, 
-  Clock, 
+  MapPin,
+  Clock,
   Tag,
   Users,
   DollarSign,
@@ -36,9 +36,9 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   onClose,
 }) => {
   if (!event) return null;
-  
+
   const getStatusColor = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'upcoming':
         return 'bg-blue-100 text-blue-800';
       case 'completed':
@@ -63,10 +63,10 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             {/* Event Image Section */}
             <div className="relative h-64 md:h-auto">
               {event.posterImage && event.posterImage.length > 0 ? (
-                <motion.img 
+                <motion.img
                   src={typeof event.posterImage[0] === 'string' ? event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)}
                   alt={event.title}
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover"
                   initial={{ scale: 1.1 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5 }}
@@ -85,48 +85,52 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                 </div>
               </div>
             </div>
-            
+
             {/* Event Details Section */}
             <div className=" flex flex-col p-6  md:overflow-y-auto bg-white">
               <DialogHeader className="mb-4">
                 <DialogTitle className="text-2xl font-bold text-gray-800">{event.title}</DialogTitle>
                 <p className="text-sm text-gray-500 mt-1">Event ID: {event._id}</p>
               </DialogHeader>
-              
+
               <div className="space-y-6 flex-grow">
                 {/* Description */}
                 <div className="space-y-2">
                   <h3 className="text-lg font-medium text-gray-800">Description</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{event.description}</p>
                 </div>
-                
+
                 {/* Event Details */}
                 <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
                   <h3 className="text-lg font-medium text-gray-800">Event Details</h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-start">
                       <Calendar className="w-5 h-5 mt-0.5 text-blue-500 flex-shrink-0" />
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-700">Date</p>
                         <p className="text-sm text-gray-600">
-                          {event.date && event.date.length > 0 ? 
-                            format(new Date(event.date[0]), 'EEEE, MMMM d, yyyy') : 
+                          {event.schedule && event.schedule.length > 0 ?
+                            format(new Date(event.schedule[0].date), 'EEEE, MMMM d, yyyy') :
                             'Date not specified'}
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <Clock className="w-5 h-5 mt-0.5 text-blue-500 flex-shrink-0" />
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-700">Time</p>
-                        <p className="text-sm text-gray-600">
-                          {format(new Date(event.startTime), 'h:mm a')} - {format(new Date(event.endTime), 'h:mm a')}
-                        </p>
+                        {event.schedule.map((item) => (
+                          <p className="text-sm text-gray-500">
+                            {/* {format(new Date(item.startTime), 'h:mm a')} - {format(new Date(item.endTime), 'h:mm a')} */}
+                            {`${item.startTime} to ${item.endTime}`}
+                          </p>
+
+                        ))}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <MapPin className="w-5 h-5 mt-0.5 text-blue-500 flex-shrink-0" />
                       <div className="ml-3">
@@ -135,7 +139,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                         {event.address && <p className="text-xs text-gray-500">{event.address}</p>}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <Tag className="w-5 h-5 mt-0.5 text-blue-500 flex-shrink-0" />
                       <div className="ml-3">
@@ -143,7 +147,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                         <p className="text-sm text-gray-600">{event.category}</p>
                       </div>
                     </div>
-                    
+
                     {event.hostedBy && (
                       <div className="flex items-start">
                         <User className="w-5 h-5 mt-0.5 text-blue-500 flex-shrink-0" />
@@ -155,11 +159,11 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                     )}
                   </div>
                 </div>
-                
+
                 {/* Ticket Information */}
                 <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
                   <h3 className="text-lg font-medium text-gray-800">Ticket Information</h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-start">
                       <DollarSign className="w-5 h-5 mt-0.5 text-green-500 flex-shrink-0" />
@@ -168,7 +172,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                         <p className="text-sm text-gray-600">${event.pricePerTicket}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <Users className="w-5 h-5 mt-0.5 text-green-500 flex-shrink-0" />
                       <div className="ml-3">
@@ -177,14 +181,14 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-2">
                     <p className="text-sm font-medium text-gray-700 mb-2">Sales Progress</p>
                     <div className="flex items-center gap-2">
                       <div className="flex-grow">
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full" 
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${(event.ticketPurchased / event.totalTicket) * 100}%` }}
                           ></div>
                         </div>
@@ -196,7 +200,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               <DialogFooter className="mt-6 pt-4 border-t border-gray-100">
                 <Button variant="outline" onClick={onClose} className="gap-2">
                   Close

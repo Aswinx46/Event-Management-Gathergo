@@ -4,12 +4,11 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { EventType } from "@/types/EventType";
+import { ScheduleItem } from "@/types/ScheduleItemType";
 
 interface ReviewFormProps {
   values: EventType;
-  dates: Date[];
-  startTime: string;
-  endTime: string;
+  schedule: ScheduleItem[]
   posterImages: File[];
 }
 
@@ -34,11 +33,8 @@ const itemVariants = {
 
 const ReviewForm: React.FC<ReviewFormProps> = ({
   values,
-  dates,
   posterImages,
-  startTime,
-  endTime,
-
+  schedule
 }) => {
   return (
     <motion.div
@@ -81,14 +77,17 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
             <div className="space-y-3">
               <div>
                 <span className="text-sm text-gray-500">Dates:</span>
-                {dates.map((date, index) => (
-                  <p key={index} className="font-medium">{format(date, "PPP")}</p>
+                {schedule.map((item, index) => (
+                  <>
+                    <p key={index} className="font-medium">{format(item.date, "PPP")}</p>
+                    <p className="font-medium">{item.startTime} - {item.endTime}</p>
+                  </>
                 ))}
               </div>
-              <div>
+              {/* <div>
                 <span className="text-sm text-gray-500">Time:</span>
-                <p className="font-medium">{startTime} - {endTime}</p>
-              </div>
+
+              </div> */}
               <div>
                 <span className="text-sm text-gray-500">Status:</span>
                 <p className="font-medium capitalize">{values.status}</p>

@@ -26,6 +26,10 @@ export const transactionSchema = new Schema<TransactionsEntity>({
         type: Schema.Types.ObjectId,
         ref: 'wallet',
         required: true
+    },
+    paymentFor: {
+        resourceType: { type: String, enum: ["event", "service"] },
+        resourceId: { type: Schema.Types.ObjectId, required: true, refPath: "paymentFor.resourceType" }
     }
 }, {
     timestamps: true

@@ -1,7 +1,7 @@
 
 import { motion } from 'framer-motion';
 import { EventEntity } from '@/types/EventEntity';
-import { formatDate, formatTimeAgo, formatCurrency } from '@/utils/dateUtils';
+import { formatTimeAgo, formatCurrency } from '@/utils/dateUtils';
 import { Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,9 +54,12 @@ const RecentEvents = ({ events }: RecentEventsProps) => {
             </div>
             <div>
               <p className="font-medium">{event.title}</p>
-              <p className="text-sm text-gray-500">
-                {formatDate(event.startTime)} at {event.venueName}
-              </p>
+              {event.schedule.map((item) => (
+                <p className="text-sm text-gray-500">
+                  {`${item.startTime} at ${event.venueName}`}
+                </p>
+
+              ))}
               <div className="flex items-center space-x-2 mt-1">
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${event.status === 'upcoming' ? 'bg-green-100 text-green-800' :
                   event.status === 'completed' ? 'bg-blue-100 text-blue-800' :
@@ -79,7 +82,7 @@ const RecentEvents = ({ events }: RecentEventsProps) => {
         ))}
       </motion.div>
       <div className="mt-4">
-        <button onClick={()=>navigate('/admin/events')} className="w-full py-2 text-admin-purple font-medium rounded-md border border-admin-purple hover:bg-admin-purple hover:text-white transition-colors">
+        <button onClick={() => navigate('/admin/events')} className="w-full py-2 text-admin-purple font-medium rounded-md border border-admin-purple hover:bg-admin-purple hover:text-white transition-colors">
           View All Events
         </button>
       </div>

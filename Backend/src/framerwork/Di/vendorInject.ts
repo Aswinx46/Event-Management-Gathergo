@@ -75,6 +75,8 @@ import { ForgetPasswordChangeVendorController } from "../../adapters/controllers
 import { PdfGenerateVendorUseCase } from "../../useCases/vendor/dashboard/pdfGenerateVendorUseCase";
 import { PdfServiceVendor } from "../services/pdfServiceForVendor";
 import { PdfDownloaderVendorController } from "../../adapters/controllers/vendor/dashboard/pdfDownloaderVendorController";
+import { EventCancellationUseCase } from "../../useCases/vendor/event/eventCancellationUseCase";
+import { CancelEventController } from "../../adapters/controllers/vendor/event/cancelEventController";
 
 
 
@@ -212,3 +214,7 @@ export const injectedForgetPasswordChangeVendorController = new ForgetPasswordCh
 const pdfServiceVendor = new PdfServiceVendor()
 const pdfGenerateVendorUseCase = new PdfGenerateVendorUseCase(eventRepository, bookingsDatabase, pdfServiceVendor)
 export const injectedPdfDownloadVendorController = new PdfDownloaderVendorController(pdfGenerateVendorUseCase)
+
+//--------------------------cancel event ----------------------------------
+const cancelEventUseCase = new EventCancellationUseCase(eventRepository, ticketdatabase, walletDatabase, transactionDatabase)
+export const injectedCancelEventController = new CancelEventController(cancelEventUseCase)

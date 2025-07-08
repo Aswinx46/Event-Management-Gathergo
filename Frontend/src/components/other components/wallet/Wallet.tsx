@@ -9,6 +9,23 @@ interface WalletEntity {
   createdAt?: Date;
   userId: string;
   userModel: "client" | "vendors";
+
+}
+
+interface TransactionItem {
+  amount: number;
+  paymentStatus: "debit" | "credit"
+  paymentType: string;
+  date: string;
+  currency: string
+  resourceType: string;
+  paymentFor: {
+    resourceType: string,
+    resourceId: {
+      _id: string,
+      title: string
+    }
+  }
 }
 
 interface TransactionItemProps {
@@ -17,11 +34,13 @@ interface TransactionItemProps {
   paymentType: string;
   date: string;
   currency: string
+  resourceType: string,
+  title: string
 }
 
 interface WalletCardProps {
   wallet: WalletEntity;
-  transactions: TransactionItemProps[]
+  transactions: TransactionItem[]
 }
 
 export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
@@ -88,8 +107,12 @@ export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
                   amount={transaction.amount}
                   paymentStatus={transaction.paymentStatus}
                   currency={transaction.currency}
-                  date={transaction.date}
-                  paymentType={transaction.paymentType} />
+                  date={new Date(transaction.date).toDateString()}
+                  paymentType={transaction.paymentType}
+                  resourceType={transaction.paymentFor.resourceType}
+                  title={transaction.paymentFor.resourceId.title}
+                />
+
               ))}
             </div>
           </CardContent>
@@ -101,29 +124,60 @@ export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
 
 
 
-const TransactionItem = ({ amount, paymentStatus, paymentType, date, currency }: TransactionItemProps) => {
+
+import { format } from "date-fns";
+
+
+
+const TransactionItem = ({
+  amount,
+  paymentStatus,
+  paymentType,
+  currency,
+  resourceType,
+  title,
+  date,
+}: TransactionItemProps) => {
+  const isCredit = paymentStatus === "credit";
+  const formattedDate = format(new Date(date), "dd MMM yyyy, hh:mm a");
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className="flex items-center justify-between p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+      className="flex items-center justify-between p-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-all"
     >
-      <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-full ${paymentStatus === 'credit' ? 'bg-green-100' : 'bg-red-100'}`}>
-          {paymentStatus === 'credit' ? (
-            <TrendingUp className="w-4 h-4 text-green-600" />
+      <div className="flex items-center gap-4">
+        {/* Icon Section */}
+        <div
+          className={`p-2 rounded-full ${isCredit ? "bg-green-100" : "bg-red-100"
+            }`}
+        >
+          {isCredit ? (
+            <TrendingUp className="w-5 h-5 text-green-600" />
           ) : (
-            <TrendingDown className="w-4 h-4 text-red-600" />
+            <TrendingDown className="w-5 h-5 text-red-600" />
           )}
         </div>
-        <div>
-          <p className="font-medium">{paymentType}</p>
-          <p className="font-medium">{currency}</p>
-          <p className="text-sm text-gray-500">{date}</p>
+
+        {/* Info Section */}
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-gray-800 capitalize">{paymentType}</p>
+          <p className="text-sm text-gray-600">{title} ({resourceType})</p>
+          <p className="text-xs text-gray-500">{currency} • {formattedDate}</p>
         </div>
       </div>
-      <p className={`font-semibold ${paymentStatus === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
-        {paymentType === 'credit' ? '+' : '-'}₹{amount.toFixed(2)}
-      </p>
+
+      {/* Amount Section */}
+      <div>
+        <p
+          className={`text-sm font-semibold ${isCredit ? "text-green-600" : "text-red-600"
+            }`}
+        >
+          {isCredit ? "+" : "-"}₹{amount.toFixed(2)}
+        </p>
+      </div>
     </motion.div>
   );
 };
+
+export default TransactionItem;

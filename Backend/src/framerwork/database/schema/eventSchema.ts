@@ -18,10 +18,6 @@ export const eventSchema = new Schema<EventEntity>({
         type: Date,
         default: Date.now
     },
-    date: [{
-        type: Date,
-        required: true
-    }],
     description: {
         type: String,
         required: true
@@ -50,17 +46,10 @@ export const eventSchema = new Schema<EventEntity>({
         type: Number,
         required: true
     },
-    startTime: {
-        type: Date,
-        required: true
-    },
-    endTime: {
-        type: Date,
-        required: true
-    },
     status: {
         type: String,
-        enum: ["upcoming", "completed", "cancelled"]
+        enum: ["upcoming", "completed", "cancelled", "onGoing"],
+        default: "upcoming"
     },
     maxTicketsPerUser: {
         type: Number,
@@ -89,8 +78,27 @@ export const eventSchema = new Schema<EventEntity>({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    multipleTicketTypeNeeded: {
+        type: Boolean,
+        required: true,
+    },
+    schedule: [{
+        date: { type: Date, required: true },
+        startTime: { type: String, required: true },
+        endTime: { type: String, required: true }
+    }],
+    ticketTypeDescription: [{
+        ticketType: { type: String, required: false },
+        description: { type: String, required: false },
+        price: { type: Number, required: false },
+        maxCount: { type: Number, required: false },
+        buyedCount: { type: Number, required: false, default: 0 },
+        ticketLimitPerUser: { type: Number, required: false, default: 1 }
+    }]
 
+}, {
+    timestamps: true
 })
 
 eventSchema.index({ location: '2dsphere' });

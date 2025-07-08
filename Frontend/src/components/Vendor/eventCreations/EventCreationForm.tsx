@@ -26,42 +26,41 @@ const basicInfoValidation = Yup.object({
         .min(10, "Description must be at least 10 characters")
         .required("Description is required"),
     category: Yup.string().required("Category is required"),
-    // posterImage: Yup.array().min(1, "At least one image is required"),
 });
 
 
 const scheduleValidation = Yup.object({
-    date: Yup.array()
-        .min(1, "At least one date is required")
-        .test(
-            "no-past-date",
-            "Dates must be today or in the future",
-            (dates) => {
-                if (!dates || dates.length === 0) return false;
-
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // remove time part for accurate comparison
-
-                return dates.every((d) => {
-                    const date = new Date(d);
-                    date.setHours(0, 0, 0, 0);
-                    return date >= today;
-                });
-            }
-        ),
-    startTime: Yup.string().required("Start time is required"),
-    endTime: Yup.string().required("End time is required"),
+    schedule: Yup.array()
+        .of(
+            Yup.object({
+                date: Yup.date()
+                    .required("Date is required")
+                    .test("no-past-date", "Date must be today or in the future", (value) => {
+                        if (!value) return false;
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const compareDate = new Date(value);
+                        compareDate.setHours(0, 0, 0, 0);
+                        return compareDate >= today;
+                    }),
+                startTime: Yup.string()
+                    .required("Start time is required")
+                    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time"),
+                endTime: Yup.string()
+                    .required("End time is required")
+                    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time")
+                    .test("is-after-start", "End time must be after start time", function (value) {
+                        const { startTime } = this.parent;
+                        if (!value || !startTime) return false;
+                        return value > startTime;
+                    }),
+            })
+        )
+        .min(1, "At least one schedule is required")
 });
 
 
-// const locationValidation = Yup.object({
-//     location: Yup.object({
-//         latitude: Yup.number().required("Location is required"),
-//         longitude: Yup.number().required("Location is required"),
-//     }),
-//     address: Yup.string().required("Address is required"),
-//     venueName: Yup.string().required("Venue name is required"),
-// });
+
 
 const locationValidation = Yup.object({
     location: Yup.object({
@@ -79,6 +78,34 @@ const ticketValidation = Yup.object({
     pricePerTicket: Yup.number().min(0, "Price cannot be negative").required("Price is required"),
     maxTicketsPerUser: Yup.number().min(1, "Minimum 1 ticket per user").required("This field is required"),
     totalTicket: Yup.number().min(1, "Must have at least 1 ticket").required("This field is required"),
+    multipleTicketTypeNeeded: Yup.boolean().required(),
+    ticketTypeDescription: Yup.array()
+        .of(
+            Yup.object({
+                ticketType: Yup.string().required("Type is required"),
+                description: Yup.string().required("Description is required"),
+                price: Yup.number().min(0).required("Price required"),
+                maxCount: Yup.number().min(1, "Must be at least 1").required("Required"),
+            })
+        )
+        .when("multipleTicketTypeNeeded", {
+            is: true,
+            then: (schema) =>
+                schema.test(
+                    "sum-maxCount-equals-totalTicket",
+                    "Sum of ticket type maxCount must equal totalTicket",
+                    function (ticketTypes) {
+                        const { totalTicket } = this.parent;
+                        if (!ticketTypes || ticketTypes.length === 0) return false;
+
+                        const totalVariantCount = ticketTypes.reduce(
+                            (acc, curr) => acc + (curr.maxCount || 0),
+                            0
+                        );
+                        return totalVariantCount === totalTicket;
+                    }
+                ),
+        }),
 });
 
 // Main validation schema (unchanged)
@@ -100,9 +127,7 @@ const validationSchema = Yup.object({
 
 const EventCreationForm: React.FC = () => {
     const vendorId = useSelector((state: RootState) => state.vendorSlice.vendor?._id)
-    const [dates, setDates] = useState<Date[]>([new Date()]);
-    const [startTime, setStartTime] = useState<string>("10:00");
-    const [endTime, setEndTime] = useState<string>("18:00");
+    const [schedule, setSchedule] = useState<{ date: Date; startTime: string; endTime: string }[]>([]);
     const [posterImages, setPosterImages] = useState<File[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -114,19 +139,19 @@ const EventCreationForm: React.FC = () => {
             type: "Point",
             coordinates: [0, 0]
         },
-        startTime: new Date(),
-        endTime: new Date(),
         posterImage: [],
         pricePerTicket: 0,
         maxTicketsPerUser: 1,
         totalTicket: 0,
-        date: [],
         createdAt: new Date(),
         ticketPurchased: 0,
         category: "",
-        status: "upcoming", // or "completed", "cancelled"
-        address: "", // optional
-        venueName: "" // optional
+        status: "upcoming",
+        address: "",
+        venueName: "",
+        schedule: [], // <== ADD THIS
+        multipleTicketTypeNeeded: false,
+        ticketTypeDescription: []
     };
 
     const steps = [
@@ -149,11 +174,16 @@ const EventCreationForm: React.FC = () => {
                     }, { abortEarly: false });
                     break;
                 case 1:
-                    await scheduleValidation.validate({
-                        date: dates,
-                        startTime,
-                        endTime
-                    }, { abortEarly: false });
+                    //   await scheduleValidation.validate({
+                    //         date: dates,
+                    //         startTime,
+                    //         endTime
+                    //     }, { abortEarly: false });
+                    await scheduleValidation.validate(
+                        { schedule },  // from your state
+                        { abortEarly: false }
+                    );
+
                     break;
                 case 2:
                     await locationValidation.validate({
@@ -166,7 +196,9 @@ const EventCreationForm: React.FC = () => {
                     await ticketValidation.validate({
                         pricePerTicket: values.pricePerTicket,
                         maxTicketsPerUser: values.maxTicketsPerUser,
-                        totalTicket: values.totalTicket
+                        totalTicket: values.totalTicket,
+                        multipleTicketTypeNeeded:values.multipleTicketTypeNeeded,
+                        ticketTypeDescription:values.ticketTypeDescription
                     }, { abortEarly: false });
                     break;
                 default:
@@ -204,7 +236,7 @@ const EventCreationForm: React.FC = () => {
     const createEvent = useCreateEvent()
     const navigate = useNavigate()
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
-        console.log('handleCreateEvent called with values:', values);
+        // console.log('handleCreateEvent called with values:', values);
         if (!vendorId) {
             toast.error("Please Login")
             console.log('Vendor Id not found')
@@ -230,15 +262,17 @@ const EventCreationForm: React.FC = () => {
         }
 
 
-        const event = {
+        const event: EventType = {
             ...values,
-            date: dates,
-            startTime: new Date(`2000-01-01T${startTime}`),
-            endTime: new Date(`2000-01-01T${endTime}`),
+            // date: dates,
+            // startTime: new Date(`2000-01-01T${startTime}`),
+            // endTime: new Date(`2000-01-01T${endTime}`),
             posterImage: imageUrls,
             createdAt: new Date(),
-            attendees: [],
+            // attendees: [],
             ticketPurchased: 0,
+            schedule,
+
 
         };
 
@@ -297,12 +331,8 @@ const EventCreationForm: React.FC = () => {
                             {/* Step 2: Schedule */}
                             {currentStep === 1 && (
                                 <ScheduleForm
-                                    dates={dates}
-                                    setDates={setDates}
-                                    startTime={startTime}
-                                    setStartTime={setStartTime}
-                                    endTime={endTime}
-                                    setEndTime={setEndTime}
+                                    schedule={schedule}
+                                    setSchedule={setSchedule}
                                     values={values}
                                     setFieldValue={setFieldValue}
                                 />
@@ -315,16 +345,14 @@ const EventCreationForm: React.FC = () => {
 
                             {/* Step 4: Ticket Information */}
                             {currentStep === 3 && (
-                                <TicketForm values={values} />
+                                <TicketForm values={values} setFieldValue={setFieldValue} />
                             )}
 
                             {/* Step 5: Review */}
                             {currentStep === 4 && (
                                 <ReviewForm
                                     values={values}
-                                    dates={dates}
-                                    startTime={startTime}
-                                    endTime={endTime}
+                                    schedule={schedule}
                                     posterImages={posterImages}
                                 />
                             )}
@@ -336,9 +364,6 @@ const EventCreationForm: React.FC = () => {
                                 nextStep={() => nextStep(values)}
                                 isSubmitting={isSubmitting}
                                 onSubmit={handleSubmit}
-                            // isStepValid={isStepValid}
-                            // errors={errors}
-                            // touched={touched}
                             />
                         </Form>
                     );

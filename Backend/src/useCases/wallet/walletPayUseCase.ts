@@ -24,17 +24,17 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
         const eventDetails = await this.eventDatabase.findTotalTicketCountAndticketPurchased(ticket.eventId!)
         if (eventDetails.ticketPurchased > eventDetails.totalTicket) {
             throw new Error('Ticket full Sold out')
-        } else if (eventDetails.ticketPurchased + ticket.ticketCount > eventDetails.totalTicket) {
+        } else if (eventDetails.ticketPurchased + ticket.amount > eventDetails.totalTicket) {
             throw new Error('Not enough ticket available')
         }
-        const newTicketPurchasedCount = eventDetails.ticketPurchased + ticket.ticketCount
-        const updateTicketCount = await this.eventDatabase.updateTicketPurchaseCount(ticket.eventId!, newTicketPurchasedCount)
+        // const newTicketPurchasedCount = eventDetails.ticketPurchased + ticket.
+        // const updateTicketCount = await this.eventDatabase.updateTicketPurchaseCount(ticket.eventId!, newTicketPurchasedCount)
         const updatedTicket = await this.ticketDatabase.updatePaymentstatus(ticket._id!)
         if (!updatedTicket) throw new Error("No ticket found in this ID")
         const adminId = process.env.ADMIN_ID
         if (!adminId) throw new Error('NO admin id found')
-        const adminCommision = ticket.totalAmount * 0.01
-        const vendorPrice = ticket.totalAmount - adminCommision
+        const adminCommision = ticket.amount * 0.01
+        const vendorPrice = ticket.amount - adminCommision
         const vendorWallet = await this.walletDatabase.findWalletByUserId(vendorId)
         if (!vendorWallet) throw new Error("No vendor wallet found")
         const vendorWalletId = vendorWallet?._id!.toString()
@@ -46,6 +46,10 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
             paymentStatus: "credit",
             paymentType: "adminCommission",
             walletId: adminWallet._id!,
+            paymentFor: {
+                resourceId: eventDetails._id,
+                resourceType: "event"
+            }
         }
 
         const transaction = await this.transactionDatabase.createTransaction(adminTransaction)
@@ -59,6 +63,10 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
             paymentStatus: "credit",
             paymentType: paymentType,
             walletId: wallet._id!,
+            paymentFor: {
+                resourceId: eventDetails._id,
+                resourceType: "event"
+            }
         }
         const vendorTransactionData: TransactionsEntity = {
             amount: vendorPrice,
@@ -66,6 +74,10 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
             paymentStatus: 'credit',
             paymentType: "ticketBooking",
             walletId: vendorWalletId,
+            paymentFor: {
+                resourceId: eventDetails._id,
+                resourceType: "event"
+            }
         };
 
         const createTransaction = await this.transactionDatabase.createTransaction(userTransaction)
