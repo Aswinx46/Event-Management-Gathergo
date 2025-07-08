@@ -28,7 +28,7 @@ const initialTicket: TicketType = {
     description: "",
     price: 0,
     maxCount: 1,
-    purchasedCount: 0,
+    buyedCount: 0,
     ticketLimitPerUser: 1
 }
 

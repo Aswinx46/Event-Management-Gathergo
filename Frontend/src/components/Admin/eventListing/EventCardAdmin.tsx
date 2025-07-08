@@ -3,10 +3,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { EventEntity } from '../../../types/EventEntity';
-import { 
-  Calendar, 
-  MapPin, 
-  Clock, 
+import {
+  Calendar,
+  MapPin,
+  Clock,
 
   Check,
   X
@@ -22,7 +22,7 @@ interface EventCardProps {
   onClick?: () => void;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ 
+export const EventCard: React.FC<EventCardProps> = ({
   event,
 
   onClick
@@ -41,7 +41,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   };
 
   const getStatusColor = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'upcoming':
         return 'bg-blue-100 text-blue-800';
       case 'completed':
@@ -54,7 +54,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   };
 
   const getStatusIcon = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'upcoming':
         return <Calendar size={14} className="mr-1" />;
       case 'completed':
@@ -68,16 +68,16 @@ export const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <motion.div variants={item}>
-      <Card 
-        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer" 
+      <Card
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer"
         onClick={() => onClick && onClick()}
       >
         <div className="relative h-48 overflow-hidden">
           {event.posterImage && event.posterImage.length > 0 ? (
-            <img 
-              src={typeof event.posterImage[0] === 'string' ? event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)} 
+            <img
+              src={typeof event.posterImage[0] === 'string' ? event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)}
               alt={event.title}
-              className="w-full h-full object-cover" 
+              className="w-full h-full object-cover"
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -97,13 +97,21 @@ export const EventCard: React.FC<EventCardProps> = ({
           <div className="text-sm text-gray-500 mb-4 flex-grow">
             <div className="flex items-center mb-1">
               <Calendar size={16} className="mr-2" />
-              {event.date && event.date.length > 0 ? 
-                format(new Date(event.date[0]), 'PPP') : 
+              {event.schedule && event.schedule.length > 0 ?
+                format(new Date(event.schedule[0].date), 'PPP') :
                 'Date not specified'}
             </div>
             <div className="flex items-center mb-1">
               <Clock size={16} className="mr-2" />
-              {format(new Date(event.startTime), 'p')} - {format(new Date(event.endTime), 'p')}
+              <div className='flex flex-col'>
+                {event.schedule.map((item) => (
+                  <p className="text-sm text-gray-500">
+                    {`${item.startTime} to ${item.endTime}`}
+                  </p>
+
+                ))}
+              </div>
+
             </div>
             <div className="flex items-center">
               <MapPin size={16} className="mr-2" />
