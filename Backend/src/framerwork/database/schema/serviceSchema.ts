@@ -26,7 +26,7 @@ export const serviceSchema = new Schema<ServiceEntity>({
         type: Number,
         required: true
     },
-    serviceTitle: {
+    title: {
         type: String,
         required: true
     },

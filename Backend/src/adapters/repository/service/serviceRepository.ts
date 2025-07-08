@@ -17,7 +17,7 @@ export class ServiceRepository implements IserviceRepository {
         const limit = 3
         const page = Math.max(pageNo, 1)
         const skip = (page - 1) * limit
-        const Services = await serviceModal.find({ vendorId }).sort({createdAt:-1}).skip(skip).limit(limit)
+        const Services = await serviceModal.find({ vendorId }).sort({ createdAt: -1 }).skip(skip).limit(limit)
         const totalPages = Math.ceil(await serviceModal.countDocuments({ vendorId: new Types.ObjectId(vendorId) }) / limit)
         return { Services, totalPages }
     }
@@ -66,7 +66,7 @@ export class ServiceRepository implements IserviceRepository {
             _id: service?._id,
             price: service?.servicePrice,
             serviceDescription: service?.serviceDescription,
-            serviceTitle: service?.serviceTitle,
+            serviceTitle: service?.title,
             duration: service?.serviceDuration,
             vendor: {
                 _id: service?.vendorId?._id,

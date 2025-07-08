@@ -13,3 +13,11 @@ export interface TransactionsEntity {
         resourceId: ObjectId;
     };
 }
+
+export interface TransactionDTO extends Omit<TransactionsEntity, 'paymentFor'> {
+    resourceType: string;
+    resourceDetails: {
+        title: string;
+        _id: string
+    }
+}

@@ -149,7 +149,7 @@ export class PdfServiceVendor implements IpdfServiceVendor {
       data.bookings.forEach(booking => {
         x = startX;
         const values = [
-          booking.serviceId.serviceTitle,
+          booking.serviceId.title,
           `Rs ${booking.serviceId.servicePrice}`,
           new Date(booking.createdAt).toDateString(),
           booking.paymentStatus,
