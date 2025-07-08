@@ -4,6 +4,7 @@ export interface TicketAndVendorDTO {
     _id?: ObjectId | string
     ticketId: string;
     // createdAt?: Date;
+    ticketType: string
     amount: number
     phone: string;
     email: string;

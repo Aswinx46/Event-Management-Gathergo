@@ -53,8 +53,7 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
 
         const adminId = process.env.ADMIN_ID
         if (!adminId) throw new Error('NO admin id found')
-        // const adminCommision = ticket.totalAmount * 0.01
-        // const vendorPrice = ticket.totalAmount - adminCommision
+      
         const adminWallet = await this.walletDatabase.findWalletByUserId(adminId!)
         if (!adminWallet) throw new Error("No admin Wallet found in this ID")
         const adminTransaction: TransactionsEntity = {
@@ -63,6 +62,10 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
             paymentStatus: "credit",
             paymentType: "adminCommission",
             walletId: adminWallet._id!,
+            paymentFor: {
+                resourceType: "event",
+                resourceId: eventDetails._id
+            }
         }
 
         const transaction = await this.transactionDatabase.createTransaction(adminTransaction)
@@ -96,9 +99,15 @@ export class ConfirmTicketAndPaymentUseCase implements IconfirmTicketAndPaymentU
             paymentStatus: 'credit',
             paymentType: "ticketBooking",
             walletId: vendorWalletId,
+            paymentFor: {
+                resourceType: "event",
+                resourceId: eventDetails._id
+            }
         };
         const vendorTransaction = await this.transactionDatabase.createTransaction(vendorTransactionData)
+        if (!vendorTransaction) throw new Error('error while creating vendor transaction')
         const addMoneyToVendorWallet = await this.walletDatabase.addMoney(vendorId, vendorPrice)
+        if (!addMoneyToVendorWallet) throw new Error("Error while adding money to vendor wallet")
         return true
     }
 }

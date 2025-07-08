@@ -46,6 +46,10 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
             paymentStatus: "credit",
             paymentType: "adminCommission",
             walletId: adminWallet._id!,
+            paymentFor: {
+                resourceId: eventDetails._id,
+                resourceType: "event"
+            }
         }
 
         const transaction = await this.transactionDatabase.createTransaction(adminTransaction)
@@ -59,6 +63,10 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
             paymentStatus: "credit",
             paymentType: paymentType,
             walletId: wallet._id!,
+            paymentFor: {
+                resourceId: eventDetails._id,
+                resourceType: "event"
+            }
         }
         const vendorTransactionData: TransactionsEntity = {
             amount: vendorPrice,
@@ -66,6 +74,10 @@ export class WalletPayUseCase implements IwalletPaymentUseCase {
             paymentStatus: 'credit',
             paymentType: "ticketBooking",
             walletId: vendorWalletId,
+            paymentFor: {
+                resourceId: eventDetails._id,
+                resourceType: "event"
+            }
         };
 
         const createTransaction = await this.transactionDatabase.createTransaction(userTransaction)

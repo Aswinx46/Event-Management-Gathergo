@@ -15,7 +15,7 @@ export interface IbookingRepository {
     changeStatus(bookingId: string, status: string): Promise<BookingEntity | null>
     findBookingByIdForPayment(bookingId: string | ObjectId): Promise<BookingPaymentEntity | null>
     updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null>
-    findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ date: Date[], servicePrice: number } | null>
+    findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[], servicePrice: number } | null>
     cancelBooking(bookingId: string): Promise<BookingEntity | null>
     showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: PopulatedBookingForAdmin[] | [], totalPages: number }>
     findTotalBookings(): Promise<number>

@@ -37,10 +37,10 @@ export class EventRepository implements IeventRepository {
     async updateTicketPurchaseCount(eventId: string | ObjectId, newCount: number): Promise<EventEntity | null> {
         return eventModal.findByIdAndUpdate(eventId, { ticketPurchased: newCount })
     }
-    async findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number; ticketPurchased: number; ticketTypeDescription?: TicketType[] }> {
-        const eventDetails = await eventModal.findById(eventId).select('ticketPurchased totalTicket ticketTypeDescription')
+    async findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ _id: ObjectId, totalTicket: number; ticketPurchased: number; ticketTypeDescription?: TicketType[] }> {
+        const eventDetails = await eventModal.findById(eventId).select('_id ticketPurchased totalTicket ticketTypeDescription')
         if (!eventDetails) throw new Error('No event found in this ID')
-        return { totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased, ticketTypeDescription: eventDetails?.ticketTypeDescription }
+        return { _id: eventDetails._id, totalTicket: eventDetails?.totalTicket, ticketPurchased: eventDetails?.ticketPurchased, ticketTypeDescription: eventDetails?.ticketTypeDescription }
     }
     async findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null> {
         return eventModal.findById(eventId).select('hostedBy schedule')
@@ -174,5 +174,10 @@ export class EventRepository implements IeventRepository {
     async updateTicketVariantsCount(eventId: ObjectId, updatedTicketVariant: TicketType[]): Promise<boolean> {
         const result = await eventModal.updateOne({ _id: eventId }, { $set: { ticketTypeDescription: updatedTicketVariant } })
         return result.modifiedCount > 0
+    }
+    async updateTicketVariantCountAndTotaTicketCountWhileCancelling(eventId: ObjectId | string, ticketVariant: string): Promise<boolean> {
+        const result = await eventModal.updateOne({ _id: eventId }, { $inc: { [ticketVariant]: -1, ticketPurchased: -1 } })
+        if (!result) throw new Error("Error while updating the count after ticket cancellation")
+        return true
     }
 }

@@ -9,7 +9,7 @@ export interface IeventRepository {
     editEvent(eventId: string, update: EventUpdateEntity): Promise<EventEntity | null>
     findEventById(eventId: string): Promise<EventEntity | null>
     updateTicketPurchaseCount(eventId: string | ObjectId, newCount: number): Promise<EventEntity | null>
-    findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ totalTicket: number, ticketPurchased: number, ticketTypeDescription?: TicketType[] }>
+    findTotalTicketCountAndticketPurchased(eventId: string | ObjectId): Promise<{ _id: ObjectId, totalTicket: number, ticketPurchased: number, ticketTypeDescription?: TicketType[] }>
     findEventByIdForTicketVerification(eventId: string): Promise<EventEntity | null>
     findTotalTicketAndBookedTicket(eventId: string): Promise<EventEntity | null>
     findEventsBaseOnCategory(category: string, pageNo: number, sortBy: string): Promise<{ events: EventEntity[] | [], totalPages: number }>
@@ -22,4 +22,5 @@ export interface IeventRepository {
     eventDetailsForAdminDashboard(): Promise<EventDashboardSummary>
     findAllEventsOfAVendor(vendorId: string): Promise<EventEntity[] | []>
     updateTicketVariantsCount(eventId: ObjectId, updatedTicketVariant: TicketType[]): Promise<boolean>
+    updateTicketVariantCountAndTotaTicketCountWhileCancelling(eventId: ObjectId | string, ticketVariant: string): Promise<boolean>
 }

@@ -248,7 +248,7 @@ const findEventsNearToUserUseCase = new FindEventsNearToUserUseCase(eventDatabas
 export const injectedFindEventsNearToUserController = new FindEventsNearToUserController(findEventsNearToUserUseCase)
 
 //-----------------------------------Ticket cancellation--------------------
-const ticketCancellationUseCase = new TicketCancellationUseCase(ticketDatabase, walletDatabase, transactionDatabase)
+const ticketCancellationUseCase = new TicketCancellationUseCase(ticketDatabase, walletDatabase, transactionDatabase, eventDatabase)
 export const injectedTicketCancellationController = new TicketCancellationController(ticketCancellationUseCase)
 
 //----------------------------------booking cancel------------------------
@@ -270,5 +270,5 @@ const findVendorProfileUseCase = new FindVendorProfileUseCase(workSampleDatabase
 export const injectedFindVendorProfileWithSample = new VendorProfileWithSamplesController(findVendorProfileUseCase)
 
 //----------------------------------- wallet payment in client side----------
-const walletPayUseCase = new WalletPayUseCase(walletDatabase, transactionDatabase,eventDatabase,ticketDatabase)
+const walletPayUseCase = new WalletPayUseCase(walletDatabase, transactionDatabase, eventDatabase, ticketDatabase)
 export const injectedWalletPayController = new WalletPayController(walletPayUseCase) 

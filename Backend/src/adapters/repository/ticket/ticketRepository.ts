@@ -61,6 +61,7 @@ export class TicketRepository implements IticketRepositoryInterface {
             amount: ticket.amount,
             phone: ticket.phone,
             email: ticket.email,
+            ticketType: ticket.ticketType,
             paymentStatus: ticket.paymentStatus,
             qrCodeLink: ticket.qrCodeLink,
             eventId: {
