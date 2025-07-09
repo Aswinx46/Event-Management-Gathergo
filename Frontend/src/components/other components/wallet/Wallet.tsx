@@ -107,7 +107,7 @@ export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
                   amount={transaction?.amount}
                   paymentStatus={transaction?.paymentStatus}
                   currency={transaction?.currency}
-                  date={new Date(transaction?.date).toDateString()}
+                  date={new Date(transaction?.date).toISOString()}
                   paymentType={transaction?.paymentType}
                   resourceType={transaction?.paymentFor?.resourceType}
                   title={transaction?.paymentFor?.resourceId?.title}
