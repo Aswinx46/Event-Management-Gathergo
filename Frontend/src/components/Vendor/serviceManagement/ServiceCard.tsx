@@ -6,7 +6,7 @@ import React from 'react';
 
 interface Service {
     _id?: string;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;
@@ -50,7 +50,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onEdit,changeStatusS
                 className="border-b border-white/10 pb-4 relative z-10"
             >
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">
-                    {service.serviceTitle}
+                    {service.title}
                 </h2>
                 <div className="flex items-center justify-between mt-2">
                     <p className="text-gray-400">{service.yearsOfExperience} Years Experience</p>

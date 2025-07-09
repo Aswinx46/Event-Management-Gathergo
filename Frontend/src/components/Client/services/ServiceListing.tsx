@@ -22,7 +22,7 @@ interface FilterItem {
 }
 interface Service {
     _id?: string;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;
@@ -172,7 +172,7 @@ const ServicesList: React.FC = () => {
                                 <ServiceCard
                                     serviceId={service._id!}
                                     vendorId={service.vendorId!}
-                                    serviceTitle={service.serviceTitle}
+                                    title={service.title}
                                     yearsOfExperience={service.yearsOfExperience}
                                     serviceDescription={service.serviceDescription}
                                     cancellationPolicy={service.cancellationPolicy}

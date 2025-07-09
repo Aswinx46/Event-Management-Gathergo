@@ -7,7 +7,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ServiceFormData {
     _id?: string;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;
@@ -69,7 +69,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
     console.log('modal')
     const initialValues: ServiceFormData = {
         _id: data?._id || '',
-        serviceTitle: data?.serviceTitle || '',
+        title: data?.title || '',
         yearsOfExperience: data?.yearsOfExperience || 0,
         serviceDescription: data?.serviceDescription || '',
         cancellationPolicy: data?.cancellationPolicy || '',

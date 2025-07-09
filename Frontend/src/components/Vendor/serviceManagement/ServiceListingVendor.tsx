@@ -10,7 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/other components/Pagination';
 interface Service {
     _id?: string;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;

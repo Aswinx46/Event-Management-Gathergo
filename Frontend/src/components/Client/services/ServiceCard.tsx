@@ -5,7 +5,7 @@ import { Clock, IndianRupee, Award, Info, FileText } from 'lucide-react';
 interface ServiceCardProps {
   serviceId: string;
   vendorId:string;
-  serviceTitle: string;
+  title: string;
   yearsOfExperience: number;
   serviceDescription: string;
   cancellationPolicy: string;
@@ -19,7 +19,7 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({
   serviceId,
   vendorId,
-  serviceTitle,
+  title,
   yearsOfExperience,
   serviceDescription,
   cancellationPolicy,
@@ -47,7 +47,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
-            {serviceTitle}
+            {title}
           </motion.h3>
 
           {/* Price Tag */}

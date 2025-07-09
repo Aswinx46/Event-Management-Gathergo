@@ -35,7 +35,7 @@ export interface BookingDetailsInAdminEntity {
 export interface PopulatedBookingForAdmin extends Omit<BookingDetailsInAdminEntity, 'serviceId' | 'clientId' | 'vendorId'> {
   serviceId: {
     _id: ObjectId;
-    serviceTitle: string;
+    title: string;
     servicePrice: number;
     categoryId: {
       _id: ObjectId;

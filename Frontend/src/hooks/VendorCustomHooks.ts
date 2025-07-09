@@ -62,7 +62,7 @@ export const useUpdateProfileImageMutation = () => {
 
 interface Service {
     _id?: string;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;

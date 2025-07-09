@@ -104,13 +104,13 @@ export const WalletCard = ({ wallet, transactions }: WalletCardProps) => {
               {transactions?.map((transaction, index) => (
                 <TransactionItem
                   key={index}
-                  amount={transaction.amount}
-                  paymentStatus={transaction.paymentStatus}
-                  currency={transaction.currency}
-                  date={new Date(transaction.date).toDateString()}
-                  paymentType={transaction.paymentType}
-                  resourceType={transaction.paymentFor.resourceType}
-                  title={transaction.paymentFor.resourceId.title}
+                  amount={transaction?.amount}
+                  paymentStatus={transaction?.paymentStatus}
+                  currency={transaction?.currency}
+                  date={new Date(transaction?.date).toDateString()}
+                  paymentType={transaction?.paymentType}
+                  resourceType={transaction?.paymentFor?.resourceType}
+                  title={transaction?.paymentFor?.resourceId?.title}
                 />
 
               ))}

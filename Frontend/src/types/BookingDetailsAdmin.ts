@@ -27,7 +27,7 @@ export interface BookingDetailsFromAdmin {
     _id?: string;
     serviceId: {
         _id: string,
-        serviceTitle: string,
+        title: string,
         servicePrice: number,
         categoryId: {
             _id: string,
@@ -58,7 +58,7 @@ export interface BookingDetailsFromAdmin {
 export interface BookingDetailsInAdminEntity extends Omit<BookingDetailsFromAdmin, 'serviceId' | 'clientId' | 'vendorId'> {
     serviceId: {
       _id: string;
-      serviceTitle: string;
+      title: string;
       servicePrice: number;
       categoryId: {
         _id: string;

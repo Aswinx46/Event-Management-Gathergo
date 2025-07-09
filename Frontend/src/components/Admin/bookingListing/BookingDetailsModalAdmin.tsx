@@ -194,7 +194,7 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Service Title</p>
                     <p className="text-gray-900 dark:text-white">
-                      {booking.serviceId.serviceTitle}
+                      {booking.serviceId.title}
                     </p>
                   </div>
                 </div>

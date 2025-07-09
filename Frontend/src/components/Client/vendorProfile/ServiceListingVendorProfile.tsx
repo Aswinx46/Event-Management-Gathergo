@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 
 export interface ServiceEntity {
     _id?: string
-    serviceTitle: string
+    title: string
     yearsOfExperience: number
     serviceDescription: string
     cancellationPolicy: string
@@ -80,7 +80,7 @@ export default function ServicesListingInVendorProfile({ services }: ServicesLis
                 >
                     {services.map((service) => (
                         <motion.div
-                            key={service._id?.toString() || service.serviceTitle}
+                            key={service._id?.toString() || service.title}
                             variants={item}
                             whileHover={{
                                 scale: 1.02,
@@ -91,7 +91,7 @@ export default function ServicesListingInVendorProfile({ services }: ServicesLis
                             <div className="p-8 flex flex-col h-full">
                                 <div className="flex justify-between items-start mb-6">
                                     <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent line-clamp-1">
-                                        {service.serviceTitle}
+                                        {service.title}
                                     </h3>
                                     <motion.div
                                         initial={{ scale: 0.8 }}
@@ -149,14 +149,14 @@ export default function ServicesListingInVendorProfile({ services }: ServicesLis
 
 
                                 <motion.button
-                                    onClick={() => toggleExpand(service._id?.toString() || service.serviceTitle)}
+                                    onClick={() => toggleExpand(service._id?.toString() || service.title)}
                                     whileTap={{ scale: 0.95 }}
                                     className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl transition-all duration-300 font-medium shadow-lg shadow-purple-500/20 mt-auto"
                                 >
-                                    {expandedId === (service._id?.toString() || service.serviceTitle) ? "Show Less" : "View Details"}
+                                    {expandedId === (service._id?.toString() || service.title) ? "Show Less" : "View Details"}
                                 </motion.button>
 
-                                {expandedId === (service._id?.toString() || service.serviceTitle) && (
+                                {expandedId === (service._id?.toString() || service.title) && (
                                     <motion.div
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: "auto" }}

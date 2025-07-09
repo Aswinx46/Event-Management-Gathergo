@@ -66,7 +66,7 @@ export class ServiceRepository implements IserviceRepository {
             _id: service?._id,
             price: service?.servicePrice,
             serviceDescription: service?.serviceDescription,
-            serviceTitle: service?.title,
+            title: service?.title,
             duration: service?.serviceDuration,
             vendor: {
                 _id: service?.vendorId?._id,
@@ -85,8 +85,8 @@ export class ServiceRepository implements IserviceRepository {
         const limit = 6
         const skip = (page - 1) * limit
         const sortOptions: Record<string, any> = {
-            "a-z": { serviceTitle: 1 },
-            "z-a": { serviceTitle: -1 },
+            "a-z": { title: 1 },
+            "z-a": { title: -1 },
             "price-low-high": { servicePrice: 1 },
             "price-high-low": { servicePrice: -1 },
             "newest": { createdAt: -1 },
@@ -103,7 +103,7 @@ export class ServiceRepository implements IserviceRepository {
     }
     async searchService(query: string): Promise<ServiceEntity[] | []> {
         const regex = new RegExp(query || '', 'i');
-        return await serviceModal.find({ serviceTitle: { $regex: regex }, status: 'active' }).select('_id serviceTitle ')
+        return await serviceModal.find({ title: { $regex: regex }, status: 'active' }).select('_id title ')
     }
 }
 

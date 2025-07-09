@@ -7,7 +7,7 @@ import Pagination from '@/components/other components/Pagination'
 
 interface Service {
   _id:string
-  serviceTitle: string;
+  title: string;
   serviceDescription: string;
   serviceDuration: string;
   servicePrice: number;

@@ -3,7 +3,7 @@ import { VendorDTO } from "./vendorDTO";
 
 export interface ServiceWithVendorEntity {
     _id: string | ObjectId;
-    serviceTitle: string;
+    title: string;
     serviceDescription: string;
     price: number;
     vendor: VendorDTO;

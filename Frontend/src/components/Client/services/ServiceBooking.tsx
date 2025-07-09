@@ -44,7 +44,7 @@ export interface VendorDTO {
 
 export interface ServiceWithVendorEntity {
   _id: string;
-  serviceTitle: string;
+  title: string;
   serviceDescription: string;
   price: number;
   vendor: VendorDTO;
@@ -406,7 +406,7 @@ const VendorBookingCard = () => {
                   transition={{ delay: 0.5 }}
                 >
                   <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                    <h4 className="font-medium text-lg text-white">{Service?.serviceTitle}</h4>
+                    <h4 className="font-medium text-lg text-white">{Service?.title}</h4>
                     <p className="text-sm text-gray-400 mt-1 line-clamp-4 overflow-y-auto custom-scrollbar">{Service?.serviceDescription}</p>
                   </div>
 

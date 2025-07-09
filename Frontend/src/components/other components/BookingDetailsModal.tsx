@@ -32,7 +32,7 @@ import { ReviewEntity } from "@/types/ReviewType";
 
 interface Service {
     _id: string
-    serviceTitle: string;
+    title: string;
     serviceDescription: string;
     serviceDuration: string;
     servicePrice: number;
@@ -289,7 +289,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                     >
                         {/* Service Details */}
                         <motion.div variants={itemVariants} className="space-y-2 bg-[#222] p-4 rounded-xl border border-[#333]">
-                            <h3 className="text-lg font-bold text-white">{booking.service.serviceTitle}</h3>
+                            <h3 className="text-lg font-bold text-white">{booking.service.title}</h3>
                             <p className="text-gray-400 text-sm leading-relaxed">{booking.service.serviceDescription}</p>
                         </motion.div>
 

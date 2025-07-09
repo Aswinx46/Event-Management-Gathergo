@@ -98,7 +98,7 @@ export const updateProfileImageVendor = async (id: string, imageUrl: string) => 
 
 interface Service {
     _id?: string;
-    serviceTitle: string;
+    title: string;
     yearsOfExperience: number;
     serviceDescription: string;
     cancellationPolicy: string;

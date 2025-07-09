@@ -31,7 +31,7 @@ export class BookingRepository implements IbookingRepository {
             }
         ).populate({
             path: 'serviceId',
-            select: '_id serviceDescription servicePrice serviceTitle serviceDuration'
+            select: '_id serviceDescription servicePrice title serviceDuration'
         }).lean<PopulatedBooking[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
         const Bookings = bookings.map((booking): BookingsInClientEntity => ({
@@ -60,7 +60,7 @@ export class BookingRepository implements IbookingRepository {
             select: '_id name email phone profileImage'
         }).populate({
             path: 'serviceId',
-            select: '_id serviceDescription servicePrice serviceTitle serviceDuration'
+            select: '_id serviceDescription servicePrice title serviceDuration'
         }).lean<PopulatedBookingEntityVendor[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
         const Bookings = bookings.map((booking): BookingListingEntityVendor => ({
@@ -144,7 +144,7 @@ export class BookingRepository implements IbookingRepository {
                 path: 'categoryId',
                 select: 'name'
             },
-            select: 'serviceTitle servicePrice'
+            select: 'title servicePrice'
 
         }).populate({
             path: 'clientId',
@@ -159,7 +159,7 @@ export class BookingRepository implements IbookingRepository {
             _id: b._id,
             serviceId: {
                 _id: b.serviceId._id,
-                serviceTitle: b.serviceId.serviceTitle,
+                title: b.serviceId.title,
                 servicePrice: b.serviceId.servicePrice,
                 categoryId: {
                     _id: b.serviceId.categoryId._id,

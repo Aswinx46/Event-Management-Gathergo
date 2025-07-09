@@ -21,7 +21,7 @@ import BookingDetailsModal from "./BookingDetailsModal";
 
 interface Service {
   _id:string
-  serviceTitle: string;
+  title: string;
   serviceDescription: string;
   serviceDuration: string;
   servicePrice: number;
@@ -142,7 +142,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                   >
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-medium text-black">{booking?.service?.serviceTitle}</p>
+                        <p className="font-medium text-black">{booking?.service?.title}</p>
                         {/* <p className="text-sm text-gray-500 line-clamp-2">{booking?.service?.serviceDescription}</p> */}
                       </div>
                     </TableCell>
