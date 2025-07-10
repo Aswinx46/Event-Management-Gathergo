@@ -1,9 +1,11 @@
+import { ScheduleItem } from "./ScheduleItemType";
 
 export interface TicketAndUserDTO {
     _id?: string
     ticketId: string;
     // createdAt?: Date;
-    totalAmount: number
+    amount: number;
+    ticketType: string
     ticketCount: number
     phone: string;
     email: string;
@@ -13,13 +15,11 @@ export interface TicketAndUserDTO {
         _id: string
         title: string,
         description: string,
-        date: Date[],
-        startTime: Date,
-        endTime: Date,
         status: "upcoming" | "completed" | "cancelled"
         address?: string,
         pricePerTicket: number;
         posterImage: string[];
+        schedule: ScheduleItem[]
     }
     clientId: {
         _id: string,

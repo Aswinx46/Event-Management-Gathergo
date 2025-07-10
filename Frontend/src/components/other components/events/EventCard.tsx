@@ -27,13 +27,6 @@ const formatDate = (date: Date): string => {
     }
 };
 
-const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "INR",
-        minimumFractionDigits: 2,
-    }).format(amount);
-};
 
 const getStatusColor = (status: "upcoming" | "completed" | "cancelled" | "onGoing"): string => {
     switch (status) {
@@ -101,7 +94,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
 
                 <div className="flex items-center justify-between pt-3 border-t border-zinc-800 mt-3">
                     <span className="text-purple-400 font-semibold">
-                        {event.pricePerTicket > 0 ? formatCurrency(event.pricePerTicket) : "Free"}
+                        {/* {event.pricePerTicket > 0 ? formatCurrency(event.pricePerTicket) : "Free"} */}
                     </span>
 
                     <div className="flex items-center text-xs text-zinc-500">

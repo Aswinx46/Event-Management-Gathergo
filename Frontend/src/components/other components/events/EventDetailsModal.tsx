@@ -23,13 +23,7 @@ interface EventDetailModalProps {
 
 
 
-const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "INR",
-        minimumFractionDigits: 2,
-    }).format(amount);
-};
+
 
 const getStatusColor = (status: "upcoming" | "completed" | "cancelled" | "onGoing"): string => {
     switch (status) {
@@ -239,9 +233,9 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                 >
                                     <div className="flex justify-between items-center mb-2">
                                         <h3 className="font-semibold text-white">Tickets</h3>
-                                        <span className="text-purple-400 font-bold text-xl">
+                                        {/* <span className="text-purple-400 font-bold text-xl">
                                             {event.pricePerTicket > 0 ? formatCurrency(event.pricePerTicket) : "Free"}
-                                        </span>
+                                        </span> */}
                                     </div>
 
                                     <div className="space-y-2">

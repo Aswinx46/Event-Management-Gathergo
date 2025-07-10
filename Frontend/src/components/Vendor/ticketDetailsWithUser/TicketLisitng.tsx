@@ -7,7 +7,7 @@ import { TicketDetailModal } from "./TicketDetailsModal"
 import { Badge } from "@/components/ui/badge"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { format } from "date-fns"
+
 
 interface TicketListProps {
   tickets: TicketAndUserDTO[]
@@ -110,7 +110,7 @@ export function TicketList({ tickets }: TicketListProps) {
               <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
                 <div>
                   <p className="text-gray-500">Amount</p>
-                  <p className="font-medium">₹{ticket.totalAmount}</p>
+                  <p className="font-medium">₹{ticket.amount}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Tickets</p>
@@ -122,11 +122,11 @@ export function TicketList({ tickets }: TicketListProps) {
                 <Badge variant="outline" className={getPaymentStatusColor(ticket.paymentStatus)}>
                   {ticket.paymentStatus}
                 </Badge>
-                <p className="text-xs text-gray-500">
-                  {ticket.eventId.date &&
-                    ticket.eventId.date.length > 0 &&
-                    format(new Date(ticket.eventId.date[0]), "MMM dd, yyyy")}
-                </p>
+                {ticket.eventId.schedule && ticket.eventId.schedule.length > 0 && ticket.eventId.schedule.map((item) => (
+                  <p className="text-xs text-gray-500">
+                    {new Date(item.date).toDateString()}
+                  </p>
+                ))}
               </div>
             </div>
           </motion.div>

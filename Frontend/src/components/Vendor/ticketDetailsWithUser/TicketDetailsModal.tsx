@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, MapPin, Phone, Mail, QrCode, Ticket, DollarSign, AlertCircle } from "lucide-react"
-import { format } from "date-fns"
+
 import { Separator } from "@/components/ui/separator"
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -106,7 +106,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                             <DollarSign className="w-5 h-5 mr-2 text-gray-500" />
                                             <div>
                                                 <p className="text-sm text-gray-500">Total Amount</p>
-                                                <p className="font-medium">₹{ticket.totalAmount}</p>
+                                                <p className="font-medium">₹{ticket.amount}</p>
                                             </div>
                                         </div>
 
@@ -182,11 +182,11 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                                 <Calendar className="w-5 h-5 mr-2 text-gray-500" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Date</p>
-                                                    <p className="font-medium">
-                                                        {ticket.eventId.date &&
-                                                            ticket.eventId.date.length > 0 &&
-                                                            format(new Date(ticket.eventId.date[0]), "MMMM dd, yyyy")}
-                                                    </p>
+                                                    {ticket.eventId.schedule && ticket.eventId.schedule.length > 0 && ticket.eventId.schedule.map((item) => (
+                                                        <p className="text-xs text-gray-500">
+                                                            {new Date(item.date).toDateString()}
+                                                        </p>
+                                                    ))}
                                                 </div>
                                             </div>
 
@@ -194,10 +194,13 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                                 <Clock className="w-5 h-5 mr-2 text-gray-500" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Time</p>
-                                                    <p className="font-medium">
-                                                        {format(new Date(ticket.eventId.startTime), "h:mm a")} -
-                                                        {format(new Date(ticket.eventId.endTime), "h:mm a")}
-                                                    </p>
+
+                                                    {ticket.eventId.schedule && ticket.eventId.schedule.length > 0 && ticket.eventId.schedule.map((item) => (
+                                                        <p className="text-xs text-gray-500">
+                                                            {`${item.startTime} to ${item.endTime}`}
+                                                        </p>
+                                                    ))}
+
                                                 </div>
                                             </div>
 
@@ -215,7 +218,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                                 <DollarSign className="w-5 h-5 mr-2 text-gray-500" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Price Per Ticket</p>
-                                                    <p className="font-medium">₹{ticket.eventId.pricePerTicket}</p>
+                                                    <p className="font-medium">₹{ticket.amount}</p>
                                                 </div>
                                             </div>
                                         </div>
