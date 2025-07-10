@@ -37,7 +37,7 @@ interface AddServiceModalProps {
 
 
 const validationSchema = Yup.object().shape({
-    serviceTitle: Yup.string().required('Service title is required')  .matches(/^[^*]*$/, 'Service title cannot contain a star (*)').matches(/[a-zA-Z]/, 'Service title cannot be numbers only'),
+    title: Yup.string().required('Service title is required')  .matches(/^[^*]*$/, 'Service title cannot contain a star (*)').matches(/[a-zA-Z]/, 'Service title cannot be numbers only'),
     yearsOfExperience: Yup.number()
         .min(0, 'Years of experience must be positive')
         .required('Years of experience is required'),
@@ -142,15 +142,15 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({
                                     {({ isSubmitting }) => (
                                         <Form className="space-y-6">
                                             <div>
-                                                <label htmlFor="serviceTitle" className="block text-sm font-medium text-gray-700">
+                                                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                                     Service Title
                                                 </label>
                                                 <Field
                                                     type="text"
-                                                    name="serviceTitle"
+                                                    name="title"
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                                                 />
-                                                <ErrorMessage name="serviceTitle" component="div" className="mt-1 text-sm text-red-600" />
+                                                <ErrorMessage name="title" component="div" className="mt-1 text-sm text-red-600" />
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

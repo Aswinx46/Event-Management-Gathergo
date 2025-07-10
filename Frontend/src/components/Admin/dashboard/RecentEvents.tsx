@@ -1,7 +1,7 @@
 
 import { motion } from 'framer-motion';
 import { EventEntity } from '@/types/EventEntity';
-import { formatTimeAgo, formatCurrency } from '@/utils/dateUtils';
+import { formatTimeAgo } from '@/utils/dateUtils';
 import { Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,7 +73,7 @@ const RecentEvents = ({ events }: RecentEventsProps) => {
               </div>
             </div>
             <div className="ml-auto text-right">
-              <p className="font-bold">{formatCurrency(event.pricePerTicket)}</p>
+              {/* <p className="font-bold">{formatCurrency(event.pricePerTicket)}</p> */}
               <p className="text-sm text-gray-500">
                 {event.ticketPurchased}/{event.totalTicket} tickets
               </p>

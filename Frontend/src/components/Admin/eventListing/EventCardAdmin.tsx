@@ -120,9 +120,9 @@ export const EventCard: React.FC<EventCardProps> = ({
           </div>
 
           <div className="mt-2 grid grid-cols-2 gap-2">
-            <Badge variant="outline" className="flex justify-center">
+            {/* <Badge variant="outline" className="flex justify-center">
               ${event.pricePerTicket}
-            </Badge>
+            </Badge> */}
             <Badge variant="outline" className="flex justify-center">
               {event.ticketPurchased}/{event.totalTicket} sold
             </Badge>

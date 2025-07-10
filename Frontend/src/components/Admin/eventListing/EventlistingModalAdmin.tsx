@@ -168,8 +168,14 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                     <div className="flex items-start">
                       <DollarSign className="w-5 h-5 mt-0.5 text-green-500 flex-shrink-0" />
                       <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-700">Price</p>
-                        <p className="text-sm text-gray-600">${event.pricePerTicket}</p>
+                        <p className="text-sm font-medium  text-gray-700">Price</p>
+                        {event.ticketTypeDescription && event.ticketTypeDescription.map((item) => (
+                          <>
+                            <p className="text-sm text-gray-600">{`${item.ticketType} - ₹${item.price}`}</p>
+
+                          </>
+
+                        ))}
                       </div>
                     </div>
 
@@ -177,7 +183,14 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                       <Users className="w-5 h-5 mt-0.5 text-green-500 flex-shrink-0" />
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-700">Max Per User</p>
-                        <p className="text-sm text-gray-600">{event.maxTicketsPerUser} tickets</p>
+                        {/* <p className="text-sm text-gray-600">{event.maxTicketsPerUser} tickets</p> */}
+                        {event.ticketTypeDescription && event.ticketTypeDescription.map((item) => (
+                          <>
+                            <p className="text-sm text-gray-600">{`${item.ticketType} - ${item.maxCount} tickets`}</p>
+
+                          </>
+
+                        ))}
                       </div>
                     </div>
                   </div>
