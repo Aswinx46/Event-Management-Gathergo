@@ -1,6 +1,5 @@
 import { addReview, cancelBooking, changePasswordClient, clientCreateAccount, clientFindCategory, clientFindServiceOnCategoryBasis, clientForgetPassword, clientForgetPasswordOtpApi, clientGoogleLogin, clientLogin, clientLogout, clientResendOtp, clientSignup, clientVerifyForgetPasswordOTp, confirmBookingPayment, confirmTicketAndPayment, createBooking, createBookingPayment, createTicket, deleteAllNotificationsClient, deleteSingleNotificationClient, fetchBookingInClient, fetchServiceDetailsWithVendor, fetchServiceForClient, fetchVendorForCarousal, findCategoriesForCategoryListing, findEventById, findevents, findEventsBasedOnCategory, findEventsNearToUser, findTicketAndEventDetailsClient, findVendorProfileWithSample, findWalletOfClient, loadChats, loadPreviousChat, payementUsingWallet, searchCategory, searchEvents, searchService, showReviews, singleNotificationRead, ticketCancellation, updateProfileClient } from "@/services/ApiServiceClient";
 import { BookingType } from "@/types/BookingType";
-import { ClientUpdateProfileEntity } from "@/types/ClientUpdateProfileType";
 import { ReviewEntity } from "@/types/ReviewType";
 import { TicketEntity } from "@/types/TicketPaymentType";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
@@ -156,7 +155,7 @@ export const useFindAllCategoryForListing = (pageNo: number) => {
 
 export const useUpdateClientProfie = () => {
     return useMutation({
-        mutationFn: (client: ClientUpdateProfileEntity) => updateProfileClient(client)
+        mutationFn: (formData:FormData) => updateProfileClient(formData)
     })
 }
 

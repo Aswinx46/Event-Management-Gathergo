@@ -4,6 +4,7 @@ import { injectedClientStatusCheckingMiddleware, injectedTokenExpiryValidationCh
 import { checkRoleBaseMiddleware } from "../../../adapters/middlewares/vendorStatusCheckingMiddleware";
 import { injectedFindAllCategoryController } from "../../Di/adminInject";
 import { injectedDeleteAllNotificationsController, injectedDeleteSingleNotificationController, injectedFindChatsOfUserController, injectedLoadPreviousChatController, injectedReadNotificationController } from "../../Di/chatInject";
+import { upload } from "../../../adapters/middlewares/multerMiddleware/multerMiddleware";
 
 export class clientRoute {
     public clientRoute: Router
@@ -70,7 +71,7 @@ export class clientRoute {
         this.clientRoute.patch('/updateProfileImage', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
             injectedChangeProfileImageClientController.handleUpdateProfileImageClient(req, res)
         })
-        this.clientRoute.put('/updateProfileClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {
+        this.clientRoute.put('/updateProfileClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware,upload.array('image',1), (req: Request, res: Response) => {
             injectedUpdateProfileClientController.handleUpdateProfileClient(req, res)
         })
         this.clientRoute.patch('/changePasswordClient', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('client'), injectedClientStatusCheckingMiddleware, (req: Request, res: Response) => {

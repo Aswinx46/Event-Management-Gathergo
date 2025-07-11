@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import ImageCropper from "@/components/other components/ImageCropper"
 import { useUpdateClientProfie } from "@/hooks/ClientCustomHooks"
-import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
 import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
 import { addClient } from "@/store/slices/user/userSlice"
@@ -69,7 +68,6 @@ export default function UserDetails() {
     }, [client])
 
     const updateProfile = useUpdateClientProfie()
-    const uploadImageCloudinary = useUploadeImageToCloudinaryMutation()
 
     useEffect(() => {
         if (croppedImage) {
@@ -91,19 +89,17 @@ export default function UserDetails() {
         try {
             setUpdating(true)
             const fileToUpload = croppedImage;
+            const formdata = new FormData()
             if (fileToUpload) {
                 // toast.error('Please select a ID Proof')
                 // throw new Error("No file selected");
-                const formdata = new FormData()
-                formdata.append('file', fileToUpload)
-                formdata.append('upload_preset', 'clientProfile')
-                const response = await uploadImageCloudinary.mutateAsync(formdata)
-                const imageUrl = response.secure_url
+                formdata.append('image', fileToUpload)
                 values.profileImage = imageUrl
                 values._id = userData?._id
             }
+            formdata.append('userValues', JSON.stringify(values))
             // values.phone = Number(values.phone)
-            updateProfile.mutate(values, {
+            updateProfile.mutate(formdata, {
                 onSuccess: (data) => {
                     console.log(data)
                     dispatch(addClient(data.updatedProfile))
@@ -341,7 +337,7 @@ export default function UserDetails() {
                                 >
                                     <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg">
                                         <img
-                                            src={CloudinaryPreset+userData.profileImage || "/placeholder.svg"}
+                                            src={CloudinaryPreset + userData.profileImage || "/placeholder.svg"}
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />

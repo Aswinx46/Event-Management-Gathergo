@@ -1,6 +1,5 @@
 import { isAxiosError } from 'axios';
 import axios from '../axios/clientAxios'
-import { ClientUpdateProfileEntity } from '@/types/ClientUpdateProfileType';
 import { TicketEntity } from '@/types/TicketPaymentType';
 import { BookingType } from '@/types/BookingType';
 import { ReviewEntity } from '../types/ReviewType';
@@ -245,9 +244,13 @@ export const findCategoriesForCategoryListing = async (pageNo: number) => {
     }
 }
 
-export const updateProfileClient = async (client: ClientUpdateProfileEntity) => {
+export const updateProfileClient = async (formData: FormData) => {
     try {
-        const response = await axios.put('/updateProfileClient', { client })
+        const response = await axios.put('/updateProfileClient', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
         return response.data
     } catch (error) {
         console.log('error while udpating client profile', error)

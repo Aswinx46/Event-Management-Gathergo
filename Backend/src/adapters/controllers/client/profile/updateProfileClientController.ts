@@ -9,8 +9,11 @@ export class UpdateProfileClientController {
     }
     async handleUpdateProfileClient(req: Request, res: Response): Promise<void> {
         try {
-            const { client } = req.body
-            const updatedProfile = await this.UpdateProfileClientUseCase.updateClientProfile(client)
+            const userValues = req.body.userValues
+            const user = JSON.parse(userValues)
+            const files = req.files as Express.Multer.File[]
+            const images = files.map((item) => ({ imageBuffer: item.buffer, fileName: item.originalname }))
+            const updatedProfile = await this.UpdateProfileClientUseCase.updateClientProfile(user,images)
             if (!updatedProfile) {
                 res.status(HttpStatus.BAD_REQUEST).json({ error: "No user found in this ID" })
                 return
