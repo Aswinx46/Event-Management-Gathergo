@@ -159,7 +159,7 @@ export const injectedCreateWorkSampleController = new CreateWorkSampleController
 
 //----------------------------Create event-----------------------------------
 const eventRepository = new EventRepository()
-const cloudinaryPreset = process.env.CLOUINARY_PREFIX
+const cloudinaryPreset = process.env.CLOUDINARY_PREFIX
 const eventCreationUseCase = new EventCreationUseCase(eventRepository, cloudinaryPreset!)
 export const injectedEventCreationController = new EventCreationController(eventCreationUseCase)
 

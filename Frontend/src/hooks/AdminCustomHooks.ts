@@ -87,12 +87,12 @@ export const useFindAllCategories = (currentPage: number) => {
     })
 }
 
-interface Category { title: string; image: File | null; }
+
 
 
 export const useCreateCategory = () => {
     return useMutation({
-        mutationFn: ({ title, image }: Category) => createCategory({ title, image }),
+        mutationFn: (formData:FormData) => createCategory(formData),
 
     })
 }

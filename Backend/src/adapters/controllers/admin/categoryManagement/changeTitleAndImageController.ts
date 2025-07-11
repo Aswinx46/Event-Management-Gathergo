@@ -9,8 +9,12 @@ export class ChangeTitleAndImageCategoryController {
     }
     async handleChangeTitleAndImage(req: Request, res: Response): Promise<void> {
         try {
-            const { categoryId, updates } = req.body
-            const updateCategory = await this.changeTitleAndImageUseCase.changeTitleAndImage(categoryId, updates)
+            const { categoryId } = req.params
+            const files = req.files as Express.Multer.File[]
+            const images = files.map((item) => ({ imageBuffer: item.buffer, fileName: item.originalname }))
+            const title = req.body.title
+           
+            const updateCategory = await this.changeTitleAndImageUseCase.changeTitleAndImage(categoryId, images, title)
             res.status(HttpStatus.OK).json({ message: "Category updated" })
         } catch (error) {
             console.log('error while changning titlle and image of category', error)

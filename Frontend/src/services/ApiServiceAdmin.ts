@@ -109,11 +109,15 @@ export const findAllCategory = async (currentPage: number) => {
     }
 }
 
-interface Category { title: string; image: File | null; }
 
-export const createCategory = async ({ title, image }: Category) => {
+
+export const createCategory = async (formData: FormData) => {
     try {
-        const response = await axios.post('/createCategory', { title, image })
+        const response = await axios.post('/createCategory', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
         return response.data
     } catch (error) {
         console.log('error while creating category', error)
@@ -183,7 +187,11 @@ export const unblockVendor = async (vendorId: string) => {
 
 export const updateCategory = async (categoryId: string, formData: FormData) => {
     try {
-        const response = await axios.patch(`/updateCategory/${categoryId}`, formData)
+        const response = await axios.patch(`/updateCategory/${categoryId}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
         return response.data
     } catch (error) {
         console.log('error while changning titlle and image of category', error)

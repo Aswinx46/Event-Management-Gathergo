@@ -9,8 +9,11 @@ export class CreateCategoryController {
     }
     async handleCreatecategory(req: Request, res: Response): Promise<void> {
         try {
-            const { title, image } = req.body
-            const category = await this.createCategoryConrollerUseCase.createCategory(title, image)
+            const files = req.files as Express.Multer.File[]
+            const images = files.map((item) => ({ imageBuffer: item.buffer, fileName: item.originalname }))
+            const title = req.body.title
+            // console.log('this is the title',title)
+            const category = await this.createCategoryConrollerUseCase.createCategory(title, images)
             res.status(HttpStatus.OK).json({ message: 'category created', category })
         } catch (error) {
             console.log('error while creating category', error)

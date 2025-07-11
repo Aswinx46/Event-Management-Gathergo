@@ -4,7 +4,6 @@ import { FaTimes, FaUpload } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import ImageCropper from "@/components/other components/ImageCropper";
-import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
 import { useCreateCategory } from "@/hooks/AdminCustomHooks";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
@@ -44,7 +43,6 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
     exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
   };
 
-  const imageUpload = useUploadeImageToCloudinaryMutation()
 
   const createCategory = useCreateCategory()
 
@@ -55,13 +53,10 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ isOpen, setIsOpen, 
       values.image = croppedImage
       const formdata = new FormData()
       if (values.image) {
-        formdata.append('file', values.image)
-        formdata.append('upload_preset', 'Category')
+        formdata.append('image', values.image)
+        formdata.append('title',values.title.trim())
         setIsLoading(true)
-        const response = await imageUpload.mutateAsync(formdata)
-        values.image = response?.secure_url
-        values.title = values.title.trim()
-        createCategory.mutate(values, {
+        createCategory.mutate(formdata, {
           onSuccess(data) {
             toast.success(data?.message)
             console.log('data while creating category', data)

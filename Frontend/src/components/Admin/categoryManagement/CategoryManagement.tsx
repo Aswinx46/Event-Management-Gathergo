@@ -31,7 +31,7 @@ const CategoryManagement: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const findCategoryApi = useFindAllCategories(currentPage)
-  console.log(findCategoryApi.data)
+
   const changeStatusCategoryApi = UseChangeStatusCategory()
 
   const cardVariants = {
@@ -113,12 +113,7 @@ const CategoryManagement: React.FC = () => {
       try {
         const formData = new FormData()
         formData.append('image', selectedFile)
-        // formdata.append('upload_preset', 'Category')
-        // const response = await uploadImageToCloudinary.mutateAsync(formdata)
-        // const updates = {
-        //   title: editedTitle.trim(),
-        //   image: response.secure_url
-        // }
+        
         formData.append('title', editedTitle.trim())
 
         updateCategory.mutate({ categoryId: selectedCategory._id, formData }, {

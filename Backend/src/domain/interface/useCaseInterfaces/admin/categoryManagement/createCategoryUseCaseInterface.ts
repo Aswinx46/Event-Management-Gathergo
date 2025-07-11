@@ -1,5 +1,6 @@
+import { ImageBufferType } from "../../../../entities/bufferType/ImageBufferType";
 import { categoryEntity } from "../../../../entities/categoryEntity";
 
 export interface IcreateCategoryUseCase {
-    createCategory(title: string, img: string): Promise<categoryEntity>
+    createCategory(title: string, imageDetails: ImageBufferType[]): Promise<categoryEntity>
 }
