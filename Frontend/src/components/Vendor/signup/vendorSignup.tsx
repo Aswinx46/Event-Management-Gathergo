@@ -117,9 +117,7 @@ export default function SignupPage() {
         formdata.append('upload_preset', 'vendor_id')
         try {
             const response = await uploadImageCloudinaryAPI.mutateAsync(formdata)
-            console.log(response)
-            const documentUrl = response.secure_url
-            console.log('this is the documenturl', documentUrl)
+            const documentUrl = response.secure_url.split('upload/')[1]
             const vendor: VendorData = {
                 name: values.name,
                 email: values.email,
@@ -129,7 +127,7 @@ export default function SignupPage() {
                 confirmPassword: values.confirmPassword
             }
             setData(vendor)
-            console.log(vendor)
+
             // await vendorSignupAPI.mutateAsync(vendor)
             vendorSignupAPI.mutate(vendor, {
                 onSuccess: () => {

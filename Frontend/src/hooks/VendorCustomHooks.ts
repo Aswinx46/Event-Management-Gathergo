@@ -1,6 +1,5 @@
 import { approveBookingVendor, cancelEvent, changePasswordInForgetPassword, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, otpVerificationForgetPassword, pdfDownloadVendor, rejectBooking, resendOtpVendor, sendOtpForgetPasswordVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { Period } from "@/types/DatePeriodType";
-// import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 
@@ -47,11 +46,7 @@ export const useVendorResendOtpMutation = () => {
     })
 }
 
-// export const useVendorLoginMutation = () => {
-//     return useMutation({
-//         mutationFn:({email,password}:{email:string,password:string})=>useLogin
-//     })
-// }
+
 
 export const useUpdateProfileImageMutation = () => {
     return useMutation({
