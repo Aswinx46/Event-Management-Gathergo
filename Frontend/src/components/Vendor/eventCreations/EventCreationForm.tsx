@@ -12,7 +12,7 @@ import TicketForm from "./TicketForm";
 import ReviewForm from "./ReviewForm";
 import FormNavigation from "./FormNavigation";
 import { EventType } from "@/types/EventType";
-import { useCreateEvent, useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks";
+import { useCreateEvent } from "@/hooks/VendorCustomHooks";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -174,11 +174,7 @@ const EventCreationForm: React.FC = () => {
                     }, { abortEarly: false });
                     break;
                 case 1:
-                    //   await scheduleValidation.validate({
-                    //         date: dates,
-                    //         startTime,
-                    //         endTime
-                    //     }, { abortEarly: false });
+
                     await scheduleValidation.validate(
                         { schedule },  // from your state
                         { abortEarly: false }
@@ -197,8 +193,8 @@ const EventCreationForm: React.FC = () => {
                         pricePerTicket: values.pricePerTicket,
                         maxTicketsPerUser: values.maxTicketsPerUser,
                         totalTicket: values.totalTicket,
-                        multipleTicketTypeNeeded:values.multipleTicketTypeNeeded,
-                        ticketTypeDescription:values.ticketTypeDescription
+                        multipleTicketTypeNeeded: values.multipleTicketTypeNeeded,
+                        ticketTypeDescription: values.ticketTypeDescription
                     }, { abortEarly: false });
                     break;
                 default:
@@ -232,7 +228,7 @@ const EventCreationForm: React.FC = () => {
         }
     };
 
-    const handleUpdateImage = useUploadeImageToCloudinaryMutation()
+    // const handleUpdateImage = useUploadeImageToCloudinaryMutation()
     const createEvent = useCreateEvent()
     const navigate = useNavigate()
     const handleCreateEvent = async (values: EventType, { setSubmitting }: FormikHelpers<EventType>) => {
@@ -242,59 +238,38 @@ const EventCreationForm: React.FC = () => {
             console.log('Vendor Id not found')
             return
         }
-        const imageUrls = []
+
         values.posterImage = posterImages
         if (!values.posterImage || values.posterImage.length === 0) {
             toast.error("Please select at least one image.");
             setSubmitting(false);
             return;
         }
-        try {
-            for (const file of values.posterImage) {
-                const formData = new FormData()
-                formData.append('file', file)
-                formData.append('upload_preset', 'Events')
-                const res = await handleUpdateImage.mutateAsync(formData)
-                imageUrls.push(res.secure_url)
-            }
-        } catch (error) {
-            console.log('error while uploading Event images to cloudinary', error)
+        const formData = new FormData()
+        for (const file of values.posterImage) {
+            formData.append('image', file)
+
         }
-
-
         const event: EventType = {
             ...values,
-            // date: dates,
-            // startTime: new Date(`2000-01-01T${startTime}`),
-            // endTime: new Date(`2000-01-01T${endTime}`),
-            posterImage: imageUrls,
+            posterImage: [],
             createdAt: new Date(),
             // attendees: [],
             ticketPurchased: 0,
             schedule,
-
-
         };
-
-
-        createEvent.mutate({ event, vendorId }, {
+        formData.append('event', JSON.stringify(event));
+        formData.append('vendorId', vendorId)
+        createEvent.mutate(formData, {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            onSuccess: () => {
-                // toast("Event Created", {
-                //     description: "Your event has been created successfully!",
-                // });
+            onSuccess: () => {     
                 toast.success("event created")
-                // toast.success(data.message)
                 navigate('/vendor/home')
             },
             onError: (err) => {
                 toast.error(err.message)
             }
         })
-
-
-
-
         setSubmitting(false);
     };
 

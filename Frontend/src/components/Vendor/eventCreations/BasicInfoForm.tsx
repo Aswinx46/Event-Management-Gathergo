@@ -52,7 +52,6 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageFiles, _setImageFiles] = useState<File[] | null>([])
 
-  console.log('image files',imageFiles)
   values.posterImage = imageFiles
   const handleRemoveImage = (index: number) => {
     const newImages = [...posterImages];

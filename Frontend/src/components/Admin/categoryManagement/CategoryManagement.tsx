@@ -5,7 +5,7 @@ import AddCategoryModal from './AddCategoryModal';
 import { UseChangeStatusCategory, useFindAllCategories, useUpdateCategory } from '@/hooks/AdminCustomHooks';
 import Pagination from '@/components/other components/Pagination';
 import { toast } from 'react-toastify';
-import { useUploadeImageToCloudinaryMutation } from '@/hooks/VendorCustomHooks';
+// import { useUploadeImageToCloudinaryMutation } from '@/hooks/VendorCustomHooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
@@ -87,7 +87,7 @@ const CategoryManagement: React.FC = () => {
   };
 
   const updateCategory = useUpdateCategory()
-  const uploadImageToCloudinary = useUploadeImageToCloudinaryMutation()
+  // const uploadImageToCloudinary = useUploadeImageToCloudinaryMutation()
   const clientQuery = useQueryClient()
 
   const collectEditedData = async () => {

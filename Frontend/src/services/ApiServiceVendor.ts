@@ -1,4 +1,4 @@
-import { EventType } from '@/types/EventType';
+// import { EventType } from '@/types/EventType';
 import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
 import { EventUpdateEntity } from '@/types/updateEventType';
@@ -244,9 +244,13 @@ export const changePasswordVendor = async (userId: string, newPassword: string, 
     }
 }
 
-export const createEvent = async (event: EventType, vendorId: string) => {
+export const createEvent = async (formdata: FormData) => {
     try {
-        const response = await axios.post(`/createEvent/${vendorId}`, { event })
+        const response = await axios.post(`/createEvent`, formdata, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
         return response.data
     } catch (error) {
         console.log('error while creating event', error)

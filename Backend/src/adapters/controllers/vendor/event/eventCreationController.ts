@@ -9,9 +9,13 @@ export class EventCreationController {
     }
     async handleCreateEvent(req: Request, res: Response): Promise<void> {
         try {
-            const { vendorId } = req.params
-            const { event } = req.body
-            const createdEvent = await this.eventCreateUseCase.createEvent(event, vendorId)
+
+            const files = req.files as Express.Multer.File[]
+            const images = files.map((item) => ({ imageBuffer: item.buffer, fileName: item.originalname }))
+            const vendorId = req.body.vendorId
+            const event = JSON.parse(req.body.event)
+         
+            const createdEvent = await this.eventCreateUseCase.createEvent(event, vendorId, images)
             res.status(HttpStatus.CREATED).json({ message: "Event created", createdEvent })
         } catch (error) {
             console.log('error while creating event', error)
