@@ -30,7 +30,6 @@ export default function AddWorkSample() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [image, setImage] = useState<string>('')
-  const uploadImageToCloudinary = useUploadeImageToCloudinaryMutation()
   const createWorkSample = useCreateWorkSample()
   const [showCropper, setShowCropper] = useState<boolean>(false)
   const [selectedImagesFile, setSelectedImagesFile] = useState<File[]>([])
@@ -45,15 +44,7 @@ export default function AddWorkSample() {
       .required('Description is required')
       .min(10, 'Description must be at least 10 characters')
       .max(1000, 'Description must be less than 1000 characters'),
-    // images: Yup.array()
-    //   .of(
-    //     Yup.object().shape({
-    //       file: Yup.mixed().required('Image is required'),
-    //       preview: Yup.string().required()
-    //     })
-    //   )
-    //   .min(1, 'At least one image is required')
-    //   .max(10, 'Maximum 10 images allowed')
+  
   });
 
   // Initial form values
@@ -72,32 +63,27 @@ export default function AddWorkSample() {
       toast.error("Maximum 100 images allowed")
     }
     try {
-      const uploadPromises = selectedImagesFile.map((image: File) => {
-        // if (!image.file && image.file.size <= 5 * 1024 * 1024 && image.file.type.startsWith('image/')) {
-        //   toast.error('Only image files under 5MB are allowed')
-        //   return
-        // }
-        const formdata = new FormData()
-        formdata.append('file', image)
-        formdata.append('upload_preset', 'workSamples')
-        return uploadImageToCloudinary.mutateAsync(formdata)
-      })
-      const responses = await Promise.all(uploadPromises)
-      const images = responses.map(res => res.secure_url);
+      const formdata = new FormData()
+      for (const file of selectedImagesFile) {
+        // console.log(file)
+        formdata.append('image', file)
+      }
+      console.log(formdata.forEach(file=>{
+        console.log(file)
+      }))
 
-
-      const uploadValue: WorkSamplesEntity = {
+      const uploadValue = {
         description: values.description,
-        images,
         title: values.title,
         vendorId: vendorId!,
 
       }
-       createWorkSample.mutate(uploadValue, {
+      formdata.append('workSampleData', JSON.stringify(uploadValue))
+      createWorkSample.mutate(formdata, {
         onSuccess: () => {
           toast.success('Work sample created')
           setSuccess(true)
-          setTimeout(() => setSuccess(false), 3000) // optional auto-hide
+       
           // formik.resetForm()
           setSelectedImagesFile([])
           resetForm()

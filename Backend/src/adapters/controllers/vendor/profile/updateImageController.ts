@@ -9,8 +9,11 @@ export class UpdateImageVendorController {
     }
     async handleUpdateImageVendor(req: Request, res: Response): Promise<void> {
         try {
-            const { id, imageUrl } = req.body
-            const vendor = await this.updateImageVendorUseCase.uploadProfileImage(id, imageUrl)
+            const { vendorId } = req.params
+            const files = req.files as Express.Multer.File[]
+            const images = files.map((item) => ({ imageBuffer: item.buffer, fileName: item.originalname }))
+
+            const vendor = await this.updateImageVendorUseCase.uploadProfileImage(vendorId, images)
             if (!vendor) {
                 res.status(HttpStatus.BAD_REQUEST).json({ message: 'error while udpating profile image in vendor side' })
                 return

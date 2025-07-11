@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 import RejectedVendorPage from "../rejectedModal/RejectedVendorPage"
 import ImageCropper from "@/components/other components/ImageCropper"
-import { useUpdateProfileImageMutation, useUploadeImageToCloudinaryMutation, useVendorLogout, useUpdateVendorDetailsMutation } from "@/hooks/VendorCustomHooks"
+import { useUpdateProfileImageMutation, useVendorLogout, useUpdateVendorDetailsMutation } from "@/hooks/VendorCustomHooks"
 import { toast } from "react-toastify"
 import { addVendor, removeVendor } from "@/store/slices/vendor/vendorSlice"
 import { isAxiosError } from "axios"
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { removeVendorToken } from "@/store/slices/vendor/vendorTokenSlice"
 import * as Yup from 'yup';
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 export default function VendorProfile() {
   const vendor = useSelector((state: RootState) => state.vendorSlice.vendor)
   const [isPending, setIsPending] = useState(false)
@@ -39,7 +40,7 @@ export default function VendorProfile() {
 
   const dispatch = useDispatch()
 
-  const uploadCloudinary = useUploadeImageToCloudinaryMutation()
+  // const uploadCloudinary = useUploadeImageToCloudinaryMutation()
   const updateImage = useUpdateProfileImageMutation()
 
 
@@ -60,17 +61,17 @@ export default function VendorProfile() {
 
   const handleImageSave = async () => {
     try {
-      const formdata = new FormData()
+      const formData = new FormData()
       if (!croppedImage) {
         toast.error("Please crop the image before uploading.");
         return;
       }
       const fileToUpload = croppedImage
-      formdata.append('file', fileToUpload)
-      formdata.append('upload_preset', 'vendor_id')
-      const response = await uploadCloudinary.mutateAsync(formdata)
+      formData.append('image', fileToUpload)
+
+
       if (vendor && vendor._id) {
-        updateImage.mutate({ id: vendor._id, imageUrl: response.secure_url }, {
+        updateImage.mutate({ id: vendor._id, formData }, {
           onSuccess: (data) => {
             toast.success(data.message || 'Profile image updated')
             dispatch(addVendor(data.updatedVendor))
@@ -215,7 +216,7 @@ export default function VendorProfile() {
                     <div className="h-full w-full rounded-full bg-white flex items-center justify-center overflow-hidden relative group">
                       {vendor?.profileImage ? (
                         <img
-                          src={croppedImage ? URL.createObjectURL(croppedImage) : vendor?.profileImage}
+                          src={croppedImage ? URL.createObjectURL(croppedImage) : CloudinaryPreset + vendor?.profileImage}
                           alt={vendor.name || 'Profile'}
                           className="h-full w-full object-cover"
                         />

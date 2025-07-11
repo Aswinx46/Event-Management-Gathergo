@@ -13,7 +13,7 @@ export const uploadImageToCloudinary = (input: ImageBufferType): Promise<string>
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
             {
-                public_id: input.fileName,
+                public_id: `${input.fileName}-${Date.now()}`,
                 resource_type: 'image',
                 type: 'authenticated'
             },

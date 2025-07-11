@@ -23,7 +23,7 @@ export class VendorRoute {
         this.vendorRoute.post('/resendOtp', (req: Request, res: Response) => {
             injectedResendOtpVendorController.handleResendOtp(req, res)
         })
-        this.vendorRoute.post('/updateProfileImage', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, upload.array('image', 1), (req: Request, res: Response) => {
+        this.vendorRoute.patch('/updateProfileImage/:vendorId', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, upload.array('image', 1), (req: Request, res: Response) => {
             injectedUpdateImageVendorController.handleUpdateImageVendor(req, res)
         })
         this.vendorRoute.post('/createService', injectedVerifyTokenAndCheckBlacklistMiddleWare, injectedTokenExpiryValidationChecking, checkRoleBaseMiddleware('vendor'), injectedVendorStatusCheckingMiddleware, (req: Request, res: Response) => {

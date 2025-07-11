@@ -6,7 +6,6 @@ import { useFindWorkSamples } from '@/hooks/VendorCustomHooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import Pagination from '@/components/other components/Pagination';
-import { Pencil } from 'lucide-react';
 import { Sparkles } from "lucide-react"; // optional icon
 import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
@@ -49,6 +48,7 @@ export default function VendorWorkSamples() {
       );
     }
   };
+
 
   const cardVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -98,10 +98,10 @@ export default function VendorWorkSamples() {
   ];
   const navigate = useNavigate()
 
-  const handleEdit = (e: React.MouseEvent, sampleId: string) => {
-    e.stopPropagation(); // Prevent modal from opening
-    navigate(`/vendor/editWorkSample/${sampleId}`);
-  };
+  // const handleEdit = (e: React.MouseEvent, sampleId: string) => {
+  //   e.stopPropagation(); // Prevent modal from opening
+  //   // navigate(`/vendor/editWorkSample/${sampleId}`);
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -127,14 +127,14 @@ export default function VendorWorkSamples() {
               } ${borderColors[index % borderColors.length]} shadow-md relative`}
             onClick={() => handleSampleClick(sample)}
           >
-            <motion.button
+            {/* <motion.button
               className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-white shadow-md z-10"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={(e) => handleEdit(e, sample.id)}
             >
               <Pencil className="w-4 h-4 text-gray-600" />
-            </motion.button>
+            </motion.button> */}
             <div className="h-48 overflow-hidden rounded-lg mb-4">
               <motion.img
                 src={CloudinaryPreset + sample.images[0]}
@@ -181,14 +181,14 @@ export default function VendorWorkSamples() {
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-gray-800">{selectedSample.title}</h2>
                 <div className="flex items-center gap-4">
-                  <motion.button
+                  {/* <motion.button
                     className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={(e) => handleEdit(e, selectedSample.id)}
                   >
                     <Pencil className="w-5 h-5" />
-                  </motion.button>
+                  </motion.button> */}
                   <motion.button
                     className="p-2 rounded-full bg-gray-100 text-gray-600"
                     whileHover={{ scale: 1.1, backgroundColor: "#f87171", color: "#ffffff" }}

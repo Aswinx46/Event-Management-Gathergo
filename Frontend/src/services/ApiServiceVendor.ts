@@ -3,7 +3,6 @@ import axios from '../axios/vendorAxios'
 import clodAxios, { isAxiosError } from 'axios'
 import { EventUpdateEntity } from '@/types/updateEventType';
 import { Period } from '@/types/DatePeriodType';
-import { WorkSamplesEntity } from '@/types/workSampleEntity';
 
 
 interface VendorData {
@@ -82,9 +81,14 @@ export const vendorLogin = async (email: string, password: string) => {
     }
 }
 
-export const updateProfileImageVendor = async (id: string, imageUrl: string) => {
+export const updateProfileImageVendor = async (id: string, formData: FormData) => {
     try {
-        const response = await axios.post('/updateProfileImage', { id, imageUrl })
+        const response = await axios.patch(`/updateProfileImage/${id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+        )
         return response.data
     } catch (error) {
         console.log('error while updating image vendor side', error)
@@ -373,9 +377,13 @@ export const deleteSingleNotificationVendor = async (notificationId: string) => 
     }
 }
 
-export const createWorkSamples = async (workSample: WorkSamplesEntity) => {
+export const createWorkSamples = async (formData: FormData) => {
     try {
-        const response = await axios.post('/createWorkSample', { workSample })
+        const response = await axios.post('/createWorkSample', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
         return response.data
     } catch (error) {
         console.log('error while creating work sample', error)

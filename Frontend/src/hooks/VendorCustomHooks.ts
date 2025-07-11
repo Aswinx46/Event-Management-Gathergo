@@ -2,7 +2,6 @@ import { approveBookingVendor, cancelEvent, changePasswordInForgetPassword, chan
 import { Period } from "@/types/DatePeriodType";
 // import { EventType } from "@/types/EventType";
 import { EventUpdateEntity } from "@/types/updateEventType";
-import { WorkSamplesEntity } from "@/types/workSampleEntity";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 
 interface FormValues {
@@ -56,7 +55,7 @@ export const useVendorResendOtpMutation = () => {
 
 export const useUpdateProfileImageMutation = () => {
     return useMutation({
-        mutationFn: ({ id, imageUrl }: { id: string, imageUrl: string }) => updateProfileImageVendor(id, imageUrl)
+        mutationFn: ({ id, formData }: { id: string, formData:FormData}) => updateProfileImageVendor(id, formData)
     })
 }
 
@@ -252,7 +251,7 @@ export const useDeleteSingleNotificationsVendor = () => {
 
 export const useCreateWorkSample = () => {
     return useMutation({
-        mutationFn: (workSample: WorkSamplesEntity) => createWorkSamples(workSample)
+        mutationFn: (formData:FormData) => createWorkSamples(formData)
     })
 }
 
