@@ -15,6 +15,7 @@ import { useUploadeImageToCloudinaryMutation } from "@/hooks/VendorCustomHooks"
 import { toast } from "react-toastify"
 import { isAxiosError } from "axios"
 import { addClient } from "@/store/slices/user/userSlice"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 // Define the user type
 interface UserData {
@@ -340,7 +341,7 @@ export default function UserDetails() {
                                 >
                                     <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg">
                                         <img
-                                            src={userData.profileImage || "/placeholder.svg"}
+                                            src={CloudinaryPreset+userData.profileImage || "/placeholder.svg"}
                                             alt="Profile"
                                             className="w-full h-full object-cover"
                                         />

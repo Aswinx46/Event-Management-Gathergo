@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { EventEntity } from "../../../types/EventEntity";
 import { format, isToday, isTomorrow } from "date-fns";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 interface EventCardProps {
     event: EventEntity;
@@ -59,7 +60,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
         >
             <div className="relative h-[180px]">
                 <img
-                    src={event.posterImage[0] || "https://placehold.co/600x400/171717/FFFFFF?text=Event"}
+                    src={CloudinaryPreset + event.posterImage[0] || "https://placehold.co/600x400/171717/FFFFFF?text=Event"}
                     alt={event.title}
                     className="w-full h-full object-cover "
                 />

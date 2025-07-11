@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import React, { useState } from "react"
 import ProfileModal from "./detailViewOfUser"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 // interface Client {
 //     _id: string
@@ -142,7 +143,7 @@ export const Table: React.FC<Table> = ({ data, blockAndUnblock }) => {
                                 <td onClick={() => handleDetailedView(user)} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     <div className="flex items-center">
 
-                                        <img src={user.profileImage ?? '/userImage.jpg'} className="ml-2 w-8 h-8 rounded-full object-cover" />
+                                        <img src={user.profileImage ? CloudinaryPreset + user.profileImage : '/userImage.jpg'} className="ml-2 w-8 h-8 rounded-full object-cover" />
 
                                     </div>
                                 </td>

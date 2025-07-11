@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 
 export interface NotificationDTO {
@@ -209,7 +210,7 @@ export const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
                                                     <div className="flex-shrink-0">
                                                         {notification.from?.profileImage ? (
                                                             <img
-                                                                src={notification.from.profileImage}
+                                                                src={CloudinaryPreset+notification.from.profileImage}
                                                                 alt={notification.from.name}
                                                                 className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm"
                                                             />

@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { BookingDetailsInAdminEntity as Booking } from "@/types/BookingDetailsAdmin";
 import { FaRupeeSign, FaTag } from "react-icons/fa";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 interface BookingDetailsModalProps {
   isOpen: boolean;
@@ -148,7 +149,7 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
               >
                 <div className="flex items-center gap-4">
                   <Avatar className="h-12 w-12 border border-gray-200 dark:border-gray-700">
-                    <AvatarImage src={booking.clientId.profileImage} alt={booking.clientId.name} />
+                    <AvatarImage src={CloudinaryPreset+booking.clientId.profileImage} alt={booking.clientId.name} />
                     <AvatarFallback>{booking.clientId.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -215,7 +216,7 @@ const BookingDetailsModalAdmin: React.FC<BookingDetailsModalProps> = ({
                     <p className="text-sm text-gray-500 dark:text-gray-400">Vendor</p>
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6">
-                        <AvatarImage src={booking.vendorId.profileImage} alt={booking.vendorId.name} />
+                        <AvatarImage src={CloudinaryPreset+booking.vendorId.profileImage} alt={booking.vendorId.name} />
                         <AvatarFallback>{booking.vendorId.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <p className="text-gray-900 dark:text-white">{booking.vendorId.name}</p>

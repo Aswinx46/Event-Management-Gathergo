@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 interface EventCardProps {
   event: EventEntity;
@@ -75,7 +76,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         <div className="relative h-48 overflow-hidden">
           {event.posterImage && event.posterImage.length > 0 ? (
             <img
-              src={typeof event.posterImage[0] === 'string' ? event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)}
+              src={typeof event.posterImage[0] === 'string' ? CloudinaryPreset+event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)}
               alt={event.title}
               className="w-full h-full object-cover"
             />

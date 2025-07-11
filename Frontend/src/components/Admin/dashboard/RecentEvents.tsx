@@ -4,6 +4,7 @@ import { EventEntity } from '@/types/EventEntity';
 import { formatTimeAgo } from '@/utils/dateUtils';
 import { Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 interface RecentEventsProps {
   events: EventEntity[];
@@ -47,7 +48,7 @@ const RecentEvents = ({ events }: RecentEventsProps) => {
           >
             <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
               <img
-                src={event.posterImage[0]}
+                src={CloudinaryPreset+event.posterImage[0]}
                 alt={event.title}
                 className="w-full h-full object-cover"
               />

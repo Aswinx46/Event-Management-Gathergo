@@ -6,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious
 } from "@/components/ui/carousel";
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 export interface Vendor {
   _id: string | number;
@@ -41,7 +42,7 @@ const FuturisticCarousel = ({ vendors }: FuturisticCarouselProps) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70 z-10" />
 
               <img
-                src={vendor.profileImage}
+                src={CloudinaryPreset+vendor.profileImage}
                 alt={vendor.name}
                 className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-105"
               />

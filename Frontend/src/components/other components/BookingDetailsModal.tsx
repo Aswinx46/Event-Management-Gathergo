@@ -28,6 +28,7 @@ import { useAddReview, useCancelBooking } from "@/hooks/ClientCustomHooks";
 import ConfirmModal from "./ConfirmationModal";
 import AddReviewModal from "./review/AddReview";
 import { ReviewEntity } from "@/types/ReviewType";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 
 interface Service {
@@ -334,7 +335,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                             {(booking?.vendor?.profileImage || booking.client?.profileImage) &&
                                 <div className="relative">
                                     <img
-                                        src={booking.vendor?.profileImage || booking.client?.profileImage}
+                                        src={CloudinaryPreset+booking.vendor?.profileImage || booking.client?.profileImage}
                                         className="w-14 h-14 rounded-xl object-cover border-2 border-blue-400"
                                     />
                                     <div className="absolute -bottom-1 -right-1 bg-blue-400 w-4 h-4 rounded-full border-2 border-[#222]"></div>

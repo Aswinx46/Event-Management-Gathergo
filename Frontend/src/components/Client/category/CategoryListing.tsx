@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import SearchContainer from "@/components/other components/search/SearchContainer";
 import { toast } from "react-toastify";
 import { isAxiosError } from "axios";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 interface Category {
   _id: string,
@@ -122,7 +123,7 @@ const CategoryListing = () => {
                 <Card className="overflow-hidden bg-zinc-900 border-zinc-800 hover:border-purple-500 transition-all h-full">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
-                      src={category.image}
+                      src={CloudinaryPreset+category.image}
                       alt={category.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />

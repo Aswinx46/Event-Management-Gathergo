@@ -10,6 +10,7 @@ import { Calendar, Clock, MapPin, Phone, Mail, QrCode, Ticket, DollarSign, Alert
 import { Separator } from "@/components/ui/separator"
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 interface TicketDetailModalProps {
     ticket: TicketAndUserDTO
@@ -158,7 +159,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                     <div className="">
                                         {ticket.eventId.posterImage && ticket.eventId.posterImage.length > 0 ? (
                                             <img
-                                                src={ticket.eventId.posterImage[0] || "/placeholder.svg"}
+                                                src={CloudinaryPreset + ticket.eventId.posterImage[0] || "/placeholder.svg"}
                                                 alt={ticket.eventId.title}
                                                 className="w-full h-[30vh] rounded-lg object-cover aspect-[3/4]"
                                             />
@@ -231,7 +232,7 @@ export function TicketDetailModal({ ticket, isOpen, onClose }: TicketDetailModal
                                     <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 mr-4">
                                         {ticket.clientId.profileImage ? (
                                             <img
-                                                src={ticket.clientId.profileImage || "/placeholder.svg"}
+                                                src={CloudinaryPreset + ticket.clientId.profileImage || "/placeholder.svg"}
                                                 alt={ticket.clientId.name}
                                                 className="w-full h-full object-cover"
                                             />

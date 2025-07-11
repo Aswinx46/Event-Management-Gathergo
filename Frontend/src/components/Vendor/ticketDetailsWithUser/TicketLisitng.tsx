@@ -7,6 +7,7 @@ import { TicketDetailModal } from "./TicketDetailsModal"
 import { Badge } from "@/components/ui/badge"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 
 interface TicketListProps {
@@ -94,7 +95,7 @@ export function TicketList({ tickets }: TicketListProps) {
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 mr-2">
                   {ticket.clientId.profileImage ? (
                     <img
-                      src={ticket.clientId.profileImage || "/placeholder.svg"}
+                      src={CloudinaryPreset+ticket.clientId.profileImage || "/placeholder.svg"}
                       alt={ticket.clientId.name}
                       className="w-full h-full object-cover"
                     />

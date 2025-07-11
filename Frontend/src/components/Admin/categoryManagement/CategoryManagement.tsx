@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 // import { useUploadeImageToCloudinaryMutation } from '@/hooks/VendorCustomHooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 interface Category {
   categoryId: string;
@@ -93,10 +94,10 @@ const CategoryManagement: React.FC = () => {
   const collectEditedData = async () => {
     if (!selectedCategory) return null;
     if (!selectedFile) {
-      const updates = {
-        title: editedTitle.trim()
-      }
-      updateCategory.mutate({ categoryId: selectedCategory._id, updates }, {
+      const formData = new FormData()
+
+      formData.append('title', editedTitle.trim())
+      updateCategory.mutate({ categoryId: selectedCategory._id, formData }, {
         onSuccess: (data) => {
           toast.success(data.message)
           clientQuery.invalidateQueries({ queryKey: ['categories', currentPage] })
@@ -110,15 +111,17 @@ const CategoryManagement: React.FC = () => {
       })
     } else if (selectedFile) {
       try {
-        const formdata = new FormData()
-        formdata.append('file', selectedFile)
-        formdata.append('upload_preset', 'Category')
-        const response = await uploadImageToCloudinary.mutateAsync(formdata)
-        const updates = {
-          title: editedTitle.trim(),
-          image: response.secure_url
-        }
-        updateCategory.mutate({ categoryId: selectedCategory._id, updates }, {
+        const formData = new FormData()
+        formData.append('image', selectedFile)
+        // formdata.append('upload_preset', 'Category')
+        // const response = await uploadImageToCloudinary.mutateAsync(formdata)
+        // const updates = {
+        //   title: editedTitle.trim(),
+        //   image: response.secure_url
+        // }
+        formData.append('title', editedTitle.trim())
+
+        updateCategory.mutate({ categoryId: selectedCategory._id, formData }, {
           onSuccess: (data) => {
             toast.success(data.message)
             clientQuery.invalidateQueries({ queryKey: ['categories', currentPage] })
@@ -321,7 +324,7 @@ const CategoryManagement: React.FC = () => {
 
               <div className="aspect-w-16 aspect-h-12 h-1/2 bg-gray-100">
                 <img
-                  src={category.image}
+                  src={CloudinaryPreset + category.image}
                   alt={category.title}
                   className="w-full h-full object-cover transform transition-transform group-hover:scale-105"
                 />

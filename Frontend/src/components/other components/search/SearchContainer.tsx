@@ -6,6 +6,7 @@ import { Search, X } from "lucide-react"
 
 import { motion, AnimatePresence } from "framer-motion"
 import { useDebounce } from "@/hooks/useDebounce"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 interface SearchResult {
     _id: string
@@ -201,7 +202,7 @@ export default function SearchModal({ text, setText, onSubmit, setIsOpen, isOpen
                                             >
                                                 <div className="relative mb-2 aspect-video overflow-hidden rounded-md">
                                                     <img
-                                                        src={result.image || "/placeholder.svg"}
+                                                        src={ CloudinaryPreset +result.image || "/placeholder.svg"}
                                                         alt={result.title}
 
                                                         className="object-cover transition-transform duration-300 group-hover:scale-105"

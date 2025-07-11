@@ -2,6 +2,7 @@
 import { motion } from "framer-motion"
 import { Star, StarHalf, User } from "lucide-react"
 import { ReviewDetailsDTO } from "@/types/reviewDetailsDTO"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 interface UserReviewsProps {
     reviews: ReviewDetailsDTO[]
 }
@@ -60,7 +61,7 @@ function ReviewCard({ review, index }: { review: ReviewDetailsDTO; index: number
                             className="h-12 w-12 rounded-full overflow-hidden border-2 border-purple-500"
                         >
                             <img
-                                src={review.reviewerId.profileImage || "/placeholder.svg"}
+                                src={CloudinaryPreset+review.reviewerId.profileImage || "/placeholder.svg"}
                                 alt={review.reviewerId.name}
                                 width={48}
                                 height={48}

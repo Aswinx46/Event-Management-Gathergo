@@ -7,6 +7,7 @@ import { useFindVendorProfileWithSample } from "@/hooks/ClientCustomHooks"
 import { useParams } from "react-router-dom"
 import ServicesListingInVendorProfile from "./ServiceListingVendorProfile"
 import Pagination from "@/components/other components/Pagination"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 export interface VendorProfileEntityInClient {
     _id?: string
@@ -81,7 +82,7 @@ export default function VendorDetails() {
                                 className="relative h-full w-full"
                             >
                                 <img
-                                    src={vendor.images[currentImageIndex] || "/placeholder.svg?height=600&width=600"}
+                                    src={CloudinaryPreset+vendor.images[currentImageIndex] || "/placeholder.svg?height=600&width=600"}
                                     alt={`${vendor.title} image ${currentImageIndex + 1}`}
                                     className="object-cover "
                                 />
@@ -131,7 +132,7 @@ export default function VendorDetails() {
                                     <motion.div variants={itemVariants} className="flex-shrink-0">
                                         <div className="relative h-16 w-16 rounded-full overflow-hidden border-2 border-purple-500">
                                             <img
-                                                src={vendor.vendorId.profileImage || "/placeholder.svg?height=100&width=100"}
+                                                src={CloudinaryPreset+vendor.vendorId.profileImage || "/placeholder.svg?height=100&width=100"}
                                                 alt="Vendor profile"
                                                 className="object-cover"
                                             />
@@ -218,7 +219,7 @@ export default function VendorDetails() {
                                     }`}
                             >
                                 <img
-                                    src={image || "/placeholder.svg?height=100&width=100"}
+                                    src={CloudinaryPreset+image || "/placeholder.svg?height=100&width=100"}
                                     alt={`Thumbnail ${index + 1}`}
                                     className="object-cover"
                                 />

@@ -1,5 +1,4 @@
 import { adminDashBoardDetatils, adminLogin, adminLogout, approvePendingVendor, blockClient, blockVendor, changeStatusCategory, createCategory, fetchClientsAdmin, fetchPendingVendorsAdmin, fetchVendorsAdmin, findAllCategory, findAllRejectedVendor, findBookingsInAdmin, findEventsInAdminSide, findWalletAdmin, rejectPendingVendor, unblockClient, unblockVendor, updateCategory } from "@/services/ApiServiceAdmin"
-import { CategoryUpdate } from "@/types/CategoryUpdate";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 interface Login {
@@ -130,7 +129,7 @@ export const useUnblockVendor = () => {
 
 export const useUpdateCategory = () => {
     return useMutation({
-        mutationFn: ({ categoryId, updates }: { categoryId: string, updates: CategoryUpdate }) => updateCategory(categoryId, updates)
+        mutationFn: ({ categoryId, formData }: { categoryId: string, formData: FormData }) => updateCategory(categoryId,formData)
     })
 }
 

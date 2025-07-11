@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 interface CarouselItem {
   _id: string
@@ -115,7 +116,7 @@ export default function ImageCarousel({
               >
                 <div className="relative h-full w-full">
                   <img
-                    src={item.image || "/placeholder.svg"}
+                    src={CloudinaryPreset+item.image || "/placeholder.svg"}
                     alt={item.title}
                     className="object-cover h-full w-full"
                   />

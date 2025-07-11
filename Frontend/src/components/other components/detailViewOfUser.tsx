@@ -75,7 +75,7 @@
 //             exit={{ opacity: 0 }}
 //             // onClick={()=>setIsOpen(false)}
 //           />
-          
+
 //           <motion.div
 //             className="fixed inset-0 flex items-center justify-center z-50 p-4"
 //             variants={modalVariants}
@@ -155,7 +155,7 @@
 //                       src={profile.role=='vendor' ? profile.idProof :''} 
 //                       className="text-blue-600 hover:underline truncate"
 //                     />
-                    
+
 //                   </div>
 
 //                   <div className="grid grid-cols-2 gap-2">
@@ -187,12 +187,13 @@
 
 "use client"
 
-import  React from "react"
+import React from "react"
 import { useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Calendar, Mail, Phone, User, Shield, Clock, X, ExternalLink } from "lucide-react"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 interface Vendor {
   createdAt: string
@@ -203,7 +204,7 @@ interface Vendor {
   onlineStatus: string
   phone: number
   rejectionReason?: string
-  profileImage?:string | null
+  profileImage?: string | null
   role: string
   status: string
   vendorId?: string
@@ -345,7 +346,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, setIsOpen, profile 
                       <AvatarImage
                         src={
                           profile.role === "client" && profile.profileImage
-                            ? profile.profileImage
+                            ? CloudinaryPreset + profile.profileImage
                             : "/placeholder.svg?height=80&width=80"
                         }
                       />
@@ -459,7 +460,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, setIsOpen, profile 
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">ID Proof</h3>
                     <div className="relative group">
                       <img
-                        src={profile.idProof || "/placeholder.svg"}
+                        src={CloudinaryPreset + profile.idProof || "/placeholder.svg"}
                         alt="ID Proof"
                         className="w-full max-h-60 object-contain border border-gray-200 dark:border-gray-700 rounded-lg"
                       />

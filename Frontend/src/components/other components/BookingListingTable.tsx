@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Calendar, Phone, Mail, Clock } from "lucide-react";
 import BookingDetailsModal from "./BookingDetailsModal";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 interface Service {
   _id:string
@@ -149,7 +150,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         <img
-                          src={booking.vendor?.profileImage || booking.client?.profileImage}
+                          src={CloudinaryPreset+booking.vendor?.profileImage || booking.client?.profileImage}
                           // alt={booking.vendor?.name || booking.client?.profileImage}
                           className="w-10 h-10 rounded-full object-cover"
                         />

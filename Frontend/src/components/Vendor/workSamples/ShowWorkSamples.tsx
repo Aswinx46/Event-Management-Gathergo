@@ -8,6 +8,7 @@ import { RootState } from '@/store/store';
 import Pagination from '@/components/other components/Pagination';
 import { Pencil } from 'lucide-react';
 import { Sparkles } from "lucide-react"; // optional icon
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 interface WorkSample {
   id: string;
@@ -136,7 +137,7 @@ export default function VendorWorkSamples() {
             </motion.button>
             <div className="h-48 overflow-hidden rounded-lg mb-4">
               <motion.img
-                src={sample.images[0]}
+                src={CloudinaryPreset + sample.images[0]}
                 alt={sample.images[0] || sample.title}
                 className="w-full h-full object-cover"
                 whileHover={{ scale: 1.05 }}
@@ -207,7 +208,7 @@ export default function VendorWorkSamples() {
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={currentImageIndex}
-                      src={selectedSample.images[currentImageIndex] || "/api/placeholder/800/450"}
+                      src={CloudinaryPreset + selectedSample.images[currentImageIndex] || "/api/placeholder/800/450"}
                       alt={selectedSample.images[currentImageIndex] || selectedSample.title}
                       className="w-full h-[50vh] object-cover"
                       initial={{ opacity: 0 }}

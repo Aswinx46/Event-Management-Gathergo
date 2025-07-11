@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { Calendar, Clock, MapPin } from "lucide-react"
 import type { EventEntity as EventType } from "@/types/EventEntity"
 import { Badge } from "@/components/ui/badge"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 interface UpcomingEventsProps {
   events: EventType[]
@@ -50,7 +51,7 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
           <div className="w-16 h-16 rounded-md bg-gray-100 flex items-center justify-center overflow-hidden">
             {event.posterImage && event.posterImage.length > 0 ? (
               <img
-                src={event.posterImage[0] || "/placeholder.svg"}
+                src={CloudinaryPreset + event.posterImage[0] || "/placeholder.svg"}
                 alt={event.title}
                 className="w-full h-full object-cover"
               />

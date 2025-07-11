@@ -12,6 +12,7 @@ import ConfirmModal from "@/components/other components/ConfirmationModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { ReviewEntity } from "@/types/ReviewType";
 import AddReviewModal from "@/components/other components/review/AddReview";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 const BookedEvents = () => {
   const clientId = useSelector((state: RootState) => state.clientSlice.client?._id)
@@ -125,7 +126,7 @@ This action is irreversible. Are you sure you want to proceed?
                 {ticketAndEvent.event.posterImage && ticketAndEvent.event.posterImage.length > 0 && (
                   <div className="h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg shadow-md">
                     <img
-                      src={ticketAndEvent.event.posterImage[0]}
+                      src={CloudinaryPreset+ticketAndEvent.event.posterImage[0]}
                       alt={ticketAndEvent.event.title}
                       className="h-full w-full object-cover transform transition-transform duration-300 hover:scale-110"
                     />

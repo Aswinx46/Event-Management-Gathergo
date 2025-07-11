@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { BookingDetailsInAdminEntity as Booking } from "@/types/BookingDetailsAdmin";
 import { useFindBookingsInAdmin } from "@/hooks/AdminCustomHooks";
 import Pagination from "@/components/other components/Pagination";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 
 const getStatusColor = (status: Booking["status"] | Booking["vendorApproval"] | Booking["paymentStatus"]) => {
@@ -87,7 +88,7 @@ const BookingsListAdmin: React.FC = () => {
                 <div className="flex items-center border-l-4 border-indigo-500 dark:border-indigo-400 p-4">
                   <div className="flex-shrink-0 mr-4">
                     <Avatar className="h-12 w-12 border border-gray-200 dark:border-gray-700">
-                      <AvatarImage src={booking.clientId.profileImage} alt={booking.clientId.name} />
+                      <AvatarImage src={CloudinaryPreset+booking.clientId.profileImage} alt={booking.clientId.name} />
                       <AvatarFallback>{booking.clientId.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </div>

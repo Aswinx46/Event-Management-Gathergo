@@ -22,6 +22,7 @@ import {
   X,
   User,
 } from 'lucide-react';
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 interface EventDetailsModalProps {
   event: EventEntity | null;
@@ -64,7 +65,7 @@ const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             <div className="relative h-64 md:h-auto">
               {event.posterImage && event.posterImage.length > 0 ? (
                 <motion.img
-                  src={typeof event.posterImage[0] === 'string' ? event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)}
+                  src={typeof event.posterImage[0] === 'string' ? CloudinaryPreset+event.posterImage[0] : URL.createObjectURL(event.posterImage[0] as File)}
                   alt={event.title}
                   className="w-full h-full object-cover"
                   initial={{ scale: 1.1 }}

@@ -11,6 +11,7 @@ import MapComponent from "./ShowLocation"
 import TicketPurchase from "./TicketBookingModal"
 import UserReviews from "../review/ShowReviews"
 import Pagination from "@/components/other components/Pagination"
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 
 export default function EventDetails() {
     const [isLoaded, setIsLoaded] = useState(false)
@@ -73,7 +74,7 @@ export default function EventDetails() {
                         <img
                             src={
                                 typeof event?.posterImage?.[0] === "string"
-                                    ? event?.posterImage[0]
+                                    ? CloudinaryPreset+event?.posterImage[0]
                                     : "/placeholder.svg?height=400&width=600"
                             }
                             alt={event?.title}

@@ -11,6 +11,7 @@ import { EventEdit } from "@/components/Vendor/event/EditEvent";
 import { useCancelEvent, useUpdateEvent } from "@/hooks/VendorCustomHooks";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
 
 interface EventDetailModalProps {
     event: EventEntity | null;
@@ -160,7 +161,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                         <div className="overflow-y-auto hide-scrollbar max-h-[calc(90vh-130px)]">
                             <div className="relative aspect-video">
                                 <img
-                                    src={event.posterImage[0] || "https://placehold.co/600x400/171717/FFFFFF?text=Event"}
+                                    src={CloudinaryPreset +event.posterImage[0] || "https://placehold.co/600x400/171717/FFFFFF?text=Event"}
                                     alt={event.title}
                                     className="w-full h-full object-cover"
                                 />

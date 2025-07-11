@@ -23,6 +23,7 @@ import UserReviews from '../review/ShowReviews';
 import Pagination from '@/components/other components/Pagination';
 import { FaRupeeSign } from 'react-icons/fa';
 import { enUS } from 'date-fns/locale';
+import { CloudinaryPreset } from '@/utils/cloudinaryPresetFile';
 
 export interface Booking {
   date: Date[];
@@ -175,7 +176,7 @@ const VendorBookingCard = () => {
               >
                 <div className="relative">
                   <motion.img
-                    src={Service?.vendor.profileImage}
+                    src={CloudinaryPreset+Service?.vendor.profileImage}
                     alt={Service?.vendor.name}
                     className="w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-md"
                     initial={{ scale: 0.8, opacity: 0 }}
