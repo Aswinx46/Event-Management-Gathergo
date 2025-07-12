@@ -5,11 +5,12 @@ import { BookingPaymentEntity } from "../../../entities/bookingPayment/bookingPa
 import { BookingListingEntityVendor } from "../../../entities/vendor/BookingListingEntityVendor";
 import { PopulatedBookingForAdmin } from "../../../entities/bookingDetailsInAdminDTO";
 import { BookingPdfDTO } from "../../../entities/pdf/bookingsPdfDTO";
+import { PopulatedBooking } from "../../../entities/populatedBookingInClient";
 
 export interface IbookingRepository {
     createBooking(booking: BookingEntity): Promise<BookingEntity>
     approveBooking(bookingId: string): Promise<BookingEntity | null>
-    showBookingsInClient(clientId: string, pageNo: number): Promise<{ Bookings: BookingsInClientEntity[] | [], totalPages: number }>
+    showBookingsInClient(clientId: string, pageNo: number): Promise<{ Bookings: PopulatedBooking[] | [], totalPages: number }>
     showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: BookingListingEntityVendor[] | [], totalPages: number }>
     rejectBooking(bookingId: string, rejectionReasoneason: string): Promise<BookingEntity | null>
     changeStatus(bookingId: string, status: string): Promise<BookingEntity | null>

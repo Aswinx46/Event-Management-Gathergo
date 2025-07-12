@@ -8,6 +8,19 @@ export class ShowBookingsInClientUseCase implements IshowBookingsInClientUseCase
         this.bookingsDatabase = bookingsDatabase
     }
     async findBookings(clientId: string, pageNo: number): Promise<{ Bookings: BookingsInClientEntity[] | [], totalPages: number }> {
-        return await this.bookingsDatabase.showBookingsInClient(clientId, pageNo)
+        const { Bookings, totalPages } = await this.bookingsDatabase.showBookingsInClient(clientId, pageNo)
+        const mappedBookings = Bookings.map((booking): BookingsInClientEntity => ({
+            _id: booking._id,
+            date: booking.date,
+            paymentStatus: booking.paymentStatus,
+            vendorApproval: booking.vendorApproval,
+            email: booking.email,
+            phone: booking.phone,
+            status: booking.status,
+            vendor: booking.vendorId,
+            service: booking.serviceId,
+            rejectionReason: booking.rejectionReason
+        }));
+        return { Bookings: mappedBookings, totalPages }
     }
 }

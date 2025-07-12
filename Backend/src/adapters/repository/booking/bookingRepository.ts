@@ -19,7 +19,7 @@ export class BookingRepository implements IbookingRepository {
         if (!createdBooking) throw new Error('error while creating a booking')
         return createdBooking
     }
-    async showBookingsInClient(clientId: string, pageNo: number): Promise<{ Bookings: BookingsInClientEntity[] | [], totalPages: number }> {
+    async showBookingsInClient(clientId: string, pageNo: number): Promise<{ Bookings: PopulatedBooking[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
         const limit = 5
         const skip = (page - 1) * limit
@@ -34,21 +34,9 @@ export class BookingRepository implements IbookingRepository {
             select: '_id serviceDescription servicePrice title serviceDuration'
         }).lean<PopulatedBooking[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
-        const Bookings = bookings.map((booking): BookingsInClientEntity => ({
-            _id: booking._id,
-            date: booking.date,
-            paymentStatus: booking.paymentStatus,
-            vendorApproval: booking.vendorApproval,
-            email: booking.email,
-            phone: booking.phone,
-            status: booking.status,
-            vendor: booking.vendorId,
-            service: booking.serviceId,
-            rejectionReason: booking.rejectionReason
-        }));
 
 
-        return { Bookings, totalPages }
+        return { Bookings:bookings, totalPages }
     }
     async showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: BookingListingEntityVendor[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
