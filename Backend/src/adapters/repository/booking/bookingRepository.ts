@@ -33,17 +33,14 @@ export class BookingRepository implements IbookingRepository {
             path: 'serviceId',
             select: '_id serviceDescription servicePrice title serviceDuration'
         }).lean<PopulatedBooking[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
-
-
-
-        return { Bookings:bookings, totalPages }
+        return { Bookings: bookings, totalPages }
     }
-    async showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: BookingListingEntityVendor[] | [], totalPages: number }> {
+    async showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: PopulatedBookingEntityVendor[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
         const limit = 5
         const skip = (page - 1) * limit
         const totalPages = Math.ceil(await bookingModel.countDocuments({ vendorId: new mongoose.Types.ObjectId(vendorId) }) / limit)
-        const bookings = await bookingModel.find({ vendorId }).populate({
+        const Bookings = await bookingModel.find({ vendorId }).populate({
             path: 'clientId',
             select: '_id name email phone profileImage'
         }).populate({
@@ -51,18 +48,7 @@ export class BookingRepository implements IbookingRepository {
             select: '_id serviceDescription servicePrice title serviceDuration'
         }).lean<PopulatedBookingEntityVendor[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
-        const Bookings = bookings.map((booking): BookingListingEntityVendor => ({
-            _id: booking._id,
-            date: booking.date,
-            email: booking.email,
-            paymentStatus: booking.paymentStatus,
-            phone: booking.phone,
-            service: booking.serviceId,
-            client: booking.clientId,
-            status: booking.status,
-            vendorApproval: booking.vendorApproval,
-            rejectionReason: booking.rejectionReason
-        }));
+
         return { Bookings, totalPages }
     }
     async approveBooking(bookingId: string): Promise<BookingEntity | null> {
@@ -122,7 +108,7 @@ export class BookingRepository implements IbookingRepository {
     async cancelBooking(bookingId: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { status: 'Cancelled' }, { new: true })
     }
-    async showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: PopulatedBookingForAdmin[] | [], totalPages: number }> {
+    async showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: any[] | [], totalPages: number }> {
         const page = Math.max(pageNo, 1)
         const limit = 4
         const skip = (page - 1) * limit
@@ -143,39 +129,9 @@ export class BookingRepository implements IbookingRepository {
         }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean()
 
         const totalPages = Math.ceil(await bookingModel.countDocuments() / limit)
-        const bookings: PopulatedBookingForAdmin[] = bookingsRaw.map((b: any) => ({
-            _id: b._id,
-            serviceId: {
-                _id: b.serviceId._id,
-                title: b.serviceId.title,
-                servicePrice: b.serviceId.servicePrice,
-                categoryId: {
-                    _id: b.serviceId.categoryId._id,
-                    name: b.serviceId.categoryId.name,
-                },
-            },
-            clientId: {
-                _id: b.clientId._id,
-                name: b.clientId.name,
-                profileImage: b.clientId.profileImage,
-            },
-            vendorId: {
-                _id: b.vendorId._id,
-                name: b.vendorId.name,
-                profileImage: b.vendorId.profileImage,
-            },
-            date: b.date,
-            email: b.email,
-            phone: b.phone,
-            vendorApproval: b.vendorApproval,
-            paymentStatus: b.paymentStatus,
-            rejectionReason: b.rejectionReason,
-            status: b.status,
-            createdAt: b.createdAt,
-            isComplete: b.isComplete,
-        }));
 
-        return { bookings, totalPages }
+
+        return { bookings: bookingsRaw, totalPages }
     }
     async findTotalBookings(): Promise<number> {
         return bookingModel.countDocuments({ status: 'Completed' })

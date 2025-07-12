@@ -1,24 +1,24 @@
 import { ObjectId } from "mongoose";
 import { BookingEntity } from "../../../entities/bookingEntity";
-import { BookingsInClientEntity } from "../../../entities/bookingListingInClientEntity";
 import { BookingPaymentEntity } from "../../../entities/bookingPayment/bookingPaymentEntity";
 import { BookingListingEntityVendor } from "../../../entities/vendor/BookingListingEntityVendor";
 import { PopulatedBookingForAdmin } from "../../../entities/bookingDetailsInAdminDTO";
 import { BookingPdfDTO } from "../../../entities/pdf/bookingsPdfDTO";
 import { PopulatedBooking } from "../../../entities/populatedBookingInClient";
+import { PopulatedBookingEntityVendor } from "../../../entities/vendor/populatedBookingEntity";
 
 export interface IbookingRepository {
     createBooking(booking: BookingEntity): Promise<BookingEntity>
     approveBooking(bookingId: string): Promise<BookingEntity | null>
     showBookingsInClient(clientId: string, pageNo: number): Promise<{ Bookings: PopulatedBooking[] | [], totalPages: number }>
-    showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: BookingListingEntityVendor[] | [], totalPages: number }>
+    showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: PopulatedBookingEntityVendor[] | [], totalPages: number }>
     rejectBooking(bookingId: string, rejectionReasoneason: string): Promise<BookingEntity | null>
     changeStatus(bookingId: string, status: string): Promise<BookingEntity | null>
     findBookingByIdForPayment(bookingId: string | ObjectId): Promise<BookingPaymentEntity | null>
     updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null>
     findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[], servicePrice: number } | null>
     cancelBooking(bookingId: string): Promise<BookingEntity | null>
-    showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: PopulatedBookingForAdmin[] | [], totalPages: number }>
+    showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: any[] | [], totalPages: number }>
     findTotalBookings(): Promise<number>
     findTotalCountOfBookings(vendorId: string, datePeriod: Date | null): Promise<number>
     findRecentsBooking(vendorId: string): Promise<BookingListingEntityVendor[] | []>
