@@ -60,7 +60,7 @@ export class BookingRepository implements IbookingRepository {
     async changeStatus(bookingId: string, status: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { status: status }, { new: true })
     }
-    async findBookingByIdForPayment(bookingId: string | ObjectId): Promise<BookingPaymentEntity | null> {
+    async findBookingByIdForPayment(bookingId: string | ObjectId): Promise<any | null> {
         const booking = await bookingModel
             .findById(bookingId)
             .select("-__v -createdAt -updatedAt")
@@ -72,26 +72,8 @@ export class BookingRepository implements IbookingRepository {
             .lean();
         if (!booking) return null;
 
-        const result: BookingPaymentEntity = {
-            _id: booking._id,
-            clientId: booking.clientId,
-            vendorId: booking.vendorId,
-            date: booking.date,
-            email: booking.email,
-            phone: booking.phone,
-            vendorApproval: booking.vendorApproval,
-            paymentStatus: booking.paymentStatus,
-            rejectionReason: booking.rejectionReason,
-            status: booking.status,
-            createdAt: booking.createdAt,
-            isComplete: booking.isComplete,
-            serviceId: (booking.serviceId as any)._id ?? booking.serviceId, // keep ObjectId here
-            service: {
-                servicePrice: (booking.serviceId as any).servicePrice || 0,
-            },
-        };
 
-        return result;
+        return booking;
     }
     async updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { paymentStatus: status }, { new: true }).select('-__v -createdAt')

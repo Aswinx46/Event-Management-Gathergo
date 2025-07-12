@@ -18,23 +18,42 @@ export class InitiateBookingPaymentUseCase implements IinititateBookingPaymentUs
         const booking = await this.bookingDatabase.findBookingByIdForPayment(bookingId)
         console.log(booking)
         if (!booking) throw new Error('No booking found in this ID')
-        if (booking.status != 'Completed') throw new Error('This Booking is not completed')
-        if (booking.paymentStatus == "Successfull") throw new Error('This booking is Already paid')
-        const totalAmount = booking.date.length * booking.service.servicePrice
-        const clientStripeId = await this.paymentService.createPaymentIntent(totalAmount, 'service', { booking: booking })
+        const result: BookingPaymentEntity = {
+            _id: booking._id,
+            clientId: booking.clientId,
+            vendorId: booking.vendorId,
+            date: booking.date,
+            email: booking.email,
+            phone: booking.phone,
+            vendorApproval: booking.vendorApproval,
+            paymentStatus: booking.paymentStatus,
+            rejectionReason: booking.rejectionReason,
+            status: booking.status,
+            createdAt: booking.createdAt,
+            isComplete: booking.isComplete,
+            serviceId: (booking.serviceId as any)._id ?? booking.serviceId, // keep ObjectId here
+            service: {
+                servicePrice: (booking.serviceId as any).servicePrice || 0,
+            },
+        };
+
+        if (result.status != 'Completed') throw new Error('This Booking is not completed')
+        if (result.paymentStatus == "Successfull") throw new Error('This booking is Already paid')
+        const totalAmount = result.date.length * result.service.servicePrice
+        const clientStripeId = await this.paymentService.createPaymentIntent(totalAmount, 'service', { booking: result })
         if (!clientStripeId) throw new Error("Error while creating stripe client id")
         const paymentDetails: PaymentEntity = {
             amount: totalAmount,
             currency: 'inr',
             paymentId: paymentIntentId,
-            receiverId: booking.vendorId,
+            receiverId: result.vendorId,
             purpose: 'serviceBooking',
             status: "pending",
-            userId: booking.clientId,
-            bookingId: booking._id
+            userId: result.clientId,
+            bookingId: result._id
         }
         const createPayment = await this.paymentDatabase.createPayment(paymentDetails)
         if (!createPayment) throw new Error('Error while creating payment document')
-        return { booking, clientStripeId }
+        return { booking: result, clientStripeId }
     }
 }

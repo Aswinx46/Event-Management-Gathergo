@@ -1,8 +1,7 @@
 import { ObjectId } from "mongoose";
 import { BookingEntity } from "../../../entities/bookingEntity";
-import { BookingPaymentEntity } from "../../../entities/bookingPayment/bookingPaymentEntity";
 import { BookingListingEntityVendor } from "../../../entities/vendor/BookingListingEntityVendor";
-import { PopulatedBookingForAdmin } from "../../../entities/bookingDetailsInAdminDTO";
+
 import { BookingPdfDTO } from "../../../entities/pdf/bookingsPdfDTO";
 import { PopulatedBooking } from "../../../entities/populatedBookingInClient";
 import { PopulatedBookingEntityVendor } from "../../../entities/vendor/populatedBookingEntity";
@@ -14,7 +13,7 @@ export interface IbookingRepository {
     showBookingsInVendor(vendorId: string, pageNo: number): Promise<{ Bookings: PopulatedBookingEntityVendor[] | [], totalPages: number }>
     rejectBooking(bookingId: string, rejectionReasoneason: string): Promise<BookingEntity | null>
     changeStatus(bookingId: string, status: string): Promise<BookingEntity | null>
-    findBookingByIdForPayment(bookingId: string | ObjectId): Promise<BookingPaymentEntity | null>
+    findBookingByIdForPayment(bookingId: string | ObjectId): Promise<any | null>
     updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null>
     findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[], servicePrice: number } | null>
     cancelBooking(bookingId: string): Promise<BookingEntity | null>
