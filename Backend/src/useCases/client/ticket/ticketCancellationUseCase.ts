@@ -19,9 +19,25 @@ export class TicketCancellationUseCase implements ITicketCancellationUseCase {
         this.eventDatabase = eventDatabase
     }
     async ticketCancellation(ticketId: string): Promise<TicketAndVendorDTO> {
-        const cancelledTicket = await this.ticketDatabase.ticketCancellation(ticketId)
-        // console.log('this is the cancelled ticket', cancelledTicket)
-        if (!cancelledTicket) throw new Error('No ticket found in this ID for cancellation')
+        const result = await this.ticketDatabase.ticketCancellation(ticketId)
+        if (!result) throw new Error('No ticket found in this ID for cancellation')
+        const cancelledTicket: TicketAndVendorDTO = {
+            _id: result._id,
+            ticketId: result.ticketId,
+            amount: result.amount,
+            phone: result.phone,
+            email: result.email,
+            ticketType: result.ticketType,
+            paymentStatus: result.paymentStatus,
+            qrCodeLink: result.qrCodeLink,
+            eventId: {
+                _id: (result.eventId as any)._id,
+                hostedBy: (result.eventId as any).hostedBy,
+            },
+            clientId: result.clientId,
+            ticketStatus: result.ticketStatus,
+            // paymentTransactionId: ticket.paymentTransactionId,
+        };
         const refundAmountToVendor = cancelledTicket.amount * 0.29
         const refundAmountToClient = cancelledTicket.amount - (refundAmountToVendor + cancelledTicket.amount * 0.01)
         const updateFundAmountToClient = await this.walletDatabase.addMoney(cancelledTicket.clientId, refundAmountToClient)

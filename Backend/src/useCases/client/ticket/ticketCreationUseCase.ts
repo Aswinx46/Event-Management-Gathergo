@@ -1,4 +1,3 @@
-import { PaymentEntity } from "../../../domain/entities/payment/paymentEntity";
 import { TicketEntity } from "../../../domain/entities/Ticket/ticketEntity";
 import { TicketFromFrontend } from "../../../domain/entities/Ticket/ticketFromFrotendType";
 import { IeventRepository } from "../../../domain/interface/repositoryInterfaces/event/eventRepositoryInterface";

@@ -12,8 +12,22 @@ export class ServiceWithVendorUseCase implements IshowServiceWithVendorUseCase {
         this.reviewDatabase = reviewDatabase
     }
     async showServiceWithVendorUseCase(serviceId: string, pageNo: number, rating?: number): Promise<{ service: ServiceWithVendorEntity | null, reviews: ReviewDetailsDTO[], totalPages: number }> {
-        const serviceWithVendor = await this.serviceDatabase.showServiceDataInBookingPage(serviceId)
-        if (!serviceWithVendor) throw new Error('No service found in this service ID')
+        const service = await this.serviceDatabase.showServiceDataInBookingPage(serviceId)
+        if (!service) throw new Error('No service found in this service ID')
+        const serviceWithVendor: ServiceWithVendorEntity = {
+            _id: service?._id,
+            price: service?.servicePrice,
+            serviceDescription: service?.serviceDescription,
+            title: service?.title,
+            duration: service?.serviceDuration,
+            vendor: {
+                _id: service?.vendorId?._id,
+                email: service?.vendorId?.email,
+                name: service?.vendorId?.name,
+                phone: service?.vendorId?.phone,
+                profileImage: service?.vendorId?.profileImage
+            }
+        }
         const { reviews, totalPages } = await this.reviewDatabase.findReviews(serviceId, pageNo, rating)
         return { service: serviceWithVendor, reviews, totalPages }
     }

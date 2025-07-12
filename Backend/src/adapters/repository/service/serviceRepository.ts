@@ -54,7 +54,7 @@ export class ServiceRepository implements IserviceRepository {
         const totalPages = Math.ceil(await serviceModal.countDocuments({ status: 'active' }) / limit)
         return { Services, totalPages }
     }
-    async showServiceDataInBookingPage(serviceId: string): Promise<ServiceWithVendorEntity | null> {
+    async showServiceDataInBookingPage(serviceId: string): Promise<any | null> {
         const service = await serviceModal.findOne({ _id: serviceId, status: 'active' })
             .populate<{ vendorId: VendorDTO }>({
                 path: 'vendorId',
@@ -62,22 +62,8 @@ export class ServiceRepository implements IserviceRepository {
                 select: 'name email phone profileImage'
             })
         if (!service || !service.vendorId) throw new Error('Service or active vendor not found')
-        const serviceWithVendor: ServiceWithVendorEntity = {
-            _id: service?._id,
-            price: service?.servicePrice,
-            serviceDescription: service?.serviceDescription,
-            title: service?.title,
-            duration: service?.serviceDuration,
-            vendor: {
-                _id: service?.vendorId?._id,
-                email: service?.vendorId?.email,
-                name: service?.vendorId?.name,
-                phone: service?.vendorId?.phone,
-                profileImage: service?.vendorId?.profileImage
-            }
-        }
-        // console.log('service',serviceWithVendor)
-        return serviceWithVendor
+     
+        return service
     }
     async findServiceByCategory(categoryId: string | null, pageNo: number, sortBy: string): Promise<{ Services: ServiceEntity[] | [], totalPages: number }> {
 
