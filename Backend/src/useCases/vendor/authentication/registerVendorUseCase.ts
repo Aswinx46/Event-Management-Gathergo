@@ -13,7 +13,7 @@ export class VendorLoginUsecase implements IvendorAuthenticationUseCase {
     async signupVendor(vendor: VendorEntity): Promise<VendorEntity | null> {
         const oldVendor=await this.vendorDatabse.findByEmail(vendor.email)
         if(oldVendor) throw new Error('Already vendor exist in this email')
-        const hashedPassword=await this.hashPassword.hashPassword(vendor.password)
+        const hashedPassword=await this.hashPassword.hashPassword(vendor.password!)
         const vendorId=genarateRandomUuid()
         const newClient= await this.vendorDatabse.createVendor({
             name:vendor.name,

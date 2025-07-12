@@ -40,6 +40,17 @@ export class CreateClientUseCase implements IclientUsecase {
 
         })
         if (!newClient) throw new Error('Error while creating user')
+        const clientDetails: clientEntity = {
+            name: newClient?.name,
+            clientId: newClient._id!.toString(),
+            email: newClient.email,
+            phone: newClient.phone,
+            role: newClient.role,
+            _id: newClient._id,
+            googleVerified: newClient.googleVerified,
+            profileImage: newClient.profileImage,
+            status: newClient.status
+        }
         const walletId = genarateRandomUuid()
 
         const walletDetails: WalletEntity = {
@@ -51,6 +62,6 @@ export class CreateClientUseCase implements IclientUsecase {
         }
         const createWallet = await this.walletDatabase.createWallet(walletDetails)
         if (!createWallet) throw new Error('Error while creating wallet')
-        return newClient
+        return clientDetails
     }
 }

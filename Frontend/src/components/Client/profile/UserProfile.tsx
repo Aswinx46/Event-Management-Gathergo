@@ -191,7 +191,7 @@ export default function UserDetails() {
                                                 >
                                                     <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg">
                                                         <img
-                                                            src={previewImage || userData.profileImage}
+                                                            src={previewImage || CloudinaryPreset + userData.profileImage}
                                                             alt="Profile"
                                                             className="w-full h-full object-cover"
                                                         />

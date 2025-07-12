@@ -21,7 +21,7 @@ export class AdminLoginUseCase implements IadminLoginUseCase {
         const admin = await this.adminRepository.findbyEmail(email)
         if (!admin) throw new Error('Admin not exist in this email')
         if (!admin.isAdmin) throw new Error('You are not an Admin')
-        const passwordVerify = await this.hashPassword.comparePassword(password, admin.password)
+        const passwordVerify = await this.hashPassword.comparePassword(password, admin.password!)
         if (!passwordVerify) throw new Error('invalid password')
         const walletId = genarateRandomUuid()
         const existingWallet = await this.walletDatabase.findWalletByUserId(admin._id!)

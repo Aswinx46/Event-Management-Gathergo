@@ -7,3 +7,10 @@ export interface VendorEntity extends User {
     rejectionReason?: string;
     aboutVendor?: string
 }
+
+export interface VendorLoginDTO extends User {
+    vendorId: string,
+    vendorStatus: 'pending' | 'approved' | 'rejected',
+    rejectReaons?: string;
+    aboutVendor?: string
+}

@@ -30,18 +30,8 @@ export class ClientLoginController implements IloginClientControllerInterface {
             const refreshToken = this.jwtService.createRefreshToken(REFRESHTOKEN_SECRET_KEY, client._id?.toString() || "")
             await this.redisService.set(`user:${client.role}:${client._id}`, 15 * 60, JSON.stringify(client.status))
             setCookie(res, refreshToken)
-            const selectedFields = {
-                clientId: client.clientId,
-                email: client.email,
-                name: client.name,
-                phone: client.phone,
-                profileImage: client.profileImage,
-                _id: client._id,
-                role: client.role,
-                status: client.status,
-                googleVerified:client.googleVerified
-            }
-            res.status(HttpStatus.OK).json({ message: "user logged", client: selectedFields, accessToken })
+
+            res.status(HttpStatus.OK).json({ message: "user logged", client, accessToken })
 
         } catch (error) {
             console.log('error while login client', error)

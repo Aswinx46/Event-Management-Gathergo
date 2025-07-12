@@ -1,4 +1,4 @@
-import { VendorEntity } from "../../../../entities/vendorEntity";
+import {  VendorLoginDTO } from "../../../../entities/vendorEntity";
 export interface IloginVendorUseCase {
-    loginVendor(email:string,password:string):Promise<VendorEntity | null>
+    loginVendor(email:string,password:string):Promise<VendorLoginDTO | null>
 }
