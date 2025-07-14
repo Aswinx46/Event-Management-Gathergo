@@ -29,7 +29,7 @@ const CategoryListing = () => {
   const fetchCategoryQuery = useFindAllCategoryForListing(currentPage)
   const searchCategory = useSearchCategory()
   const handleSearch = async (query: string): Promise<SearchResult[]> => {
-    // Implement your search logic here
+ 
     try {
       const data = await searchCategory.mutateAsync(query)
       console.log(data)
