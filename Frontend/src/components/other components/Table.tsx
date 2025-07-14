@@ -12,7 +12,7 @@ import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile"
 //     status: "active" | "blocked"
 //     clientId: string
 // }
-interface Client {
+export interface Client {
     _id: string,
     name: string,
     email: string,

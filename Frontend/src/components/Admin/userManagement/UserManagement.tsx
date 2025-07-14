@@ -1,15 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Pagination from "@/components/other components/Pagination"
 import { useBlockClient, useFetchClientAdminQuery, useUnblockClient } from "@/hooks/AdminCustomHooks"
-import Table from "@/components/other components/Table"
+import Table, { Client } from "@/components/other components/Table"
 import EmptyTableMessage from "@/components/other components/NoUserAvailable"
 import { toast } from "react-toastify"
-import { useQueryClient } from "@tanstack/react-query"
 // Define the provider type
 
 export default function EventProvidersPanel() {
@@ -18,17 +17,22 @@ export default function EventProvidersPanel() {
 
   const fetchClient = useFetchClientAdminQuery(currentPage)
   const totalPages = fetchClient?.data?.totalPages
+  const [clients, setClients] = useState<Client[] | []>([])
   const blockClient = useBlockClient()
   const unblockClient = useUnblockClient()
 
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
 
-  console.log(fetchClient.data)
+  useEffect(() => {
+    const users = fetchClient?.data?.clients
+    setClients(users)
+  }, [fetchClient?.data?.clients])
+
   // if (fetchClient.isLoading) {
   //   console.log('loading')
   //   return <LoadingScreen />
   // }
-  const clients = fetchClient?.data?.clients
+
 
 
 
@@ -37,13 +41,14 @@ export default function EventProvidersPanel() {
 
 
   const handleBlockAndUnblock = ({ userId, userStatus }: { userId: string, userStatus: string }) => {
-    console.log(userId)
-    console.log(userStatus)
+
     if (userStatus == 'active') {
       blockClient.mutate(userId, {
         onSuccess: (data) => {
           toast.success(data.message)
-          queryClient.invalidateQueries({ queryKey: ['clients', currentPage] })
+
+          setClients((prev) => prev.map((item: Client) => item._id === userId ? { ...item, status: 'block' } : item))
+          // queryClient.invalidateQueries({ queryKey: ['clients', currentPage] })
         },
         onError: (err) => {
           toast.error(err.message)
@@ -53,7 +58,8 @@ export default function EventProvidersPanel() {
       unblockClient.mutate(userId, {
         onSuccess: (data) => {
           toast.success(data.message)
-          queryClient.invalidateQueries({ queryKey: ['clients', currentPage] })
+          setClients((prev) => prev.map((item: Client) => item._id === userId ? { ...item, status: 'active' } : item))
+          // queryClient.invalidateQueries({ queryKey: ['clients', currentPage] })
         },
         onError: (err) => {
           toast.error(err.message)
