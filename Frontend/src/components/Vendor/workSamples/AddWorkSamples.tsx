@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { useCreateWorkSample, useUploadeImageToCloudinaryMutation } from '@/hooks/VendorCustomHooks';
+import { useCreateWorkSample } from '@/hooks/VendorCustomHooks';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { WorkSamplesEntity } from '@/types/workSampleEntity';
+
 import ImageCropper from '@/components/other components/ImageCropper';
 
 // TypeScript interfaces
