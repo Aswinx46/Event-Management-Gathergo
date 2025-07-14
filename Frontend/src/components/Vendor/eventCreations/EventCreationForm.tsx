@@ -286,7 +286,7 @@ const EventCreationForm: React.FC = () => {
                 validationSchema={validationSchema}
                 onSubmit={handleCreateEvent}
             >
-                {({ values, setFieldValue, handleSubmit, isSubmitting }) => {
+                {({ values, setFieldValue, handleSubmit }) => {
                     // Check validation on every render
                     // const currentStepValid = checkStepValidation(values, currentStep);
                     // Promise.resolve(currentStepValid).then(setIsStepValid);
@@ -337,7 +337,7 @@ const EventCreationForm: React.FC = () => {
                                 steps={steps}
                                 prevStep={prevStep}
                                 nextStep={() => nextStep(values)}
-                                isSubmitting={isSubmitting}
+                                isSubmitting={createEvent.isPaused}
                                 onSubmit={handleSubmit}
                             />
                         </Form>

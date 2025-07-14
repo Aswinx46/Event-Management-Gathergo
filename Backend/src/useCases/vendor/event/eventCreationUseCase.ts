@@ -11,7 +11,7 @@ export class EventCreationUseCase implements IeventCreationUseCase {
     private cloudinaryPrefix: string
     constructor(eventDatabase: IeventRepository, cloudinaryPrefix: string) {
         this.eventDatabase = eventDatabase
-        // if(!cloudinaryPrefix) throw new Error("No Cloudinary preset available")
+        if(!cloudinaryPrefix) throw new Error("No Cloudinary preset available")
         this.cloudinaryPrefix = cloudinaryPrefix
     }
     async createEvent(event: EventEntity, vendorId: string, imageDetails: ImageBufferType[]): Promise<EventEntity> {
