@@ -20,7 +20,7 @@ const EventList: React.FC<EventListProps> = ({
 }) => {
     const [selectedEvent, setSelectedEvent] = useState<EventEntity | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
-   
+
     const handleEventClick = (event: EventEntity) => {
         setSelectedEvent(event);
         setModalOpen(true);

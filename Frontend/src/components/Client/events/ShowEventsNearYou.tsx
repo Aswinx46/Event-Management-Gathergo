@@ -17,10 +17,59 @@ function ShowEventsNearYou() {
             fetchNearbyEvents({ latitude: location.latitude, longitude: location.longitude, pageNo: currentPage, range })
         }
     }, [location, fetchNearbyEvents, currentPage, range])
-    console.log(response?.events)
-    if (error) return <p>{error}</p>;
-    if (isPending) return <p>Loading events...</p>;
-    if (isError) return <p>Failed to load events.</p>;
+ 
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-black text-red-500">
+                <svg
+                    className="w-6 h-6 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v2m0 4h.01M21 12A9 9 0 103 12a9 9 0 0018 0z"
+                    />
+                </svg>
+                <p className="text-lg font-medium">{error}</p>
+            </div>
+        );
+    }
+
+    if (isPending) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-black text-white">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mr-3"></div>
+                <p className="text-lg font-medium">Loading events...</p>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-black text-red-500">
+                <svg
+                    className="w-6 h-6 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v2m0 4h.01M21 12A9 9 0 103 12a9 9 0 0018 0z"
+                    />
+                </svg>
+                <p className="text-lg font-medium">Failed to load events.</p>
+            </div>
+        );
+    }
+
     // console.log("event response", response)
     const handleUpdateRange = (newRange: number) => {
         console.log(newRange * 1000)
