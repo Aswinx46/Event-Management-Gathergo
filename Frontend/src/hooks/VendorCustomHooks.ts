@@ -1,4 +1,4 @@
-import { approveBookingVendor, cancelEvent, changePasswordInForgetPassword, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, otpVerificationForgetPassword, pdfDownloadVendor, rejectBooking, resendOtpVendor, sendOtpForgetPasswordVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, cancelEvent, changePasswordInForgetPassword, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, otpVerificationForgetPassword, pdfDownloadVendor, rejectBooking, resendOtpVendor, sendOtpForgetPasswordVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogin, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { Period } from "@/types/DatePeriodType";
 import { EventUpdateEntity } from "@/types/updateEventType";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
@@ -10,6 +10,12 @@ interface FormValues {
     password: string;
     confirmPassword: string;
     idProof: string;
+}
+
+export const useVendorLoginMutation = () => {
+    return useMutation({
+        mutationFn: async ({ email, password }: { email: string, password: string }) => vendorLogin(email, password)
+    })
 }
 
 export const useUploadeImageToCloudinaryMutation = () => {
@@ -50,7 +56,7 @@ export const useVendorResendOtpMutation = () => {
 
 export const useUpdateProfileImageMutation = () => {
     return useMutation({
-        mutationFn: ({ id, formData }: { id: string, formData:FormData}) => updateProfileImageVendor(id, formData)
+        mutationFn: ({ id, formData }: { id: string, formData: FormData }) => updateProfileImageVendor(id, formData)
     })
 }
 
@@ -152,7 +158,7 @@ export const useVendorChangePassword = () => {
 
 export const useCreateEvent = () => {
     return useMutation({
-        mutationFn: (formData:FormData) => createEvent(formData)
+        mutationFn: (formData: FormData) => createEvent(formData)
     })
 }
 
@@ -246,7 +252,7 @@ export const useDeleteSingleNotificationsVendor = () => {
 
 export const useCreateWorkSample = () => {
     return useMutation({
-        mutationFn: (formData:FormData) => createWorkSamples(formData)
+        mutationFn: (formData: FormData) => createWorkSamples(formData)
     })
 }
 

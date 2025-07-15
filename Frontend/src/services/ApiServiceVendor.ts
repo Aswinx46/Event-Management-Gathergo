@@ -16,6 +16,10 @@ interface VendorData {
 }
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dyrx8qjpt/image/upload";
 
+
+
+
+
 export const uploadImageCloudinary = async (formdata: FormData) => {
     try {
         const response = await clodAxios.post(CLOUDINARY_URL, formdata)

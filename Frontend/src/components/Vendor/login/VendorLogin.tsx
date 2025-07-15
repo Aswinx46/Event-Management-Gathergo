@@ -7,16 +7,13 @@ import { Link, useNavigate } from "react-router-dom"
 import ImageCarousel from "@/components/other components/ImageCarousal"
 import * as yup from 'yup'
 import { ErrorMessage, Field, Form, Formik } from "formik"
-import { useMutation } from "@tanstack/react-query"
-import axios from '../../../axios/vendorAxios'
 import { toast } from "react-toastify"
-import { isAxiosError } from "axios"
 import { useDispatch } from "react-redux"
 import { addVendorToken } from "@/store/slices/vendor/vendorTokenSlice"
 import { addVendor } from "@/store/slices/vendor/vendorSlice"
 import { Button } from "@/components/ui/button"
 import ForgetPasswordModal from "@/components/other components/ForgetPasswordModal"
-import { useChangePasswordInForgetPassword, useOtpVerificationForgetPassword, useSendOtpForgetPasswordVendor, useVendorResendOtpMutation } from "@/hooks/VendorCustomHooks"
+import { useChangePasswordInForgetPassword, useOtpVerificationForgetPassword, useSendOtpForgetPasswordVendor, useVendorLoginMutation, useVendorResendOtpMutation } from "@/hooks/VendorCustomHooks"
 import OtpModal from "@/components/otpModal/otpModal"
 import ResetPasswordModal from "@/components/other components/ChangePasswordOtp"
 export default function VendorLogin() {
@@ -34,34 +31,34 @@ export default function VendorLogin() {
     const [forgetPasswordModal, setforgetPasswordModal] = useState<boolean>(false)
     const [showOtpModal, setShowOtpModal] = useState<boolean>(false)
     const [email, setEmail] = useState<string>('')
+
     const [changePassword, setChangePassword] = useState<boolean>(false)
     const sendOtpMutation = useSendOtpForgetPasswordVendor()
     const verifyOtpMutation = useOtpVerificationForgetPassword()
+    const vendorLoginMutation = useVendorLoginMutation()
     const changePasswordMutation = useChangePasswordInForgetPassword()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const loginMutation = useMutation({
-        mutationFn: async ({ email, password }: value) => {
-            return await axios.post('/login', { email, password })
-        },
-        onSuccess: (data) => {
-            localStorage.setItem('vendorId', data.data.vendor._id)
-            dispatch(addVendorToken(data.data.accessToken))
-            dispatch(addVendor(data.data.vendor))
-            navigate('/vendor/home')
 
-        },
-        onError: (error: Error) => {
-            if (isAxiosError(error)) {
-                toast.error(error?.response?.data.error)
-            } else {
-                toast.error('error while login vendor')
-            }
-        }
-    })
+
 
     const handleSubmit = (values: value) => {
-        loginMutation.mutate(values)
+        const { email, password } = values
+        vendorLoginMutation.mutate({ email, password }, {
+            onSuccess: (data) => {
+                
+                localStorage.setItem('vendorId', data.vendor._id)
+                dispatch(addVendorToken(data.accessToken))
+                dispatch(addVendor(data.vendor))
+                navigate('/vendor/home')
+
+            },
+            onError: (error: Error) => {
+                toast.error(error.message)
+                console.log(error)
+            }
+
+        })
     }
 
     const handleSendOtp = (email: string) => {
@@ -202,7 +199,7 @@ export default function VendorLogin() {
                                             <button
                                                 className="group relative flex w-full justify-center rounded-md bg-[#0a1629] px-3 py-3 text-sm font-semibold text-white hover:bg-[#152238] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                                             >
-                                                Sign In
+                                                {vendorLoginMutation.isPending ? 'Signing In ......' : "Sign In"}
                                             </button>
                                         </motion.div>
 
