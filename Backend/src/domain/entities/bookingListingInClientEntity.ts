@@ -12,5 +12,6 @@ export interface BookingsInClientEntity {
     status: "Pending" | "Rejected" | "Completed",
     rejectionReason?:string,
     vendor: VendorDTO,
+    amount:number
     service: ServiceBookingDTO
 }

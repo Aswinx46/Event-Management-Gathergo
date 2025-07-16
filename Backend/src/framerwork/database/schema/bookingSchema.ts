@@ -50,6 +50,10 @@ export const bookingSchema = new Schema<BookingEntity>({
     isComplete: {
         type: Boolean,
         default: false
+    },
+    amount: {
+        type: Number,
+        required: true
     }
 }, {
     timestamps: true

@@ -13,6 +13,7 @@ export interface BookingEntity {
     rejectionReason?: string
     status: "Pending" | "Rejected" | "Completed" | "Cancelled"
     createdAt: Date
+    amount: number
     isComplete: boolean
 }
 

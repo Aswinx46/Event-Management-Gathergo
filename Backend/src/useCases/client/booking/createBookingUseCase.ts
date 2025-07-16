@@ -26,6 +26,7 @@ export class CreateBookingUseCase implements IcreateBookingUseCase {
             rejectionReason: created.rejectionReason,
             status: created.status,
             createdAt: created.createdAt,
+            amount: created.amount,
             isComplete: created.isComplete
         };
         return bookingDTO

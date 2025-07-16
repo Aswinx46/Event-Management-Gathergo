@@ -77,6 +77,8 @@ import { PdfServiceVendor } from "../services/pdfServiceForVendor";
 import { PdfDownloaderVendorController } from "../../adapters/controllers/vendor/dashboard/pdfDownloaderVendorController";
 import { EventCancellationUseCase } from "../../useCases/vendor/event/eventCancellationUseCase";
 import { CancelEventController } from "../../adapters/controllers/vendor/event/cancelEventController";
+import { UpdateBookingAmountUseCase } from "../../useCases/vendor/bookings/updateBookingAmountUseCase";
+import { UpdateBookingAmountController } from "../../adapters/controllers/vendor/bookings/updateBookingAmountController";
 
 
 
@@ -219,3 +221,7 @@ export const injectedPdfDownloadVendorController = new PdfDownloaderVendorContro
 //--------------------------cancel event ----------------------------------
 const cancelEventUseCase = new EventCancellationUseCase(eventRepository, ticketdatabase, walletDatabase, transactionDatabase)
 export const injectedCancelEventController = new CancelEventController(cancelEventUseCase)
+
+//------------------------update booking amount -----------
+const updateBookingAmountUseCase = new UpdateBookingAmountUseCase(bookingsDatabase)
+export const injectedUpdateBookingAmountController = new UpdateBookingAmountController(updateBookingAmountUseCase) 

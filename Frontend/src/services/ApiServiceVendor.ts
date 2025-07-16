@@ -309,9 +309,9 @@ export const findWalletDetailsVendor = async (userId: string, pageNo: number) =>
     }
 }
 
-export const updateBookingAsComplete = async (bookingId: string, status: string) => {
+export const updateBookingAsComplete = async (bookingId: string, status: string, amount?: number) => {
     try {
-        const response = await axios.patch('/completeBooking', { bookingId, status })
+        const response = await axios.patch('/completeBooking', { bookingId, status, amount })
         return response.data
     } catch (error) {
         console.log('error while updating booking as complete', error)
@@ -473,5 +473,15 @@ export const cancelEvent = async (eventId: string) => {
     } catch (error) {
         console.log('error while canceling the event', error)
         throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while canceling the event')
+    }
+}
+
+export const updateBookingAmount = async (bookingId: string, amount: number) => {
+    try {
+        const response = await axios.patch(`/updateBookingAmount/${bookingId}`, { amount })
+        return response.data
+    } catch (error) {
+        console.log('error while updating booking amount', error)
+        throw new Error(isAxiosError(error) ? error.response?.data.error : 'error while updating booking amount')
     }
 }

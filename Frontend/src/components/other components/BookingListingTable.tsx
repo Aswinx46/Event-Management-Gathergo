@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Table,
@@ -19,44 +19,8 @@ import {
 import { Calendar, Phone, Mail, Clock } from "lucide-react";
 import BookingDetailsModal from "./BookingDetailsModal";
 import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
+import { Booking } from "@/types/BookingDetailsModalTypes";
 
-interface Service {
-  _id:string
-  title: string;
-  serviceDescription: string;
-  serviceDuration: string;
-  servicePrice: number;
-}
-
-interface Vendor {
-  _id: string;
-  name: string;
-  email: string;
-  phone: number;
-  profileImage: string;
-}
-
-interface Client {
-  _id: string;
-  name: string;
-  email: string;
-  phone: number;
-  profileImage: string;
-}
-
-export interface Booking {
-  _id: string;
-  date: string[];
-  email: string;
-  phone: number;
-  paymentStatus: string;
-  status: string;
-  service: Service;
-  vendor: Vendor;
-  client: Client
-  vendorApproval: string
-  rejectionReason?: string
-}
 
 interface BookingListingTableProps {
   bookings: Booking[];
@@ -73,6 +37,7 @@ const formatDate = (dateString: string) => {
 };
 
 const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = [] }) => {
+  console.log(bookings)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedBooking, setSelectedBooking] = useState<Booking>()
   const containerVariants = {
@@ -188,7 +153,7 @@ const BookingListingTable: React.FC<BookingListingTableProps> = ({ bookings = []
                           <span>{booking?.service?.serviceDuration}</span>
                         </div>
                         <p className="font-semibold text-black">
-                          ₹{booking?.service?.servicePrice}
+                          ₹{booking?.amount}
                         </p>
                       </div>
                     </TableCell>

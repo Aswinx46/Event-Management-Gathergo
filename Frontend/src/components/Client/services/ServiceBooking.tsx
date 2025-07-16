@@ -32,6 +32,7 @@ export interface Booking {
   name: string;
   vendorId: string,
   serviceId: string
+  amount: number
   clientId: string
 }
 
@@ -135,9 +136,9 @@ const VendorBookingCard = () => {
           new Date(date.getFullYear(), date.getMonth(), date.getDate())
         );
         const bookingData: Booking = {
-          ...values, phone: Number(values.phone), date: dateObjects, serviceId: serviceId, vendorId: vendorId, clientId: clientId
+          ...values, phone: Number(values.phone), date: dateObjects, serviceId: serviceId, vendorId: vendorId, clientId: clientId, amount: Service.price
         }
-        console.log(bookingData)
+        
         bookingApi.mutate(bookingData, {
           onSuccess: (data) => {
             toast.success(data.message)
@@ -176,7 +177,7 @@ const VendorBookingCard = () => {
               >
                 <div className="relative">
                   <motion.img
-                    src={CloudinaryPreset+Service?.vendor.profileImage}
+                    src={CloudinaryPreset + Service?.vendor.profileImage}
                     alt={Service?.vendor.name}
                     className="w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-md"
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -274,7 +275,7 @@ const VendorBookingCard = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-4 bg-white border-white/30 space-y-4">
-                       <Calendar
+                      <Calendar
                         mode="multiple"
                         selected={selectedDates}
                         onSelect={(dates) => {
@@ -301,8 +302,8 @@ const VendorBookingCard = () => {
                         }}
                         weekStartsOn={0}
                         locale={enUS}
-                      /> 
-                    
+                      />
+
                       <Button
                         variant="secondary"
                         className="w-full bg-white text-black"

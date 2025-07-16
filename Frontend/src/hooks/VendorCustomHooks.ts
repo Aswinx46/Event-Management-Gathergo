@@ -1,4 +1,4 @@
-import { approveBookingVendor, cancelEvent, changePasswordInForgetPassword, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, otpVerificationForgetPassword, pdfDownloadVendor, rejectBooking, resendOtpVendor, sendOtpForgetPasswordVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogin, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
+import { approveBookingVendor, cancelEvent, changePasswordInForgetPassword, changePasswordVendor, changeStatusService, createEvent, createServiceVendor, createWorkSamples, deleteAllNotificationsVendor, deleteSingleNotificationVendor, editServiceVendor, fetchCategoryCategoryForService, findAllEventsInVendor, findServiceForVendor, findWalletDetailsVendor, findWorkSamples, loadChatsVendor, loadPreviousChatVendor, loadVendorDashboard, otpVerificationForgetPassword, pdfDownloadVendor, rejectBooking, resendOtpVendor, sendOtpForgetPasswordVendor, showBookingsInVendor, singleNotificationReadVendor, ticketDetailsWithUser, updateBookingAmount, updateBookingAsComplete, updateEvent, updateProfileImageVendor, updateVendorDetails, uploadImageCloudinary, vendorLogin, vendorLogout, vendorSignup, verifyOtpVendor, verifyTicket } from "@/services/ApiServiceVendor";
 import { Period } from "@/types/DatePeriodType";
 import { EventUpdateEntity } from "@/types/updateEventType";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
@@ -190,7 +190,7 @@ export const useFindWalletDetailsVendor = (userId: string, pageNo: number) => {
 
 export const useUpdateBookingAsComplete = () => {
     return useMutation({
-        mutationFn: ({ bookingId, status }: { bookingId: string, status: string }) => updateBookingAsComplete(bookingId, status)
+        mutationFn: ({ bookingId, status, amount }: { bookingId: string, status: string, amount: number }) => updateBookingAsComplete(bookingId, status, amount)
     })
 }
 
@@ -296,5 +296,11 @@ export const usePdfDownloadVendor = () => {
 export const useCancelEvent = () => {
     return useMutation({
         mutationFn: (eventId: string) => cancelEvent(eventId)
+    })
+}
+
+export const useUpdateBookingAmount = () => {
+    return useMutation({
+        mutationFn: ({ bookingId, amount }: { bookingId: string, amount: number }) => updateBookingAmount(bookingId, amount)
     })
 }

@@ -9,6 +9,7 @@ export interface BookingListingEntityVendor {
     vendorApproval: "Pending" | "Approved" | "Rejected",
     email: string,
     phone: number,
+    amount:number
     status: "Pending" | "Rejected" | "Completed",
     rejectionReason?:string
     client: ClientDTO,

@@ -10,7 +10,7 @@ function BookingPayment() {
     const data = location.state.booking
     const createBookingPaymentHook = useCreateBookingPayment()
     const confirmBookingPaymentHook = useConfirmBookingPayment()
-    const totalAmount = data.date.length * data.service.servicePrice
+    const totalAmount = data.date.length * data.amount
     console.log(data)
     const navigate = useNavigate()
     const createBookingPayment = async (paymentMethodId: string) => {

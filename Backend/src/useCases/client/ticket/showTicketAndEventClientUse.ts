@@ -9,9 +9,9 @@ export class ShowTicketAndEventClientUseCase implements IshowTicketAndEventClien
     }
     async showTicketAndEvent(userId: string, pageNo: number): Promise<{ ticketAndEventDetails: TicketAndEventDTO[] | []; totalPages: number; }> {
         const { ticketAndEventDetails, totalPages } = await this.ticketDatabase.findBookedTicketsOfClient(userId, pageNo)
-     
+   
         const ticketDetailsMapped: TicketAndEventDTO[] = ticketAndEventDetails.map(ticket => {
-            const event = ticket.eventId as any; // TypeScript doesn't know it's populated
+            const event = ticket.eventId as any; 
             return {
                 _id: ticket._id,
                 ticketId: ticket.ticketId,

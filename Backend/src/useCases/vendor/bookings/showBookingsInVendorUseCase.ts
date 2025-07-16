@@ -15,6 +15,7 @@ export class ShowBookingsInVendorUseCase implements IshowBookingsInVendorUseCase
             email: booking.email,
             paymentStatus: booking.paymentStatus,
             phone: booking.phone,
+            amount: booking.amount,
             service: booking.serviceId,
             client: booking.clientId,
             status: booking.status,

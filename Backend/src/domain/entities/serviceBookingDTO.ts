@@ -5,5 +5,6 @@ export interface ServiceBookingDTO {
     serviceDescription: string
     servicePrice: string
     serviceTitle: string
+    additionalHourFee:number
     serviceDuration: string
 }

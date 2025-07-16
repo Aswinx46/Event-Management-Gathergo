@@ -9,8 +9,8 @@ export class UpdateBookingAsCompleteController {
     }
     async handleUpdateBookingComplete(req: Request, res: Response): Promise<void> {
         try {
-            const { bookingId, status } = req.body
-            const updateBooking = await this.updateBookingStatusUseCase.changeStatusOfBooking(bookingId, status)
+            const { bookingId, status, amount } = req.body
+            const updateBooking = await this.updateBookingStatusUseCase.changeStatusOfBooking(bookingId, status, amount)
             res.status(HttpStatus.OK).json({ message: "Booking marked as completed" })
         } catch (error) {
             console.log('error while updating complete status of booking', error)

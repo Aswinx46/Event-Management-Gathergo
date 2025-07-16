@@ -4,44 +4,10 @@ import { useFetchBookingsInClient } from '@/hooks/ClientCustomHooks'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import Pagination from '@/components/other components/Pagination'
+import { Booking } from '@/types/BookingDetailsModalTypes'
 
-interface Service {
-  _id:string
-  title: string;
-  serviceDescription: string;
-  serviceDuration: string;
-  servicePrice: number;
-}
 
-interface Vendor {
-  _id: string;
-  name: string;
-  email: string;
-  phone: number;
-  profileImage: string;
-}
 
-interface Client {
-  _id: string;
-  name: string;
-  email: string;
-  phone: number;
-  profileImage: string;
-}
-
-export interface Booking {
-  _id: string;
-  date: string[];
-  email: string;
-  phone: number;
-  paymentStatus: string;
-  status: string;
-  service: Service;
-  vendor: Vendor;
-  client: Client
-  vendorApproval: string
-  rejectionReason?: string
-}
 
 function BookingListing() {
   const [currentPage, setCurrentPage] = useState<number>(1)

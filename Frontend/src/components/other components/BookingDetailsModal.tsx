@@ -29,51 +29,13 @@ import ConfirmModal from "./ConfirmationModal";
 import AddReviewModal from "./review/AddReview";
 import { ReviewEntity } from "@/types/ReviewType";
 import { CloudinaryPreset } from "@/utils/cloudinaryPresetFile";
-
-
-interface Service {
-    _id: string
-    title: string;
-    serviceDescription: string;
-    serviceDuration: string;
-    servicePrice: number;
-}
-
-interface Vendor {
-    _id: string;
-    name: string;
-    email: string;
-    phone: number;
-    profileImage: string;
-}
-
-interface Client {
-    _id: string;
-    name: string;
-    email: string;
-    phone: number;
-    profileImage: string;
-}
-export interface BookingDetails {
-    _id: string;
-    date: string[];
-    email: string;
-    phone: number;
-    paymentStatus: string;
-    status: string;
-    service: Service;
-    vendor: Vendor;
-    client: Client
-    vendorApproval: string
-    rejectionReason?: string
-}
-
-
+import { Booking } from "../../types/BookingDetailsModalTypes";
+import OvertimeModal, { OvertimeRequest } from "./OvertimeMoneyRequestModal";
 
 interface BookingDetailsModalProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    booking: BookingDetails | null;
+    booking: Booking | null;
 }
 
 
@@ -87,7 +49,7 @@ const formatPhoneNumber = (phone: number): string => {
 };
 
 // Helper function to get status badge style
-const getStatusStyle = (status: BookingDetails["status"] | BookingDetails["paymentStatus"]) => {
+const getStatusStyle = (status: Booking["status"] | Booking["paymentStatus"]) => {
     switch (status) {
         case "Confirmed":
             return "bg-gray-700 text-white";
@@ -123,6 +85,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     const [rejectingBookingId, setRejectingBookingId] = useState<string>('')
     const [cancelBookingId, setCancelBookingId] = useState<string>('')
     const [showReviewModal, setShowReviewModal] = useState<boolean>(false)
+    const [newAmount, setNewAmount] = useState<number>(booking?.amount || 0)
+    const [newOverTimeRate, setNewOverTimeRate] = useState<number | null>(null)
+    const [showModalForExtraPayment, setShowModalForExtraPayment] = useState<boolean>(false)
     const addReview = useAddReview()
     if (!booking) return null;
 
@@ -148,6 +113,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     // const bookingDate = new Date(booking.date);
     // const timeAgo = formatDistanceToNow(bookingDate, { addSuffix: true });
+  
     const cancelMessage = 'This action cannot be undone, and the service will no longer be available for booking.'
     const handleCancelBooking = () => {
         cancelBooking.mutate(cancelBookingId, {
@@ -239,11 +205,12 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
         })
     }
 
-    const handleChangeBookingStatus = (booking: BookingDetails) => {
+    const handleChangeBookingStatus = (booking: Booking) => {
         const newStatus = booking.status === "Pending" ? "Completed" : "Pending";
+     
 
         updateBookingStatus.mutate(
-            { bookingId: booking._id, status: newStatus },
+            { bookingId: booking._id, status: newStatus, amount: newAmount },
             {
                 onSuccess: ({ message }) => {
                     toast.success(message)
@@ -257,7 +224,14 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             }
         );
     };
-    const handleBookingPayment = (booking: BookingDetails) => {
+
+    const handleExtraPayment = (data: OvertimeRequest) => {
+        console.log('this is the data', data)
+        setNewOverTimeRate(data.hours * data.hourlyRate)
+        setNewAmount((prev) => prev + data.hours * data.hourlyRate)
+    }
+
+    const handleBookingPayment = (booking: Booking) => {
 
         navigate('/profile/confirmBookingPayment', {
             state: {
@@ -271,7 +245,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             <DialogContent className="max-w-md max-h-[80vh] bg-[#1a1a1a] border border-[#333] text-white p-0 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.3)]">
                 <div className="custom-scrollbar overflow-y-auto max-h-[calc(80vh-4rem)]">
                     {showReviewModal && <AddReviewModal isOpen={showReviewModal} onClose={() => setShowReviewModal(false)} reviewerId={clientId!} targetId={booking.service._id} targetType='service' onSubmit={handleReviewSubmit} />}
-
+                    {showModalForExtraPayment && <OvertimeModal isOpen={showModalForExtraPayment} onClose={() => setShowModalForExtraPayment(false)} onSubmit={handleExtraPayment} overTimeRate={booking.service.additionalHourFee} currentAmount={booking.service.servicePrice} />}
                     {showConfirmModal && <ConfirmModal content={cancelMessage} isOpen={showConfirmModal} onCancel={() => setShowConfirmModal(false)} onConfirm={handleCancelBooking} />}
                     {rejectionModal && <RejectionReasonModal isOpen={rejectionModal} onClose={handleOnClose} onSubmit={handleReject} rejectionReason={rejectionReason} setRejectionReason={setRejectionReason} />}
                     <DialogHeader className="bg-[#111] py-6 px-5 border-b border-[#333]">
@@ -335,7 +309,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                             {(booking?.vendor?.profileImage || booking.client?.profileImage) &&
                                 <div className="relative">
                                     <img
-                                        src={CloudinaryPreset+booking.vendor?.profileImage || booking.client?.profileImage}
+                                        src={CloudinaryPreset + booking.vendor?.profileImage || booking.client?.profileImage}
                                         className="w-14 h-14 rounded-xl object-cover border-2 border-blue-400"
                                     />
                                     <div className="absolute -bottom-1 -right-1 bg-blue-400 w-4 h-4 rounded-full border-2 border-[#222]"></div>
@@ -381,9 +355,22 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                                         </span>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-sm text-gray-400">Total Amount</p>
-                                    <p className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">₹{booking.service.servicePrice.toLocaleString()}</p>
+                                <div className="flex flex-col gap-1 text-xl font-bold text-right">
+                                    <p className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                                        ₹{booking.amount.toLocaleString()}
+                                    </p>
+
+                                    {newOverTimeRate && (
+                                        <p className="text-sm text-gray-500">
+                                            + Overtime price: ₹{newOverTimeRate.toLocaleString()}
+                                        </p>
+                                    )}
+
+                                    {newOverTimeRate && (
+                                        <p className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                                            Total: ₹{(booking.amount + newOverTimeRate).toLocaleString()}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -413,15 +400,29 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                             )}
 
                             {booking?.client?.email && booking.vendorApproval == 'Approved' && booking.paymentStatus !== 'Successfull' && (
-                                <Button
-                                    onClick={() => handleChangeBookingStatus(booking)}
-                                    className={`${booking.status == 'Pending'
-                                        ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                        : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'} 
+                                <div className="flex gap-4">
+                                    <Button
+                                        onClick={() => setShowModalForExtraPayment(true)}
+                                        className={`${booking.status == 'Pending'
+                                            ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                            : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'} 
                                         text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg`}
-                                >
-                                    {booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}
-                                </Button>
+                                    >
+                                        {booking.status == 'Pending' && 'Add Overtime Price'}
+                                    </Button>
+
+                                    <Button
+                                        onClick={() => handleChangeBookingStatus(booking)}
+                                        className={`${booking.status == 'Pending'
+                                            ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                            : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'} 
+                                        text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg`}
+                                    >
+                                        {booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}
+                                    </Button>
+
+                                </div>
+
                             )}
 
                             {booking.status == 'Completed' && booking.paymentStatus == 'Successfull' && (

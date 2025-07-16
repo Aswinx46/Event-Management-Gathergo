@@ -45,7 +45,7 @@ export class BookingRepository implements IbookingRepository {
             select: '_id name email phone profileImage'
         }).populate({
             path: 'serviceId',
-            select: '_id serviceDescription servicePrice title serviceDuration'
+            select: '_id serviceDescription servicePrice title serviceDuration service additionalHourFee'
         }).lean<PopulatedBookingEntityVendor[] | []>().skip(skip).limit(limit).sort({ createdAt: -1 })
 
 
@@ -168,5 +168,11 @@ export class BookingRepository implements IbookingRepository {
             return Array.isArray(booking.date) ? booking.date.map((d: any) => new Date(d)) : [];
         }
         return null;
+    }
+    async updateBookingAmount(bookingId: string, amount: number): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { amount: amount })
+    }
+    async updateBookingAmountAndStatus(bookingId: string, amount: number, status: string): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { amount: amount, status: status }, { new: true })
     }
 }

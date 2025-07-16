@@ -19,6 +19,7 @@ export class ShowBookingsInClientUseCase implements IshowBookingsInClientUseCase
             status: booking.status,
             vendor: booking.vendorId,
             service: booking.serviceId,
+            amount:booking.amount,
             rejectionReason: booking.rejectionReason
         }));
         return { Bookings: mappedBookings, totalPages }
