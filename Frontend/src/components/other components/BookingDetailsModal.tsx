@@ -88,6 +88,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     const [newAmount, setNewAmount] = useState<number>(booking?.amount || 0)
     const [newOverTimeRate, setNewOverTimeRate] = useState<number | null>(null)
     const [showModalForExtraPayment, setShowModalForExtraPayment] = useState<boolean>(false)
+    const [extraHour, setExtraHour] = useState<number>(0)
     const addReview = useAddReview()
     if (!booking) return null;
 
@@ -113,7 +114,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     // const bookingDate = new Date(booking.date);
     // const timeAgo = formatDistanceToNow(bookingDate, { addSuffix: true });
-  
+
     const cancelMessage = 'This action cannot be undone, and the service will no longer be available for booking.'
     const handleCancelBooking = () => {
         cancelBooking.mutate(cancelBookingId, {
@@ -207,10 +208,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
     const handleChangeBookingStatus = (booking: Booking) => {
         const newStatus = booking.status === "Pending" ? "Completed" : "Pending";
-     
-
+        console.log('this is the booking data while payment', booking)
         updateBookingStatus.mutate(
-            { bookingId: booking._id, status: newStatus, amount: newAmount },
+            { bookingId: booking._id, status: newStatus, amount: newAmount, extraHour: extraHour },
             {
                 onSuccess: ({ message }) => {
                     toast.success(message)
@@ -226,13 +226,12 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     };
 
     const handleExtraPayment = (data: OvertimeRequest) => {
-        console.log('this is the data', data)
         setNewOverTimeRate(data.hours * data.hourlyRate)
         setNewAmount((prev) => prev + data.hours * data.hourlyRate)
+        setExtraHour(data.hours)
     }
 
     const handleBookingPayment = (booking: Booking) => {
-
         navigate('/profile/confirmBookingPayment', {
             state: {
                 booking
@@ -399,7 +398,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                                 </>
                             )}
 
-                            {booking?.client?.email && booking.vendorApproval == 'Approved' && booking.paymentStatus !== 'Successfull' && (
+                            {booking?.client?.email && booking.vendorApproval == 'Approved' && booking.paymentStatus !== 'Successfull' && booking.status === 'Pending' && (
                                 <div className="flex gap-4">
                                     <Button
                                         onClick={() => setShowModalForExtraPayment(true)}
@@ -418,7 +417,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                                             : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'} 
                                         text-white px-6 py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg`}
                                     >
-                                        {booking.status == 'Pending' ? 'Mark as Complete' : 'Mark as not Complete'}
+                                        {booking.status == 'Pending' && 'Mark as Complete'}
                                     </Button>
 
                                 </div>

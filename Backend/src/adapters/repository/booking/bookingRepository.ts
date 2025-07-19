@@ -78,14 +78,15 @@ export class BookingRepository implements IbookingRepository {
     async updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { paymentStatus: status }, { new: true }).select('-__v -createdAt')
     }
-    async findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[]; servicePrice: number; } | null> {
-        const bookingDetails = await bookingModel.findById(bookingId).select('_id date').populate('serviceId', 'servicePrice').lean<{
+    async findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[]; servicePrice: number; extraHour?: number, additionalHourFee: number } | null> {
+        const bookingDetails = await bookingModel.findById(bookingId).select('_id date amount extraHour').populate('serviceId', 'servicePrice additionalHourFee').lean<{
             _id: ObjectId;
             date: Date[];
-            serviceId: { servicePrice: number };
+            extraHour: number
+            serviceId: { servicePrice: number, additionalHourFee: number };
         }>();
         if (!bookingDetails) return null
-        return { _id: bookingDetails._id, date: bookingDetails?.date, servicePrice: bookingDetails?.serviceId.servicePrice }
+        return { _id: bookingDetails._id, date: bookingDetails?.date, servicePrice: bookingDetails?.serviceId.servicePrice, additionalHourFee: bookingDetails.serviceId.additionalHourFee, extraHour: bookingDetails.extraHour }
     }
     async cancelBooking(bookingId: string): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate(bookingId, { status: 'Cancelled' }, { new: true })
@@ -172,7 +173,7 @@ export class BookingRepository implements IbookingRepository {
     async updateBookingAmount(bookingId: string, amount: number): Promise<BookingEntity | null> {
         return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { amount: amount })
     }
-    async updateBookingAmountAndStatus(bookingId: string, amount: number, status: string): Promise<BookingEntity | null> {
-        return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { amount: amount, status: status }, { new: true })
+    async updateBookingAmountAndStatus(bookingId: string, amount: number, status: string, extraHour?: number): Promise<BookingEntity | null> {
+        return await bookingModel.findByIdAndUpdate({ _id: bookingId }, { amount: amount, status: status, extraHour }, { new: true })
     }
 }

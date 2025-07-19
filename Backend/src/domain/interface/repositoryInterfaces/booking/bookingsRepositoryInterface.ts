@@ -15,7 +15,7 @@ export interface IbookingRepository {
     changeStatus(bookingId: string, status: string): Promise<BookingEntity | null>
     findBookingByIdForPayment(bookingId: string | ObjectId): Promise<any | null>
     updateBookingPaymnentStatus(bookingId: string | ObjectId, status: string): Promise<BookingEntity | null>
-    findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[], servicePrice: number } | null>
+    findServicePriceAndDatesOfBooking(bookingId: string | ObjectId): Promise<{ _id: ObjectId, date: Date[], servicePrice: number, extraHour?: number, additionalHourFee: number } | null>
     cancelBooking(bookingId: string): Promise<BookingEntity | null>
     showAllBookingsInAdmin(pageNo: number): Promise<{ bookings: any[] | [], totalPages: number }>
     findTotalBookings(): Promise<number>
@@ -27,5 +27,5 @@ export interface IbookingRepository {
     findBookingsOfAVendor(vendorId: string): Promise<BookingPdfDTO[] | []>
     findBookingDatesOfABooking(bookingId: string): Promise<Date[] | null>
     updateBookingAmount(bookingId: string, amount: number): Promise<BookingEntity | null>
-    updateBookingAmountAndStatus(bookingId: string, amount: number, status: string): Promise<BookingEntity | null>
+    updateBookingAmountAndStatus(bookingId: string, amount: number, status: string, extraHour?: number): Promise<BookingEntity | null>
 }

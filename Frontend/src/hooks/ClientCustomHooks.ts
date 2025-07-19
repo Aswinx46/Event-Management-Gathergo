@@ -155,7 +155,7 @@ export const useFindAllCategoryForListing = (pageNo: number) => {
 
 export const useUpdateClientProfie = () => {
     return useMutation({
-        mutationFn: (formData:FormData) => updateProfileClient(formData)
+        mutationFn: (formData: FormData) => updateProfileClient(formData)
     })
 }
 
@@ -187,7 +187,7 @@ export const useFindEventById = (eventId: string) => {
 
 export const useCreateTicket = () => {
     return useMutation({
-        mutationFn: ({ ticket, totalCount, totalAmount, paymentIntentId, vendorId, ticketPurchasedDetails }: { ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string, ticketPurchasedDetails: Record<string, number> }) => createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId,ticketPurchasedDetails)
+        mutationFn: ({ ticket, totalCount, totalAmount, paymentIntentId, vendorId, ticketPurchasedDetails }: { ticket: TicketEntity, totalCount: number, totalAmount: number, paymentIntentId: string, vendorId: string, ticketPurchasedDetails: Record<string, number> }) => createTicket(ticket, totalCount, totalAmount, paymentIntentId, vendorId, ticketPurchasedDetails)
 
     })
 }

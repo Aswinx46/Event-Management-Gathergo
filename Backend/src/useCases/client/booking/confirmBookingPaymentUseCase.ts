@@ -27,7 +27,9 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
         if (!dateAndServicePrice) {
             throw new Error("Booking not found or service unavailable");
         }
-        const { date, servicePrice } = dateAndServicePrice
+
+        const { date, servicePrice, extraHour, additionalHourFee } = dateAndServicePrice
+
         const paymentTransaction = await this.paymentDatabase.findTransactionOfAUser(booking.clientId, booking.vendorId, booking._id!)
         if (!paymentTransaction) throw new Error("No transaction found in these users")
         const confirmBooking = await this.paymentService.confirmPayment(paymentIntentId)
@@ -35,7 +37,8 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
             const updateBooking = await this.bookingDatabase.updateBookingPaymnentStatus(booking._id!, 'Failed')
             throw new Error("Payment failed")
         }
-        const totalAmount = date.length * servicePrice
+        const totalAmount = extraHour ? (date.length * servicePrice) + (additionalHourFee * extraHour) : (date.length * servicePrice)
+        console.log(totalAmount)
         const adminCommission = totalAmount * 0.05
         const vendorPrice = totalAmount - adminCommission
         const adminId = process.env.ADMIN_ID

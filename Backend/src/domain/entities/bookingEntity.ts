@@ -15,6 +15,7 @@ export interface BookingEntity {
     createdAt: Date
     amount: number
     isComplete: boolean
+    extraHour?:number
 }
 
 

@@ -28,10 +28,10 @@ export interface BookingDetails {
     email: string;
     phone: number;
     paymentStatus: string;
-    additionalHourFee:number
+    additionalHourFee: number
     status: string;
     service: Service;
-    amount:number
+    amount: number
     vendor: Vendor;
     client: Client
     vendorApproval: string
@@ -47,10 +47,11 @@ export interface Booking {
     paymentStatus: string;
     status: string;
     service: Service;
-    amount:number
-    additionalHourFee:number
+    amount: number
+    additionalHourFee: number
     vendor: Vendor;
     client: Client
     vendorApproval: string
     rejectionReason?: string
-  }
+    extraHour?: number
+}

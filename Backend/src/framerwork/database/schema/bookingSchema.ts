@@ -54,6 +54,11 @@ export const bookingSchema = new Schema<BookingEntity>({
     amount: {
         type: Number,
         required: true
+    },
+    extraHour: {
+        type: Number,
+        required: false,
+        default:0
     }
 }, {
     timestamps: true
