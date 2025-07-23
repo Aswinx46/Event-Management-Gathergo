@@ -232,6 +232,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
     }
 
     const handleBookingPayment = (booking: Booking) => {
+        console.log('this is the booking details',booking)
         navigate('/profile/confirmBookingPayment', {
             state: {
                 booking

@@ -38,7 +38,6 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
             throw new Error("Payment failed")
         }
         const totalAmount = extraHour ? (date.length * servicePrice) + (additionalHourFee * extraHour) : (date.length * servicePrice)
-        console.log(totalAmount)
         const adminCommission = totalAmount * 0.05
         const vendorPrice = totalAmount - adminCommission
         const adminId = process.env.ADMIN_ID
@@ -70,6 +69,8 @@ export class ConfirmBookingPaymentUseCase implements IconfirmBookingPaymentUseCa
                 resourceId: dateAndServicePrice._id
             }
         }
+        const updateBookingAmount = await this.bookingDatabase.updateBookingAmount(booking._id!.toString(), totalAmount)
+        if (!updateBookingAmount) throw new Error('error while updating the final booking amount')
         const CreateVendorTransaction = await this.transactionDatabase.createTransaction(vendorTransaction)
         if (!CreateVendorTransaction) throw new Error('error while creatitng vendor transcation')
         const CreateAdminTransaction = await this.transactionDatabase.createTransaction(adminTransaction)
