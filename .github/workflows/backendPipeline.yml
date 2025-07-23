@@ -4,30 +4,73 @@ on:
   push:
     branches: [main]
     paths:
-      - 'Backend/**'
-      - '.github/workflows/backendPipeline.yml'
+      - "Backend/**"
+      - ".github/workflows/backendPipeline.yml"
 
 jobs:
   build-and-push:
-    name: Build and Push Backend Image
-    runs-on: ubuntu-latest
+    name: "Build and push backend image"
+    runs-on: "ubuntu-latest"
 
     steps:
-      - name: Checkout code
+      - name: "Checkout Code"
         uses: actions/checkout@v4
 
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Log in to Docker hub
+      - name: Login to Docker hub
         uses: docker/login-action@v2
         with:
-          username: 
-          password:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
 
-      - name: Build and push docker Image
+      - name: Build and push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
+          context: ./Backend
           push: true
-          tags: yourdockerhubusername/backend:latest
+          tags: ${{secrets.DOCKER_USERNAME}}/backend:latest
+
+      - name: Deploy to EC2 via ssh
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USER}}
+          key: ${{secrets.EC2_SSH_PRIVATE_KEY}}
+          script: |
+            echo "Creating ENV..."
+            cat <<EOF > /home/ubuntu/Event-Management-Gathergo/Backend/.env
+            PORT=${{secrets.PORT}}
+            ORIGIN=${{secrets.ORIGIN}}
+            MONGODB=${{secrets.MONGODB}}
+            NODEMAILER_EMAIL=${{secrets.NODEMAILER_EMAIL}}
+            NODEMAILER_PASSWORD=${{secrets.NODEMAILER_PASSWORD}}
+            ACCESSTOKEN_SECRET_KEY=${{secrets.ACCESSTOKEN_SECRET_KEY}}
+            REFRESHTOKEN_SECRET_KEY=${{secrets.REFRESHTOKEN_SECRET_KEY}}
+            STRIPE_PK=${{secrets.STRIPE_PK}}
+            STRIPE_SK=${{secrets.STRIPE_SK}}
+            REDIS_URL=${{secrets.REDIS_URL}}
+            RAZORPAY_SECRET=${{secrets.RAZORPAY_SECRET}}
+            RAZORPAY_KEY_ID=${{secrets.RAZORPAY_KEY_ID}}
+            ADMIN_ID=${{secrets.ADMIN_ID}}
+            HOSTNAME=${{secrets.HOSTNAME}}
+            CLOUDINARY_CLOUD_NAME=${{secrets.CLOUDINARY_CLOUD_NAME}}
+            CLOUDINARY_API_KEY=${{secrets.CLOUDINARY_API_KEY}}
+            CLOUDINARY_API_SECRET=${{secrets.CLOUDINARY_API_SECRET}}
+            CLOUDINARY_PREFIX=${{secrets.CLOUDINARY_PREFIX}}
+            REDIS_HOST=redis
+            REDIS_PORT=6379
+            EOF
+            echo "Pulling Docker Latest Image..."
+            docker pull ${{secrets.DOCKER_USERNAME}}/backend:latest
+
+            echo "Stopping and Removing Old Containers..."
+            cd /home/ubuntu/Event-Management-Gathergo
+            sudo docker compose down
+
+            echo "Clearing Docker Builder Cache..."
+            sudo docker builder prune -af
+
+            echo "Rebuilding and Starting Containers..."
+            sudo docker compose up -d --build

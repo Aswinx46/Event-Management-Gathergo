@@ -188,7 +188,7 @@ export default function VendorLogin() {
                                                     </Label>
                                                 </div>
                                                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                                    <Button onClick={() => setforgetPasswordModal(true)} className="text-sm bg-transparent font-medium hover:bg-gray-50 text-primary hover:text-primary/90">
+                                                    <Button type="button" onClick={() => setforgetPasswordModal(true)} className="text-sm bg-transparent font-medium hover:bg-gray-50 text-primary hover:text-primary/90">
                                                         Forgot password?
                                                     </Button>
                                                 </motion.div>

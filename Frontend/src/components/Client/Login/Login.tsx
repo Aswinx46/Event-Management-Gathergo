@@ -231,7 +231,7 @@ export default function LoginComponent() {
                                             </label>
                                         </div>
                                         <div className="text-sm">
-                                            <Button className="font-medium bg-transparent text-black hover:bg-gray-400" onClick={() => setIsOpen(true)}>
+                                            <Button className="font-medium bg-transparent text-black hover:bg-gray-400" type="button" onClick={() => setIsOpen(true)}>
                                                 Forgot password?
                                             </Button>
                                         </div>
