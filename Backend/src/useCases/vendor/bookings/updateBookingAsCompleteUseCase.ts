@@ -6,10 +6,15 @@ export class UpdateBookingAsCompleteUseCase implements IupdateBookingAsCompleteU
     constructor(bookingDatabase: IbookingRepository) {
         this.bookingDatabase = bookingDatabase
     }
-    async changeStatusOfBooking(bookingId: string, status: string, amount?: number, extraHour?: number): Promise<boolean> {
-        // const booking=await this.bookingDatabase.f
+    async changeStatusOfBooking(bookingId: string, status: string, servicePrice: number, amount?: number, extraHour?: number): Promise<boolean> {
+        console.log(`This is the bookingId ${bookingId}
+                    this is the status ${status}
+                    this is the servicePrice ${servicePrice}
+                    this is the amount ${amount}
+                    this is the extrahour ${extraHour}`)
         const dates = await this.bookingDatabase.findBookingDatesOfABooking(bookingId)
         if (!dates) throw new Error('No booking found in this ID')
+
         const today = new Date()
         today.setHours(0, 0, 0, 0);
 
@@ -20,7 +25,8 @@ export class UpdateBookingAsCompleteUseCase implements IupdateBookingAsCompleteU
         });
         // if (!checkDate) throw new Error("The booking date has not arrived yet");
         if (amount) {
-            const changeBookingStatusAndAmount = await this.bookingDatabase.updateBookingAmountAndStatus(bookingId, amount, status,extraHour)
+            const totalAmount = (dates?.length * servicePrice) + (amount - servicePrice)
+            const changeBookingStatusAndAmount = await this.bookingDatabase.updateBookingAmountAndStatus(bookingId, totalAmount, status, extraHour)
             if (!changeBookingStatusAndAmount) throw new Error('No booking found in this Id')
             return true
         }

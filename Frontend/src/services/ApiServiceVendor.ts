@@ -309,9 +309,9 @@ export const findWalletDetailsVendor = async (userId: string, pageNo: number) =>
     }
 }
 
-export const updateBookingAsComplete = async (bookingId: string, status: string, amount?: number, extraHour?: number) => {
+export const updateBookingAsComplete = async (bookingId: string, status: string, servicePrice: number, amount?: number, extraHour?: number) => {
     try {
-        const response = await axios.patch(`/completeBooking/${bookingId}`, { status, amount, extraHour })
+        const response = await axios.patch(`/completeBooking/${bookingId}`, { status, amount, extraHour, servicePrice })
         return response.data
     } catch (error) {
         console.log('error while updating booking as complete', error)

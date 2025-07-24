@@ -210,7 +210,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
         const newStatus = booking.status === "Pending" ? "Completed" : "Pending";
         console.log('this is the booking data while payment', booking)
         updateBookingStatus.mutate(
-            { bookingId: booking._id, status: newStatus, amount: newAmount, extraHour: extraHour },
+            { bookingId: booking._id, status: newStatus, amount: newAmount, extraHour: extraHour , servicePrice:booking.service.servicePrice },
             {
                 onSuccess: ({ message }) => {
                     toast.success(message)
