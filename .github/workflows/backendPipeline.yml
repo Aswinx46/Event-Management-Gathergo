@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: "Build, push Docker image & deploy to Cloud Run"
+    name: "Build & Deploy Backend to Cloud Run (No Artifact Registry)"
     runs-on: ubuntu-latest
 
     steps:
@@ -17,41 +17,17 @@ jobs:
       - name: "Checkout Code"
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Docker buildx
-      - name: "Set up Docker buildx"
-        uses: docker/setup-buildx-action@v2
-
-      # 3️⃣ Authenticate with GCP
+      # 2️⃣ Authenticate with GCP
       - name: "Authenticate to GCP"
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # 4️⃣ Configure Docker for Artifact Registry
-      - name: "Configure Docker for Artifact Registry"
-        run: |
-          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
-
-      # 5️⃣ Clean Docker builder cache (prevents digest errors)
-      - name: "Clean Docker builder cache"
-        run: docker builder prune -af
-
-      # 6️⃣ Build & push Docker image (unique tag per commit)
-      - name: "Build & Push Docker Image"
-        uses: docker/build-push-action@v4
-        with:
-          context: ./Backend
-          push: true
-          tags: |
-            ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
-            ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:${{ github.sha }}
-          no-cache: true
-
-      # 7️⃣ Deploy to Cloud Run
+      # 3️⃣ Deploy to Cloud Run (build & deploy directly from source)
       - name: "Deploy to Cloud Run"
         run: |
           gcloud run deploy backend-service \
-            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:${{ github.sha }} \
+            --source ./Backend \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
