@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout the repo
+      # 1️⃣ Checkout the code
       - name: "Checkout Code"
         uses: actions/checkout@v4
 
@@ -27,20 +27,25 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # 4️⃣ Configure Docker to push to Artifact Registry
+      # 4️⃣ Configure Docker for Artifact Registry
       - name: "Configure Docker for Artifact Registry"
         run: |
           gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
 
-      # 5️⃣ Build and push Docker image
+      # 5️⃣ Clean Docker builder cache (prevents digest errors)
+      - name: "Clean Docker builder cache"
+        run: docker builder prune -af
+
+      # 6️⃣ Build & push Docker image
       - name: "Build & Push Docker Image"
         uses: docker/build-push-action@v4
         with:
           context: ./Backend
           push: true
           tags: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
+          cache-from: type=registry,ref=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
 
-      # 6️⃣ Deploy to Cloud Run
+      # 7️⃣ Deploy to Cloud Run
       - name: "Deploy to Cloud Run"
         run: |
           gcloud run deploy backend-service \
@@ -51,18 +56,18 @@ jobs:
             --set-env-vars PORT=8080,\
             MONGODB=${{ secrets.MONGODB }},\
             ORIGIN=${{ secrets.ORIGIN }},\
-            NODEMAILER_PASSWORD=${{ secrets.NODEMAILER_PASSWORD }},\
             NODEMAILER_EMAIL=${{ secrets.NODEMAILER_EMAIL }},\
-            REFRESHTOKEN_SECRET_KEY=${{ secrets.REFRESHTOKEN_SECRET_KEY }},\
+            NODEMAILER_PASSWORD=${{ secrets.NODEMAILER_PASSWORD }},\
             ACCESSTOKEN_SECRET_KEY=${{ secrets.ACCESSTOKEN_SECRET_KEY }},\
-            STRIPE_SK=${{ secrets.STRIPE_SK }},\
+            REFRESHTOKEN_SECRET_KEY=${{ secrets.REFRESHTOKEN_SECRET_KEY }},\
             STRIPE_PK=${{ secrets.STRIPE_PK }},\
-            RAZORPAY_SECRET=${{ secrets.RAZORPAY_SECRET }},\
+            STRIPE_SK=${{ secrets.STRIPE_SK }},\
             REDIS_URL=${{ secrets.REDIS_URL }},\
-            ADMIN_ID=${{ secrets.ADMIN_ID }},\
+            RAZORPAY_SECRET=${{ secrets.RAZORPAY_SECRET }},\
             RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }},\
-            CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }},\
+            ADMIN_ID=${{ secrets.ADMIN_ID }},\
             HOSTNAME=${{ secrets.HOSTNAME }},\
-            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }},\
+            CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }},\
             CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }},\
+            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }},\
             CLOUDINARY_PREFIX=${{ secrets.CLOUDINARY_PREFIX }}
