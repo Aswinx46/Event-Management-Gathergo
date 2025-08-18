@@ -36,14 +36,14 @@ jobs:
       - name: "Clean Docker builder cache"
         run: docker builder prune -af
 
-      # 6️⃣ Build & push Docker image
+      # 6️⃣ Build & push Docker image (no cache-from to avoid digest errors)
       - name: "Build & Push Docker Image"
         uses: docker/build-push-action@v4
         with:
           context: ./Backend
           push: true
           tags: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
-          cache-from: type=registry,ref=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
+          no-cache: true
 
       # 7️⃣ Deploy to Cloud Run
       - name: "Deploy to Cloud Run"
@@ -54,8 +54,8 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars PORT=8080,\
-            MONGODB=${{ secrets.MONGODB }},\
             ORIGIN=${{ secrets.ORIGIN }},\
+            MONGODB=${{ secrets.MONGODB }},\
             NODEMAILER_EMAIL=${{ secrets.NODEMAILER_EMAIL }},\
             NODEMAILER_PASSWORD=${{ secrets.NODEMAILER_PASSWORD }},\
             ACCESSTOKEN_SECRET_KEY=${{ secrets.ACCESSTOKEN_SECRET_KEY }},\
