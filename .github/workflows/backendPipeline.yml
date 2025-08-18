@@ -36,20 +36,22 @@ jobs:
       - name: "Clean Docker builder cache"
         run: docker builder prune -af
 
-      # 6️⃣ Build & push Docker image (no cache-from to avoid digest errors)
+      # 6️⃣ Build & push Docker image (unique tag per commit)
       - name: "Build & Push Docker Image"
         uses: docker/build-push-action@v4
         with:
           context: ./Backend
           push: true
-          tags: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
+          tags: |
+            ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
+            ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:${{ github.sha }}
           no-cache: true
 
       # 7️⃣ Deploy to Cloud Run
       - name: "Deploy to Cloud Run"
         run: |
           gcloud run deploy backend-service \
-            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest \
+            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:${{ github.sha }} \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
