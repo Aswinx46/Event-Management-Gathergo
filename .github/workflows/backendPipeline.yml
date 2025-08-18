@@ -4,30 +4,65 @@ on:
   push:
     branches: [main]
     paths:
-      - 'Backend/**'
-      - '.github/workflows/backendPipeline.yml'
+      - "Backend/**"
+      - ".github/workflows/backendPipeline.yml"
 
 jobs:
-  build-and-push:
-    name: Build and Push Backend Image
+  build-and-deploy:
+    name: "Build, push Docker image & deploy to Cloud Run"
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # 1️⃣ Checkout the repo
+      - name: "Checkout Code"
         uses: actions/checkout@v4
 
-      - name: Set up Docker buildx
+      # 2️⃣ Set up Docker buildx
+      - name: "Set up Docker buildx"
         uses: docker/setup-buildx-action@v2
 
-      - name: Log in to Docker hub
-        uses: docker/login-action@v2
+      # 3️⃣ Authenticate with GCP
+      - name: "Authenticate to GCP"
+        uses: google-github-actions/auth@v1
         with:
-          username: 
-          password:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Build and push docker Image
+      # 4️⃣ Configure Docker to push to Artifact Registry
+      - name: "Configure Docker for Artifact Registry"
+        run: |
+          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
+
+      # 5️⃣ Build and push Docker image
+      - name: "Build & Push Docker Image"
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
+          context: ./Backend
           push: true
-          tags: yourdockerhubusername/backend:latest
+          tags: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest
+
+      # 6️⃣ Deploy to Cloud Run
+      - name: "Deploy to Cloud Run"
+        run: |
+          gcloud run deploy backend-service \
+            --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/backend-repo/backend:latest \
+            --region ${{ secrets.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars PORT=8080,\
+            MONGODB=${{ secrets.MONGODB }},\
+            ORIGIN=${{ secrets.ORIGIN }},\
+            NODEMAILER_PASSWORD=${{ secrets.NODEMAILER_PASSWORD }},\
+            NODEMAILER_EMAIL=${{ secrets.NODEMAILER_EMAIL }},\
+            REFRESHTOKEN_SECRET_KEY=${{ secrets.REFRESHTOKEN_SECRET_KEY }},\
+            ACCESSTOKEN_SECRET_KEY=${{ secrets.ACCESSTOKEN_SECRET_KEY }},\
+            STRIPE_SK=${{ secrets.STRIPE_SK }},\
+            STRIPE_PK=${{ secrets.STRIPE_PK }},\
+            RAZORPAY_SECRET=${{ secrets.RAZORPAY_SECRET }},\
+            REDIS_URL=${{ secrets.REDIS_URL }},\
+            ADMIN_ID=${{ secrets.ADMIN_ID }},\
+            RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }},\
+            CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }},\
+            HOSTNAME=${{ secrets.HOSTNAME }},\
+            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }},\
+            CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }},\
+            CLOUDINARY_PREFIX=${{ secrets.CLOUDINARY_PREFIX }}
