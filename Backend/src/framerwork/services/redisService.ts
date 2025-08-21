@@ -19,7 +19,7 @@ export class RedisService implements IredisService {
         this.client.on('end', () => console.log('Redis client disconnected')); // Added for debugging
     }
 
-    public async connect(): Promise<void> {
+    public async connect(): Promise<void> { 
         if (!this.client.isOpen) {
             await this.client.connect();
         }
