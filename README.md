@@ -10,7 +10,7 @@
 - 📋 **Service Creation** – Vendors can create and manage services.  
 - 🔍 **Ticket Booking with QR** – Users can book tickets with unique QR codes.  
 - 🛠️ **Service Booking** – Easy service booking for users.  
-- 📊 **Vendor Dashboard** – Manage events, services, and earnings.  
+- 📊 **Vendor Dashboard** – Manage events, scan Ticket QR, services, and earnings.  
 - 👤 **User Management** – Profile, bookings, and wallet details.  
 - 💳 **Stripe Payment Gateway** – Secure online transactions.  
 
